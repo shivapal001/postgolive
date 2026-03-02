@@ -215,8 +215,7 @@ window.deleteReq=function(id){if(!confirm('Delete request?'))return;db.collectio
 window.exportData=function(){var blob=new Blob([JSON.stringify(allData,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='posthire-'+new Date().toISOString().slice(0,10)+'.json';a.click();};
 loadAll();
 </script>
-};
-loadAll();
+
 
 <script>
 function switchTab(name){
