@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | PostHire</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#0a0a0a;--card:rgba(20,20,20,0.8);--border:rgba(255,255,255,0.08);--txt:#fff;--txt2:#888;--txt3:#555}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+        nav{background:rgba(10,10,10,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:100}
+        .nav-c{max-width:1280px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+        .logo{font-size:18px;font-weight:700;display:flex;align-items:center;gap:8px;text-decoration:none;color:#fff}
+        .logo-icon{width:28px;height:28px;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center}
+        .logo-icon i{color:#000;font-size:13px}
+        .nav-r{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+        .plan-badge{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.05em}
+        .plan-badge.free{background:rgba(255,255,255,0.08);color:#aaa;border:1px solid rgba(255,255,255,0.12)}
+        .plan-badge.starter{background:rgba(100,200,255,.15);color:#64c8ff;border:1px solid rgba(100,200,255,.3)}
+        .plan-badge.pro{background:rgba(255,215,0,.15);color:#ffd700;border:1px solid rgba(255,215,0,.3)}
+        .nav-btn{padding:8px 16px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+        .nav-btn.ghost{background:rgba(255,255,255,.06);color:#fff}
+        .nav-btn.ghost:hover{background:rgba(255,255,255,.1)}
+        .nav-btn.primary{background:#fff;color:#000}
+        .nav-btn.primary:hover{background:#f0f0f0}
+        .nav-btn.danger{background:rgba(255,60,60,.1);color:#ff6b6b;border:1px solid rgba(255,60,60,.2)}
+        /* Plan Banner */
+        .plan-banner{padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+        .plan-banner.free{background:rgba(255,255,255,.03);border-bottom:1px solid var(--border)}
+        .plan-banner.starter{background:rgba(100,200,255,.05);border-bottom:1px solid rgba(100,200,255,.2)}
+        .plan-banner.pro{background:linear-gradient(135deg,rgba(255,215,0,.08),rgba(255,160,50,.08));border-bottom:1px solid rgba(255,215,0,.25)}
+        .plan-banner-text{font-size:13px;color:var(--txt2)}
+        .plan-banner-text strong{color:#fff}
+        .upgrade-btn{margin-left:auto;background:linear-gradient(135deg,#ffd700,#ff9f43);color:#000;padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;border:none;cursor:pointer;white-space:nowrap;transition:transform .2s}
+        .upgrade-btn:hover{transform:scale(1.04)}
+        .container{max-width:1280px;margin:0 auto;padding:28px 20px 60px}
+        /* Stats */
+        .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+        .stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;backdrop-filter:blur(10px);transition:border-color .2s}
+        .stat-card:hover{border-color:rgba(255,255,255,.15)}
+        .stat-label{font-size:12px;color:var(--txt2);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+        .stat-val{font-size:30px;font-weight:700;margin-bottom:2px}
+        .stat-sub{font-size:11px;color:var(--txt3)}
+        /* Sections */
+        .section-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+        .panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;backdrop-filter:blur(10px);position:relative;overflow:hidden}
+        .panel h3{font-size:16px;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+        .panel h3 span.badge{font-size:10px;background:rgba(255,215,0,.15);color:#ffd700;padding:2px 8px;border-radius:8px;border:1px solid rgba(255,215,0,.2)}
+        /* Profile panel */
+        .profile-avatar{width:60px;height:60px;border-radius:12px;object-fit:cover;background:rgba(255,255,255,.1);flex-shrink:0}
+        .profile-info{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+        .profile-name{font-size:18px;font-weight:700;margin-bottom:3px}
+        .profile-role{font-size:12px;color:var(--txt2)}
+        .info-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px}
+        .info-row:last-child{border-bottom:none}
+        .info-row .lbl{color:var(--txt2)}
+        /* Requests list */
+        .req-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border)}
+        .req-item:last-child{border-bottom:none}
+        .req-avatar{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+        .req-body{flex:1;min-width:0}
+        .req-from{font-size:13px;font-weight:600;margin-bottom:2px}
+        .req-msg{font-size:12px;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .req-meta{font-size:11px;color:var(--txt3);margin-top:2px;display:flex;gap:8px;flex-wrap:wrap}
+        .req-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+        .req-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700}
+        .req-badge.pending{background:rgba(255,159,67,.12);color:#ff9f43;border:1px solid rgba(255,159,67,.2)}
+        .req-badge.accepted{background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.2)}
+        .req-badge.declined{background:rgba(255,60,60,.1);color:#ff6b6b;border:1px solid rgba(255,60,60,.2)}
+        .btn-accept{background:rgba(74,222,128,.15);color:#4ade80;border:1px solid rgba(74,222,128,.3);padding:5px 12px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s}
+        .btn-accept:hover{background:rgba(74,222,128,.25)}
+        .btn-decline{background:rgba(255,60,60,.08);color:#ff6b6b;border:1px solid rgba(255,60,60,.2);padding:5px 12px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s}
+        .btn-decline:hover{background:rgba(255,60,60,.15)}
+        /* WhatsApp reveal after accept */
+        .wa-reveal-mini{display:inline-flex;align-items:center;gap:6px;background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.25);border-radius:7px;padding:5px 10px;font-size:12px;text-decoration:none;color:#25D366;font-weight:700;transition:all .2s}
+        .wa-reveal-mini:hover{background:rgba(37,211,102,.2)}
+        /* Sent requests list */
+        .sent-req-item{padding:12px 0;border-bottom:1px solid var(--border)}
+        .sent-req-item:last-child{border-bottom:none}
+        .sent-req-name{font-size:14px;font-weight:600;margin-bottom:3px}
+        .sent-req-detail{font-size:12px;color:var(--txt2)}
+        /* PRO lock */
+        .lock-overlay{position:absolute;inset:0;background:rgba(10,10,10,.88);backdrop-filter:blur(3px);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:2;border-radius:14px;gap:10px;padding:20px;text-align:center}
+        .lock-overlay i{font-size:30px;color:#ffd700}
+        .lock-overlay p{font-size:13px;color:var(--txt2);line-height:1.5}
+        .lock-btn{background:linear-gradient(135deg,#ffd700,#ff9f43);color:#000;padding:9px 20px;border-radius:8px;border:none;font-weight:700;cursor:pointer;font-size:13px}
+        /* Quick actions */
+        .quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+        .qa-btn{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:all .2s;text-decoration:none;color:#fff;display:block}
+        .qa-btn:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15);transform:translateY(-2px)}
+        .qa-btn i{font-size:22px;margin-bottom:8px;display:block}
+        .qa-btn span{font-size:12px;color:var(--txt2)}
+        .empty-state{text-align:center;padding:30px;color:var(--txt2)}
+        .empty-state i{font-size:36px;margin-bottom:12px;display:block;opacity:.3}
+        .empty-state p{font-size:13px}
+        /* Modal */
+        .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto}
+        .modal-ov.open{opacity:1;pointer-events:all}
+        .modal-box{background:#141414;border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:36px;max-width:680px;width:100%;position:relative;animation:slup .3s ease-out}
+        @keyframes slup{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+        .plans-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+        .pc{border:1px solid var(--border);border-radius:14px;padding:18px 12px;text-align:center;position:relative}
+        .pc.best{border-color:#64c8ff;background:rgba(100,200,255,.04)}
+        .pc .pn{font-size:15px;font-weight:700;margin-bottom:4px}
+        .pc .pp{font-size:26px;font-weight:800;margin-bottom:2px}
+        .pc .pd{font-size:11px;color:var(--txt2);margin-bottom:12px}
+        .pc ul{list-style:none;text-align:left;font-size:11px;color:var(--txt2)}
+        .pc ul li{padding:3px 0;display:flex;gap:6px;align-items:flex-start}
+        .pc ul li i{color:#4ade80;font-size:9px;margin-top:3px}
+        .ptag{background:#64c8ff;color:#000;font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;position:absolute;top:-9px;left:50%;transform:translateX(-50%);white-space:nowrap}
+        .ptag.pro{background:#ffd700}
+        .btn-pay{width:100%;padding:11px;border-radius:8px;border:none;font-weight:700;cursor:pointer;font-size:13px;margin-top:10px;transition:transform .2s}
+        .btn-pay:hover{transform:scale(1.02)}
+        .btn-pay.free-btn{background:rgba(255,255,255,.08);color:#fff}
+        .btn-pay.starter-btn{background:#64c8ff;color:#000}
+        .btn-pay.pro-btn{background:#ffd700;color:#000}
+        .mc{position:absolute;top:14px;right:18px;background:none;border:none;color:var(--txt2);font-size:20px;cursor:pointer}
+        .spin{display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;margin-right:5px}
+        @keyframes sp{to{transform:rotate(360deg)}}
+        @media(max-width:900px){.stats-grid{grid-template-columns:1fr 1fr}.section-grid{grid-template-columns:1fr}.plans-row{grid-template-columns:1fr}}
+        @media(max-width:600px){.stats-grid{grid-template-columns:1fr 1fr}.quick-grid{grid-template-columns:1fr 1fr}.nav-c{gap:8px}}
+        @media(max-width:400px){.stats-grid{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+<nav>
+    <div class="nav-c">
+        <a href="index.html" class="logo"><div class="logo-icon"><i class="fas fa-handshake"></i></div><span>PostHire</span></a>
+        <div class="nav-r">
+            <span class="plan-badge free" id="navBadge">FREE</span>
+            <button class="nav-btn ghost" onclick="location.href='creators.html'"><i class="fas fa-search"></i> Browse</button>
+            <button class="nav-btn danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </div>
+</nav>
+
+<div class="plan-banner free" id="planBanner">
+    <span class="plan-banner-text"><strong id="bannerTitle">Basic (Free) Plan</strong> — <span id="bannerDesc">10 profiles/day · 3 requests/month</span></span>
+    <button class="upgrade-btn" id="upgradeBtn" onclick="openUpgrade()">⚡ Upgrade Plan</button>
+</div>
+
+<div class="container">
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label"><i class="fas fa-paper-plane"></i> Requests Sent</div><div class="stat-val" id="statSent">—</div><div class="stat-sub">This month</div></div>
+        <div class="stat-card"><div class="stat-label"><i class="fas fa-inbox"></i> Received</div><div class="stat-val" id="statReceived">—</div><div class="stat-sub">Collaboration requests</div></div>
+        <div class="stat-card"><div class="stat-label"><i class="fas fa-check-circle"></i> Accepted</div><div class="stat-val" id="statAccepted">—</div><div class="stat-sub">From sent requests</div></div>
+        <div class="stat-card"><div class="stat-label"><i class="fas fa-crown" style="color:#ffd700"></i> Plan</div><div class="stat-val" id="statPlan" style="font-size:22px">—</div><div class="stat-sub" id="statPlanSub">—</div></div>
+    </div>
+
+    <div class="section-grid">
+        <!-- Profile Panel -->
+        <div class="panel" id="profilePanel">
+            <h3><i class="fas fa-user-circle"></i> My Profile</h3>
+            <div class="profile-info">
+                <img id="profileAvatar" src="https://ui-avatars.com/api/?name=U&background=1a1a1a&color=fff&size=60" class="profile-avatar">
+                <div>
+                    <div class="profile-name" id="profileName">Loading...</div>
+                    <div class="profile-role" id="profileRole">—</div>
+                </div>
+            </div>
+            <div class="info-row"><span class="lbl"><i class="fas fa-envelope"></i> Email</span><span id="pEmail">—</span></div>
+            <div class="info-row"><span class="lbl"><i class="fab fa-whatsapp"></i> WhatsApp</span><span id="pWA">—</span></div>
+            <div class="info-row"><span class="lbl"><i class="fas fa-calendar"></i> Member Since</span><span id="pJoined">—</span></div>
+            <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+                <button class="nav-btn ghost" id="editProfileBtn" style="flex:1;font-size:12px" onclick="editProfile()"><i class="fas fa-edit"></i> Edit Profile</button>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="panel">
+            <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+            <div class="quick-grid">
+                <a href="creators.html" class="qa-btn"><i class="fas fa-search"></i><span>Find Creators</span></a>
+                <a href="creators.html" class="qa-btn"><i class="fas fa-handshake"></i><span>Browse All</span></a>
+                <div class="qa-btn" onclick="openUpgrade()"><i class="fas fa-crown" style="color:#ffd700"></i><span>Upgrade Plan</span></div>
+                <div class="qa-btn" onclick="editProfile()"><i class="fas fa-user-edit"></i><span>Edit Profile</span></div>
+                <div class="qa-btn" onclick="scrollToRequests()"><i class="fas fa-inbox"></i><span>Requests</span></div>
+                <div class="qa-btn" onclick="refreshData()"><i class="fas fa-sync-alt"></i><span>Refresh</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRO Insights (locked for non-pro) -->
+    <div class="panel" id="insightsPanel" style="margin-bottom:18px;position:relative">
+        <h3><i class="fas fa-chart-line"></i> Performance Insights <span class="badge">PRO</span></h3>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px" id="insightsContent">
+            <div class="stat-card"><div class="stat-label">Profile Views</div><div class="stat-val" id="ins1">0</div></div>
+            <div class="stat-card"><div class="stat-label">Requests Got</div><div class="stat-val" id="ins2">0</div></div>
+            <div class="stat-card"><div class="stat-label">Accept Rate</div><div class="stat-val" id="ins3">—</div></div>
+            <div class="stat-card"><div class="stat-label">Avg Deal Value</div><div class="stat-val" id="ins4">—</div></div>
+        </div>
+        <div class="lock-overlay" id="insightsLock">
+            <i class="fas fa-lock"></i>
+            <p>Performance Insights available on <strong style="color:#fff">Pro Plan</strong></p>
+            <button class="lock-btn" onclick="openUpgrade()">Upgrade to Pro</button>
+        </div>
+    </div>
+
+    <!-- Requests Section -->
+    <div class="section-grid" id="requestsSection">
+        <!-- Received requests (for creators) -->
+        <div class="panel" id="receivedPanel">
+            <h3><i class="fas fa-inbox"></i> Received Requests</h3>
+            <div id="receivedList"><div class="empty-state"><i class="fas fa-inbox"></i><p>No requests received yet</p></div></div>
+        </div>
+        <!-- Sent requests (for founders) -->
+        <div class="panel" id="sentPanel">
+            <h3><i class="fas fa-paper-plane"></i> Sent Requests</h3>
+            <div id="sentList"><div class="empty-state"><i class="fas fa-paper-plane"></i><p>No requests sent yet</p></div></div>
+        </div>
+    </div>
+</div>
+
+<!-- UPGRADE MODAL -->
+<div class="modal-ov" id="upgradeModal" onclick="if(event.target===this)closeUpgrade()">
+    <div class="modal-box">
+        <button class="mc" onclick="closeUpgrade()">×</button>
+        <div style="text-align:center;margin-bottom:24px">
+            <div style="font-size:36px;margin-bottom:10px">⚡</div>
+            <h2 style="font-size:22px;margin-bottom:6px">Upgrade Your Plan</h2>
+            <p style="font-size:13px;color:var(--txt2)">Unlock more features and grow faster with PostHire</p>
+        </div>
+        <div class="plans-row">
+            <div class="pc">
+                <div class="pn">Basic</div><div class="pp">₹0</div><div class="pd">per month</div>
+                <ul><li><i class="fas fa-check"></i>10 profiles/day</li><li><i class="fas fa-check"></i>3 requests/month</li><li><i class="fas fa-check"></i>Basic filters</li></ul>
+                <button class="btn-pay free-btn" onclick="setFreePlan()">Select Free</button>
+            </div>
+            <div class="pc best">
+                <div class="ptag">Popular</div>
+                <div class="pn" style="color:#64c8ff">Starter</div><div class="pp">₹299</div><div class="pd">per month</div>
+                <ul><li><i class="fas fa-check"></i>Unlimited browsing</li><li><i class="fas fa-check"></i>20 requests/month</li><li><i class="fas fa-check"></i>WhatsApp on send</li><li><i class="fas fa-check"></i>Advanced filters</li><li><i class="fas fa-check"></i>Priority listing</li></ul>
+                <button class="btn-pay starter-btn" onclick="payUpgrade('starter')">Pay ₹299</button>
+            </div>
+            <div class="pc">
+                <div class="ptag pro">Pro</div>
+                <div class="pn" style="color:#ffd700">Pro</div><div class="pp">₹599</div><div class="pd">per month</div>
+                <ul><li><i class="fas fa-check"></i>Unlimited everything</li><li><i class="fas fa-check"></i>AI matching</li><li><i class="fas fa-check"></i>WhatsApp always visible</li><li><i class="fas fa-check"></i>Performance insights</li><li><i class="fas fa-check"></i>Featured badge</li></ul>
+                <button class="btn-pay pro-btn" onclick="payUpgrade('pro')">Pay ₹599</button>
+            </div>
+        </div>
+        <p style="text-align:center;font-size:12px;color:var(--txt2)">Payments via Razorpay · Secure · SSL encrypted</p>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+if(!firebase.apps.length){firebase.initializeApp({apiKey:"AIzaSyD1ElccdzrwPwKDmGimitEkQEwNMrUeHyE",authDomain:"posthire-81b69.firebaseapp.com",projectId:"posthire-81b69",storageBucket:"posthire-81b69.firebasestorage.app",messagingSenderId:"898539356038",appId:"1:898539356038:web:36f8134549ce5f13333607"});}
+var auth=firebase.auth(), db=firebase.firestore();
+
+document.getElementById('logoutBtn').onclick=function(){auth.signOut().then(function(){location.href='index.html';});};
+
+auth.onAuthStateChanged(function(user){
+    if(!user){location.href='index.html';return;}
+    window._me={uid:user.uid};
+    loadDashboard(user.uid);
+});
+
+function loadDashboard(uid){
+    db.collection('users').doc(uid).get().then(function(uDoc){
+        if(!uDoc.exists){location.href='index.html';return null;}
+        var u=uDoc.data();
+        window._me=Object.assign({uid:uid},u);
+        return Promise.all([
+            db.collection('creators').doc(uid).get(),
+            db.collection('founders').doc(uid).get(),
+            db.collection('collab_requests').where('founderId','==',uid).get(),
+            db.collection('collab_requests').where('creatorId','==',uid).get()
+        ]);
+    }).then(function(results){
+        if(!results)return;
+        var crDoc=results[0],foDoc=results[1],sentSnap=results[2],recvSnap=results[3];
+        var u=window._me, plan=u.plan||'free';
+        var crData=crDoc.exists?crDoc.data():null;
+        var foData=foDoc.exists?foDoc.data():null;
+
+        // Badge & Banner
+        var badge=document.getElementById('navBadge');
+        if(badge){badge.textContent=plan.toUpperCase();badge.className='plan-badge '+plan;}
+        var banner=document.getElementById('planBanner');if(banner)banner.className='plan-banner '+plan;
+        var titles={free:'Basic (Free) Plan',starter:'Starter Plan — ₹299/mo',pro:'Pro Plan — ₹599/mo'};
+        var descs={free:'10 profiles/day · 3 requests/month',starter:'Unlimited browsing · 20 requests · WhatsApp on send',pro:'Unlimited everything · AI Matching · WhatsApp always visible'};
+        var bt=document.getElementById('bannerTitle');if(bt)bt.textContent=titles[plan];
+        var bd=document.getElementById('bannerDesc');if(bd)bd.textContent=descs[plan];
+        if(plan==='pro'){var ub=document.getElementById('upgradeBtn');if(ub)ub.style.display='none';}
+
+        // Profile
+        var el; 
+        el=document.getElementById('profileName');if(el)el.textContent=u.name||'User';
+        el=document.getElementById('profileRole');if(el)el.textContent=u.userType==='creator'?'Content Creator':'Startup Founder';
+        el=document.getElementById('pEmail');if(el)el.textContent=u.email||'—';
+        el=document.getElementById('pWA');if(el)el.textContent=u.whatsapp||'—';
+        el=document.getElementById('pJoined');if(el)el.textContent=u.createdAt?(u.createdAt.toDate?u.createdAt.toDate().toLocaleDateString('en-IN'):new Date(u.createdAt).toLocaleDateString('en-IN')):'—';
+        if(crData&&crData.profilePhoto){var pa=document.getElementById('profileAvatar');if(pa)pa.src=crData.profilePhoto;}
+
+        // Stats
+        var sentCount=sentSnap.size, recvCount=recvSnap.size;
+        var acceptedCount=0; sentSnap.forEach(function(d){if(d.data().status==='accepted')acceptedCount++;});
+        el=document.getElementById('statSent');if(el)el.textContent=sentCount;
+        el=document.getElementById('statReceived');if(el)el.textContent=recvCount;
+        el=document.getElementById('statAccepted');if(el)el.textContent=acceptedCount;
+        el=document.getElementById('statPlan');if(el)el.textContent={free:'Free',starter:'Starter',pro:'Pro'}[plan]||plan;
+        el=document.getElementById('statPlanSub');if(el)el.textContent=plan==='pro'?'All features unlocked':plan==='starter'?'Advanced features':'Basic plan';
+
+        // Pro insights
+        if(plan==='pro'){var il=document.getElementById('insightsLock');if(il)il.style.display='none';var i1=document.getElementById('ins1');if(i1)i1.textContent=parseInt(localStorage.getItem('u_v_'+new Date().toDateString())||0);var i2=document.getElementById('ins2');if(i2)i2.textContent=recvCount;var acceptR=0;recvSnap.forEach(function(d){if(d.data().status==='accepted')acceptR++;});var i3=document.getElementById('ins3');if(i3)i3.textContent=recvCount?Math.round((acceptR/recvCount)*100)+'%':'—';var i4=document.getElementById('ins4');if(i4)i4.textContent=(foData&&foData.budget)||(crData&&crData.pricing)||'—';}
+
+        // Requests
+        renderReceived(recvSnap, plan);
+        renderSent(sentSnap, plan);
+    }).catch(function(e){console.error('Dashboard error:',e);});
+}
+
+function renderReceived(snap, plan){
+    var el=document.getElementById('receivedList');
+    if(snap.empty){el.innerHTML='<div class="empty-state"><i class="fas fa-inbox"></i><p>No collaboration requests received yet</p></div>';return;}
+    var html='';
+    snap.forEach(function(doc){
+        var id=doc.id,r=doc.data();
+        var sb='<span class="req-badge '+(r.status||'pending')+'">'+(r.status==='accepted'?'✓ Accepted':r.status==='declined'?'✗ Declined':'⏳ Pending')+'</span>';
+        var waBtn=r.status==='accepted'&&r.founderWhatsapp?'<a class="wa-reveal-mini" href="https://wa.me/'+r.founderWhatsapp.replace(/\D/g,'')+'" target="_blank"><i class="fab fa-whatsapp"></i> '+r.founderWhatsapp+'</a>':'';
+        var actBtns=r.status==='pending'?'<button class="btn-accept" onclick="updateReq(\''+id+'\',\'accepted\')"><i class="fas fa-check"></i> Accept</button><button class="btn-decline" onclick="updateReq(\''+id+'\',\'declined\')"><i class="fas fa-times"></i> Decline</button>':'';
+        var dt=r.createdAt?(r.createdAt.toDate?r.createdAt.toDate().toLocaleDateString('en-IN'):new Date(r.createdAt).toLocaleDateString('en-IN')):'—';
+        html+='<div class="req-item"><div class="req-avatar"><i class="fas fa-rocket"></i></div><div class="req-body"><div class="req-from">'+(r.founderName||'Founder')+' · '+(r.startupName||'')+'</div><div class="req-msg">'+(r.message||'')+'</div><div class="req-meta"><span>'+(r.collabType||'')+'</span><span>'+(r.budget||'')+'</span><span>'+dt+'</span></div><div class="req-actions">'+sb+actBtns+waBtn+'</div></div></div>';
+    });
+    el.innerHTML=html;
+}
+
+function renderSent(snap, plan){
+    var el=document.getElementById('sentList');
+    if(snap.empty){el.innerHTML='<div class="empty-state"><i class="fas fa-paper-plane"></i><p>No requests sent yet<br><a href="creators.html" style="color:#64c8ff;text-decoration:none">Browse Creators →</a></p></div>';return;}
+    var rows=[];
+    snap.forEach(function(doc){rows.push({id:doc.id,r:doc.data()});});
+    var creatorIds=[...new Set(rows.map(function(x){return x.r.creatorId;}))];
+    var crPromises=creatorIds.map(function(cid){return db.collection('creators').doc(cid).get();});
+    Promise.all(crPromises).then(function(crDocs){
+        var crMap={};
+        crDocs.forEach(function(d){if(d.exists)crMap[d.id]=d.data();});
+        var html='';
+        rows.forEach(function(x){
+            var r=x.r,cr=crMap[r.creatorId]||{};
+            var crName=cr.name||'Creator';
+            var sb='<span class="req-badge '+(r.status||'pending')+'">'+(r.status==='accepted'?'✓ Accepted':r.status==='declined'?'✗ Declined':'⏳ Pending')+'</span>';
+            var waHtml='';
+            var waNum=(cr.whatsapp||'').replace(/\D/g,'');
+            if(r.status==='accepted'&&waNum)waHtml='<a class="wa-reveal-mini" href="https://wa.me/'+waNum+'" target="_blank"><i class="fab fa-whatsapp"></i> '+cr.whatsapp+'</a>';
+            else if((plan==='pro'||plan==='starter')&&waNum)waHtml='<a class="wa-reveal-mini" href="https://wa.me/'+waNum+'" target="_blank"><i class="fab fa-whatsapp"></i> '+cr.whatsapp+'</a>';
+            else if(r.status!=='accepted')waHtml='<span style="font-size:11px;color:var(--txt3)"><i class="fas fa-lock"></i> WhatsApp visible after accept</span>';
+            var dt=r.createdAt?(r.createdAt.toDate?r.createdAt.toDate().toLocaleDateString('en-IN'):new Date(r.createdAt).toLocaleDateString('en-IN')):'—';
+            html+='<div class="sent-req-item"><div class="sent-req-name"><i class="fas fa-video" style="margin-right:6px;font-size:12px;color:var(--txt2)"></i>'+crName+'</div><div class="sent-req-detail">'+(r.collabType||'')+' · '+(r.budget||'')+' · '+dt+'</div><div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">'+sb+waHtml+'</div></div>';
+        });
+        el.innerHTML=html;
+    });
+}
+
+window.updateReq=function(reqId,status){db.collection('collab_requests').doc(reqId).update({status:status}).then(function(){loadDashboard(window._me.uid);}).catch(function(e){alert('Failed: '+e.message);});};
+window.openUpgrade=function(){document.getElementById('upgradeModal').classList.add('open');};
+window.closeUpgrade=function(){document.getElementById('upgradeModal').classList.remove('open');};
+window.scrollToRequests=function(){document.getElementById('requestsSection').scrollIntoView({behavior:'smooth'});};
+window.refreshData=function(){if(window._me&&window._me.uid)loadDashboard(window._me.uid);};
+window.editProfile=function(){location.href=(window._me&&window._me.userType)==='creator'?'creator-profile.html':'founder-profile.html';};
+window.payUpgrade=function(plan){
+    window.closeUpgrade();
+    var prices={starter:29900,pro:59900};
+    new Razorpay({key:'rzp_live_SLpif75jByNnvb',amount:prices[plan],currency:'INR',name:'PostHire',description:(plan==='starter'?'Starter':'Pro')+' Plan',prefill:{name:(window._me&&window._me.name)||'',email:(window._me&&window._me.email)||'',contact:((window._me&&window._me.whatsapp)||'').replace(/\D/g,'')},theme:{color:'#ffffff'},handler:function(resp){db.collection('users').doc(window._me.uid).update({plan:plan,lastPaymentId:resp.razorpay_payment_id}).then(function(){window._me.plan=plan;alert(plan==='starter'?'✅ Upgraded to Starter!':'✅ Upgraded to Pro!');loadDashboard(window._me.uid);});}}).open();
+};
+window.setFreePlan=function(){db.collection('users').doc(window._me.uid).update({plan:'free'}).then(function(){window._me.plan='free';window.closeUpgrade();loadDashboard(window._me.uid);});};
+</script>
+</script>
+</body>
+</html>

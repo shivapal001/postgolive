@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Creators | PostHire</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--primary-bg:#0a0a0a;--card-bg:rgba(25,25,25,0.6);--text-primary:#ffffff;--text-secondary:#a0a0a0;--border-color:rgba(255,255,255,0.1)}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--primary-bg);color:var(--text-primary);min-height:100vh}
+        nav{padding:16px 0;background:rgba(10,10,10,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-color);position:sticky;top:0;z-index:100}
+        .nav-container{display:flex;justify-content:space-between;align-items:center;max-width:1400px;margin:0 auto;padding:0 20px}
+        .logo{font-size:20px;font-weight:700;display:flex;align-items:center;gap:8px;cursor:pointer;text-decoration:none;color:white}
+        .logo-icon{width:30px;height:30px;background:white;border-radius:7px;display:flex;align-items:center;justify-content:center}
+        .logo-icon i{color:black;font-size:13px}
+        .nav-right{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+        .plan-badge{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700}
+        .plan-badge.free{background:rgba(255,255,255,0.1);color:#aaa;border:1px solid rgba(255,255,255,0.15)}
+        .plan-badge.starter{background:rgba(100,200,255,0.15);color:#64c8ff;border:1px solid rgba(100,200,255,0.3)}
+        .plan-badge.pro{background:rgba(255,215,0,0.15);color:#ffd700;border:1px solid rgba(255,215,0,0.3)}
+        .nav-link{color:white;text-decoration:none;font-size:14px;padding:8px 12px}
+        /* Usage bar */
+        .usage-bar-wrapper{background:rgba(255,255,255,0.03);border-bottom:1px solid var(--border-color);padding:10px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+        .usage-item{display:flex;align-items:center;gap:8px;font-size:12px}
+        .usage-label{color:var(--text-secondary)}
+        .usage-track{width:70px;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden}
+        .usage-fill{height:100%;border-radius:2px;background:white;transition:width 0.5s}
+        .usage-fill.warning{background:#ff9f43}
+        .usage-fill.danger{background:#ff4757}
+        .usage-count{color:var(--text-primary);font-weight:600}
+        .upgrade-pill{margin-left:auto;background:linear-gradient(135deg,#ffd700,#ff9f43);color:black;padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;white-space:nowrap}
+        /* Container */
+        .container{max-width:1400px;margin:0 auto;padding:28px 20px 60px}
+        .page-header{margin-bottom:24px}
+        .page-header h1{font-size:36px;margin-bottom:6px}
+        .page-header p{color:var(--text-secondary);font-size:16px}
+        /* AI banner */
+        .ai-banner{background:linear-gradient(135deg,rgba(130,80,255,0.12),rgba(80,180,255,0.12));border:1px solid rgba(130,80,255,0.3);border-radius:14px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+        .ai-banner i.ai-icon{font-size:24px;color:#a855f7}
+        .ai-banner h3{font-size:15px;margin-bottom:2px}
+        .ai-banner p{font-size:12px;color:var(--text-secondary)}
+        .ai-btn{margin-left:auto;background:linear-gradient(135deg,#a855f7,#6366f1);color:white;padding:9px 18px;border-radius:8px;border:none;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap}
+        .ai-banner.locked{opacity:0.5}
+        /* Filters */
+        .filters{background:var(--card-bg);border:1px solid var(--border-color);border-radius:12px;padding:18px 20px;margin-bottom:18px;display:flex;gap:14px;flex-wrap:wrap;backdrop-filter:blur(10px)}
+        .fg{flex:1;min-width:130px}
+        .fg label{display:flex;align-items:center;gap:5px;margin-bottom:6px;font-size:12px;color:var(--text-secondary)}
+        .fg select,.fg input{width:100%;padding:9px 10px;background:rgba(255,255,255,0.05);border:1px solid var(--border-color);border-radius:8px;color:white;font-size:13px}
+        .fg select option{background:#1a1a1a}
+        .filter-locked{opacity:0.4;cursor:pointer!important}
+        .lock-badge{font-size:10px;background:rgba(255,215,0,0.12);color:#ffd700;padding:1px 6px;border-radius:6px;border:1px solid rgba(255,215,0,0.2)}
+        .sort-info{font-size:12px;color:var(--text-secondary);margin-bottom:16px;display:flex;align-items:center;gap:6px}
+        .sort-dot{width:6px;height:6px;border-radius:50%;background:#ffd700;flex-shrink:0}
+        /* Grid */
+        .creators-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+        .card-wrap{position:relative}
+        .creator-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:22px;backdrop-filter:blur(10px);transition:all 0.3s;position:relative}
+        .creator-card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,0.2)}
+        .creator-card.featured{border-color:#ffd700;background:rgba(255,215,0,0.03)}
+        .creator-card.top-s{border-color:rgba(130,80,255,0.5);background:rgba(130,80,255,0.03)}
+        .creator-card.blurred{filter:blur(5px);pointer-events:none;user-select:none}
+        .feat-badge{position:absolute;top:12px;right:12px;background:#ffd700;color:black;padding:3px 10px;border-radius:16px;font-size:10px;font-weight:700;display:flex;align-items:center;gap:4px}
+        .top-badge{position:absolute;top:12px;right:12px;background:linear-gradient(135deg,#a855f7,#6366f1);color:white;padding:3px 10px;border-radius:16px;font-size:10px;font-weight:700;display:flex;align-items:center;gap:4px}
+        .creator-header{display:flex;gap:12px;margin-bottom:16px}
+        .creator-photo{width:66px;height:66px;border-radius:12px;object-fit:cover;background:rgba(255,255,255,0.1);flex-shrink:0}
+        .creator-info h3{font-size:17px;margin-bottom:4px}
+        .niches{display:flex;gap:4px;flex-wrap:wrap}
+        .ntag{background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:8px;font-size:11px}
+        .creator-stats{display:flex;gap:12px;margin-bottom:10px;font-size:12px;flex-wrap:wrap}
+        .cstat{display:flex;align-items:center;gap:4px;color:var(--text-secondary)}
+        .creator-bio{color:var(--text-secondary);font-size:13px;line-height:1.5;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+        .social-links{display:flex;gap:6px;margin-bottom:10px}
+        .slink{width:28px;height:28px;border-radius:7px;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;text-decoration:none;color:white;font-size:12px;transition:all 0.2s}
+        .slink:hover{background:rgba(255,255,255,0.2);transform:scale(1.1)}
+        .pricing-info{font-size:12px;color:var(--text-secondary);margin-bottom:10px;display:flex;align-items:center;gap:4px}
+        /* Collab button */
+        .btn-collab{width:100%;background:white;color:black;padding:11px;border-radius:8px;border:none;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all 0.2s;font-size:13px}
+        .btn-collab:hover{transform:scale(1.02)}
+        .btn-collab.sent{background:rgba(74,222,128,0.15);color:#4ade80;border:1px solid rgba(74,222,128,0.3);pointer-events:none}
+        .btn-collab.limited{background:rgba(255,255,255,0.06);color:#666;pointer-events:none}
+        /* WhatsApp reveal */
+        .wa-reveal{display:flex;align-items:center;gap:8px;background:rgba(37,211,102,0.1);border:1px solid rgba(37,211,102,0.3);border-radius:8px;padding:10px 14px;margin-top:8px}
+        .wa-reveal i{color:#25D366;font-size:18px}
+        .wa-reveal a{color:#25D366;text-decoration:none;font-weight:700;font-size:14px}
+        .wa-reveal span{font-size:12px;color:var(--text-secondary)}
+        /* Blur overlay */
+        .blur-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:rgba(10,10,10,0.8);border-radius:16px;backdrop-filter:blur(2px);z-index:2;padding:20px;text-align:center}
+        .blur-overlay i{font-size:28px;color:#ffd700}
+        .blur-overlay p{font-size:13px;color:var(--text-secondary);line-height:1.5}
+        .blur-overlay button{background:white;color:black;padding:9px 20px;border-radius:8px;border:none;font-weight:700;cursor:pointer;font-size:13px}
+        /* Upgrade modal */
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.3s;overflow-y:auto}
+        .modal-overlay.open{opacity:1;pointer-events:all}
+        .modal{background:#141414;border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:36px;max-width:680px;width:100%;transform:translateY(20px);transition:transform 0.3s;position:relative}
+        .modal-overlay.open .modal{transform:translateY(0)}
+        .modal-header{text-align:center;margin-bottom:28px}
+        .modal-header h2{font-size:24px;margin-bottom:8px}
+        .modal-header p{color:var(--text-secondary);font-size:14px}
+        .plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+        .pc{border:1px solid var(--border-color);border-radius:14px;padding:18px 12px;text-align:center;position:relative}
+        .pc.featured-pc{border-color:#64c8ff;background:rgba(100,200,255,0.04)}
+        .pc .pn{font-size:16px;font-weight:700;margin-bottom:5px}
+        .pc .pp{font-size:24px;font-weight:800;margin-bottom:2px}
+        .pc .pd{font-size:11px;color:var(--text-secondary);margin-bottom:14px}
+        .pc ul{list-style:none;text-align:left;font-size:11px;color:var(--text-secondary)}
+        .pc ul li{padding:3px 0;display:flex;align-items:flex-start;gap:6px}
+        .pc ul li i{color:#4ade80;margin-top:2px;flex-shrink:0;font-size:10px}
+        .ptag{background:#64c8ff;color:black;font-size:9px;font-weight:700;padding:2px 8px;border-radius:8px;position:absolute;top:-9px;left:50%;transform:translateX(-50%);white-space:nowrap}
+        .ptag.pro{background:#ffd700}
+        .btn-up{width:100%;background:white;color:black;padding:13px;border-radius:10px;border:none;font-weight:700;font-size:15px;cursor:pointer;transition:transform 0.2s;margin-top:8px}
+        .btn-up:hover{transform:scale(1.02)}
+        .mc{position:absolute;top:14px;right:18px;background:none;border:none;color:var(--text-secondary);font-size:20px;cursor:pointer}
+        /* Collab request modal */
+        .creq-modal{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9998;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.3s;overflow-y:auto}
+        .creq-modal.open{opacity:1;pointer-events:all}
+        .creq-box{background:#141414;border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:36px;max-width:520px;width:100%;position:relative}
+        .form-group{margin-bottom:16px}
+        .form-group label{display:block;margin-bottom:6px;font-size:13px;font-weight:500}
+        .form-group input,.form-group textarea,.form-group select{width:100%;padding:11px 12px;background:rgba(255,255,255,0.05);border:1px solid var(--border-color);border-radius:8px;color:white;font-size:14px;font-family:inherit}
+        .form-group textarea{min-height:90px;resize:vertical}
+        .form-group select option{background:#1a1a1a}
+        .no-creators{text-align:center;padding:60px 20px;color:var(--text-secondary);grid-column:1/-1}
+        .no-creators i{font-size:48px;margin-bottom:16px;display:block;opacity:0.3}
+        .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.2);border-top-color:#fff;border-radius:50%;animation:sp 0.7s linear infinite;margin-right:6px}
+        .spin-dark{display:inline-block;width:14px;height:14px;border:2px solid rgba(0,0,0,0.2);border-top-color:#000;border-radius:50%;animation:sp 0.7s linear infinite;margin-right:6px}
+        @keyframes sp{to{transform:rotate(360deg)}}
+        .err-msg{background:rgba(220,38,38,0.15);border:1px solid rgba(220,38,38,0.3);border-radius:8px;padding:9px 12px;font-size:12px;color:#fca5a5;margin-bottom:12px;display:none}
+        .login-req-notice{background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.3);border-radius:10px;padding:14px;text-align:center;font-size:13px;margin-bottom:14px}
+        .login-req-notice a{color:#ffd700;text-decoration:none;font-weight:700}
+        @media(max-width:768px){.creators-grid{grid-template-columns:1fr}.filters{flex-direction:column}.plans-grid{grid-template-columns:1fr}.page-header h1{font-size:26px}}
+        @media(max-width:480px){.usage-bar-wrapper{gap:10px}.usage-track{width:50px}}
+    </style>
+</head>
+<body>
+<nav>
+    <div class="nav-container">
+        <a href="index.html" class="logo"><div class="logo-icon"><i class="fas fa-handshake"></i></div><span>PostHire</span></a>
+        <div class="nav-right">
+            <span class="plan-badge free" id="navPlanBadge">FREE</span>
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+        </div>
+    </div>
+</nav>
+
+<div class="usage-bar-wrapper" id="usageBar">
+    <div class="usage-item">
+        <i class="fas fa-eye" style="color:var(--text-secondary);font-size:12px"></i>
+        <span class="usage-label">Profiles Today:</span>
+        <div class="usage-track"><div class="usage-fill" id="vFill" style="width:0%"></div></div>
+        <span class="usage-count" id="vCount">0/10</span>
+    </div>
+    <div class="usage-item">
+        <i class="fas fa-paper-plane" style="color:var(--text-secondary);font-size:12px"></i>
+        <span class="usage-label">Requests/Month:</span>
+        <div class="usage-track"><div class="usage-fill" id="rFill" style="width:0%"></div></div>
+        <span class="usage-count" id="rCount">0/3</span>
+    </div>
+    <button class="upgrade-pill" onclick="openUpgrade('usage')">⚡ Upgrade</button>
+</div>
+
+<div class="container">
+    <div class="page-header">
+        <h1>Discover Creators</h1>
+        <p>Find the perfect creators for your startup's collaboration needs</p>
+    </div>
+
+    <div class="ai-banner locked" id="aiBanner">
+        <i class="fas fa-robot ai-icon"></i>
+        <div><h3>AI-Powered Matching <span style="font-size:10px;background:rgba(255,215,0,0.15);color:#ffd700;padding:1px 7px;border-radius:6px;border:1px solid rgba(255,215,0,0.2);">PRO</span></h3><p id="aiDesc">Upgrade to Pro for AI-powered creator recommendations</p></div>
+        <button class="ai-btn" id="aiBtn" onclick="handleAI()">🔒 Pro Feature</button>
+    </div>
+
+    <div class="filters">
+        <div class="fg"><label>Search</label><input type="text" id="searchInput" placeholder="Search creators..."></div>
+        <div class="fg">
+            <label>Niche</label>
+            <select id="nicheFilter">
+                <option value="">All Niches</option>
+                <option value="AI">AI</option><option value="Finance">Finance</option><option value="Startup">Startup</option>
+                <option value="Tech">Tech</option><option value="Lifestyle">Lifestyle</option><option value="Business">Business</option>
+                <option value="Marketing">Marketing</option><option value="SaaS">SaaS</option><option value="Education">Education</option><option value="Health">Health</option>
+            </select>
+        </div>
+        <div class="fg">
+            <label>Audience Size</label>
+            <select id="audienceFilter">
+                <option value="">All Sizes</option>
+                <option value="1K-10K">1K-10K</option><option value="10K-50K">10K-50K</option><option value="50K-100K">50K-100K</option>
+                <option value="100K-500K">100K-500K</option><option value="500K+">500K+</option>
+            </select>
+        </div>
+        <div class="fg">
+            <label>Engagement Rate <span class="lock-badge" id="engLock"><i class="fas fa-lock"></i> Starter+</span></label>
+            <select id="engFilter" class="filter-locked">
+                <option value="">All</option>
+                <option value="high">High (&gt;5%)</option><option value="medium">Medium (3-5%)</option><option value="low">Low (&lt;3%)</option>
+            </select>
+        </div>
+        <div class="fg">
+            <label>Sort By <span class="lock-badge" id="sortLock"><i class="fas fa-lock"></i> Starter+</span></label>
+            <select id="sortFilter" class="filter-locked">
+                <option value="">Default</option>
+                <option value="audience">Audience Size</option><option value="engagement">Engagement Rate</option><option value="featured">Featured First</option>
+            </select>
+        </div>
+    </div>
+    <div class="sort-info"><span class="sort-dot"></span><span id="sortInfo">Loading creators...</span></div>
+    <div class="creators-grid" id="creatorsGrid"><div class="no-creators"><i class="fas fa-spinner fa-spin"></i><p>Loading creators...</p></div></div>
+</div>
+
+<!-- COLLABORATION REQUEST MODAL -->
+<div class="creq-modal" id="collabModal" onclick="if(event.target===this)closeCollabModal()">
+    <div class="creq-box">
+        <button onclick="closeCollabModal()" style="position:absolute;top:14px;right:18px;background:none;border:none;color:var(--text-secondary);font-size:20px;cursor:pointer;">×</button>
+        <div style="margin-bottom:20px">
+            <div style="font-size:28px;margin-bottom:8px">🤝</div>
+            <h2 style="font-size:22px;margin-bottom:4px">Send Collaboration Request</h2>
+            <p style="font-size:13px;color:var(--text-secondary)" id="collabCreatorName">to Creator</p>
+        </div>
+        <!-- Login notice for guests -->
+        <div id="loginNotice" class="login-req-notice" style="display:none">
+            <i class="fas fa-lock" style="color:#ffd700;margin-right:6px"></i>
+            Please <a onclick="closeCollabModal();openModal('signinModal')">sign in</a> or <a onclick="closeCollabModal();openModal('signupModal')">create an account</a> to send collaboration requests.
+        </div>
+        <!-- Form for logged-in -->
+        <div id="collabForm">
+            <div id="collabErr" class="err-msg"></div>
+            <!-- WhatsApp reveal for paid plans -->
+            <div id="waRevealBox" style="display:none" class="wa-reveal">
+                <i class="fab fa-whatsapp"></i>
+                <div>
+                    <span style="font-size:11px;color:var(--text-secondary);display:block">Creator's WhatsApp</span>
+                    <a id="waLink" href="#" target="_blank" id="waNumber" style="font-size:16px">Loading...</a>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Your Startup Name *</label>
+                <input type="text" id="cr-startup" placeholder="e.g., TechStart Inc.">
+            </div>
+            <div class="form-group">
+                <label>Collaboration Type *</label>
+                <select id="cr-type">
+                    <option value="">Select type</option>
+                    <option value="Sponsored Post">Sponsored Post</option>
+                    <option value="Product Review">Product Review</option>
+                    <option value="Brand Ambassador">Brand Ambassador</option>
+                    <option value="Content Creation">Content Creation</option>
+                    <option value="Long-term Partnership">Long-term Partnership</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Budget Range *</label>
+                <select id="cr-budget">
+                    <option value="">Select budget</option>
+                    <option value="Under ₹10K">Under ₹10,000</option>
+                    <option value="₹10K-₹25K">₹10,000 - ₹25,000</option>
+                    <option value="₹25K-₹50K">₹25,000 - ₹50,000</option>
+                    <option value="₹50K-₹1L">₹50,000 - ₹1,00,000</option>
+                    <option value="₹1L+">₹1,00,000+</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Message to Creator *</label>
+                <textarea id="cr-msg" placeholder="Describe your brand, goals and what you're looking for in this collaboration..."></textarea>
+            </div>
+            <button class="btn-collab" id="cr-submitBtn" onclick="submitCollabRequest()">
+                <span id="cr-btnTxt"><i class="fas fa-paper-plane"></i> Send Request</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- UPGRADE MODAL -->
+<div class="modal-overlay" id="upgradeModal" onclick="if(event.target===this)closeUpgrade()">
+    <div class="modal">
+        <button class="mc" onclick="closeUpgrade()"><i class="fas fa-times"></i></button>
+        <div class="modal-header">
+            <div style="font-size:38px;margin-bottom:10px">⚡</div>
+            <h2 id="upTitle">Unlock More Features</h2>
+            <p id="upDesc">Choose the plan that fits your needs</p>
+        </div>
+        <div class="plans-grid">
+            <div class="pc">
+                <div class="pn">Basic</div><div class="pp">₹0</div><div class="pd">per month</div>
+                <ul><li><i class="fas fa-check"></i>10 profiles/day</li><li><i class="fas fa-check"></i>3 requests/month</li><li><i class="fas fa-check"></i>Basic filters</li></ul>
+                <button onclick="upgradePlan('free')" style="width:100%;margin-top:12px;background:rgba(255,255,255,0.1);color:white;padding:9px;border-radius:8px;border:1px solid var(--border-color);cursor:pointer;font-weight:600;font-size:13px">Select Basic</button>
+            </div>
+            <div class="pc featured-pc">
+                <div class="ptag">Popular</div>
+                <div class="pn" style="color:#64c8ff">Starter</div><div class="pp">₹299</div><div class="pd">per month</div>
+                <ul><li><i class="fas fa-check"></i>Unlimited browsing</li><li><i class="fas fa-check"></i>20 requests/month</li><li><i class="fas fa-check"></i>WhatsApp on send</li><li><i class="fas fa-check"></i>Advanced filters</li></ul>
+                <button onclick="upgradePlan('starter')" style="width:100%;margin-top:12px;background:#64c8ff;color:black;padding:9px;border-radius:8px;border:none;cursor:pointer;font-weight:700;font-size:13px">Pay ₹299</button>
+            </div>
+            <div class="pc">
+                <div class="ptag pro">Pro</div>
+                <div class="pn" style="color:#ffd700">Pro</div><div class="pp">₹599</div><div class="pd">per month</div>
+                <ul><li><i class="fas fa-check"></i>Unlimited everything</li><li><i class="fas fa-check"></i>AI matching</li><li><i class="fas fa-check"></i>WhatsApp always visible</li><li><i class="fas fa-check"></i>Performance insights</li></ul>
+                <button onclick="upgradePlan('pro')" style="width:100%;margin-top:12px;background:#ffd700;color:black;padding:9px;border-radius:8px;border:none;cursor:pointer;font-weight:700;font-size:13px">Pay ₹599</button>
+            </div>
+        </div>
+        <p style="text-align:center;font-size:12px;color:var(--text-secondary)">Payments via Razorpay · Secure · Cancel anytime</p>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+if (!firebase.apps.length) {
+    firebase.initializeApp({
+        apiKey:"AIzaSyD1ElccdzrwPwKDmGimitEkQEwNMrUeHyE",
+        authDomain:"posthire-81b69.firebaseapp.com",
+        projectId:"posthire-81b69",
+        storageBucket:"posthire-81b69.firebasestorage.app",
+        messagingSenderId:"898539356038",
+        appId:"1:898539356038:web:36f8134549ce5f13333607"
+    });
+}
+var auth = firebase.auth();
+var db   = firebase.firestore();
+
+var PLANS = {
+    free:    {name:'FREE',    profileLimit:10,    requestLimit:3,     advFilters:false, aiMatch:false, priorityList:false, waOnSend:false, waAlways:false},
+    starter: {name:'STARTER', profileLimit:99999, requestLimit:20,    advFilters:true,  aiMatch:false, priorityList:true,  waOnSend:true,  waAlways:false},
+    pro:     {name:'PRO',     profileLimit:99999, requestLimit:99999, advFilters:true,  aiMatch:true,  priorityList:true,  waOnSend:true,  waAlways:true}
+};
+function getPlanKey(){ return (window._me && window._me.plan) ? window._me.plan : 'free'; }
+function getPlan(){ return PLANS[getPlanKey()] || PLANS.free; }
+function getUsage(type){ var k=type==='views'?'u_v_'+new Date().toDateString():'u_r_'+new Date().toISOString().slice(0,7); return parseInt(localStorage.getItem(k)||'0'); }
+function incUsage(type){ var k=type==='views'?'u_v_'+new Date().toDateString():'u_r_'+new Date().toISOString().slice(0,7); localStorage.setItem(k,(getUsage(type)+1).toString()); }
+
+auth.onAuthStateChanged(function(user) {
+    if (user) {
+        db.collection('users').doc(user.uid).get().then(function(doc) {
+            if (doc.exists) window._me = Object.assign({uid:user.uid}, doc.data());
+            initUI(); loadCreators();
+        }).catch(function(){ initUI(); loadCreators(); });
+    } else {
+        initUI(); loadCreators();
+    }
+});
+
+function initUI() {
+    var plan=getPlan(), pk=getPlanKey();
+    var badge=document.getElementById('navPlanBadge');
+    if(badge){badge.textContent=plan.name;badge.className='plan-badge '+pk;}
+    if(pk!=='free'){var ub=document.getElementById('usageBar');if(ub)ub.style.display='none';}
+    else {
+        var v=getUsage('views'),r=getUsage('requests');
+        var vp=Math.min((v/10)*100,100),rp=Math.min((r/3)*100,100);
+        var vf=document.getElementById('vFill');if(vf){vf.style.width=vp+'%';vf.className='usage-fill'+(vp>=100?' danger':vp>=60?' warning':'');}
+        var rf=document.getElementById('rFill');if(rf){rf.style.width=rp+'%';rf.className='usage-fill'+(rp>=100?' danger':rp>=60?' warning':'');}
+        var vc=document.getElementById('vCount');if(vc)vc.textContent=v+'/10';
+        var rc=document.getElementById('rCount');if(rc)rc.textContent=r+'/3';
+    }
+    if(plan.advFilters){
+        var el=document.getElementById('engLock');if(el)el.style.display='none';
+        var sl=document.getElementById('sortLock');if(sl)sl.style.display='none';
+        var ef=document.getElementById('engFilter');if(ef){ef.classList.remove('filter-locked');ef.onchange=filterCreators;}
+        var sf=document.getElementById('sortFilter');if(sf){sf.classList.remove('filter-locked');sf.onchange=filterCreators;}
+    } else {
+        var ef2=document.getElementById('engFilter');if(ef2)ef2.onclick=function(){openUpgrade('filters');};
+        var sf2=document.getElementById('sortFilter');if(sf2)sf2.onclick=function(){openUpgrade('filters');};
+    }
+    var si=document.getElementById('sortInfo');
+    if(si)si.textContent=plan.priorityList?'Featured & verified creators shown first':'Showing all creators · Upgrade for featured-first order';
+}
+
+function loadCreators() {
+    console.log('Loading creators from Firestore...');
+    db.collection('creators').get().then(function(snapshot) {
+        console.log('Creators fetched:', snapshot.size);
+        if (snapshot.empty) {
+            document.getElementById('creatorsGrid').innerHTML='<div class="no-creators"><i class="fas fa-users"></i><h3>No creators yet</h3><p>Be the first to register as a creator!</p></div>';
+            var si=document.getElementById('sortInfo');if(si)si.textContent='0 creators found';
+            return;
+        }
+        window._allCreators = [];
+        snapshot.forEach(function(doc) {
+            var c = doc.data();
+            window._allCreators.push(Object.assign({}, c, {userId: doc.id}));
+        });
+        console.log('All creators:', window._allCreators.length);
+        window._sentTo = new Set();
+        displayCreators(window._allCreators);
+
+        // Load sent requests in background
+        if (window._me && window._me.uid) {
+            db.collection('collab_requests').where('founderId','==',window._me.uid).get().then(function(rSnap) {
+                rSnap.forEach(function(doc){ window._sentTo.add(doc.data().creatorId); });
+                displayCreators(window._allCreators);
+            });
+        }
+    }).catch(function(e) {
+        console.error('Firestore error:', e);
+        document.getElementById('creatorsGrid').innerHTML='<div class="no-creators"><i class="fas fa-exclamation-triangle"></i><h3>Error: '+e.message+'</h3><p>Please refresh</p></div>';
+    });
+}
+
+function sortCreators(list) {
+    var plan=getPlan(), sv=document.getElementById('sortFilter')?document.getElementById('sortFilter').value:'';
+    if(plan.priorityList&&!sv) return list.slice().sort(function(a,b){return((b.topSearch?1:0)-(a.topSearch?1:0))||((b.featured?1:0)-(a.featured?1:0));});
+    var ord=['500K+','100K-500K','50K-100K','10K-50K','1K-10K'];
+    if(sv==='audience') return list.slice().sort(function(a,b){return ord.indexOf(a.audienceSize)-ord.indexOf(b.audienceSize);});
+    if(sv==='engagement') return list.slice().sort(function(a,b){return(b.engagementValue||0)-(a.engagementValue||0);});
+    if(sv==='featured') return list.slice().sort(function(a,b){return(b.featured?1:0)-(a.featured?1:0);});
+    return list;
+}
+
+window.displayCreators = function(list) {
+    var grid=document.getElementById('creatorsGrid');
+    var plan=getPlan(), pk=getPlanKey(), reqs=getUsage('requests');
+    if(!list||!list.length){grid.innerHTML='<div class="no-creators"><i class="fas fa-users"></i><h3>No creators found</h3><p>Try adjusting your filters</p></div>';return;}
+    var sorted=sortCreators(list), html='';
+    sorted.forEach(function(c,i) {
+        var isBlurred=pk==='free'&&i>=10;
+        var alreadySent=window._sentTo&&window._sentTo.has(c.userId);
+        var limitHit=(pk==='free'&&reqs>=3)||(pk==='starter'&&reqs>=20);
+        var showWA=plan.waAlways||(plan.waOnSend&&alreadySent);
+        var badge='';
+        if(c.topSearch&&plan.priorityList)badge='<div class="top-badge"><i class="fas fa-crown"></i> Top Pick</div>';
+        else if(c.featured)badge='<div class="feat-badge"><i class="fas fa-star"></i> FEATURED</div>';
+        var waHtml='';
+        if(showWA&&c.whatsapp){var wn=c.whatsapp.replace(/\D/g,'');waHtml='<div class="wa-reveal"><i class="fab fa-whatsapp"></i><div><span>WhatsApp</span><a href="https://wa.me/'+wn+'?text='+encodeURIComponent('Hi '+c.name+', I found you on PostHire!')+'" target="_blank">'+c.whatsapp+'</a></div></div>';}
+        var safeName=(c.name||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
+        var safeWA=(c.whatsapp||'').replace(/\D/g,'');
+        var collabBtn='';
+        if(alreadySent){collabBtn='<button class="btn-collab sent"><i class="fas fa-check"></i> Request Sent</button>';}
+        else if(limitHit){collabBtn='<button class="btn-collab limited" onclick="openUpgrade(\'requests\')"><i class="fas fa-lock"></i> Request Limit Reached</button>';}
+        else{collabBtn='<button class="btn-collab" onclick="openCollabModal(\''+c.userId+'\',\''+safeName+'\',\''+safeWA+'\')"><i class="fas fa-handshake"></i> Request Collaboration</button>';}
+        var niches=(c.niches||[]).map(function(n){return'<span class="ntag">'+n+'</span>';}).join('');
+        var socials='';
+        if(c.instagram)socials+='<a href="https://instagram.com/'+c.instagram.replace('@','')+'" target="_blank" class="slink"><i class="fab fa-instagram"></i></a>';
+        if(c.youtube)socials+='<a href="https://youtube.com/'+c.youtube+'" target="_blank" class="slink"><i class="fab fa-youtube"></i></a>';
+        if(c.linkedin)socials+='<a href="'+(c.linkedin.startsWith('http')?c.linkedin:'https://'+c.linkedin)+'" target="_blank" class="slink"><i class="fab fa-linkedin"></i></a>';
+        if(c.twitter)socials+='<a href="https://twitter.com/'+c.twitter.replace('@','')+'" target="_blank" class="slink"><i class="fab fa-twitter"></i></a>';
+        var pastC=(c.pastCollabs&&c.pastCollabs.length)?'<div class="cstat" style="margin-bottom:10px;font-size:12px"><i class="fas fa-briefcase"></i>&nbsp;Worked with: '+c.pastCollabs.slice(0,2).join(', ')+'</div>':'';
+        var photo=c.profilePhoto||'https://ui-avatars.com/api/?name='+encodeURIComponent(c.name||'C')+'&background=1a1a1a&color=fff&size=66';
+        var blurOverlay=isBlurred?'<div class="blur-overlay"><i class="fas fa-lock"></i><p>You\'ve viewed 10 profiles today.<br>Upgrade for unlimited access.</p><button onclick="openUpgrade(\'limit\')">Upgrade Plan</button></div>':'';
+        html+='<div class="card-wrap"><div class="creator-card '+(c.featured?'featured':'')+' '+(c.topSearch&&plan.priorityList?'top-s':'')+' '+(isBlurred?'blurred':'')+'">'+badge+'<div class="creator-header"><img src="'+photo+'" class="creator-photo" onerror="this.src=\'https://ui-avatars.com/api/?name=C&background=1a1a1a&color=fff&size=66\'"><div class="creator-info"><h3>'+(c.name||'Creator')+'</h3><div class="niches">'+niches+'</div></div></div><div class="creator-stats"><div class="cstat"><i class="fas fa-users"></i>'+(c.audienceSize||'N/A')+'</div>'+(c.engagementRate?'<div class="cstat"><i class="fas fa-chart-line"></i>'+c.engagementRate+' ER</div>':'')+'</div><p class="creator-bio">'+(c.bio||'')+'</p>'+pastC+'<div class="social-links">'+socials+'</div>'+(c.pricing?'<div class="pricing-info"><i class="fas fa-tag"></i>'+c.pricing+'</div>':'')+collabBtn+waHtml+'</div>'+blurOverlay+'</div>';
+    });
+    grid.innerHTML=html;
+};
+
+window.filterCreators=function(){
+    var search=document.getElementById('searchInput').value.toLowerCase();
+    var niche=document.getElementById('nicheFilter').value;
+    var aud=document.getElementById('audienceFilter').value;
+    var plan=getPlan();
+    var eng=plan.advFilters&&document.getElementById('engFilter')?document.getElementById('engFilter').value:'';
+    var f=(window._allCreators||[]).filter(function(c){
+        if(search&&!(c.name||'').toLowerCase().includes(search)&&!(c.bio||'').toLowerCase().includes(search))return false;
+        if(niche&&!(c.niches||[]).includes(niche))return false;
+        if(aud&&c.audienceSize!==aud)return false;
+        if(eng){var er=c.engagementValue||0;if(eng==='high'&&er<=5)return false;if(eng==='medium'&&(er<3||er>5))return false;if(eng==='low'&&er>=3)return false;}
+        return true;
+    });
+    displayCreators(f);
+};
+
+window.handleAI=function(){if(!getPlan().aiMatch){openUpgrade('ai');return;}if(!window._allCreators||!window._allCreators.length){alert('No creators yet.');return;}var top=window._allCreators.slice().sort(function(a,b){return(b.engagementValue||0)-(a.engagementValue||0);}).slice(0,3);alert('🤖 AI Match Results!\n\nTop matches:\n'+top.map(function(c,i){return(i+1)+'. '+c.name+' ('+(c.niches||[]).join('/')+')';}).join('\n'));};
+
+window._collabTarget=null;
+window.openCollabModal=function(creatorId,creatorName,waNum){
+    window._collabTarget={id:creatorId,name:creatorName,wa:waNum};
+    var cn=document.getElementById('collabCreatorName');if(cn)cn.textContent='to '+creatorName;
+    var loginN=document.getElementById('loginNotice'),collabF=document.getElementById('collabForm');
+    if(!window._me){if(loginN)loginN.style.display='block';if(collabF)collabF.style.display='none';}
+    else{
+        if(loginN)loginN.style.display='none';if(collabF)collabF.style.display='block';
+        var su=document.getElementById('cr-startup');if(su)su.value=window._me.name||'';
+        var waBox=document.getElementById('waRevealBox');
+        if(getPlan().waAlways&&waNum&&waBox){waBox.style.display='flex';var wl=document.getElementById('waLink');if(wl){wl.textContent='+'+waNum;wl.href='https://wa.me/'+waNum+'?text='+encodeURIComponent('Hi '+creatorName+', I found you on PostHire!');}}
+        else if(waBox)waBox.style.display='none';
+    }
+    var ce=document.getElementById('collabErr');if(ce)ce.style.display='none';
+    document.getElementById('collabModal').classList.add('open');
+};
+window.closeCollabModal=function(){document.getElementById('collabModal').classList.remove('open');};
+
+window.submitCollabRequest=function(){
+    if(!window._me){window.closeCollabModal();return;}
+    var startup=document.getElementById('cr-startup').value.trim();
+    var type=document.getElementById('cr-type').value;
+    var budget=document.getElementById('cr-budget').value;
+    var msg=document.getElementById('cr-msg').value.trim();
+    var errEl=document.getElementById('collabErr');
+    if(!startup||!type||!budget||!msg){errEl.textContent='Please fill all fields';errEl.style.display='block';return;}
+    errEl.style.display='none';
+    var pk=getPlanKey(),plan=getPlan(),reqs=getUsage('requests');
+    if(pk==='free'&&reqs>=3){window.closeCollabModal();openUpgrade('requests');return;}
+    if(pk==='starter'&&reqs>=20){window.closeCollabModal();openUpgrade('requests');return;}
+    var btn=document.getElementById('cr-submitBtn'),txt=document.getElementById('cr-btnTxt');
+    btn.disabled=true;txt.innerHTML='<span class="spin-dark"></span>Sending...';
+    var reqData={founderId:window._me.uid,founderName:window._me.name,founderEmail:window._me.email,founderWhatsapp:window._me.whatsapp,startupName:startup,creatorId:window._collabTarget.id,collabType:type,budget:budget,message:msg,status:'pending',createdAt:firebase.firestore.FieldValue.serverTimestamp(),founderPlan:pk};
+    db.collection('collab_requests').add(reqData).then(function(){
+        if(pk==='free'||pk==='starter')incUsage('requests');
+        if(!window._sentTo)window._sentTo=new Set();
+        window._sentTo.add(window._collabTarget.id);
+        var wa=window._collabTarget.wa;
+        if(plan.waOnSend&&wa){var waBox=document.getElementById('waRevealBox');if(waBox)waBox.style.display='flex';var wl=document.getElementById('waLink');if(wl){wl.textContent='+'+wa;wl.href='https://wa.me/'+wa+'?text='+encodeURIComponent('Hi '+window._collabTarget.name+', I found you on PostHire!');} txt.innerHTML='<i class="fas fa-check"></i> Sent! WhatsApp revealed ↑';}
+        else txt.innerHTML='<i class="fas fa-check"></i> Request Sent!';
+        if(window._allCreators)displayCreators(window._allCreators);
+        setTimeout(function(){window.closeCollabModal();btn.disabled=false;txt.innerHTML='<i class="fas fa-paper-plane"></i> Send Request';},3000);
+    }).catch(function(e){errEl.textContent='Failed: '+e.message;errEl.style.display='block';btn.disabled=false;txt.innerHTML='<i class="fas fa-paper-plane"></i> Send Request';});
+};
+
+window.upgradePlan=function(plan){
+    if(!window._me){location.href='index.html';return;}
+    closeUpgrade();
+    if(plan==='free'){db.collection('users').doc(window._me.uid).update({plan:'free'}).then(function(){window._me.plan='free';initUI();displayCreators(window._allCreators||[]);});return;}
+    var prices={starter:29900,pro:59900};
+    var opts={key:'rzp_live_SLpif75jByNnvb',amount:prices[plan],currency:'INR',name:'PostHire',description:(plan==='starter'?'Starter':'Pro')+' Plan',prefill:{name:window._me.name||'',email:window._me.email||'',contact:(window._me.whatsapp||'').replace(/\D/g,'')},theme:{color:'#ffffff'},handler:function(resp){db.collection('users').doc(window._me.uid).update({plan:plan,lastPaymentId:resp.razorpay_payment_id}).then(function(){window._me.plan=plan;alert(plan==='starter'?'✅ Upgraded to Starter!':'✅ Upgraded to Pro!');initUI();displayCreators(window._allCreators||[]);});}};
+    new Razorpay(opts).open();
+};
+
+document.getElementById('searchInput').addEventListener('input',window.filterCreators);
+document.getElementById('nicheFilter').addEventListener('change',window.filterCreators);
+document.getElementById('audienceFilter').addEventListener('change',window.filterCreators);
+</script>
+document.getElementById('searchInput').addEventListener('input',window.filterCreators);
+document.getElementById('nicheFilter').addEventListener('change',window.filterCreators);
+document.getElementById('audienceFilter').addEventListener('change',window.filterCreators);
+</script>
+<script>
+var UP_CONTENT={
+    limit:{title:'🔒 Daily View Limit',desc:"Viewed 10 profiles today. Upgrade for unlimited access."},
+    requests:{title:'📩 Request Limit Reached',desc:"Upgrade for more collaboration requests."},
+    filters:{title:'🎛️ Unlock Advanced Filters',desc:'Engagement filter & sorting available on Starter+'},
+    ai:{title:'🤖 AI-Powered Matching',desc:'Smart recommendations available on Pro plan.'},
+    usage:{title:'⚡ Upgrade Your Plan',desc:'Remove limits and unlock all features.'}
+};
+function openUpgrade(reason){
+    var c=UP_CONTENT[reason]||UP_CONTENT.usage;
+    document.getElementById('upTitle').textContent=c.title;
+    document.getElementById('upDesc').textContent=c.desc;
+    document.getElementById('upgradeModal').classList.add('open');
+}
+function closeUpgrade(){ document.getElementById('upgradeModal').classList.remove('open'); }
+function openModal(id){ var el=document.getElementById(id); if(el) el.classList.add('active'); }
+</script>

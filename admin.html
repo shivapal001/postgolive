@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | PostHire</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#0a0a0a;--card:rgba(18,18,18,0.9);--border:rgba(255,255,255,0.08);--txt:#fff;--txt2:#888}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+        nav{background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:100}
+        .nav-c{max-width:1280px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+        .logo{font-size:18px;font-weight:700;display:flex;align-items:center;gap:8px;text-decoration:none;color:#fff}
+        .logo-icon{width:28px;height:28px;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center}
+        .logo-icon i{color:#000;font-size:13px}
+        .admin-tag{background:rgba(255,60,60,0.15);color:#ff6b6b;border:1px solid rgba(255,60,60,0.2);padding:4px 10px;border-radius:8px;font-size:11px;font-weight:700}
+        .nav-btn{padding:8px 14px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:rgba(255,255,255,.06);color:#fff;transition:all .2s}
+        .nav-btn:hover{background:rgba(255,255,255,.1)}
+        .container{max-width:1280px;margin:0 auto;padding:28px 20px 60px}
+        /* Stats */
+        .stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px}
+        .stat-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;text-align:center}
+        .stat-n{font-size:36px;font-weight:700;margin-bottom:4px}
+        .stat-l{font-size:12px;color:var(--txt2)}
+        /* Tabs */
+        .tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+        .tab{padding:9px 20px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--txt2);cursor:pointer;font-size:13px;font-weight:600;transition:all .2s}
+        .tab.active{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.2)}
+        /* Tables */
+        .table-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+        .table-head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px}
+        .table-head h3{font-size:16px}
+        .table-head .actions{display:flex;gap:8px;flex-wrap:wrap}
+        table{width:100%;border-collapse:collapse}
+        th{padding:12px 16px;text-align:left;font-size:11px;color:var(--txt2);font-weight:600;letter-spacing:.06em;border-bottom:1px solid var(--border);background:rgba(255,255,255,.02);text-transform:uppercase}
+        td{padding:12px 16px;font-size:13px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top}
+        tr:last-child td{border-bottom:none}
+        tr:hover td{background:rgba(255,255,255,.02)}
+        .plan-pill{padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700}
+        .plan-pill.free{background:rgba(255,255,255,.08);color:#aaa}
+        .plan-pill.starter{background:rgba(100,200,255,.15);color:#64c8ff}
+        .plan-pill.pro{background:rgba(255,215,0,.15);color:#ffd700}
+        .utype-pill{padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;background:rgba(255,255,255,.08);color:#fff}
+        select.plan-change{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:6px;color:#fff;padding:5px 8px;font-size:12px;cursor:pointer}
+        .feat-toggle{background:none;border:1px solid var(--border);border-radius:6px;padding:5px 10px;color:#fff;cursor:pointer;font-size:11px;transition:all .2s}
+        .feat-toggle:hover{background:rgba(255,215,0,.1);color:#ffd700;border-color:rgba(255,215,0,.3)}
+        .feat-toggle.featured{background:rgba(255,215,0,.1);color:#ffd700;border-color:rgba(255,215,0,.3)}
+        .del-btn{background:rgba(255,60,60,.08);border:1px solid rgba(255,60,60,.15);border-radius:6px;padding:5px 10px;color:#ff6b6b;cursor:pointer;font-size:11px;transition:all .2s}
+        .del-btn:hover{background:rgba(255,60,60,.15)}
+        .btn{padding:9px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+        .btn-primary{background:#fff;color:#000}
+        .btn-primary:hover{background:#f0f0f0}
+        .btn-ghost{background:rgba(255,255,255,.06);color:#fff;border:1px solid var(--border)}
+        .btn-ghost:hover{background:rgba(255,255,255,.1)}
+        .status-badge{padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700}
+        .status-badge.pending{background:rgba(255,159,67,.12);color:#ff9f43;border:1px solid rgba(255,159,67,.2)}
+        .status-badge.accepted{background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.2)}
+        .status-badge.declined{background:rgba(255,60,60,.1);color:#ff6b6b;border:1px solid rgba(255,60,60,.2)}
+        .empty-row td{text-align:center;padding:40px;color:var(--txt2)}
+        .empty-row td i{font-size:32px;display:block;margin-bottom:12px;opacity:.3}
+        .tab-content{display:none}.tab-content.active{display:block}
+        @media(max-width:900px){.stats-row{grid-template-columns:repeat(3,1fr)}}
+        @media(max-width:600px){.stats-row{grid-template-columns:1fr 1fr};table{font-size:11px};th,td{padding:8px 10px}}
+        @media(max-width:480px){.stats-row{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+<nav>
+    <div class="nav-c">
+        <a href="index.html" class="logo"><div class="logo-icon"><i class="fas fa-handshake"></i></div><span>PostHire</span></a>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <span class="admin-tag"><i class="fas fa-shield-alt"></i> ADMIN PANEL</span>
+            <button class="nav-btn" onclick="loadAll()"><i class="fas fa-sync-alt"></i> Refresh</button>
+            <button class="nav-btn" onclick="exportData()"><i class="fas fa-download"></i> Export</button>
+            <a href="index.html" class="nav-btn" style="text-decoration:none">← Site</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <!-- Stats -->
+    <div class="stats-row">
+        <div class="stat-box"><div class="stat-n" id="stTotal">—</div><div class="stat-l">Total Users</div></div>
+        <div class="stat-box"><div class="stat-n" id="stCreators" style="color:#64c8ff">—</div><div class="stat-l">Creators</div></div>
+        <div class="stat-box"><div class="stat-n" id="stFounders" style="color:#a855f7">—</div><div class="stat-l">Founders</div></div>
+        <div class="stat-box"><div class="stat-n" id="stPaid" style="color:#ffd700">—</div><div class="stat-l">Paid Users</div></div>
+        <div class="stat-box"><div class="stat-n" id="stReqs" style="color:#4ade80">—</div><div class="stat-l">Total Requests</div></div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('users')">👥 All Users</button>
+        <button class="tab" onclick="switchTab('creators')">🎨 Creators</button>
+        <button class="tab" onclick="switchTab('founders')">🚀 Founders</button>
+        <button class="tab" onclick="switchTab('requests')">📩 Collab Requests</button>
+    </div>
+
+    <!-- Users Tab -->
+    <div class="tab-content active" id="tab-users">
+        <div class="table-wrap">
+            <div class="table-head">
+                <h3>All Users</h3>
+                <div class="actions">
+                    <input type="text" id="searchUsers" placeholder="Search users..." oninput="filterTable('usersTable',this.value)" style="padding:8px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;color:#fff;font-size:13px;width:200px">
+                </div>
+            </div>
+            <div style="overflow-x:auto">
+                <table id="usersTable">
+                    <thead><tr><th>Name</th><th>Email</th><th>Type</th><th>Plan</th><th>Joined</th><th>Change Plan</th><th>Delete</th></tr></thead>
+                    <tbody id="usersBody"><tr class="empty-row"><td colspan="7"><i class="fas fa-spinner fa-spin"></i>Loading...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Creators Tab -->
+    <div class="tab-content" id="tab-creators">
+        <div class="table-wrap">
+            <div class="table-head"><h3>Creators</h3></div>
+            <div style="overflow-x:auto">
+                <table>
+                    <thead><tr><th>Name</th><th>Niches</th><th>Audience</th><th>Engagement</th><th>Past Collabs</th><th>Featured</th><th>Top Search</th><th>Delete</th></tr></thead>
+                    <tbody id="creatorsBody"><tr class="empty-row"><td colspan="8"><i class="fas fa-spinner fa-spin"></i>Loading...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Founders Tab -->
+    <div class="tab-content" id="tab-founders">
+        <div class="table-wrap">
+            <div class="table-head"><h3>Founders</h3></div>
+            <div style="overflow-x:auto">
+                <table>
+                    <thead><tr><th>Name</th><th>Startup</th><th>Industry</th><th>Budget</th><th>Collab Type</th><th>Website</th></tr></thead>
+                    <tbody id="foundersBody"><tr class="empty-row"><td colspan="6"><i class="fas fa-spinner fa-spin"></i>Loading...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Requests Tab -->
+    <div class="tab-content" id="tab-requests">
+        <div class="table-wrap">
+            <div class="table-head"><h3>Collaboration Requests</h3></div>
+            <div style="overflow-x:auto">
+                <table>
+                    <thead><tr><th>From (Founder)</th><th>To (Creator)</th><th>Type</th><th>Budget</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+                    <tbody id="reqsBody"><tr class="empty-row"><td colspan="7"><i class="fas fa-spinner fa-spin"></i>Loading...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script>
+if(!firebase.apps.length){firebase.initializeApp({apiKey:"AIzaSyD1ElccdzrwPwKDmGimitEkQEwNMrUeHyE",authDomain:"posthire-81b69.firebaseapp.com",projectId:"posthire-81b69",storageBucket:"posthire-81b69.firebasestorage.app",messagingSenderId:"898539356038",appId:"1:898539356038:web:36f8134549ce5f13333607"});}
+var db=firebase.firestore();
+var allData={users:{},creators:{},founders:{},requests:{}};
+
+window.loadAll=function(){
+    Promise.all([
+        db.collection('users').get(),
+        db.collection('creators').get(),
+        db.collection('founders').get(),
+        db.collection('collab_requests').get()
+    ]).then(function(results){
+        allData.users={}; results[0].forEach(function(d){allData.users[d.id]=d.data();});
+        allData.creators={}; results[1].forEach(function(d){allData.creators[d.id]=d.data();});
+        allData.founders={}; results[2].forEach(function(d){allData.founders[d.id]=d.data();});
+        allData.requests={}; results[3].forEach(function(d){allData.requests[d.id]=d.data();});
+        var uList=Object.entries(allData.users), rList=Object.entries(allData.requests);
+        var paid=uList.filter(function(e){return e[1].plan&&e[1].plan!=='free';}).length;
+        document.getElementById('stTotal').textContent=uList.length;
+        document.getElementById('stCreators').textContent=Object.keys(allData.creators).length;
+        document.getElementById('stFounders').textContent=Object.keys(allData.founders).length;
+        document.getElementById('stPaid').textContent=paid;
+        document.getElementById('stReqs').textContent=rList.length;
+        renderUsers(uList); renderCreators(Object.entries(allData.creators)); renderFounders(Object.entries(allData.founders)); renderRequests(rList);
+    }).catch(function(e){console.error(e);});
+};
+
+function renderUsers(list){
+    var tb=document.getElementById('usersBody');
+    if(!list.length){tb.innerHTML='<tr class="empty-row"><td colspan="7"><i class="fas fa-users"></i><br>No users yet</td></tr>';return;}
+    tb.innerHTML=list.map(function(e){var uid=e[0],u=e[1];return'<tr data-search="'+(u.name+u.email+(u.userType||'')+(u.plan||'')).toLowerCase()+'"><td><strong>'+(u.name||'—')+'</strong><div style="font-size:11px;color:var(--txt2)">'+uid.slice(0,8)+'...</div></td><td>'+(u.email||'—')+'</td><td><span class="utype-pill">'+(u.userType||'—')+'</span></td><td><span class="plan-pill '+(u.plan||'free')+'">'+(u.plan||'free').toUpperCase()+'</span></td><td>'+(u.createdAt?(u.createdAt.toDate?u.createdAt.toDate().toLocaleDateString('en-IN'):new Date(u.createdAt).toLocaleDateString('en-IN')):'—')+'</td><td><select class="plan-change" onchange="changePlan(\''+uid+'\',this.value)"><option value="free" '+(u.plan==='free'||!u.plan?'selected':'')+'>Free</option><option value="starter" '+(u.plan==='starter'?'selected':'')+'>Starter</option><option value="pro" '+(u.plan==='pro'?'selected':'')+'>Pro</option></select></td><td><button class="del-btn" onclick="deleteUser(\''+uid+'\')"><i class="fas fa-trash"></i></button></td></tr>';}).join('');
+}
+function renderCreators(list){
+    var tb=document.getElementById('creatorsBody');
+    if(!list.length){tb.innerHTML='<tr class="empty-row"><td colspan="8"><i class="fas fa-video"></i><br>No creators yet</td></tr>';return;}
+    tb.innerHTML=list.map(function(e){var uid=e[0],c=e[1];return'<tr><td><strong>'+(c.name||'—')+'</strong><div style="font-size:11px;color:var(--txt2)">'+(c.whatsapp||'—')+'</div></td><td>'+(c.niches||[]).map(function(n){return'<span style="background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px;font-size:10px;margin:1px;display:inline-block">'+n+'</span>';}).join('')+'</td><td>'+(c.audienceSize||'—')+'</td><td>'+(c.engagementRate||'—')+'</td><td style="font-size:11px;color:var(--txt2)">'+(c.pastCollabs||[]).slice(0,2).join(', ')+'</td><td><button class="feat-toggle '+(c.featured?'featured':'')+'" onclick="toggleFeatured(\''+uid+'\','+!c.featured+')">'+(c.featured?'★ Featured':'☆ Feature')+'</button></td><td><button class="feat-toggle '+(c.topSearch?'featured':'')+'" onclick="toggleTopSearch(\''+uid+'\','+!c.topSearch+')">'+(c.topSearch?'⬆ Top':'⬆ Set Top')+'</button></td><td><button class="del-btn" onclick="deleteCreator(\''+uid+'\')"><i class="fas fa-trash"></i></button></td></tr>';}).join('');
+}
+function renderFounders(list){
+    var tb=document.getElementById('foundersBody');
+    if(!list.length){tb.innerHTML='<tr class="empty-row"><td colspan="6"><i class="fas fa-rocket"></i><br>No founders yet</td></tr>';return;}
+    tb.innerHTML=list.map(function(e){var uid=e[0],f=e[1];return'<tr><td><strong>'+(f.name||'—')+'</strong><div style="font-size:11px;color:var(--txt2)">'+(f.email||'—')+'</div></td><td>'+(f.startupName||'—')+'</td><td>'+(f.industry||'—')+'</td><td>'+(f.budget||'—')+'</td><td>'+(f.collabType||'—')+'</td><td>'+(f.website?'<a href="'+f.website+'" target="_blank" style="color:#64c8ff;font-size:11px">Visit ↗</a>':'—')+'</td></tr>';}).join('');
+}
+function renderRequests(list){
+    var tb=document.getElementById('reqsBody');
+    if(!list.length){tb.innerHTML='<tr class="empty-row"><td colspan="7"><i class="fas fa-inbox"></i><br>No requests yet</td></tr>';return;}
+    tb.innerHTML=list.map(function(e){var id=e[0],r=e[1];var cr=allData.creators[r.creatorId]||{};var dt=r.createdAt?(r.createdAt.toDate?r.createdAt.toDate().toLocaleDateString('en-IN'):new Date(r.createdAt).toLocaleDateString('en-IN')):'—';return'<tr><td><strong>'+(r.founderName||'—')+'</strong><div style="font-size:11px;color:var(--txt2)">'+(r.startupName||'')+'</div></td><td><strong>'+(cr.name||'—')+'</strong></td><td style="font-size:12px">'+(r.collabType||'—')+'</td><td style="font-size:12px">'+(r.budget||'—')+'</td><td><span class="status-badge '+(r.status||'pending')+'">'+(r.status||'pending')+'</span></td><td style="font-size:11px;color:var(--txt2)">'+dt+'</td><td><div style="display:flex;gap:5px;flex-wrap:wrap">'+(r.status!=='accepted'?'<button onclick="updateReq(\''+id+'\',\'accepted\')" style="background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.2);border-radius:5px;padding:4px 8px;font-size:10px;cursor:pointer">Accept</button>':'')+(r.status!=='declined'?'<button onclick="updateReq(\''+id+'\',\'declined\')" style="background:rgba(255,60,60,.08);color:#ff6b6b;border:1px solid rgba(255,60,60,.2);border-radius:5px;padding:4px 8px;font-size:10px;cursor:pointer">Decline</button>':'')+'<button onclick="deleteReq(\''+id+'\')" class="del-btn"><i class="fas fa-trash"></i></button></div></td></tr>';}).join('');
+}
+
+window.changePlan=function(uid,plan){db.collection('users').doc(uid).update({plan:plan}).then(function(){allData.users[uid].plan=plan;renderUsers(Object.entries(allData.users));}).catch(function(e){alert('Failed: '+e.message);});};
+window.toggleFeatured=function(uid,val){db.collection('creators').doc(uid).update({featured:val}).then(function(){allData.creators[uid].featured=val;renderCreators(Object.entries(allData.creators));});};
+window.toggleTopSearch=function(uid,val){db.collection('creators').doc(uid).update({topSearch:val}).then(function(){allData.creators[uid].topSearch=val;renderCreators(Object.entries(allData.creators));});};
+window.deleteUser=function(uid){if(!confirm('Delete user?'))return;db.collection('users').doc(uid).delete().then(function(){delete allData.users[uid];renderUsers(Object.entries(allData.users));});};
+window.deleteCreator=function(uid){if(!confirm('Delete creator?'))return;db.collection('creators').doc(uid).delete().then(function(){delete allData.creators[uid];renderCreators(Object.entries(allData.creators));});};
+window.updateReq=function(id,status){db.collection('collab_requests').doc(id).update({status:status}).then(function(){allData.requests[id].status=status;renderRequests(Object.entries(allData.requests));});};
+window.deleteReq=function(id){if(!confirm('Delete request?'))return;db.collection('collab_requests').doc(id).delete().then(function(){delete allData.requests[id];renderRequests(Object.entries(allData.requests));});};
+window.exportData=function(){var blob=new Blob([JSON.stringify(allData,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='posthire-'+new Date().toISOString().slice(0,10)+'.json';a.click();};
+loadAll();
+</script>
+};
+loadAll();
+
+<script>
+function switchTab(name){
+    document.querySelectorAll('.tab').forEach((t,i)=>{
+        const names=['users','creators','founders','requests'];
+        t.classList.toggle('active', names[i]===name);
+    });
+    document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+    document.getElementById('tab-'+name).classList.add('active');
+}
+function filterTable(tableId, query){
+    const q=query.toLowerCase();
+    document.querySelectorAll('#'+tableId+' tbody tr').forEach(tr=>{
+        tr.style.display = !q || (tr.dataset.search||'').includes(q) ? '' : 'none';
+    });
+}
+</script>
+</body>
+</html>
