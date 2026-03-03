@@ -136,6 +136,8 @@
     </div>
 </nav>
 
+<div id="loadingScreen" style="text-align:center;padding:80px 20px;color:#666"><i class="fas fa-circle-notch fa-spin" style="font-size:32px;display:block;margin-bottom:12px"></i>Loading your dashboard...</div>
+<div id="mainContent" style="display:none">
 <div class="plan-banner free" id="planBanner">
     <span class="plan-banner-text"><strong id="bannerTitle">Basic (Free) Plan</strong> — <span id="bannerDesc">10 profiles/day · 3 requests/month</span></span>
     <button class="upgrade-btn" id="upgradeBtn" onclick="openUpgrade()">⚡ Upgrade Plan</button>
@@ -254,138 +256,176 @@
 if(!firebase.apps.length){firebase.initializeApp({apiKey:"AIzaSyD1ElccdzrwPwKDmGimitEkQEwNMrUeHyE",authDomain:"posthire-81b69.firebaseapp.com",projectId:"posthire-81b69",storageBucket:"posthire-81b69.firebasestorage.app",messagingSenderId:"898539356038",appId:"1:898539356038:web:36f8134549ce5f13333607"});}
 var auth=firebase.auth(), db=firebase.firestore();
 
-document.getElementById('logoutBtn').onclick=function(){auth.signOut().then(function(){location.href='index.html';});};
+document.getElementById('logoutBtn').onclick=function(){
+    auth.signOut().then(function(){location.href='index.html';});
+};
 
 auth.onAuthStateChanged(function(user){
     if(!user){location.href='index.html';return;}
-    window._me={uid:user.uid};
-    loadDashboard(user.uid, 0);
+    window._uid=user.uid;
+    loadDashboard(user.uid);
 });
 
-function loadDashboard(uid, attempt){
-    db.collection('users').doc(uid).get().then(function(uDoc){
+function fmtDate(ts){
+    if(!ts)return'—';
+    try{return ts.toDate?ts.toDate().toLocaleDateString('en-IN'):new Date(ts).toLocaleDateString('en-IN');}catch(e){return'—';}
+}
+
+function loadDashboard(uid){
+    Promise.all([
+        db.collection('users').doc(uid).get(),
+        db.collection('creators').doc(uid).get(),
+        db.collection('founders').doc(uid).get(),
+        db.collection('collab_requests').get()
+    ]).then(function(results){
+        var uDoc=results[0], crDoc=results[1], foDoc=results[2], allReqs=results[3];
+        
         if(!uDoc.exists){
-            if(attempt < 6){
-                // New signup - Firestore write may still be completing, retry
-                setTimeout(function(){ loadDashboard(uid, attempt+1); }, 1000);
-            }
-            // Never redirect to index.html - that causes infinite loop
-            return null;
+            document.getElementById('profileName').textContent='Profile not found';
+            return;
         }
         var u=uDoc.data();
         window._me=Object.assign({uid:uid},u);
-        return Promise.all([
-            db.collection('creators').doc(uid).get(),
-            db.collection('founders').doc(uid).get(),
-            db.collection('collab_requests').get()
-        ]);
-    }).then(function(results){
-        if(!results)return;
-        var crDoc=results[0],foDoc=results[1],allReqsSnap=results[2];
-        var myUid=window._me.uid;
-        var sentDocs=[],recvDocs=[];
-        allReqsSnap.forEach(function(doc){
-            var d=doc.data();
-            if(d.founderId===myUid) sentDocs.push(doc);
-            if(d.creatorId===myUid)  recvDocs.push(doc);
-        });
-        var sentSnap={size:sentDocs.length,empty:sentDocs.length===0,forEach:function(fn){sentDocs.forEach(fn);}};
-        var recvSnap={size:recvDocs.length,empty:recvDocs.length===0,forEach:function(fn){recvDocs.forEach(fn);}};
-        var u=window._me, plan=u.plan||'free';
+        var plan=u.plan||'free';
+        document.getElementById('loadingScreen').style.display='none';
+        document.getElementById('mainContent').style.display='block';
         var crData=crDoc.exists?crDoc.data():null;
         var foData=foDoc.exists?foDoc.data():null;
 
-        // Badge & Banner
+        // Filter requests locally
+        var sentList=[], recvList=[];
+        allReqs.forEach(function(doc){
+            var d=doc.data();
+            if(d.founderId===uid) sentList.push({id:doc.id,data:d});
+            if(d.creatorId===uid)  recvList.push({id:doc.id,data:d});
+        });
+
+        // Nav badge
         var badge=document.getElementById('navBadge');
         if(badge){badge.textContent=plan.toUpperCase();badge.className='plan-badge '+plan;}
-        var banner=document.getElementById('planBanner');if(banner)banner.className='plan-banner '+plan;
-        var titles={free:'Basic (Free) Plan',starter:'Starter Plan — ₹299/mo',pro:'Pro Plan — ₹599/mo'};
-        var descs={free:'10 profiles/day · 3 requests/month',starter:'Unlimited browsing · 20 requests · WhatsApp on send',pro:'Unlimited everything · AI Matching · WhatsApp always visible'};
-        var bt=document.getElementById('bannerTitle');if(bt)bt.textContent=titles[plan];
-        var bd=document.getElementById('bannerDesc');if(bd)bd.textContent=descs[plan];
+
+        // Plan banner
+        var banner=document.getElementById('planBanner');
+        if(banner)banner.className='plan-banner '+plan;
+        var titles={free:'Basic (Free) Plan',starter:'Starter Plan',pro:'Pro Plan'};
+        var descs={free:'10 profiles/day · 3 requests/month',starter:'Unlimited browsing · 20 requests',pro:'Unlimited everything · AI Matching'};
+        var bt=document.getElementById('bannerTitle');if(bt)bt.textContent=titles[plan]||plan;
+        var bd=document.getElementById('bannerDesc');if(bd)bd.textContent=descs[plan]||'';
         if(plan==='pro'){var ub=document.getElementById('upgradeBtn');if(ub)ub.style.display='none';}
 
-        // Profile
-        var el; 
+        // Profile info
+        var el;
         el=document.getElementById('profileName');if(el)el.textContent=u.name||'User';
         el=document.getElementById('profileRole');if(el)el.textContent=u.userType==='creator'?'Content Creator':'Startup Founder';
         el=document.getElementById('pEmail');if(el)el.textContent=u.email||'—';
         el=document.getElementById('pWA');if(el)el.textContent=u.whatsapp||'—';
-        el=document.getElementById('pJoined');if(el)el.textContent=u.createdAt?(u.createdAt.toDate?u.createdAt.toDate().toLocaleDateString('en-IN'):new Date(u.createdAt).toLocaleDateString('en-IN')):'—';
+        el=document.getElementById('pJoined');if(el)el.textContent=fmtDate(u.createdAt);
         if(crData&&crData.profilePhoto){var pa=document.getElementById('profileAvatar');if(pa)pa.src=crData.profilePhoto;}
 
         // Stats
-        var sentCount=sentSnap.size, recvCount=recvSnap.size;
-        var acceptedCount=0; sentSnap.forEach(function(d){if(d.data().status==='accepted')acceptedCount++;});
-        el=document.getElementById('statSent');if(el)el.textContent=sentCount;
-        el=document.getElementById('statReceived');if(el)el.textContent=recvCount;
+        var acceptedCount=sentList.filter(function(x){return x.data.status==='accepted';}).length;
+        el=document.getElementById('statSent');if(el)el.textContent=sentList.length;
+        el=document.getElementById('statReceived');if(el)el.textContent=recvList.length;
         el=document.getElementById('statAccepted');if(el)el.textContent=acceptedCount;
         el=document.getElementById('statPlan');if(el)el.textContent={free:'Free',starter:'Starter',pro:'Pro'}[plan]||plan;
         el=document.getElementById('statPlanSub');if(el)el.textContent=plan==='pro'?'All features unlocked':plan==='starter'?'Advanced features':'Basic plan';
 
         // Pro insights
-        if(plan==='pro'){var il=document.getElementById('insightsLock');if(il)il.style.display='none';var i1=document.getElementById('ins1');if(i1)i1.textContent=parseInt(localStorage.getItem('u_v_'+new Date().toDateString())||0);var i2=document.getElementById('ins2');if(i2)i2.textContent=recvCount;var acceptR=0;recvSnap.forEach(function(d){if(d.data().status==='accepted')acceptR++;});var i3=document.getElementById('ins3');if(i3)i3.textContent=recvCount?Math.round((acceptR/recvCount)*100)+'%':'—';var i4=document.getElementById('ins4');if(i4)i4.textContent=(foData&&foData.budget)||(crData&&crData.pricing)||'—';}
+        if(plan==='pro'){
+            var il=document.getElementById('insightsLock');if(il)il.style.display='none';
+            var i1=document.getElementById('ins1');if(i1)i1.textContent=parseInt(localStorage.getItem('u_v_'+new Date().toDateString())||0);
+            var i2=document.getElementById('ins2');if(i2)i2.textContent=recvList.length;
+            var acceptR=recvList.filter(function(x){return x.data.status==='accepted';}).length;
+            var i3=document.getElementById('ins3');if(i3)i3.textContent=recvList.length?Math.round((acceptR/recvList.length)*100)+'%':'—';
+            var i4=document.getElementById('ins4');if(i4)i4.textContent=(foData&&foData.budget)||(crData&&crData.pricing)||'—';
+        }
 
-        // Requests
-        renderReceived(recvSnap, plan);
-        renderSent(sentSnap, plan);
-    }).catch(function(e){console.error('Dashboard error:',e);});
+        renderReceived(recvList, plan);
+        renderSent(sentList, plan);
+    }).catch(function(e){
+        console.error('Dashboard error:',e);
+        var pn=document.getElementById('profileName');
+        if(pn)pn.textContent='Error loading: '+e.message;
+    });
 }
 
-function renderReceived(snap, plan){
+function renderReceived(list, plan){
     var el=document.getElementById('receivedList');
-    if(snap.empty){el.innerHTML='<div class="empty-state"><i class="fas fa-inbox"></i><p>No collaboration requests received yet</p></div>';return;}
+    if(!list.length){el.innerHTML='<div class="empty-state"><i class="fas fa-inbox"></i><p>No collaboration requests received yet</p></div>';return;}
     var html='';
-    snap.forEach(function(doc){
-        var id=doc.id,r=doc.data();
-        var sb='<span class="req-badge '+(r.status||'pending')+'">'+(r.status==='accepted'?'✓ Accepted':r.status==='declined'?'✗ Declined':'⏳ Pending')+'</span>';
+    list.forEach(function(item){
+        var id=item.id, r=item.data;
+        var sb='<span class="req-badge '+(r.status||'pending')+'">'+(r.status==='accepted'?'Accepted':r.status==='declined'?'Declined':'Pending')+'</span>';
         var waBtn=r.status==='accepted'&&r.founderWhatsapp?'<a class="wa-reveal-mini" href="https://wa.me/'+r.founderWhatsapp.replace(/\D/g,'')+'" target="_blank"><i class="fab fa-whatsapp"></i> '+r.founderWhatsapp+'</a>':'';
         var actBtns=r.status==='pending'?'<button class="btn-accept" onclick="updateReq(\''+id+'\',\'accepted\')"><i class="fas fa-check"></i> Accept</button><button class="btn-decline" onclick="updateReq(\''+id+'\',\'declined\')"><i class="fas fa-times"></i> Decline</button>':'';
-        var dt=r.createdAt?(r.createdAt.toDate?r.createdAt.toDate().toLocaleDateString('en-IN'):new Date(r.createdAt).toLocaleDateString('en-IN')):'—';
-        html+='<div class="req-item"><div class="req-avatar"><i class="fas fa-rocket"></i></div><div class="req-body"><div class="req-from">'+(r.founderName||'Founder')+' · '+(r.startupName||'')+'</div><div class="req-msg">'+(r.message||'')+'</div><div class="req-meta"><span>'+(r.collabType||'')+'</span><span>'+(r.budget||'')+'</span><span>'+dt+'</span></div><div class="req-actions">'+sb+actBtns+waBtn+'</div></div></div>';
+        html+='<div class="req-item"><div class="req-avatar"><i class="fas fa-rocket"></i></div><div class="req-body">'
+            +'<div class="req-from">'+(r.founderName||'Founder')+' - '+(r.startupName||'')+'</div>'
+            +'<div class="req-msg">'+(r.message||'')+'</div>'
+            +'<div class="req-meta"><span>'+(r.collabType||'')+'</span><span>'+(r.budget||'')+'</span><span>'+fmtDate(r.createdAt)+'</span></div>'
+            +'<div class="req-actions">'+sb+actBtns+waBtn+'</div>'
+            +'</div></div>';
     });
     el.innerHTML=html;
 }
 
-function renderSent(snap, plan){
+function renderSent(list, plan){
     var el=document.getElementById('sentList');
-    if(snap.empty){el.innerHTML='<div class="empty-state"><i class="fas fa-paper-plane"></i><p>No requests sent yet<br><a href="creators.html" style="color:#64c8ff;text-decoration:none">Browse Creators →</a></p></div>';return;}
-    var rows=[];
-    snap.forEach(function(doc){rows.push({id:doc.id,r:doc.data()});});
-    var creatorIds=[...new Set(rows.map(function(x){return x.r.creatorId;}))];
+    if(!list.length){el.innerHTML='<div class="empty-state"><i class="fas fa-paper-plane"></i><p>No requests sent yet<br><a href="creators.html" style="color:#64c8ff;text-decoration:none">Browse Creators</a></p></div>';return;}
+    var creatorIds=[...new Set(list.map(function(x){return x.data.creatorId;}))];
     var crPromises=creatorIds.map(function(cid){return db.collection('creators').doc(cid).get();});
     Promise.all(crPromises).then(function(crDocs){
         var crMap={};
         crDocs.forEach(function(d){if(d.exists)crMap[d.id]=d.data();});
         var html='';
-        rows.forEach(function(x){
-            var r=x.r,cr=crMap[r.creatorId]||{};
-            var crName=cr.name||'Creator';
-            var sb='<span class="req-badge '+(r.status||'pending')+'">'+(r.status==='accepted'?'✓ Accepted':r.status==='declined'?'✗ Declined':'⏳ Pending')+'</span>';
+        list.forEach(function(item){
+            var r=item.data, cr=crMap[r.creatorId]||{};
+            var sb='<span class="req-badge '+(r.status||'pending')+'">'+(r.status==='accepted'?'Accepted':r.status==='declined'?'Declined':'Pending')+'</span>';
             var waHtml='';
             var waNum=(cr.whatsapp||'').replace(/\D/g,'');
-            if(r.status==='accepted'&&waNum)waHtml='<a class="wa-reveal-mini" href="https://wa.me/'+waNum+'" target="_blank"><i class="fab fa-whatsapp"></i> '+cr.whatsapp+'</a>';
-            else if((plan==='pro'||plan==='starter')&&waNum)waHtml='<a class="wa-reveal-mini" href="https://wa.me/'+waNum+'" target="_blank"><i class="fab fa-whatsapp"></i> '+cr.whatsapp+'</a>';
-            else if(r.status!=='accepted')waHtml='<span style="font-size:11px;color:var(--txt3)"><i class="fas fa-lock"></i> WhatsApp visible after accept</span>';
-            var dt=r.createdAt?(r.createdAt.toDate?r.createdAt.toDate().toLocaleDateString('en-IN'):new Date(r.createdAt).toLocaleDateString('en-IN')):'—';
-            html+='<div class="sent-req-item"><div class="sent-req-name"><i class="fas fa-video" style="margin-right:6px;font-size:12px;color:var(--txt2)"></i>'+crName+'</div><div class="sent-req-detail">'+(r.collabType||'')+' · '+(r.budget||'')+' · '+dt+'</div><div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">'+sb+waHtml+'</div></div>';
+            if(r.status==='accepted'&&waNum) waHtml='<a class="wa-reveal-mini" href="https://wa.me/'+waNum+'" target="_blank"><i class="fab fa-whatsapp"></i> '+cr.whatsapp+'</a>';
+            else if((plan==='pro'||plan==='starter')&&waNum) waHtml='<a class="wa-reveal-mini" href="https://wa.me/'+waNum+'" target="_blank"><i class="fab fa-whatsapp"></i> '+cr.whatsapp+'</a>';
+            html+='<div class="sent-req-item">'
+                +'<div class="sent-req-name"><i class="fas fa-video" style="margin-right:6px;font-size:12px"></i>'+(cr.name||'Creator')+'</div>'
+                +'<div class="sent-req-detail">'+(r.collabType||'')+' - '+(r.budget||'')+' - '+fmtDate(r.createdAt)+'</div>'
+                +'<div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">'+sb+waHtml+'</div>'
+                +'</div>';
         });
         el.innerHTML=html;
     });
 }
 
-window.updateReq=function(reqId,status){db.collection('collab_requests').doc(reqId).update({status:status}).then(function(){loadDashboard(window._me.uid, 0);}).catch(function(e){alert('Failed: '+e.message);});};
+window.updateReq=function(reqId,status){
+    db.collection('collab_requests').doc(reqId).update({status:status}).then(function(){
+        loadDashboard(window._uid);
+    }).catch(function(e){alert('Failed: '+e.message);});
+};
 window.openUpgrade=function(){document.getElementById('upgradeModal').classList.add('open');};
 window.closeUpgrade=function(){document.getElementById('upgradeModal').classList.remove('open');};
 window.scrollToRequests=function(){document.getElementById('requestsSection').scrollIntoView({behavior:'smooth'});};
-window.refreshData=function(){if(window._me&&window._me.uid)loadDashboard(window._me.uid, 0);};
+window.refreshData=function(){if(window._uid)loadDashboard(window._uid);};
 window.editProfile=function(){location.href=(window._me&&window._me.userType)==='creator'?'creator-profile.html':'founder-profile.html';};
 window.payUpgrade=function(plan){
     window.closeUpgrade();
     var prices={starter:29900,pro:59900};
-    new Razorpay({key:'rzp_live_SLpif75jByNnvb',amount:prices[plan],currency:'INR',name:'PostHire',description:(plan==='starter'?'Starter':'Pro')+' Plan',prefill:{name:(window._me&&window._me.name)||'',email:(window._me&&window._me.email)||'',contact:((window._me&&window._me.whatsapp)||'').replace(/\D/g,'')},theme:{color:'#ffffff'},handler:function(resp){db.collection('users').doc(window._me.uid).update({plan:plan,lastPaymentId:resp.razorpay_payment_id}).then(function(){window._me.plan=plan;alert(plan==='starter'?'✅ Upgraded to Starter!':'✅ Upgraded to Pro!');loadDashboard(window._me.uid, 0);});}}).open();
+    new Razorpay({
+        key:'rzp_live_SLpif75jByNnvb',amount:prices[plan],currency:'INR',name:'PostHire',
+        description:(plan==='starter'?'Starter':'Pro')+' Plan',
+        prefill:{name:(window._me&&window._me.name)||'',email:(window._me&&window._me.email)||'',contact:((window._me&&window._me.whatsapp)||'').replace(/\D/g,'')},
+        theme:{color:'#ffffff'},
+        handler:function(resp){
+            db.collection('users').doc(window._uid).update({plan:plan,lastPaymentId:resp.razorpay_payment_id}).then(function(){
+                alert(plan==='starter'?'Upgraded to Starter!':'Upgraded to Pro!');
+                loadDashboard(window._uid);
+            });
+        }
+    }).open();
 };
-window.setFreePlan=function(){db.collection('users').doc(window._me.uid).update({plan:'free'}).then(function(){window._me.plan='free';window.closeUpgrade();loadDashboard(window._me.uid, 0);});};
+window.setFreePlan=function(){
+    db.collection('users').doc(window._uid).update({plan:'free'}).then(function(){
+        window.closeUpgrade();loadDashboard(window._uid);
+    });
+};
 </script>
+</div>
 </body>
 </html>
