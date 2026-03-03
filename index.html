@@ -503,18 +503,21 @@ var auth = firebase.auth();
 var db   = firebase.firestore();
 
 // ── Auth state ─────────────────────────────────────────
+// _redirecting = true means signup/signin function is handling redirect itself
+window._redirecting = false;
 auth.onAuthStateChanged(function(user) {
+    if (window._redirecting) return;
     if (user) {
         db.collection('users').doc(user.uid).get().then(function(doc) {
             if (doc.exists) {
                 window._me = Object.assign({ uid: user.uid }, doc.data());
-                var si = document.getElementById('signinBtn');
-                var su = document.getElementById('signupBtn');
-                if (si) { si.textContent = 'Dashboard'; si.onclick = function(){ location.href='dashboard.html'; }; }
-                if (su) { su.textContent = 'Logout';    su.onclick = function(){ auth.signOut(); location.reload(); }; }
+                // Already logged in user visits index.html -> send to dashboard
+                window._redirecting = true;
+                location.href = 'dashboard.html';
             }
-        });
+        }).catch(function(){});
     }
+    // Not logged in - show normal landing page, do nothing
 });
 
 // ── Plan/Type selection ────────────────────────────────
@@ -602,6 +605,7 @@ function handleSignup() {
             })
             .then(function(data) {
                 window._me = data;
+                window._redirecting = true;
                 closeModal('signupModal');
                 location.href = _selType === 'creator' ? 'creator-profile.html' : 'founder-profile.html';
             })
@@ -644,6 +648,7 @@ function handleSignin() {
         .then(function(doc) {
             if (doc.exists) {
                 window._me = Object.assign({ uid: auth.currentUser.uid }, doc.data());
+                window._redirecting = true;
                 closeModal('signinModal');
                 location.href = 'dashboard.html';
             } else {
