@@ -66,6 +66,28 @@
     </style>
 </head>
 <body>
+<!-- Admin Login Screen -->
+<div id="adminLogin" style="display:flex;position:fixed;inset:0;background:#0a0a0a;z-index:9999;align-items:center;justify-content:center;flex-direction:column">
+    <div style="background:#141414;border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:40px;width:100%;max-width:380px;margin:20px">
+        <div style="text-align:center;margin-bottom:28px">
+            <div style="font-size:32px;margin-bottom:8px">🛡️</div>
+            <h2 style="color:#fff;font-size:22px;margin-bottom:6px">Admin Panel</h2>
+            <p style="color:#666;font-size:14px">PostHire Admin Access Only</p>
+        </div>
+        <div id="loginError" style="display:none;background:rgba(255,60,60,0.1);border:1px solid rgba(255,60,60,0.3);color:#ff6b6b;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:16px"></div>
+        <div style="margin-bottom:14px">
+            <label style="color:#888;font-size:12px;display:block;margin-bottom:6px">Email</label>
+            <input id="adminEmail" type="email" placeholder="admin@email.com" style="width:100%;background:#0a0a0a;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 14px;color:#fff;font-size:14px;box-sizing:border-box">
+        </div>
+        <div style="margin-bottom:20px">
+            <label style="color:#888;font-size:12px;display:block;margin-bottom:6px">Password</label>
+            <input id="adminPass" type="password" placeholder="••••••••" style="width:100%;background:#0a0a0a;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 14px;color:#fff;font-size:14px;box-sizing:border-box" onkeypress="if(event.key==='Enter')adminLogin()">
+        </div>
+        <button id="loginBtn" onclick="adminLogin()" style="width:100%;background:#fff;color:#000;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:600;cursor:pointer">Login to Admin Panel</button>
+    </div>
+</div>
+
+<div id="adminMain" style="display:none">
 <nav>
     <div class="nav-c">
         <a href="index.html" class="logo"><div class="logo-icon"><i class="fas fa-handshake"></i></div><span>PostHire</span></a>
@@ -73,6 +95,7 @@
             <span class="admin-tag"><i class="fas fa-shield-alt"></i> ADMIN PANEL</span>
             <button class="nav-btn" onclick="loadAll()"><i class="fas fa-sync-alt"></i> Refresh</button>
             <button class="nav-btn" onclick="exportData()"><i class="fas fa-download"></i> Export</button>
+            <button class="nav-btn" onclick="adminLogout()" style="color:#ff6b6b"><i class="fas fa-sign-out-alt"></i> Logout</button>
             <a href="index.html" class="nav-btn" style="text-decoration:none">← Site</a>
         </div>
     </div>
@@ -170,8 +193,53 @@ if (!firebase.apps.length) {
         appId: "1:898539356038:web:36f8134549ce5f13333607"
     });
 }
+var auth = firebase.auth();
 var db = firebase.firestore();
 var allData = { users: {}, creators: {}, founders: {}, requests: {} };
+var ADMIN_EMAIL = 'webloom.in00@gmail.com';
+
+// Admin auth check
+auth.onAuthStateChanged(function(user) {
+    var loginDiv = document.getElementById('adminLogin');
+    var mainDiv = document.getElementById('adminMain');
+    if (!user) {
+        if (loginDiv) loginDiv.style.display = 'flex';
+        if (mainDiv) mainDiv.style.display = 'none';
+    } else if (user.email !== ADMIN_EMAIL) {
+        if (loginDiv) loginDiv.style.display = 'flex';
+        if (mainDiv) mainDiv.style.display = 'none';
+        document.getElementById('loginError').textContent = 'Access denied. Admin only.';
+        document.getElementById('loginError').style.display = 'block';
+        auth.signOut();
+    } else {
+        if (loginDiv) loginDiv.style.display = 'none';
+        if (mainDiv) mainDiv.style.display = 'block';
+        loadAll();
+    }
+});
+
+window.adminLogin = function() {
+    var email = document.getElementById('adminEmail').value.trim();
+    var pass  = document.getElementById('adminPass').value;
+    var errEl = document.getElementById('loginError');
+    errEl.style.display = 'none';
+    if (!email || !pass) { errEl.textContent = 'Please fill all fields'; errEl.style.display = 'block'; return; }
+    var btn = document.getElementById('loginBtn');
+    btn.disabled = true; btn.textContent = 'Signing in...';
+    auth.signInWithEmailAndPassword(email, pass).then(function(cred) {
+        if (cred.user.email !== ADMIN_EMAIL) {
+            errEl.textContent = 'Access denied. Admin only.';
+            errEl.style.display = 'block';
+            auth.signOut();
+            btn.disabled = false; btn.textContent = 'Login';
+        }
+    }).catch(function(e) {
+        errEl.textContent = e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential' ? 'Invalid email or password.' : e.message;
+        errEl.style.display = 'block';
+        btn.disabled = false; btn.textContent = 'Login';
+    });
+};
+window.adminLogout = function() { auth.signOut(); };
 
 function showLoading(msg) {
     var el = document.getElementById('loadingMsg');
@@ -375,8 +443,8 @@ function filterTable(tableId, query) {
     });
 }
 
-// Auto load on page ready
-loadAll();
+// Data loads only after admin login
 </script>
+</div>
 </body>
 </html>
