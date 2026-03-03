@@ -509,13 +509,13 @@ window._redirecting = false;
 auth.onAuthStateChanged(function(user) {
     // If signup/signin already handling redirect, ignore this event
     if (window._redirecting) return;
-    
+
     if (user) {
-        // Already logged in user visits index.html -> send to dashboard
+        // Already logged in user on index page -> go to dashboard
         window._redirecting = true;
         location.href = 'dashboard.html';
     }
-    // Not logged in -> show landing page, do nothing
+    // Not logged in -> show landing page normally
 });
 
 // ── Plan/Type selection ────────────────────────────────
@@ -701,3 +701,4 @@ document.querySelectorAll('.fade-in').forEach(function(el){ obs.observe(el); });
 </script>
 </body>
 </html>
+
