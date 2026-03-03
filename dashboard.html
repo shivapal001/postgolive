@@ -259,12 +259,19 @@ document.getElementById('logoutBtn').onclick=function(){auth.signOut().then(func
 auth.onAuthStateChanged(function(user){
     if(!user){location.href='index.html';return;}
     window._me={uid:user.uid};
-    loadDashboard(user.uid);
+    loadDashboard(user.uid, 0);
 });
 
-function loadDashboard(uid){
+function loadDashboard(uid, attempt){
     db.collection('users').doc(uid).get().then(function(uDoc){
-        if(!uDoc.exists){location.href='index.html';return null;}
+        if(!uDoc.exists){
+            if(attempt < 6){
+                // New signup - Firestore write may still be completing, retry
+                setTimeout(function(){ loadDashboard(uid, attempt+1); }, 1000);
+            }
+            // Never redirect to index.html - that causes infinite loop
+            return null;
+        }
         var u=uDoc.data();
         window._me=Object.assign({uid:uid},u);
         return Promise.all([
