@@ -263,6 +263,11 @@ document.getElementById('logoutBtn').onclick=function(){
 auth.onAuthStateChanged(function(user){
     if(!user){location.href='index.html';return;}
     window._uid=user.uid;
+    // Show dashboard immediately, load data in background
+    var ls=document.getElementById('loadingScreen');
+    var mc=document.getElementById('mainContent');
+    if(ls)ls.style.display='none';
+    if(mc)mc.style.display='block';
     loadDashboard(user.uid);
 });
 
@@ -287,8 +292,7 @@ function loadDashboard(uid){
         var u=uDoc.data();
         window._me=Object.assign({uid:uid},u);
         var plan=u.plan||'free';
-        document.getElementById('loadingScreen').style.display='none';
-        document.getElementById('mainContent').style.display='block';
+        // screens already shown in onAuthStateChanged
         var crData=crDoc.exists?crDoc.data():null;
         var foData=foDoc.exists?foDoc.data():null;
 
