@@ -277,12 +277,20 @@ function loadDashboard(uid, attempt){
         return Promise.all([
             db.collection('creators').doc(uid).get(),
             db.collection('founders').doc(uid).get(),
-            db.collection('collab_requests').where('founderId','==',uid).get(),
-            db.collection('collab_requests').where('creatorId','==',uid).get()
+            db.collection('collab_requests').get()
         ]);
     }).then(function(results){
         if(!results)return;
-        var crDoc=results[0],foDoc=results[1],sentSnap=results[2],recvSnap=results[3];
+        var crDoc=results[0],foDoc=results[1],allReqsSnap=results[2];
+        var myUid=window._me.uid;
+        var sentDocs=[],recvDocs=[];
+        allReqsSnap.forEach(function(doc){
+            var d=doc.data();
+            if(d.founderId===myUid) sentDocs.push(doc);
+            if(d.creatorId===myUid)  recvDocs.push(doc);
+        });
+        var sentSnap={size:sentDocs.length,empty:sentDocs.length===0,forEach:function(fn){sentDocs.forEach(fn);}};
+        var recvSnap={size:recvDocs.length,empty:recvDocs.length===0,forEach:function(fn){recvDocs.forEach(fn);}};
         var u=window._me, plan=u.plan||'free';
         var crData=crDoc.exists?crDoc.data():null;
         var foData=foDoc.exists?foDoc.data():null;
@@ -366,19 +374,18 @@ function renderSent(snap, plan){
     });
 }
 
-window.updateReq=function(reqId,status){db.collection('collab_requests').doc(reqId).update({status:status}).then(function(){loadDashboard(window._me.uid);}).catch(function(e){alert('Failed: '+e.message);});};
+window.updateReq=function(reqId,status){db.collection('collab_requests').doc(reqId).update({status:status}).then(function(){loadDashboard(window._me.uid, 0);}).catch(function(e){alert('Failed: '+e.message);});};
 window.openUpgrade=function(){document.getElementById('upgradeModal').classList.add('open');};
 window.closeUpgrade=function(){document.getElementById('upgradeModal').classList.remove('open');};
 window.scrollToRequests=function(){document.getElementById('requestsSection').scrollIntoView({behavior:'smooth'});};
-window.refreshData=function(){if(window._me&&window._me.uid)loadDashboard(window._me.uid);};
+window.refreshData=function(){if(window._me&&window._me.uid)loadDashboard(window._me.uid, 0);};
 window.editProfile=function(){location.href=(window._me&&window._me.userType)==='creator'?'creator-profile.html':'founder-profile.html';};
 window.payUpgrade=function(plan){
     window.closeUpgrade();
     var prices={starter:29900,pro:59900};
-    new Razorpay({key:'rzp_live_SLpif75jByNnvb',amount:prices[plan],currency:'INR',name:'PostHire',description:(plan==='starter'?'Starter':'Pro')+' Plan',prefill:{name:(window._me&&window._me.name)||'',email:(window._me&&window._me.email)||'',contact:((window._me&&window._me.whatsapp)||'').replace(/\D/g,'')},theme:{color:'#ffffff'},handler:function(resp){db.collection('users').doc(window._me.uid).update({plan:plan,lastPaymentId:resp.razorpay_payment_id}).then(function(){window._me.plan=plan;alert(plan==='starter'?'✅ Upgraded to Starter!':'✅ Upgraded to Pro!');loadDashboard(window._me.uid);});}}).open();
+    new Razorpay({key:'rzp_live_SLpif75jByNnvb',amount:prices[plan],currency:'INR',name:'PostHire',description:(plan==='starter'?'Starter':'Pro')+' Plan',prefill:{name:(window._me&&window._me.name)||'',email:(window._me&&window._me.email)||'',contact:((window._me&&window._me.whatsapp)||'').replace(/\D/g,'')},theme:{color:'#ffffff'},handler:function(resp){db.collection('users').doc(window._me.uid).update({plan:plan,lastPaymentId:resp.razorpay_payment_id}).then(function(){window._me.plan=plan;alert(plan==='starter'?'✅ Upgraded to Starter!':'✅ Upgraded to Pro!');loadDashboard(window._me.uid, 0);});}}).open();
 };
-window.setFreePlan=function(){db.collection('users').doc(window._me.uid).update({plan:'free'}).then(function(){window._me.plan='free';window.closeUpgrade();loadDashboard(window._me.uid);});};
-</script>
+window.setFreePlan=function(){db.collection('users').doc(window._me.uid).update({plan:'free'}).then(function(){window._me.plan='free';window.closeUpgrade();loadDashboard(window._me.uid, 0);});};
 </script>
 </body>
 </html>
