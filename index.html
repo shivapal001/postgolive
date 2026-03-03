@@ -503,21 +503,19 @@ var auth = firebase.auth();
 var db   = firebase.firestore();
 
 // ── Auth state ─────────────────────────────────────────
-// _redirecting = true means signup/signin function is handling redirect itself
+// Simple flag - set to true when signup/signin is actively redirecting
 window._redirecting = false;
+
 auth.onAuthStateChanged(function(user) {
+    // If signup/signin already handling redirect, ignore this event
     if (window._redirecting) return;
+    
     if (user) {
-        db.collection('users').doc(user.uid).get().then(function(doc) {
-            if (doc.exists) {
-                window._me = Object.assign({ uid: user.uid }, doc.data());
-                // Already logged in user visits index.html -> send to dashboard
-                window._redirecting = true;
-                location.href = 'dashboard.html';
-            }
-        }).catch(function(){});
+        // Already logged in user visits index.html -> send to dashboard
+        window._redirecting = true;
+        location.href = 'dashboard.html';
     }
-    // Not logged in - show normal landing page, do nothing
+    // Not logged in -> show landing page, do nothing
 });
 
 // ── Plan/Type selection ────────────────────────────────
@@ -590,6 +588,7 @@ function handleSignup() {
     if (!_selType) { showErr(errEl, 'User type missing. Go back and select.'); return; }
 
     function createAccount(paymentId) {
+        window._redirecting = true;
         setLoading('su-submit', 'su-btnTxt', true, 'Creating account...');
         auth.createUserWithEmailAndPassword(email, pass)
             .then(function(cred) {
@@ -605,11 +604,11 @@ function handleSignup() {
             })
             .then(function(data) {
                 window._me = data;
-                window._redirecting = true;
                 closeModal('signupModal');
                 location.href = _selType === 'creator' ? 'creator-profile.html' : 'founder-profile.html';
             })
             .catch(function(e) {
+                window._redirecting = false;
                 setLoading('su-submit', 'su-btnTxt', false, 'Create Account');
                 showErr(errEl, errMsg(e.code));
             });
@@ -641,6 +640,7 @@ function handleSignin() {
     hideErr(errEl);
     if (!email || !pass) { showErr(errEl, 'Please fill all fields'); return; }
     setLoading('si-submit', 'si-btnTxt', true, 'Signing in...');
+    window._redirecting = true;
     auth.signInWithEmailAndPassword(email, pass)
         .then(function(cred) {
             return db.collection('users').doc(cred.user.uid).get();
@@ -648,7 +648,6 @@ function handleSignin() {
         .then(function(doc) {
             if (doc.exists) {
                 window._me = Object.assign({ uid: auth.currentUser.uid }, doc.data());
-                window._redirecting = true;
                 closeModal('signinModal');
                 location.href = 'dashboard.html';
             } else {
@@ -657,6 +656,7 @@ function handleSignin() {
             }
         })
         .catch(function(e) {
+            window._redirecting = false;
             setLoading('si-submit', 'si-btnTxt', false, 'Sign In');
             showErr(errEl, errMsg(e.code));
         });
