@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>PostHire — Pitch Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#060609;--surface:#0D0D14;--card:#111118;--border:rgba(255,255,255,0.06);
+  --accent:#7B6EF6;--pink:#F06292;--teal:#26D9A3;--gold:#F5C842;
+  --text:#EEEEF5;--muted:#7A7A95;
+  --display:'Playfair Display',serif;
+  --body:'Plus Jakarta Sans',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+body{font-family:var(--body);background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px;}
+#progress{position:fixed;top:0;left:0;height:3px;width:0%;z-index:999;background:linear-gradient(90deg,var(--accent),var(--pink),var(--teal));transition:width .15s linear;border-radius:0 2px 2px 0;}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.25rem;background:rgba(6,6,9,.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--border);}
+.nav-brand{font-family:var(--display);font-size:1.15rem;font-weight:900;background:linear-gradient(120deg,var(--accent),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.nav-right{display:flex;align-items:center;gap:.75rem;}
+.nav-counter{font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.08em;}
+.nav-dots{display:flex;gap:5px;align-items:center;}
+.dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.2);cursor:pointer;transition:all .3s;flex-shrink:0;}
+.dot.active{background:var(--accent);transform:scale(1.6);}
+@media(max-width:480px){.nav-dots{display:none;}}
+#scrollHint{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;font-size:.62rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);z-index:50;transition:opacity .5s;animation:bob 2.2s ease-in-out infinite;}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-7px);}}
+.hint-arrow{width:1px;height:24px;background:linear-gradient(to bottom,transparent,var(--accent));border-radius:1px;}
+#particles{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+.pt{position:absolute;border-radius:50%;animation:rise linear infinite;}
+@keyframes rise{0%{transform:translateY(110vh) scale(0);opacity:0;}5%{opacity:1;}95%{opacity:.7;}100%{transform:translateY(-10vh) scale(1.2);opacity:0;}}
+.slide{min-height:100svh;display:flex;align-items:flex-start;justify-content:center;padding:5.5rem 1.25rem 3rem;position:relative;overflow:hidden;opacity:0;transform:translateY(50px) rotateX(6deg);transition:opacity 1s cubic-bezier(.22,1,.36,1),transform 1s cubic-bezier(.22,1,.36,1);}
+.slide.vis{opacity:1;transform:translateY(0) rotateX(0deg);}
+.slide-inner{width:100%;max-width:860px;position:relative;z-index:2;}
+.slide::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
+.g{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:1;}
+.gv{background:rgba(123,110,246,.18);}.gp{background:rgba(240,98,146,.14);}.gt{background:rgba(38,217,163,.11);}
+.label{display:inline-flex;align-items:center;gap:8px;font-size:.65rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;}
+.label::before{content:'';display:block;width:18px;height:1.5px;background:var(--accent);border-radius:2px;}
+h1.display{font-family:var(--display);font-weight:900;font-size:clamp(3.5rem,14vw,7.5rem);line-height:.9;letter-spacing:-.03em;margin-bottom:1.25rem;}
+h2.headline{font-family:var(--display);font-weight:700;font-size:clamp(1.9rem,6vw,3rem);line-height:1.1;letter-spacing:-.02em;margin-bottom:1.25rem;}
+h2.headline em{font-style:normal;}
+.grad-v{background:linear-gradient(135deg,var(--accent),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.grad-t{background:linear-gradient(135deg,var(--teal),#38BDF8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.grad-g{background:linear-gradient(135deg,var(--gold),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+p.lead{font-size:clamp(.9rem,2.2vw,1.05rem);color:var(--muted);line-height:1.8;font-weight:400;}
+p.lead strong{color:var(--text);font-weight:600;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:1.4rem;position:relative;overflow:hidden;transition:transform .28s,border-color .28s,box-shadow .28s;}
+.card:hover{transform:translateY(-3px);border-color:rgba(123,110,246,.25);box-shadow:0 12px 40px rgba(0,0,0,.4);}
+.card-top{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);}
+.card-top.pink{background:linear-gradient(90deg,var(--pink),transparent);}
+.card-top.teal{background:linear-gradient(90deg,var(--teal),transparent);}
+.card-top.gold{background:linear-gradient(90deg,var(--gold),transparent);}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.g4{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;}
+@media(max-width:600px){.g2,.g3,.g4{grid-template-columns:1fr;}}
+.badge{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(123,110,246,.35);background:rgba(123,110,246,.08);border-radius:100px;padding:.35rem .9rem;font-size:.68rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;animation:pulse 3s ease-in-out infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(123,110,246,.25);}50%{box-shadow:0 0 0 8px rgba(123,110,246,0);}}
+.pills{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:2rem;}
+.pill{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.5rem 1rem;font-size:.78rem;font-weight:500;}
+.pdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.checklist{display:flex;flex-direction:column;gap:.55rem;}
+.ci{display:flex;align-items:center;gap:.75rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.65rem 1rem;font-size:.82rem;font-weight:500;}
+.ck{width:19px;height:19px;border-radius:6px;flex-shrink:0;background:linear-gradient(135deg,var(--accent),var(--pink));display:flex;align-items:center;justify-content:center;font-size:.6rem;color:white;font-weight:700;}
+.steps{display:flex;flex-direction:column;gap:.6rem;}
+.step{display:flex;align-items:flex-start;gap:.75rem;font-size:.8rem;color:var(--muted);line-height:1.5;}
+.sn{width:22px;height:22px;border-radius:50%;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:800;}
+.sn.v{background:rgba(123,110,246,.2);color:var(--accent);}.sn.t{background:rgba(38,217,163,.15);color:var(--teal);}
+.comp-wrap{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;margin-top:1.5rem;}
+.comp-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;align-items:center;}
+.comp-row+.comp-row{border-top:1px solid var(--border);}
+.cc{padding:.85rem 1rem;font-size:.8rem;}
+.comp-row.hd .cc{background:var(--surface);font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+.comp-row.ph{background:rgba(123,110,246,.07);}
+.yes{color:var(--teal);font-size:1.1rem;}.no{color:rgba(255,90,90,.65);font-size:1.1rem;}
+.ph-name{font-family:var(--display);font-weight:700;font-size:.95rem;background:linear-gradient(135deg,var(--accent),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+@media(max-width:520px){.comp-row{grid-template-columns:1.8fr 1fr 1fr;}.comp-row .cc:last-child{display:none;}}
+.big-num{font-family:var(--display);font-weight:900;font-size:clamp(4rem,15vw,7rem);line-height:.9;letter-spacing:-.03em;}
+.big-label{font-size:.85rem;color:var(--muted);margin-top:.4rem;font-weight:500;}
+.arrow-list{display:flex;flex-direction:column;gap:.6rem;margin-top:1.4rem;}
+.ali{display:flex;align-items:flex-start;gap:.7rem;font-size:.85rem;color:var(--text);line-height:1.55;}
+.ali::before{content:'→';color:var(--teal);flex-shrink:0;font-weight:700;margin-top:1px;}
+.ch-row{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;transition:border-color .25s;}
+.ch-row:hover{border-color:rgba(123,110,246,.25);}
+.ch-left{display:flex;align-items:center;gap:.85rem;}
+.ch-ico{font-size:1.3rem;flex-shrink:0;}
+.ch-title{font-size:.88rem;font-weight:700;margin-bottom:.15rem;}
+.ch-desc{font-size:.75rem;color:var(--muted);}
+.tag{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .65rem;border-radius:100px;white-space:nowrap;flex-shrink:0;}
+.tag.v{background:rgba(123,110,246,.15);color:var(--accent);}.tag.t{background:rgba(38,217,163,.12);color:var(--teal);}.tag.p{background:rgba(240,98,146,.12);color:var(--pink);}
+.tr-item{display:flex;align-items:flex-start;gap:1rem;padding:1.2rem;}
+.tr-ico{font-size:1.6rem;flex-shrink:0;line-height:1;}
+.tr-title{font-size:.88rem;font-weight:700;margin-bottom:.2rem;}
+.tr-desc{font-size:.78rem;color:var(--muted);line-height:1.55;}
+.team-row{display:flex;align-items:center;gap:1.25rem;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:1.5rem;margin-top:1.5rem;}
+.avatar{width:60px;height:60px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--accent),var(--pink));display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:900;font-size:1.4rem;color:white;}
+.t-name{font-family:var(--display);font-size:1rem;font-weight:700;margin-bottom:.2rem;}
+.t-role{font-size:.75rem;color:var(--accent);font-weight:600;margin-bottom:.3rem;}
+.t-bio{font-size:.78rem;color:var(--muted);line-height:1.55;}
+.vquote{font-family:var(--display);font-weight:900;font-size:clamp(1.8rem,6vw,3.2rem);line-height:1.15;letter-spacing:-.02em;margin:1.5rem 0;}
+.use-val{font-family:var(--display);font-weight:900;font-size:1.5rem;margin-bottom:.35rem;}
+.use-desc{font-size:.78rem;color:var(--muted);line-height:1.55;}
+.closing-logo{font-family:var(--display);font-weight:900;font-size:clamp(3rem,10vw,5.5rem);letter-spacing:-.03em;background:linear-gradient(135deg,var(--accent),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem;}
+.cta{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--accent),var(--pink));color:white;padding:.85rem 2rem;border-radius:12px;font-size:.88rem;font-weight:700;letter-spacing:.04em;box-shadow:0 4px 28px rgba(123,110,246,.4);transition:transform .2s,box-shadow .2s;cursor:pointer;border:none;text-decoration:none;}
+.cta:hover{transform:translateY(-2px);box-shadow:0 8px 36px rgba(123,110,246,.5);}
+.divider{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
+.fade-up{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease;}
+.fade-up.show{opacity:1;transform:translateY(0);}
+@media(max-width:480px){
+  .slide{padding:5rem 1rem 2.5rem;}
+  nav{padding:.75rem 1rem;}
+  .team-row{flex-direction:column;text-align:center;}
+  .avatar{margin:0 auto;}
+  .ch-row{flex-wrap:wrap;}
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div id="particles"></div>
+<nav>
+  <div class="nav-brand">PostHire</div>
+  <div class="nav-right">
+    <div class="nav-dots" id="navDots"></div>
+    <div class="nav-counter" id="counter">01 / 13</div>
+  </div>
+</nav>
+<div id="scrollHint"><div class="hint-arrow"></div>scroll</div>
+
+<!-- S1 TITLE -->
+<section class="slide" id="s1">
+  <div class="g gv" style="width:500px;height:380px;top:-8%;left:-12%;"></div>
+  <div class="g gp" style="width:380px;height:300px;bottom:5%;right:-8%;"></div>
+  <div class="slide-inner">
+    <div class="badge fade-up">✦ Seed Round 2026</div>
+    <h1 class="display fade-up" style="transition-delay:.08s"><span style="color:#EEEEF5">Post</span><br><span class="grad-v">Hire</span></h1>
+    <p class="lead fade-up" style="max-width:440px;transition-delay:.16s"><strong>Find the right creators, faster.</strong><br>The creator discovery platform built for startups.</p>
+    <div class="pills fade-up" style="transition-delay:.24s">
+      <div class="pill"><div class="pdot" style="background:var(--accent)"></div>Creator Discovery</div>
+      <div class="pill"><div class="pdot" style="background:var(--pink)"></div>$250B+ Market</div>
+      <div class="pill"><div class="pdot" style="background:var(--teal)"></div>Early Stage</div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- S2 PROBLEM -->
+<section class="slide" id="s2">
+  <div class="g gp" style="width:450px;height:360px;top:15%;right:-10%;"></div>
+  <div class="slide-inner">
+    <div class="label fade-up">02 / Problem</div>
+    <h2 class="headline fade-up" style="transition-delay:.06s">Creator discovery<br><em class="grad-v">is broken</em></h2>
+    <div class="g4" style="margin-top:1.5rem;">
+      <div class="card fade-up" style="transition-delay:.1s"><div class="card-top pink"></div><div style="font-size:1.7rem;margin-bottom:.7rem">🧩</div><div style="font-size:.88rem;font-weight:700;margin-bottom:.4rem">Fragmented Discovery</div><div style="font-size:.78rem;color:var(--muted);line-height:1.6">Creator profiles scattered across Instagram, TikTok, YouTube — no single source of truth.</div></div>
+      <div class="card fade-up" style="transition-delay:.17s"><div class="card-top pink"></div><div style="font-size:1.7rem;margin-bottom:.7rem">⏳</div><div style="font-size:.88rem;font-weight:700;margin-bottom:.4rem">Painfully Slow</div><div style="font-size:.78rem;color:var(--muted);line-height:1.6">Startups spend weeks manually searching — no tooling, no filters, no structure.</div></div>
+      <div class="card fade-up" style="transition-delay:.24s"><div class="card-top pink"></div><div style="font-size:1.7rem;margin-bottom:.7rem">💬</div><div style="font-size:.88rem;font-weight:700;margin-bottom:.4rem">DM Chaos</div><div style="font-size:.78rem;color:var(--muted);line-height:1.6">Collabs happen through unstructured DMs — no tracking, no transparency, no trust.</div></div>
+      <div class="card fade-up" style="transition-delay:.31s"><div class="card-top pink"></div><div style="font-size:1.7rem;margin-bottom:.7rem">🚫</div><div style="font-size:.88rem;font-weight:700;margin-bottom:.4rem">Zero Trust Layer</div><div style="font-size:.78rem;color:var(--muted);line-height:1.6">No verification, no portfolio structure, no way to evaluate creators efficiently.</div></div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- S3 SOLUTION -->
+<section class="slide" id="s3">
+  <div class="g gv" style="width:400px;height:350px;bottom:5%;left:-8%;"></div>
+  <div class="slide-inner">
+    <div class="label fade-up">03 / Solution</div>
+    <h2 class="headline fade-up" style="transition-delay:.06s">Structured discovery.<br><em class="grad-v">Zero chaos.</em></h2>
+    <div class="g2" style="margin-top:1.5rem;align-items:start;">
+      <div class="fade-up" style="transition-delay:.1s">
+        <p class="lead" style="margin-bottom:.9rem">PostHire gives every creator a <strong>structured profile</strong> — niche, platform, rates — in one place.</p>
+        <p class="lead" style="margin-bottom:.9rem">Founders get a <strong>search &amp; filter engine</strong> to find the perfect match in minutes, not weeks.</p>
+        <p class="lead">Everything happens <strong>on-platform</strong> — no more lost DMs or broken threads.</p>
+      </div>
+      <div class="checklist fade-up" style="transition-delay:.18s">
+        <div class="ci"><div class="ck">✓</div>Structured creator profiles</div>
+        <div class="ci"><div class="ck">✓</div>Niche &amp; platform filters</div>
+        <div class="ci"><div class="ck">✓</div>In-app direct connect</div>
+        <div class="ci"><div class="ck">✓</div>Founder dashboard</div>
+        <div class="ci"><div class="ck">✓</div>Transparent collaboration flow</div>
+        <div class="ci"><div class="ck">✓</div>No agencies, no chaos</div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- S4 HOW IT WORKS -->
+<section class="slide" id="s4">
+  <div class="g gt" style="width:420px;height:340px;top:12%;right:-8%;"></div>
+  <div class="slide-inner">
+    <div class="label fade-up">04 / How It Works</div>
+    <h2 class="headline fade-up" style="transition-delay:.06s">Two sides.<br><em class="grad-t">One platform.</em></h2>
+    <div class="g2" style="margin-top:1.5rem;">
+      <div class="card fade-up" style="transition-delay:.1s"><div class="card-top"></div>
+        <div style="display:flex;align-items:center;gap:.7rem;margin-bottom:1rem;"><div style="width:36px;height:36px;border-radius:10px;background:rgba(123,110,246,.15);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">🎨</div><div style="font-family:var(--display);font-weight:700;font-size:1rem;">For Creators</div></div>
+        <div class="steps">
+          <div class="step"><div class="sn v">1</div>Build your profile — niche, platform, audience size</div>
+          <div class="step"><div class="sn v">2</div>Showcase your best content &amp; past collabs</div>
+          <div class="step"><div class="sn v">3</div>Get discovered by startups looking for you</div>
+          <div class="step"><div class="sn v">4</div>Connect and close paid deals on PostHire</div>
+        </div>
+      </div>
+      <div class="card fade-up" style="transition-delay:.18s"><div class="card-top teal"></div>
+        <div style="display:flex;align-items:center;gap:.7rem;margin-bottom:1rem;"><div style="width:36px;height:36px;border-radius:10px;background:rgba(38,217,163,.12);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">🚀</div><div style="font-family:var(--display);font-weight:700;font-size:1rem;">For Founders</div></div>
+        <div class="steps">
+          <div class="step"><div class="sn t">1</div>Browse hundreds of verified creator profiles</div>
+          <div class="step"><div class="sn t">2</div>Filter by niche, platform, audience &amp; budget</div>
+          <div class="step"><div class="sn t">3</div>Connect directly — no middlemen or agencies</div>
+          <div class="step"><div class="sn t">4</div>Launch your collaboration faster than ever</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- S5 PRODUCT -->
+<section class="slide" id="s5">
+  <div class="g gv" style="width:480px;height:380px;top:8%;left:-15%;"></div>
+  <div class="slide-inner">
+    <div class="label fade-up">05 / Product</div>
+    <h2 class="headline fade-up" style="transition-delay:.06s">Everything you need.<br><em class="grad-v">Nothing you don't.</em></h2>
+    <div class="g4" style="margin-top:1.5rem;">
+      <div class="card fade-up" style="transition-delay:.1s"><div class="card-top"></div><div style="font-size:1.5rem;margin-bottom:.6rem">👤</div><div style="font-size:.88rem;font-weight:700;margin-bottom:.35rem">Creator Profiles</div><div style="font-size:.78rem;color:var(--muted);line-height:1.6">Rich profiles showcasing niche, platforms, audience metrics and portfolio.</div></div>
+      <div class="card fade-up" style="transition-delay:.17s"><div class="card-top"></div><div style="font-size:1.5rem;margin-bottom:.6rem">🔍</div><div style="font-size:.88rem;font-weight:700;margin-bottom:.35rem">Discovery System</div><div style="font-size:.78rem;color:var(--muted);line-height:1.6">Powerful search with filters for niche, platform, audience size, and collab type.</div></div>
+      <div class="card fade-up" style="transition-delay:.24s"><div class="card-top"></div><div style="font-size:1.5rem;margin-bottom:.6rem">📊</div><div style="font-size:.88rem;font-weight:700;margin-bottom:.35rem">Founder Dashboard</div><div style="font-size:.78rem;color:var(--muted);line-height:1.6">Track conversations, manage shortlists, and monitor all active collaborations.</div></div>
+      <div class="card fade-up" style="transition-delay:.31s"><div class="card-top"></div><div style="font-size:1.5rem;margin-bottom:.6rem">💬</div><div style="font-size:.88rem;font-weight:700;margin-bottom:.35rem">Direct Communication</div><div style="font-size:.78rem;color:var(--muted);line-height:1.6">In-app messaging purpose-built for creator-brand collabs — tracked and transparent.</div></div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- S6 MARKET -->
+<section class="slide" id="s6">
+  <div class="g gt" style="width:500px;height:400px;bottom:-10%;right:-10%;"></div>
+  <div class="slide-inner">
+    <div class="label fade-up">06 / Market Opportunity</div>
+    <h2 class="headline fade-up" style="transition-delay:.06s">A massive market<br><em class="grad-t">ready to capture</em></h2>
+    <div style="margin-top:1.5rem;">
+      <div class="fade-up" style="transition-delay:.1s"><div class="big-num grad-t">$250B+</div><div class="big-label">Total Creator Economy (2025)</div></div>
+      <div class="arrow-list fade-up" style="transition-delay:.18s">
+        <div class="ali">Over 200 million creators globally — growing every single day</div>
+        <div class="ali">Creator marketing spend growing faster than traditional digital ads</div>
+        <div class="ali">Startups &amp; SMBs increasingly relying on creators over agencies</div>
+        <div class="ali">No dominant startup-focused creator discovery platform exists yet</div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- S7 WHY NOW -->
+<section class="slide" id="s7">
+  <div class="g gp" style="width:450px;height:360px;top:10%;left:-5%;"></div>
+  <div class="slide-inner">
+    <div class="label fade-up">07 / Why Now</div>
+    <h2 class="headline fade-up" style="transition-delay:.06s">The window is<br><em class="grad-g">wide open</em></h2>
+    <div class="g3" style="margin-top:1.5rem;">
+      <div class="card fade-up" style="transition-delay:.1s;text-align:center;"><div class="card-top gold"></div><div style="font-size:2rem;margin-bottom:.65rem">📈</div><div style="font-family:var(--display);font-size:.95rem;font-weight:700;margin-bottom:.4rem">Creator Boom</div><div style="font-size:.76rem;color:var(--muted);line-height:1.6">The creator economy is the fastest-growing segment in digital media. Now is the inflection point.</div></div>
+      <div class="card fade-up" style="transition-delay:.17s;text-align:center;"><div class="card-top gold"></div><div style="font-size:2rem;margin-bottom:.65rem">📣</div><div style="font-family:var(--display);font-size:.95rem;font-weight:700;margin-bottom:.4rem">Ads → Creators</div><div style="font-size:.76rem;color:var(--muted);line-height:1.6">Brands reallocating ad budgets to authentic creator partnerships that actually perform.</div></div>
+      <div class="card fade-up" style="transition-delay:.24s;text-align:center;"><div class="card-top gold"></div><div style="font-size:2rem;margin-bottom:.65rem">🏆</div><div style="font-family:var(--display);font-size:.95rem;font-weight:700;margin-bottom:.4rem">No Winner Yet</div><div style="font-size:.76rem;color:var(--muted);line-height:1.6">No platform owns startup-creator discovery. The category is open — PostHire moves first.</div></div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- S8 BUSINESS MODEL -->
+<section class="slide" id="s8">
+  <div class="g gv" style="width:480px;height:380px;bottom:5%;right:-10%;"></div>
+  <div class="slide-inner">
+    <div class="label fade-up">08 / Business Model</div>
+    <h2 class="headline fade-up" style="transition-delay:.06s">Multiple revenue<br><em class="grad-v">streams from day one</em></h2>
+    <div class="g4" style="margin-top:1.5rem;">
+      <div class="card fade-up" style="transition-delay:.1s;background:rgba(123,110,246,.08)"><div class="card-top"></div><div style="font-size:1.4rem;margin-bottom:.6rem">🆓</div><div style="font-size:.88rem;font-weight:700;margin-bottom:.35rem">Freemium Access</div><div style="font-size:.78rem;color:var(--muted);line-height:1.6">Free tier for creators &amp; founders — drives adoption and network growth at scale.</div></div>
+      <div class="card fade-up" style="transition-delay:.17s;background:rgba(240,98,146,.07)"><div class="card-top pink"></div><div style="font-size:1.4rem;margin-bottom:.6rem">⭐</div><div style="font-size:.88rem;font-weight:700;margin-bottom:.35rem">Featured Listings</div><div style="font-size:.78rem;color:var(--muted);line-height:1.6">Paid placements for creators at the top of search results and founder feeds.</div></div>
+      <div class="card fade-up" style="transition-delay:.24s;background:rgba(38,217,163,.06)"><div class="card-top teal"></div><div style="font-size:1.4rem;margin-bottom:.6rem">🛠️</div><div style="font-size:.88rem;font-weight:700;margin-bottom:.35rem">Premium Tools</div><div style="font-size:.78rem;color:var(--muted);line-height:1.6">Advanced analytics, priority matching, and collaboration management tools.</div></div>
+      <div class="card fade-up" style="transition-delay:.31s;background:rgba(245,200,66,.06)"><div class="card-top gold"></div><div style="font-size:1.4rem;margin-bottom:.6rem">💰</div><div style="font-size:.88rem;font-weight:700;margin-bottom:.35rem">Commission Model</div><div style="font-size:.78rem;color:var(--muted);line-height:1.6">Small platform commission on paid collaborations facilitated through PostHire.</div></div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- S9 COMPETITION -->
+<section class="slide" id="s9">
+  <div class="g gt" style="width:420px;height:340px;top:20%;left:-8%;"></div>
+  <div class="slide-inner">
+    <div class="label fade-up">09 / Competition</div>
+    <h2 class="headline fade-up" style="transition-delay:.06s">We fill the gap<br><em class="grad-t">no one else does</em></h2>
+    <div class="comp-wrap fade-up" style="transition-delay:.12s">
+      <div class="comp-row hd"><div class="cc">Platform</div><div class="cc">Discovery-First</div><div class="cc">Startup-Focused</div><div class="cc">Fast &amp; Affordable</div></div>
+      <div class="comp-row"><div class="cc" style="font-size:.82rem">Influencer Platforms</div><div class="cc"><span class="yes">✓</span></div><div class="cc"><span class="no">✗</span></div><div class="cc"><span class="no">✗</span></div></div>
+      <div class="comp-row"><div class="cc" style="font-size:.82rem">Agencies</div><div class="cc"><span class="no">✗</span></div><div class="cc"><span class="no">✗</span></div><div class="cc"><span class="no">✗</span></div></div>
+      <div class="comp-row"><div class="cc" style="font-size:.82rem">DMs / Manual Search</div><div class="cc"><span class="no">✗</span></div><div class="cc"><span class="no">✗</span></div><div class="cc"><span class="no">✗</span></div></div>
+      <div class="comp-row ph"><div class="cc"><span class="ph-name">✦ PostHire</span></div><div class="cc"><span class="yes">✓</span></div><div class="cc"><span class="yes">✓</span></div><div class="cc"><span class="yes">✓</span></div></div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- S10 TRACTION -->
+<section class="slide" id="s10">
+  <div class="g gp" style="width:450px;height:360px;bottom:-5%;right:-8%;"></div>
+  <div class="slide-inner">
+    <div class="label fade-up">10 / Traction</div>
+    <h2 class="headline fade-up" style="transition-delay:.06s">Early signals of<br><em class="grad-v">organic momentum</em></h2>
+    <div class="g4" style="margin-top:1.5rem;">
+      <div class="card fade-up" style="transition-delay:.1s"><div class="card-top"></div><div class="tr-item" style="padding:0"><div class="tr-ico">📋</div><div><div class="tr-title">Waitlist is Live</div><div class="tr-desc">Collecting early creator and founder signups before launch</div></div></div></div>
+      <div class="card fade-up" style="transition-delay:.17s"><div class="card-top"></div><div class="tr-item" style="padding:0"><div class="tr-ico">🎯</div><div><div class="tr-title">Early Onboarding</div><div class="tr-desc">Creators and founders joining organically through community outreach</div></div></div></div>
+      <div class="card fade-up" style="transition-delay:.24s"><div class="card-top"></div><div class="tr-item" style="padding:0"><div class="tr-ico">📣</div><div><div class="tr-title">Zero Paid Ads</div><div class="tr-desc">100% organic growth — word of mouth and community engagement</div></div></div></div>
+      <div class="card fade-up" style="transition-delay:.31s"><div class="card-top"></div><div class="tr-item" style="padding:0"><div class="tr-ico">⚙️</div><div><div class="tr-title">Product in Build</div><div class="tr-desc">Core platform actively in development — MVP coming soon</div></div></div></div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- S11 GTM -->
+<section class="slide" id="s11">
+  <div class="g gv" style="width:450px;height:360px;top:10%;right:-8%;"></div>
+  <div class="slide-inner">
+    <div class="label fade-up">11 / Go-To-Market</div>
+    <h2 class="headline fade-up" style="transition-delay:.06s">Meeting users<br><em class="grad-v">where they live</em></h2>
+    <div style="display:flex;flex-direction:column;gap:.75rem;margin-top:1.5rem;">
+      <div class="ch-row fade-up" style="transition-delay:.1s"><div class="ch-left"><div class="ch-ico">📸</div><div><div class="ch-title">Instagram &amp; YouTube Outreach</div><div class="ch-desc">Direct outreach to micro and mid-tier creators in high-demand niches</div></div></div><div class="tag v">Creators</div></div>
+      <div class="ch-row fade-up" style="transition-delay:.17s"><div class="ch-left"><div class="ch-ico">💼</div><div><div class="ch-title">LinkedIn Founder Outreach</div><div class="ch-desc">Targeting early-stage founders and growth teams seeking creators</div></div></div><div class="tag t">Founders</div></div>
+      <div class="ch-row fade-up" style="transition-delay:.24s"><div class="ch-left"><div class="ch-ico">🏘️</div><div><div class="ch-title">Communities &amp; Word of Mouth</div><div class="ch-desc">Startup communities, creator Discords, Reddit, Product Hunt launch</div></div></div><div class="tag p">Both</div></div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- S12 VISION -->
+<section class="slide" id="s12">
+  <div class="g gv" style="width:600px;height:480px;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+  <div class="slide-inner">
+    <div class="label fade-up">12 / Vision</div>
+    <div class="vquote fade-up" style="transition-delay:.08s"><span style="color:rgba(238,238,245,.55)">"</span>LinkedIn for<br>creator<br><em class="grad-v" style="font-style:normal">collaborations.</em><span style="color:rgba(238,238,245,.55)">"</span></div>
+    <p class="lead fade-up" style="max-width:560px;transition-delay:.16s">PostHire's mission is to become the <strong>default infrastructure for creator discovery</strong> — the platform every startup turns to first when they need to find and hire creators. We're building the category from scratch.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- S13 ASK -->
+<section class="slide" id="s13">
+  <div class="g gt" style="width:500px;height:400px;top:0;right:-12%;"></div>
+  <div class="g gv" style="width:380px;height:320px;bottom:5%;left:-8%;"></div>
+  <div class="slide-inner">
+    <div class="label fade-up">13 / The Ask</div>
+    <h2 class="headline fade-up" style="transition-delay:.06s">Let's build the future<br><em class="grad-t">of creator discovery</em></h2>
+    <div class="fade-up" style="transition-delay:.12s;margin-top:1rem;">
+      <div class="big-num grad-t" style="font-size:clamp(2.8rem,10vw,5rem)">Seed Round</div>
+      <div style="font-size:.85rem;color:var(--muted);margin-bottom:1.5rem;font-weight:500">Seeking investment to build, grow, and scale PostHire</div>
+    </div>
+    <div class="g3 fade-up" style="transition-delay:.2s;">
+      <div class="card"><div class="card-top teal"></div><div class="use-val grad-t">Build</div><div class="use-desc">Core platform — profiles, discovery engine, dashboard &amp; messaging</div></div>
+      <div class="card"><div class="card-top"></div><div class="use-val grad-v">Grow</div><div class="use-desc">Acquire creators and founders, build community, launch marketing</div></div>
+      <div class="card"><div class="card-top pink"></div><div class="use-val" style="background:linear-gradient(135deg,var(--pink),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Scale</div><div class="use-desc">Expand team, improve infrastructure, capture market share fast</div></div>
+    </div>
+    <div style="text-align:center;padding:2.5rem 0 1rem;display:flex;flex-direction:column;align-items:center;gap:1rem;" class="fade-up">
+      <div class="closing-logo">PostHire</div>
+      <div style="font-size:.9rem;color:var(--muted);font-weight:400">Find the right creators, faster.</div>
+      <a href="#s1" class="cta">✦ Back to Start</a>
+    </div>
+  </div>
+</section>
+
+<script>
+(()=>{
+  const c=document.getElementById('particles');
+  ['7B6EF6','F06292','26D9A3'].forEach(col=>{
+    for(let i=0;i<10;i++){
+      const p=document.createElement('div');p.className='pt';
+      const s=Math.random()*3+1;
+      p.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;background:#${col};opacity:${Math.random()*.3+.07};animation-duration:${Math.random()*18+14}s;animation-delay:-${Math.random()*22}s;`;
+      c.appendChild(p);
+    }
+  });
+})();
+
+const slides=document.querySelectorAll('.slide');
+const navDots=document.getElementById('navDots');
+const counter=document.getElementById('counter');
+const progress=document.getElementById('progress');
+const hint=document.getElementById('scrollHint');
+
+slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>slides[i].scrollIntoView({behavior:'smooth'});navDots.appendChild(d);});
+const dots=document.querySelectorAll('.dot');
+
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('vis');
+      const idx=[...slides].indexOf(e.target);
+      dots.forEach((d,i)=>d.classList.toggle('active',i===idx));
+      counter.textContent=String(idx+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
+      hint.style.opacity=idx>0?'0':'1';
+      e.target.querySelectorAll('.fade-up').forEach((el,j)=>{
+        setTimeout(()=>el.classList.add('show'),j*55+50);
+      });
+    }
+  });
+},{threshold:0.15});
+slides.forEach(s=>io.observe(s));
+
+window.addEventListener('scroll',()=>{
+  const max=document.body.scrollHeight-innerHeight;
+  progress.style.width=(scrollY/max*100)+'%';
+},{passive:true});
+</script>
+</body>
+</html>
