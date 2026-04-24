@@ -1,1 +1,1800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PostHire — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --hue:193;--sat:15%;
+  --gray50:hsl(var(--hue),var(--sat),95%);
+  --gray100:hsl(var(--hue),var(--sat),90%);
+  --gray200:hsl(var(--hue),var(--sat),80%);
+  --gray300:hsl(var(--hue),var(--sat),70%);
+  --gray400:hsl(var(--hue),var(--sat),60%);
+  --gray500:hsl(var(--hue),var(--sat),50%);
+  --gray600:hsl(var(--hue),var(--sat),40%);
+  --gray700:hsl(var(--hue),var(--sat),30%);
+  --gray750:hsl(var(--hue),var(--sat),25%);
+  --gray800:hsl(var(--hue),var(--sat),20%);
+  --gray850:hsl(var(--hue),var(--sat),14%);
+  --gray900:hsl(var(--hue),var(--sat),10%);
+  --glass:hsla(0,0%,100%,0.04);
+  --shadow:hsla(0,0%,0%,0.18);
+  --trans:0.25s cubic-bezier(0.33,1,0.68,1);
+  --bg:var(--gray900);
+  --surface:var(--gray850);
+  --surface2:var(--gray800);
+  --surface3:var(--gray750);
+  --border:var(--gray700);
+  --text:hsl(var(--hue),var(--sat),92%);
+  --muted:var(--gray400);
+  --muted2:var(--gray600);
+  --accent:hsl(258,90%,72%);
+  --accent2:hsl(0,90%,68%);
+  --accent3:hsl(168,90%,45%);
+  --gold:hsl(38,92%,55%);
+  --free:hsl(258,90%,72%);
+  --starter:hsl(214,90%,60%);
+  --pro:hsl(0,90%,68%);
+  --sidebar:248px;
+}
+body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;font-size:clamp(.8rem,.75rem + .2vw,1rem);}
+a{color:inherit;text-decoration:none;}
+input,select,textarea{font-family:'Poppins',sans-serif;}
+
+/* ══ SCROLLBAR ══ */
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+/* ══ SIDEBAR ══ */
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:var(--sidebar);background:linear-gradient(180deg,var(--surface) 0%,var(--gray900) 100%);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:200;transition:transform var(--trans);}
+.sidebar-logo{padding:1.375rem 1.25rem 1rem;display:flex;align-items:center;gap:.625rem;border-bottom:1px solid var(--border);font-size:1.15rem;font-weight:700;letter-spacing:-.02em;color:var(--text);cursor:pointer;}
+.sidebar-logo img{width:1.5rem;height:1.5rem;object-fit:contain;}
+.sidebar-nav{flex:1;padding:.875rem .75rem;overflow-y:auto;}
+.nav-section-label{font-size:.6rem;font-weight:600;color:var(--muted2);letter-spacing:.1em;text-transform:uppercase;padding:.875rem .75rem .3rem;margin-top:.25rem;}
+.nav-item{display:flex;align-items:center;gap:.75rem;padding:.625rem .875rem;border-radius:2em;cursor:pointer;font-size:.85rem;font-weight:500;color:var(--muted);transition:all var(--trans);margin-bottom:2px;}
+.nav-item:hover{background:var(--glass);color:var(--text);}
+.nav-item.active{background:hsla(258,90%,72%,.15);color:var(--accent);box-shadow:inset 0 0 0 1px hsla(258,90%,72%,.25);}
+.nav-item i{width:1rem;text-align:center;font-size:.82rem;}
+.nav-badge{background:var(--accent);color:#fff;font-size:.58rem;font-weight:700;padding:.15em .5em;border-radius:99px;margin-left:auto;}
+.sidebar-bottom{padding:.875rem .75rem;border-top:1px solid var(--border);}
+.sidebar-user{display:flex;align-items:center;gap:.625rem;padding:.625rem .875rem;border-radius:2em;cursor:pointer;transition:background var(--trans);}
+.sidebar-user:hover{background:var(--glass);}
+
+/* ══ UNIQUE AVATAR ══ */
+.avatar-wrap{position:relative;flex-shrink:0;}
+.avatar-ring{position:absolute;inset:-2px;border-radius:50%;background:conic-gradient(from 0deg,hsl(258,90%,72%),hsl(320,90%,68%),hsl(38,92%,60%),hsl(168,90%,50%),hsl(258,90%,72%));animation:spin-ring 3s linear infinite;z-index:0;}
+.avatar-ring::after{content:'';position:absolute;inset:2px;border-radius:50%;background:var(--surface);}
+.avatar{width:2rem;height:2rem;border-radius:50%;background:linear-gradient(135deg,hsl(258,80%,55%),hsl(320,80%,58%));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;color:#fff;position:relative;z-index:1;letter-spacing:.02em;overflow:hidden;text-shadow:0 1px 3px rgba(0,0,0,.4);}
+.avatar img{width:100%;height:100%;object-fit:cover;}
+.avatar-status{position:absolute;bottom:0;right:0;width:.55rem;height:.55rem;border-radius:50%;background:var(--accent3);border:2px solid var(--surface);z-index:2;box-shadow:0 0 6px var(--accent3);}
+/* Larger avatars used inline */
+.avatar-lg{width:3rem;height:3rem;border-radius:50%;background:linear-gradient(135deg,hsl(258,80%,55%),hsl(320,80%,58%));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;color:#fff;flex-shrink:0;overflow:hidden;text-shadow:0 1px 3px rgba(0,0,0,.4);position:relative;}
+.avatar-xl{width:5rem;height:5rem;border-radius:50%;background:linear-gradient(135deg,hsl(258,80%,55%),hsl(320,80%,58%));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.75rem;color:#fff;flex-shrink:0;overflow:hidden;text-shadow:0 2px 6px rgba(0,0,0,.4);}
+@keyframes spin-ring{to{transform:rotate(360deg);}}
+.user-info{flex:1;min-width:0;}
+.user-name{font-size:.78rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.user-role{font-size:.65rem;color:var(--muted);}
+.plan-badge{display:inline-flex;align-items:center;font-size:.55rem;font-weight:700;padding:.25em .6em;border-radius:99px;letter-spacing:.04em;text-transform:uppercase;margin-left:auto;flex-shrink:0;}
+.plan-badge.free{background:hsla(258,90%,72%,.15);color:var(--free);}
+.plan-badge.starter{background:hsla(214,90%,60%,.15);color:var(--starter);}
+.plan-badge.pro{background:hsla(0,90%,68%,.15);color:var(--pro);}
+
+/* ══ MAIN ══ */
+.main{margin-left:var(--sidebar);min-height:100vh;display:flex;flex-direction:column;}
+.topbar{padding:1rem 1.75rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:hsla(var(--hue),var(--sat),10%,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);position:sticky;top:0;z-index:100;}
+.topbar-left{display:flex;align-items:center;gap:1rem;}
+.mobile-menu-btn{display:none;background:var(--glass);border:1px solid var(--border);color:var(--text);width:2.25rem;height:2.25rem;border-radius:50%;align-items:center;justify-content:center;cursor:pointer;font-size:.875rem;}
+.topbar-title{font-size:1rem;font-weight:600;letter-spacing:-.01em;}
+.topbar-right{display:flex;align-items:center;gap:.625rem;}
+
+/* ══ BUTTONS ══ */
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.55em 1.375em;border-radius:2em;border:none;cursor:pointer;font:.82rem/1 'Poppins',sans-serif;font-weight:600;transition:all var(--trans);position:relative;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),hsl(258,80%,60%));color:#fff;box-shadow:0 .5em 1.5em hsla(258,90%,60%,.35);}
+.btn-primary:hover{filter:brightness(1.1);transform:translateY(-2px);box-shadow:0 .75em 2em hsla(258,90%,60%,.45);}
+.btn-ghost{background:var(--glass);color:var(--text);border:1px solid var(--border);backdrop-filter:blur(4px);}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);background:hsla(258,90%,72%,.08);}
+.btn-danger{background:hsla(0,90%,68%,.12);color:var(--accent2);border:1px solid hsla(0,90%,68%,.25);}
+.btn-danger:hover{background:hsla(0,90%,68%,.22);}
+.btn-success{background:hsla(168,90%,45%,.12);color:var(--accent3);border:1px solid hsla(168,90%,45%,.25);}
+.btn-sm{padding:.4em .875em;font-size:.76rem;}
+.btn-icon{width:2rem;height:2rem;padding:0;justify-content:center;border-radius:50%;}
+.content{padding:1.75rem;flex:1;}
+
+/* ══ STAT CARDS ══ */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.75rem;}
+.stat-card{background:var(--glass);border:1px solid var(--border);border-radius:1.5em;padding:1.375rem;position:relative;overflow:hidden;transition:all var(--trans);cursor:default;backdrop-filter:blur(8px);}
+.stat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--glass),transparent);pointer-events:none;}
+.stat-card:hover{border-color:hsla(258,90%,72%,.4);transform:translateY(-3px);box-shadow:0 1em 2.5em var(--shadow);}
+.stat-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:1.5em 1.5em 0 0;}
+.stat-icon{width:2.5rem;height:2.5rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;margin-bottom:.875rem;}
+.stat-val{font-size:2rem;font-weight:700;line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums;}
+.stat-label{font-size:.73rem;color:var(--muted);margin-top:.375rem;font-weight:500;}
+.stat-sub{font-size:.67rem;margin-top:.5rem;display:flex;align-items:center;gap:.25rem;color:var(--muted);}
+.stat-sub.up{color:var(--accent3);}
+.stat-sub.down{color:var(--accent2);}
+
+/* ══ PANELS ══ */
+.panel{background:var(--glass);border:1px solid var(--border);border-radius:1.5em;overflow:hidden;backdrop-filter:blur(8px);}
+.panel-head{padding:1rem 1.375rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:.75rem;}
+.panel-title{font-weight:600;font-size:.85rem;display:flex;align-items:center;gap:.5rem;letter-spacing:-.01em;}
+.panel-title i{color:var(--accent);font-size:.85rem;}
+.panel-body{padding:1.375rem;}
+
+/* ══ DASHBOARD GRID ══ */
+.dash-grid{display:grid;grid-template-columns:1fr 300px;gap:1.5rem;}
+
+/* ══ ACTIVITY CHART ══ */
+.chart-wrap{display:flex;align-items:flex-end;gap:5px;height:80px;}
+.chart-bar{flex:1;border-radius:4px 4px 0 0;transition:.3s ease;min-height:4px;cursor:pointer;}
+.chart-bar:hover{filter:brightness(1.25);}
+.chart-labels{display:flex;margin-top:.5rem;}
+.chart-labels span{flex:1;text-align:center;font-size:.6rem;color:var(--muted);}
+
+/* ══ REQUEST ITEMS ══ */
+.req-list{display:flex;flex-direction:column;gap:.625rem;}
+.req-item{display:flex;gap:.875rem;padding:1rem 1.125rem;background:var(--glass);border-radius:1.25em;border:1px solid var(--border);transition:all var(--trans);}
+.req-item:hover{border-color:hsla(258,90%,72%,.3);background:hsla(258,90%,72%,.04);}
+.req-ava{width:2.25rem;height:2.25rem;border-radius:50%;background:linear-gradient(135deg,hsl(258,80%,55%),hsl(320,80%,58%));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;flex-shrink:0;box-shadow:0 0 0 2px hsla(258,90%,72%,.3),0 4px 12px hsla(258,90%,60%,.25);text-shadow:0 1px 2px rgba(0,0,0,.3);color:#fff;}
+.req-body{flex:1;min-width:0;}
+.req-name{font-weight:600;font-size:.84rem;margin-bottom:.15rem;}
+.req-detail{font-size:.73rem;color:var(--muted);margin-bottom:.5rem;}
+.req-actions{display:flex;align-items:center;gap:.375rem;flex-wrap:wrap;}
+.status-badge{display:inline-flex;align-items:center;font-size:.66rem;font-weight:600;padding:.25em .7em;border-radius:99px;}
+.status-badge.pending{background:hsla(38,92%,55%,.15);color:var(--gold);}
+.status-badge.accepted{background:hsla(168,90%,45%,.15);color:var(--accent3);}
+.status-badge.declined{background:hsla(0,90%,68%,.15);color:var(--accent2);}
+.wa-btn{display:inline-flex;align-items:center;gap:.3rem;background:hsla(142,60%,42%,.15);color:hsl(142,60%,55%);border:1px solid hsla(142,60%,42%,.3);font-size:.7rem;padding:.3em .7em;border-radius:99px;text-decoration:none;transition:all var(--trans);}
+.wa-btn:hover{background:hsla(142,60%,42%,.25);}
+.accept-btn{background:hsla(168,90%,45%,.12);color:var(--accent3);border:1px solid hsla(168,90%,45%,.25);font-size:.7rem;padding:.3em .7em;border-radius:99px;cursor:pointer;transition:all var(--trans);}
+.accept-btn:hover{background:hsla(168,90%,45%,.22);}
+.decline-btn{background:hsla(0,90%,68%,.08);color:var(--accent2);border:1px solid hsla(0,90%,68%,.2);font-size:.7rem;padding:.3em .7em;border-radius:99px;cursor:pointer;transition:all var(--trans);}
+.decline-btn:hover{background:hsla(0,90%,68%,.18);}
+
+/* ══ CREATOR CARDS ══ */
+.creators-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1rem;}
+.creator-card{background:var(--glass);border:1px solid var(--border);border-radius:1.5em;padding:1.375rem;display:flex;flex-direction:column;gap:.875rem;transition:all var(--trans);position:relative;overflow:hidden;backdrop-filter:blur(8px);}
+.creator-card:hover{border-color:hsla(258,90%,72%,.4);transform:translateY(-4px);box-shadow:0 1.5em 3em var(--shadow);}
+.creator-card.featured-card{border-color:hsla(38,92%,55%,.35);background:hsla(38,92%,55%,.03);}
+.featured-badge{position:absolute;top:.875rem;right:.875rem;background:hsla(38,92%,55%,.15);color:var(--gold);font-size:.6rem;font-weight:700;padding:.25em .65em;border-radius:99px;border:1px solid hsla(38,92%,55%,.3);}
+.creator-head{display:flex;gap:.875rem;align-items:flex-start;}
+.creator-ava{width:3rem;height:3rem;border-radius:50%;background:linear-gradient(135deg,var(--surface3),var(--surface2));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;flex-shrink:0;overflow:hidden;border:2px solid var(--border);}
+.creator-ava img{width:100%;height:100%;object-fit:cover;}
+.creator-name{font-weight:600;font-size:.9rem;margin-bottom:.15rem;letter-spacing:-.01em;}
+.creator-meta{font-size:.71rem;color:var(--muted);}
+.niche-tags{display:flex;flex-wrap:wrap;gap:.3rem;}
+.niche-tag{font-size:.63rem;font-weight:600;padding:.25em .65em;border-radius:99px;background:hsla(258,90%,72%,.12);color:var(--accent);border:1px solid hsla(258,90%,72%,.2);}
+.creator-stats{display:flex;gap:.75rem;}
+.c-stat{display:flex;flex-direction:column;gap:.1rem;}
+.c-stat-val{font-size:.875rem;font-weight:700;}
+.c-stat-label{font-size:.6rem;color:var(--muted);}
+.creator-bio{font-size:.77rem;color:var(--muted);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.creator-socials{display:flex;gap:.375rem;}
+.social-btn{width:1.75rem;height:1.75rem;border-radius:50%;background:var(--glass);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.73rem;transition:all var(--trans);color:var(--muted);text-decoration:none;}
+.social-btn:hover{border-color:var(--accent);color:var(--accent);background:hsla(258,90%,72%,.1);}
+.collab-btn{width:100%;padding:.65em 1.25em;border-radius:2em;border:none;cursor:pointer;font:.8rem/1 'Poppins',sans-serif;font-weight:600;transition:all var(--trans);display:flex;align-items:center;justify-content:center;gap:.4rem;margin-top:auto;}
+.collab-btn.active{background:linear-gradient(135deg,var(--accent),hsl(258,80%,60%));color:#fff;box-shadow:0 .5em 1.5em hsla(258,90%,60%,.3);}
+.collab-btn.active:hover{filter:brightness(1.1);transform:translateY(-2px);}
+.collab-btn.sent{background:hsla(168,90%,45%,.1);color:var(--accent3);border:1px solid hsla(168,90%,45%,.2);cursor:default;}
+.collab-btn.self{background:var(--glass);color:var(--muted);border:1px solid var(--border);cursor:default;}
+
+/* ══ FILTER BAR ══ */
+.filter-bar{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-bottom:1.25rem;}
+.filter-input{background:var(--glass);border:1px solid var(--border);border-radius:2em;padding:.55em 1.25em;color:var(--text);font:.82rem/1 'Poppins',sans-serif;flex:1;min-width:180px;outline:none;transition:all var(--trans);}
+.filter-input:focus{border-color:var(--accent);background:hsla(258,90%,72%,.06);}
+.filter-input::placeholder{color:var(--muted);}
+.filter-select{background:var(--glass);border:1px solid var(--border);border-radius:2em;padding:.55em 1.25em;color:var(--text);font:.82rem/1 'Poppins',sans-serif;outline:none;cursor:pointer;transition:all var(--trans);}
+.filter-select:focus{border-color:var(--accent);}
+
+/* ══ PROFILE PAGE ══ */
+.profile-grid{display:grid;grid-template-columns:1fr 300px;gap:1.5rem;}
+.profile-header{display:flex;gap:1.25rem;align-items:flex-start;margin-bottom:1.5rem;}
+.profile-ava{width:5rem;height:5rem;border-radius:50%;font-size:1.75rem;flex-shrink:0;}
+.profile-info h2{font-size:1.375rem;font-weight:700;margin-bottom:.25rem;letter-spacing:-.02em;}
+.profile-info p{font-size:.83rem;color:var(--muted);}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:1rem;}
+.info-item{background:var(--glass);border:1px solid var(--border);border-radius:1.25em;padding:.875rem 1rem;}
+.info-item-label{font-size:.65rem;color:var(--muted);margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.07em;font-weight:600;}
+.info-item-val{font-size:.875rem;font-weight:600;}
+
+/* ══ PRICING ══ */
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;max-width:900px;margin:0 auto;}
+.price-card{background:var(--glass);border:1px solid var(--border);border-radius:1.75em;padding:1.875rem;display:flex;flex-direction:column;gap:1rem;position:relative;transition:all var(--trans);backdrop-filter:blur(8px);}
+.price-card:hover{transform:translateY(-5px);box-shadow:0 2em 4em var(--shadow);}
+.price-card.current{border-color:var(--accent);background:hsla(258,90%,72%,.06);}
+.price-card.popular{border-color:var(--starter);background:hsla(214,90%,60%,.04);}
+.popular-tag{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--starter);color:#fff;font-size:.62rem;font-weight:700;padding:.3em 1em;border-radius:0 0 .75em .75em;letter-spacing:.06em;}
+.price-name{font-size:.8rem;font-weight:700;letter-spacing:.08em;}
+.price-amount{font-size:2.5rem;font-weight:700;line-height:1;letter-spacing:-.04em;}
+.price-amount span{font-size:.875rem;font-weight:400;color:var(--muted);}
+.price-desc{font-size:.76rem;color:var(--muted);}
+.price-features{display:flex;flex-direction:column;gap:.5rem;flex:1;}
+.price-feature{display:flex;align-items:flex-start;gap:.5rem;font-size:.79rem;}
+.price-feature i{color:var(--accent3);font-size:.73rem;margin-top:.15rem;flex-shrink:0;}
+.price-feature.locked{color:var(--muted);}
+.price-feature.locked i{color:var(--muted2);}
+.price-cta{width:100%;padding:.75em 1.5em;border-radius:2em;border:none;cursor:pointer;font:.875rem/1 'Poppins',sans-serif;font-weight:600;transition:all var(--trans);}
+.price-cta:hover{filter:brightness(1.1);transform:translateY(-2px);}
+.current-label{text-align:center;font-size:.78rem;font-weight:600;padding:.625em;border-radius:2em;}
+
+/* ══ UPGRADE BANNER ══ */
+.upgrade-banner{background:linear-gradient(135deg,hsla(258,90%,72%,.1),hsla(0,90%,68%,.06));border:1px solid hsla(258,90%,72%,.2);border-radius:1.5em;padding:1.125rem 1.375rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1.25rem;flex-wrap:wrap;backdrop-filter:blur(8px);}
+.upgrade-banner h4{font-size:.875rem;font-weight:600;margin-bottom:.2rem;letter-spacing:-.01em;}
+.upgrade-banner p{font-size:.76rem;color:var(--muted);}
+
+/* ══ EMPTY STATE ══ */
+.empty-state{text-align:center;padding:3rem 1rem;color:var(--muted);}
+.empty-state i{font-size:2.5rem;opacity:.25;margin-bottom:.875rem;display:block;}
+.empty-state p{font-size:.875rem;line-height:1.7;}
+.empty-state a{color:var(--accent);cursor:pointer;}
+
+/* ══ OVERLAYS / MODALS ══ */
+.overlay{position:fixed;inset:0;background:hsla(var(--hue),var(--sat),5%,.85);backdrop-filter:blur(8px);z-index:500;display:none;align-items:center;justify-content:center;padding:1rem;}
+.overlay.open{display:flex;}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:1.75em;width:100%;max-width:540px;max-height:calc(100vh - 2rem);overflow-y:auto;position:relative;padding:1.875rem;}
+.modal-box.wide{max-width:700px;}
+.modal-close{position:absolute;top:1.125rem;right:1.125rem;background:var(--glass);border:1px solid var(--border);color:var(--muted);width:2rem;height:2rem;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all var(--trans);font-size:.8rem;}
+.modal-close:hover{color:var(--text);border-color:var(--accent);background:hsla(258,90%,72%,.1);}
+.modal-title{font-size:1.2rem;font-weight:700;margin-bottom:1.25rem;letter-spacing:-.02em;}
+.form-group{margin-bottom:.875rem;}
+.form-group label{display:block;font-size:.72rem;font-weight:600;color:var(--muted);margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.06em;}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:var(--glass);border:1px solid var(--border);border-radius:2em;padding:.625em 1.125em;color:var(--text);font:.85rem/1.4 'Poppins',sans-serif;outline:none;transition:all var(--trans);}
+.form-group textarea{border-radius:1.25em;resize:vertical;min-height:80px;line-height:1.6;padding:.75em 1.125em;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent);background:hsla(258,90%,72%,.06);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.form-err{background:hsla(0,90%,68%,.1);border:1px solid hsla(0,90%,68%,.3);color:var(--accent2);border-radius:1.25em;padding:.625em 1.125em;font-size:.8rem;margin-bottom:.875rem;display:none;}
+.form-err.show{display:block;}
+.niche-chips{display:flex;flex-wrap:wrap;gap:.375rem;margin-top:.375rem;}
+.niche-chip{font-size:.7rem;font-weight:600;padding:.3em .8em;border-radius:99px;background:var(--glass);border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all var(--trans);}
+.niche-chip.active{background:hsla(258,90%,72%,.15);border-color:hsla(258,90%,72%,.4);color:var(--accent);}
+.niche-chip:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ══ AUTH FLOW ══ */
+.auth-box{background:var(--surface);border:1px solid var(--border);border-radius:1.75em;padding:2.25rem;width:100%;max-width:420px;}
+.auth-logo{display:flex;align-items:center;gap:.625rem;font-size:1.2rem;font-weight:700;letter-spacing:-.02em;margin-bottom:1.5rem;}
+.auth-logo img{width:1.5rem;height:1.5rem;object-fit:contain;}
+.auth-title{font-size:1.5rem;font-weight:700;margin-bottom:.375rem;letter-spacing:-.03em;}
+.auth-sub{font-size:.83rem;color:var(--muted);margin-bottom:1.5rem;}
+.auth-tabs{display:flex;background:var(--glass);border:1px solid var(--border);border-radius:2em;padding:.25rem;margin-bottom:1.25rem;gap:.25rem;}
+.auth-tab{flex:1;padding:.5em;border-radius:2em;border:none;background:transparent;color:var(--muted);font:.78rem/1 'Poppins',sans-serif;font-weight:600;cursor:pointer;transition:all var(--trans);}
+.auth-tab.active{background:var(--surface2);color:var(--text);box-shadow:0 1px 6px var(--shadow);}
+.auth-err{background:hsla(0,90%,68%,.1);border:1px solid hsla(0,90%,68%,.3);color:var(--accent2);border-radius:1.25em;padding:.625em 1em;font-size:.8rem;margin-bottom:.75rem;display:none;}
+.auth-err.show{display:block;}
+.auth-switch{text-align:center;font-size:.78rem;color:var(--muted);margin-top:1rem;}
+.auth-switch a{color:var(--accent);cursor:pointer;}
+
+/* ══ ROLE SELECT ══ */
+.role-screen{position:fixed;inset:0;background:var(--bg);z-index:600;display:none;align-items:center;justify-content:center;}
+.role-screen.show{display:flex;}
+.role-box{background:var(--surface);border:1px solid var(--border);border-radius:1.75em;padding:2.25rem;width:100%;max-width:440px;text-align:center;}
+.role-title{font-size:1.375rem;font-weight:700;margin-bottom:.375rem;letter-spacing:-.02em;}
+.role-sub{font-size:.83rem;color:var(--muted);margin-bottom:1.5rem;}
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;margin-bottom:1.25rem;}
+.role-card{background:var(--glass);border:2px solid var(--border);border-radius:1.5em;padding:1.5rem 1rem;cursor:pointer;transition:all var(--trans);}
+.role-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 1em 2em var(--shadow);}
+.role-card.active{border-color:var(--accent);background:hsla(258,90%,72%,.1);}
+.role-icon{font-size:2.25rem;margin-bottom:.75rem;}
+.role-name{font-weight:700;font-size:.95rem;margin-bottom:.3rem;letter-spacing:-.01em;}
+.role-desc{font-size:.73rem;color:var(--muted);}
+
+/* ══ MOBILE TOPBAR ══ */
+.mobile-topbar{display:none;padding:.75rem 1rem;border-bottom:1px solid var(--border);align-items:center;gap:.875rem;background:var(--surface);position:sticky;top:0;z-index:100;}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:hsla(var(--hue),var(--sat),5%,.7);backdrop-filter:blur(4px);z-index:150;}
+
+/* ══ TOAST ══ */
+.toast-container{position:fixed;bottom:1.5rem;right:1.5rem;z-index:999;display:flex;flex-direction:column;gap:.5rem;}
+.toast{background:var(--surface);border:1px solid var(--border);border-radius:1.25em;padding:.75em 1.25em;font-size:.82rem;font-weight:500;display:flex;align-items:center;gap:.5rem;min-width:220px;box-shadow:0 1em 2.5em var(--shadow);animation:slideIn .25s cubic-bezier(0.33,1,0.68,1);}
+.toast.success{border-color:hsla(168,90%,45%,.4);color:var(--accent3);}
+.toast.error{border-color:hsla(0,90%,68%,.4);color:var(--accent2);}
+.toast.info{border-color:hsla(258,90%,72%,.4);color:var(--accent);}
+@keyframes slideIn{from{opacity:0;transform:translateX(1rem);}to{opacity:1;transform:translateX(0);}}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:1100px){.dash-grid{grid-template-columns:1fr;}.stats-grid{grid-template-columns:repeat(2,1fr);}.profile-grid{grid-template-columns:1fr;}.pricing-grid{grid-template-columns:1fr;max-width:380px;}}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .sidebar-overlay.show{display:block;}
+  .main{margin-left:0;}
+  .mobile-topbar{display:flex;}
+  .topbar{display:none;}
+  .mobile-menu-btn{display:flex;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .creators-grid{grid-template-columns:1fr;}
+  .pricing-grid{grid-template-columns:1fr;max-width:340px;}
+  .form-row{grid-template-columns:1fr;}
+}
+@media(max-width:480px){.stats-grid{grid-template-columns:1fr;}.content{padding:1rem;}}
+</style>
+</head>
+<body>
+
+<!-- LOGO PLACEHOLDER - will be set by JS -->
+<template id="logo-tmpl">data:image/png;base64,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</template>
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo" onclick="goToLanding()">
+    <span id="sidebar-logo-img"></span>
+    PostHire
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Main</div>
+    <div class="nav-item active" id="nav-home" onclick="showSection('home')"><i class="fas fa-home"></i> Dashboard</div>
+    <div class="nav-item" id="nav-requests" onclick="showSection('requests')"><i class="fas fa-inbox"></i> Requests <span class="nav-badge" id="req-badge" style="display:none">0</span></div>
+    <div class="nav-item" id="nav-creators" onclick="showSection('creators')"><i class="fas fa-search"></i> Find Creators</div>
+    <div class="nav-section-label">Account</div>
+    <div class="nav-item" id="nav-profile" onclick="showSection('profile')"><i class="fas fa-user"></i> My Profile</div>
+    <div class="nav-item" id="nav-pricing" onclick="showSection('pricing')"><i class="fas fa-crown"></i> Plans & Pricing</div>
+    <div class="nav-item" onclick="goToLanding()"><i class="fas fa-globe"></i> Landing Page</div>
+    <div class="nav-section-label" id="admin-nav-label" style="display:none">Admin</div>
+    <div class="nav-item" id="nav-admin" onclick="goToAdmin()" style="display:none"><i class="fas fa-shield-alt"></i> Admin Panel</div>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="sidebar-user" onclick="showSection('profile')">
+      <div class="avatar-wrap">
+        <div class="avatar-ring"></div>
+        <div class="avatar" id="sb-avatar">U</div>
+        <div class="avatar-status"></div>
+      </div>
+      <div class="user-info">
+        <div class="user-name" id="sb-name">Loading…</div>
+        <div class="user-role" id="sb-role">—</div>
+      </div>
+      <span class="plan-badge free" id="sb-plan">FREE</span>
+    </div>
+    <div style="margin-top:.5rem;">
+      <button class="btn btn-danger btn-sm" style="width:100%;justify-content:center;" onclick="doSignOut()"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
+    </div>
+  </div>
+</aside>
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<!-- ═══ MOBILE TOPBAR ═══ -->
+<div class="mobile-topbar">
+  <button class="mobile-menu-btn" onclick="openSidebar()"><i class="fas fa-bars"></i></button>
+  <div style="display:flex;align-items:center;gap:.4rem;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:1rem;">
+    <span id="mobile-logo-img"></span> PostHire
+  </div>
+  <div style="margin-left:auto;display:flex;gap:.5rem;">
+    <button class="btn btn-primary btn-sm" id="mob-action-btn"></button>
+  </div>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+    </div>
+    <div class="topbar-right">
+      <button class="btn btn-ghost btn-sm" onclick="showSection('profile')"><i class="fas fa-edit"></i> Edit Profile</button>
+      <button class="btn btn-primary btn-sm" id="topbar-action-btn" onclick="showSection('creators')"><i class="fas fa-search"></i> Find Creators</button>
+    </div>
+  </div>
+  <div class="content" id="main-content">
+    <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading your dashboard…</p></div>
+  </div>
+</main>
+
+<!-- ═══ ROLE SELECT SCREEN ═══ -->
+<div class="role-screen" id="role-screen">
+  <div class="role-box">
+    <div class="auth-logo" style="justify-content:center;margin-bottom:1rem;"><span id="role-logo-img"></span> PostHire</div>
+    <div class="role-title">How will you use PostHire?</div>
+    <div class="role-sub">Choose your role to get started.</div>
+    <div class="role-grid">
+      <div class="role-card active" id="role-founder" onclick="selectRole('founder')">
+        <div class="role-icon">🚀</div>
+        <div class="role-name">Founder</div>
+        <div class="role-desc">Discover creators & grow your startup</div>
+      </div>
+      <div class="role-card" id="role-creator" onclick="selectRole('creator')">
+        <div class="role-icon">🎨</div>
+        <div class="role-name">Creator</div>
+        <div class="role-desc">Get discovered by serious startups</div>
+      </div>
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem;" onclick="confirmRole()">Continue →</button>
+  </div>
+</div>
+
+<!-- ═══ PROFILE SETUP OVERLAY ═══ -->
+<div class="overlay" id="setup-overlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeSetup()"><i class="fas fa-times"></i></button>
+    <div class="modal-title" id="setup-title">Setup Profile</div>
+    <div class="form-err" id="setup-err"></div>
+    <div id="setup-form"></div>
+  </div>
+</div>
+
+<!-- ═══ PLAN OVERLAY ═══ -->
+<div class="overlay" id="plan-overlay">
+  <div class="modal-box wide">
+    <button class="modal-close" onclick="closePlanOverlay()"><i class="fas fa-times"></i></button>
+    <div class="modal-title">⚡ Choose Your Plan</div>
+    <div id="plan-overlay-cards" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;"></div>
+  </div>
+</div>
+
+<!-- ═══ PLAN SELECT SCREEN (shown after role selection, before profile setup) ═══ -->
+<div id="plan-select-screen" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:700;overflow-y:auto;padding:2rem 1rem;">
+  <div style="max-width:900px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:2.5rem">
+      <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:2rem;font-weight:800;letter-spacing:-.03em;margin-bottom:.5rem">Choose Your Plan 🚀</div>
+      <div style="color:var(--muted);font-size:.95rem">Pick a plan to get started. You can upgrade anytime.</div>
+    </div>
+    <div class="pricing-grid" id="plan-select-grid"></div>
+    <div style="text-align:center;margin-top:1.5rem;font-size:.8rem;color:var(--muted)">
+      <i class="fas fa-shield-alt"></i> Secure payments · Cancel anytime · 7-day refund policy
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TOAST ═══ -->
+<div class="toast-container" id="toast-container"></div>
+
+<script type="module">
+// ══════════════════════════════════════════════════════
+// FIREBASE
+// ══════════════════════════════════════════════════════
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signOut as fbSignOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+// ══════════════════════════════════════════════════════
+// RAZORPAY CONFIG
+// ══════════════════════════════════════════════════════
+const RAZORPAY_KEY = 'rzp_live_SgDE9SyUA22OlF'; // Live Razorpay Key
+const PLAN_AMOUNTS = {
+  starter: 29900, // ₹299 in paise
+  pro:     59900  // ₹599 in paise
+};
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, addDoc, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+const fbConfig = {
+  apiKey:"AIzaSyD1ElccdzrwPwKDmGimitEkQEwNMrUeHyE",
+  authDomain:"posthire-81b69.firebaseapp.com",
+  databaseURL:"https://posthire-81b69-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:"posthire-81b69",
+  storageBucket:"posthire-81b69.firebasestorage.app",
+  messagingSenderId:"898539356038",
+  appId:"1:898539356038:web:825b16fcd7f037d1333607"
+};
+const fbApp = initializeApp(fbConfig);
+const auth = getAuth(fbApp);
+const db = getFirestore(fbApp);
+const storage = getStorage(fbApp);
+
+// ══════════════════════════════════════════════════════
+// DB HELPERS
+// ══════════════════════════════════════════════════════
+const DB = {
+  async getUser(uid){
+    try{
+      const s = await getDoc(doc(db,'users',uid));
+      return s.exists() ? s.data() : null;
+    }catch(e){
+      console.error('getUser error:',e);
+      // If Firestore fails (not enabled yet etc), dont redirect — show error
+      const mc=document.getElementById('main-content');
+      if(mc) mc.innerHTML=`<div class="empty-state"><i class="fas fa-exclamation-triangle" style="color:var(--accent2)"></i><p>Firebase error: ${e.message}<br><br>Make sure Firestore is enabled in Firebase Console.</p></div>`;
+      throw e;
+    }
+  },
+  async setUser(uid,d){
+    await setDoc(doc(db,'users',uid), d);
+  },
+  async updateUser(uid,d){
+    await updateDoc(doc(db,'users',uid), d);
+  },
+  async getCreator(uid){
+    const s = await getDoc(doc(db,'creators',uid));
+    return s.exists() ? s.data() : null;
+  },
+  async setCreator(uid,d){
+    await setDoc(doc(db,'creators',uid), d);
+  },
+  async getCreators(){
+    const snap = await getDocs(collection(db,'creators'));
+    const result = {};
+    snap.forEach(d => { result[d.id] = d.data(); });
+    return result;
+  },
+  async getFounder(uid){
+    const s = await getDoc(doc(db,'founders',uid));
+    return s.exists() ? s.data() : null;
+  },
+  async setFounder(uid,d){
+    await setDoc(doc(db,'founders',uid), d);
+  },
+  async getRequests(){
+    const snap = await getDocs(collection(db,'requests'));
+    const result = {};
+    snap.forEach(d => { result[d.id] = d.data(); });
+    return result;
+  },
+  async saveRequest(d){
+    const ref = await addDoc(collection(db,'requests'), d);
+    await updateDoc(ref, {id: ref.id});
+    return ref.id;
+  },
+  async updateRequest(id,patch){
+    await updateDoc(doc(db,'requests',id), patch);
+  },
+  async seedDemoCreators(){
+    const s = await getDoc(doc(db,'_meta','seeded'));
+    if(s.exists()) return;
+    const creators=[
+      {userId:'d1',name:'Arjun Mehra',profilePhoto:'',bio:'Tech & SaaS creator helping founders grow. Worked with 30+ startups on product launches and content strategy.',niches:['Tech','SaaS','Startup'],instagram:'@arjunmehra',youtube:'@arjunmehra',linkedin:'linkedin.com/in/arjun',audienceSize:'50K-100K',engagementRate:'6.2%',pastCollabs:['Notion','Linear'],pricing:'From ₹8,000',whatsapp:'919876543210',featured:true,topSearch:true,createdAt:'2024-01-01'},
+      {userId:'d2',name:'Priya Kapoor',profilePhoto:'',bio:'Finance & investment content for millennials. Helping brands reach young India with authentic storytelling and data-driven campaigns.',niches:['Finance','Business'],instagram:'@priyafinance',youtube:'@priyakapoor',audienceSize:'100K-500K',engagementRate:'4.8%',pastCollabs:['Zerodha','CoinSwitch'],pricing:'From ₹15,000',whatsapp:'919876543211',featured:false,topSearch:false,createdAt:'2024-01-02'},
+      {userId:'d3',name:'Rahul Singh',profilePhoto:'',bio:'AI & ML content creator. Breaking down complex tech for everyday users. 8.5% engagement rate, highly engaged community.',niches:['AI','Tech','Education'],instagram:'@rahulai',youtube:'@rahulsingh',audienceSize:'10K-50K',engagementRate:'8.5%',pastCollabs:['Unstop','BuildFast'],pricing:'From ₹5,000',whatsapp:'919876543212',featured:false,topSearch:false,createdAt:'2024-01-03'},
+      {userId:'d4',name:'Sneha Patel',profilePhoto:'',bio:'Lifestyle & health creator with a loyal community of 200K+ followers. Known for authentic product reviews and wellness content.',niches:['Lifestyle','Health'],instagram:'@snehawellness',youtube:'@snehapatel',audienceSize:'100K-500K',engagementRate:'5.1%',pastCollabs:['Mamaearth','The Whole Truth'],pricing:'From ₹20,000',whatsapp:'919876543213',featured:true,topSearch:false,createdAt:'2024-01-04'},
+      {userId:'d5',name:'Karan Verma',profilePhoto:'',bio:'Startup & entrepreneurship content creator. Sharing founder journeys, growth hacks, and product teardowns for the Indian startup ecosystem.',niches:['Startup','Business','Marketing'],instagram:'@karanstartup',audienceSize:'1K-10K',engagementRate:'12%',pastCollabs:['Product Hunt'],pricing:'From ₹3,000',whatsapp:'919876543214',featured:false,topSearch:false,createdAt:'2024-01-05'},
+      {userId:'d6',name:'Divya Sharma',profilePhoto:'',bio:'EdTech & career content creator. Helping students navigate competitive exams, placements, and career growth.',niches:['Education','Marketing'],instagram:'@divyacareers',youtube:'@divyasharma',audienceSize:'50K-100K',engagementRate:'7.3%',pastCollabs:['Unacademy','Internshala'],pricing:'From ₹10,000',whatsapp:'919876543215',featured:false,topSearch:true,createdAt:'2024-01-06'},
+    ];
+    for(const c of creators) await setDoc(doc(db,'creators',c.userId), c);
+    await setDoc(doc(db,'_meta','seeded'), {at: new Date().toISOString()});
+  }
+};
+
+// ══════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════
+let _me = null;
+let _authMode = 'signin';
+let _pendingRole = 'founder';
+const LOGO_SRC = document.getElementById('logo-tmpl').innerHTML.trim();
+
+const PLANS = [
+  {
+    id:'free', name:'FREE', price:'₹0', color:'var(--free)', period:'/month',
+    desc:'For new users testing the platform',
+    features:[
+      {text:'Create profile (creator or founder)',ok:true},
+      {text:'Browse limited profiles (max 10/day)',ok:true},
+      {text:'3 collaboration requests/month',ok:true},
+      {text:'Basic search filters',ok:true},
+      {text:'View limited profile details',ok:true},
+      {text:'Standard support',ok:true},
+      {text:'Advanced search filters',ok:false},
+      {text:'Direct WhatsApp access',ok:false},
+      {text:'Featured placement',ok:false},
+      {text:'Analytics & insights',ok:false},
+    ]
+  },
+  {
+    id:'starter', name:'STARTER', price:'₹299', color:'var(--starter)', period:'/month',
+    desc:'For early-stage founders & small creators', popular:true,
+    features:[
+      {text:'Unlimited profile browsing',ok:true},
+      {text:'20 collaboration requests/month',ok:true},
+      {text:'Advanced filters (niche, audience, stage)',ok:true},
+      {text:'Direct in-platform messaging',ok:true},
+      {text:'Priority listing in search',ok:true},
+      {text:'Collaboration tracking dashboard',ok:true},
+      {text:'Basic analytics',ok:true},
+      {text:'No platform ads',ok:true},
+      {text:'Featured profile badge',ok:false},
+      {text:'AI-powered match suggestions',ok:false},
+    ]
+  },
+  {
+    id:'pro', name:'PRO', price:'₹599', color:'var(--pro)', period:'/month',
+    desc:'For serious founders & active creators',
+    features:[
+      {text:'Unlimited collaboration requests',ok:true},
+      {text:'Unlimited messaging',ok:true},
+      {text:'Daily AI-powered match suggestions',ok:true},
+      {text:'Featured profile badge',ok:true},
+      {text:'Top placement in search results',ok:true},
+      {text:'Portfolio highlight section',ok:true},
+      {text:'Collaboration history & performance insights',ok:true},
+      {text:'Creator audience analytics view',ok:true},
+      {text:'Early access to new features',ok:true},
+      {text:'Priority support',ok:true},
+    ]
+  }
+]
+
+// ══════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════
+setLogos();
+DB.seedDemoCreators();
+
+// Show loading spinner while Firebase resolves auth
+const _loadingEl = document.getElementById('main-content');
+if(_loadingEl) _loadingEl.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin" style="font-size:2rem;opacity:.5"></i><p style="margin-top:1rem;color:var(--muted)">Loading…</p></div>';
+
+// Track auth state properly - Firebase can fire null first on page load
+// before the actual signed-in user arrives. We wait for the definitive state.
+let _authTimer = null;
+let _authResolved = false; // track if we've confirmed a real user once
+
+onAuthStateChanged(auth, async (fbUser) => {
+  // Cancel any pending redirect timer
+  if(_authTimer){ clearTimeout(_authTimer); _authTimer = null; }
+
+  if(!fbUser){
+    // Only redirect if we have NEVER seen a logged-in user this session.
+    // This prevents race: Firebase briefly emits null before confirming auth.
+    if(_authResolved){
+      // User was logged in before but now signed out — redirect immediately
+      window.location.href='index.html';
+    } else {
+      // First emission is null — wait longer to see if real user arrives
+      _authTimer = setTimeout(() => {
+        // Still no user after grace period — genuinely not logged in
+        window.location.href='index.html';
+      }, 5000); // 5 sec grace period for slow networks
+    }
+    return;
+  }
+
+  // We have a confirmed user — mark resolved so future null = real sign-out
+  _authResolved = true;
+
+  // User is signed in — load their Firestore profile
+  try{
+    _me = await DB.getUser(fbUser.uid);
+  }catch(e){
+    // Error shown inside getUser — don't redirect, let user see the error
+    return;
+  }
+
+  if(!_me){
+    // User exists in Firebase Auth but NOT in Firestore.
+    // This means signup was incomplete. Create the user doc now.
+    const fallbackUser = {
+      uid: fbUser.uid,
+      email: fbUser.email,
+      name: fbUser.displayName || fbUser.email.split('@')[0],
+      whatsapp: '',
+      plan: 'free',
+      profileComplete: false,
+      createdAt: new Date().toISOString()
+    };
+    try{
+      await DB.setUser(fbUser.uid, fallbackUser);
+      _me = fallbackUser;
+    }catch(e){
+      // If Firestore write fails, show error — don't redirect logged-in user
+      console.error('Failed to create user doc:', e);
+      const mc=document.getElementById('main-content');
+      if(mc) mc.innerHTML=`<div class="empty-state"><i class="fas fa-exclamation-triangle" style="color:var(--accent2)"></i><p>Profile save failed: ${e.message}<br><br>Please refresh the page.</p></div>`;
+      return;
+    }
+  }
+
+  if(!_me.userType){ showRoleScreen(); return; }
+  // planSelected check: only show plan screen for NEW users (not yet profile complete)
+  // Existing users who already have profileComplete=true skip this screen
+  if(!_me.planSelected && !_me.profileComplete){ showPlanSelectScreen(); return; }
+  // If existing user doesn't have planSelected flag, backfill it silently
+  if(!_me.planSelected && _me.profileComplete){
+    _me = {..._me, planSelected: true};
+    DB.setUser(_me.uid, _me).catch(()=>{}); // silent backfill
+  }
+  if(!_me.profileComplete){ await openSetup(); return; }
+  bootDashboard();
+});
+
+function setLogos(){
+  ['sidebar-logo-img','mobile-logo-img','role-logo-img'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.innerHTML=`<img src="${LOGO_SRC}" style="width:1.4rem;height:1.4rem;object-fit:contain;" alt="PostHire">`;
+  });
+}
+
+function bootDashboard(){
+  // Show admin panel link for admin users
+  const ADMIN_EMAILS = ['admin@posthire.in','superadmin@posthire.in'];
+  if(_me && ADMIN_EMAILS.includes(_me.email)){
+    const al=document.getElementById('admin-nav-label');
+    const an=document.getElementById('nav-admin');
+    if(al) al.style.display='';
+    if(an) an.style.display='';
+  }
+  updateSidebarUI();
+  const isC = _me.userType==='creator';
+  document.getElementById('nav-creators').style.display = isC?'none':'flex';
+  // Update topbar action btn
+  const tab=document.getElementById('topbar-action-btn');
+  const mob=document.getElementById('mob-action-btn');
+  if(isC){
+    tab.innerHTML='<i class="fas fa-eye"></i> View Profile';tab.onclick=()=>showSection('profile');
+    mob.innerHTML='Profile';mob.onclick=()=>showSection('profile');
+  } else {
+    tab.innerHTML='<i class="fas fa-search"></i> Find Creators';tab.onclick=()=>showSection('creators');
+    mob.innerHTML='Find Creators';mob.onclick=()=>showSection('creators');
+  }
+  // Check if user came from landing page with a pending plan
+  const pendingPlan = sessionStorage.getItem('pendingPlan');
+  if(pendingPlan){
+    sessionStorage.removeItem('pendingPlan');
+    const cur = _me.plan || 'free';
+    if(pendingPlan !== 'free' && pendingPlan !== cur){
+      // Small delay so dashboard loads first, then show payment
+      setTimeout(() => selectPlan(pendingPlan), 800);
+    }
+  }
+  showSection('home');
+  updateRequestBadge();
+}
+
+async function updateRequestBadge(){
+  try{
+    const allR = Object.entries(await DB.getRequests());
+    const isC = _me.userType==='creator';
+    const pending = allR.filter(([,r])=> isC ? (r.creatorId===_me.uid && r.status==='pending') : false).length;
+    const badge = document.getElementById('req-badge');
+    badge.textContent = pending;
+    badge.style.display = pending>0 ? '' : 'none';
+  }catch(e){}
+}
+
+function updateSidebarUI(){
+  const plan = _me.plan||'free';
+  document.getElementById('sb-name').textContent = _me.name||_me.email;
+  document.getElementById('sb-role').textContent = _me.userType==='creator'?'Creator':'Founder';
+  const pb = document.getElementById('sb-plan');
+  pb.textContent = plan.toUpperCase(); pb.className=`plan-badge ${plan}`;
+  document.getElementById('sb-avatar').textContent = (_me.name||'U').charAt(0).toUpperCase();
+}
+
+// Auth is handled by landing page (index.html)
+
+// ══════════════════════════════════════════════════════
+// ROLE SELECT
+// ══════════════════════════════════════════════════════
+function showRoleScreen(){
+  _pendingRole='founder';
+  document.getElementById('role-founder').className='role-card active';
+  document.getElementById('role-creator').className='role-card';
+  document.getElementById('role-screen').classList.add('show');
+}
+
+// ══════════════════════════════════════════════════════
+// PLAN SELECT SCREEN (shown right after role selection)
+// ══════════════════════════════════════════════════════
+function showPlanSelectScreen(){
+  const grid = document.getElementById('plan-select-grid');
+  grid.innerHTML = PLANS.map(p => {
+    const isFree = p.id === 'free';
+    const btnHtml = isFree
+      ? `<button class="price-cta btn-ghost" style="border:1px solid var(--border)" onclick="choosePlanAndContinue('free')">Start Free →</button>`
+      : `<button class="price-cta btn-primary" style="background:${p.color}" onclick="choosePlanAndContinue('${p.id}')">Get ${p.name} →</button>`;
+    return `<div class="price-card${p.popular?' popular':''}">
+      ${p.popular?`<div class="popular-tag">MOST POPULAR</div>`:''}
+      <div>
+        <div class="price-name" style="color:${p.color}">${p.name}</div>
+        <div class="price-amount">${p.price}<span>${p.period}</span></div>
+        <div class="price-desc" style="margin:.5rem 0 1rem">${p.desc}</div>
+      </div>
+      <div class="price-features">
+        ${p.features.map(f=>`<div class="price-feature${f.ok?'':' locked'}">
+          <i class="fas fa-${f.ok?'check-circle':'times-circle'}"></i>${f.text}
+        </div>`).join('')}
+      </div>
+      ${btnHtml}
+    </div>`;
+  }).join('');
+  document.getElementById('plan-select-screen').style.display = 'block';
+}
+
+async function choosePlanAndContinue(planId){
+  if(planId === 'free'){
+    // Free plan — just mark selected and continue
+    _me = {..._me, plan:'free', planSelected:true};
+    await DB.setUser(_me.uid, _me);
+    document.getElementById('plan-select-screen').style.display = 'none';
+    await openSetup();
+    return;
+  }
+
+  // Paid plan — open Razorpay, then continue to profile setup after payment
+  const PLAN_AMOUNTS = { starter: 29900, pro: 59900 };
+  const p = PLANS.find(x => x.id === planId);
+  const amount = PLAN_AMOUNTS[planId];
+
+  const options = {
+    key: RAZORPAY_KEY,
+    amount,
+    currency: 'INR',
+    name: 'PostHire',
+    description: `${p.name} Plan - Monthly`,
+    prefill: {
+      name:  _me.name  || '',
+      email: _me.email || '',
+      contact: _me.whatsapp ? '+' + _me.whatsapp : ''
+    },
+    notes: { userId: _me.uid, plan: planId },
+    theme: { color: planId === 'pro' ? '#ef4444' : '#3b82f6' },
+    handler: async function(response){
+      _me = {
+        ..._me,
+        plan: planId,
+        planSelected: true,
+        razorpay_payment_id: response.razorpay_payment_id,
+        planActivatedAt: new Date().toISOString()
+      };
+      await DB.setUser(_me.uid, _me);
+      document.getElementById('plan-select-screen').style.display = 'none';
+      toast(`🎉 ${p.name} plan activated!`, 'success');
+      await openSetup(); // Now go to profile setup
+    },
+    modal: {
+      ondismiss: function(){
+        toast('Payment cancelled. You can choose a plan anytime.', 'info');
+        // Let them pick free if they cancel
+      }
+    }
+  };
+
+  try{
+    const rzp = new Razorpay(options);
+    rzp.on('payment.failed', function(response){
+      toast('Payment failed: ' + (response.error.description || 'Try again'), 'error');
+    });
+    rzp.open();
+  } catch(e){
+    toast('Could not open payment. Please try again.', 'error');
+    console.error('Razorpay init error:', e);
+  }
+}
+function selectRole(r){
+  _pendingRole=r;
+  document.getElementById('role-founder').className='role-card'+(r==='founder'?' active':'');
+  document.getElementById('role-creator').className='role-card'+(r==='creator'?' active':'');
+}
+async function confirmRole(){
+  _me={..._me,userType:_pendingRole};
+  await DB.setUser(_me.uid,_me);
+  document.getElementById('role-screen').classList.remove('show');
+  showPlanSelectScreen(); // Show plan selection before profile setup
+}
+
+// ══════════════════════════════════════════════════════
+// PHOTO UPLOAD HELPER
+// ══════════════════════════════════════════════════════
+async function uploadProfilePhoto(file, uid){
+  const ext = file.name.split('.').pop();
+  const path = `profile_photos/${uid}.${ext}`;
+  const sRef = storageRef(storage, path);
+  await uploadBytes(sRef, file);
+  return await getDownloadURL(sRef);
+}
+
+// ══════════════════════════════════════════════════════
+// PROFILE SETUP
+// ══════════════════════════════════════════════════════
+async function openSetup(){
+  const isC=_me.userType==='creator';
+  const ex=isC?await DB.getCreator(_me.uid):await DB.getFounder(_me.uid);
+  const niches=['AI','Finance','Startup','Tech','Lifestyle','Business','Marketing','SaaS','Education','Health'];
+  document.getElementById('setup-title').textContent=isC?'🎨 Creator Profile':'🚀 Founder Profile';
+  document.getElementById('setup-err').className='form-err';
+  if(isC){
+    document.getElementById('setup-form').innerHTML=`
+      <!-- Name -->
+      <div class="form-group"><label>Full Name *</label><input id="s-name" placeholder="Your name" value="${_me.name||ex?.name||''}"></div>
+
+      <!-- Photo Upload -->
+      <div class="form-group">
+        <label>Profile Photo</label>
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:.5rem">
+          <div id="photo-preview" style="width:3.5rem;height:3.5rem;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:1.25rem;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden">
+            ${ex?.profilePhoto?`<img src="${ex.profilePhoto}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">`:((_me.name||'U').charAt(0).toUpperCase())}
+          </div>
+          <div style="flex:1">
+            <label for="s-photo-file" style="display:inline-flex;align-items:center;gap:.5rem;padding:.5em 1em;background:var(--surface2);border:1px solid var(--border);border-radius:.75em;cursor:pointer;font-size:.82rem;font-weight:500">
+              <i class="fas fa-upload"></i> Upload Photo
+            </label>
+            <input type="file" id="s-photo-file" accept="image/*" style="display:none" onchange="previewPhoto(this)">
+            <div style="font-size:.72rem;color:var(--muted);margin-top:.35rem">JPG, PNG up to 2MB</div>
+          </div>
+        </div>
+        <input id="s-photo" type="hidden" value="${ex?.profilePhoto||''}">
+      </div>
+
+      <div class="form-group"><label>Bio *</label><textarea id="s-bio" placeholder="Tell startups about yourself…">${ex?.bio||''}</textarea></div>
+      <div class="form-group"><label>Niche(s) *</label>
+        <div class="niche-chips">${niches.map(n=>`<div class="niche-chip${(ex?.niches||[]).includes(n)?' active':''}" data-n="${n}" onclick="this.classList.toggle('active')">${n}</div>`).join('')}</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Instagram</label><input id="s-insta" placeholder="@username" value="${ex?.instagram||''}"></div>
+        <div class="form-group"><label>YouTube</label><input id="s-yt" placeholder="@channel" value="${ex?.youtube||''}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Audience Size *</label>
+          <select id="s-aud"><option value="">Select…</option>${['1K-10K','10K-50K','50K-100K','100K-500K','500K+'].map(v=>`<option${ex?.audienceSize===v?' selected':''}>${v}</option>`).join('')}</select>
+        </div>
+        <div class="form-group"><label>Engagement Rate</label><input id="s-eng" placeholder="e.g. 5.2%" value="${ex?.engagementRate||''}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Pricing</label><input id="s-price" placeholder="From ₹5,000" value="${ex?.pricing||''}"></div>
+        <div class="form-group"><label>LinkedIn</label><input id="s-li" placeholder="linkedin.com/in/you" value="${ex?.linkedin||''}"></div>
+      </div>
+      <div class="form-group"><label>WhatsApp Number (for collabs)</label><input id="s-wa" placeholder="+91 XXXXX XXXXX" value="${_me.whatsapp||''}"></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem;margin-top:.5rem;" onclick="saveCreator()">${ex?'Update Profile →':'Complete Setup →'}</button>`;
+  } else {
+    document.getElementById('setup-form').innerHTML=`
+      <!-- Name + Photo row -->
+      <div class="form-row">
+        <div class="form-group"><label>Your Name *</label><input id="s-name" placeholder="Your full name" value="${_me.name||''}"></div>
+        <div class="form-group">
+          <label>Profile Photo</label>
+          <div style="display:flex;align-items:center;gap:.75rem">
+            <div id="photo-preview" style="width:2.75rem;height:2.75rem;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden">
+              ${_me.profilePhoto?`<img src="${_me.profilePhoto}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">`:((_me.name||'U').charAt(0).toUpperCase())}
+            </div>
+            <label for="s-photo-file" style="display:inline-flex;align-items:center;gap:.4rem;padding:.45em .9em;background:var(--surface2);border:1px solid var(--border);border-radius:.75em;cursor:pointer;font-size:.8rem;font-weight:500">
+              <i class="fas fa-upload"></i> Upload
+            </label>
+            <input type="file" id="s-photo-file" accept="image/*" style="display:none" onchange="previewPhoto(this)">
+            <input id="s-photo" type="hidden" value="${_me.profilePhoto||''}">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group"><label>Startup Name *</label><input id="s-sname" placeholder="Your Startup Inc." value="${ex?.startupName||''}"></div>
+      <div class="form-group"><label>Description *</label><textarea id="s-desc" placeholder="Tell creators about your startup…">${ex?.description||''}</textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label>Industry *</label>
+          <select id="s-ind"><option value="">Select…</option>${['SaaS','Fintech','E-commerce','HealthTech','EdTech','AI/ML','D2C','B2B','Consumer','Other'].map(v=>`<option${ex?.industry===v?' selected':''}>${v}</option>`).join('')}</select>
+        </div>
+        <div class="form-group"><label>Website</label><input id="s-web" placeholder="https://…" value="${ex?.website||''}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Budget Range *</label>
+          <select id="s-bud"><option value="">Select…</option>${['Under ₹10K','₹10K–₹25K','₹25K–₹50K','₹50K–₹1L','₹1L+'].map(v=>`<option${ex?.budget===v?' selected':''}>${v}</option>`).join('')}</select>
+        </div>
+        <div class="form-group"><label>Collab Type *</label>
+          <select id="s-ctype"><option value="">Select…</option>${['Sponsored Posts','Product Review','Brand Ambassador','Content Creation','Long-term Partnership'].map(v=>`<option${ex?.collabType===v?' selected':''}>${v}</option>`).join('')}</select>
+        </div>
+      </div>
+      <div class="form-group"><label>Looking For (Niches)</label><input id="s-looking" placeholder="e.g. Tech, SaaS, Startup creators" value="${ex?.lookingFor||''}"></div>
+      <div class="form-group"><label>WhatsApp Number (for collabs)</label><input id="s-wa" placeholder="+91 XXXXX XXXXX" value="${_me.whatsapp||''}"></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem;margin-top:.5rem;" onclick="saveFounder()">${ex?'Update Profile →':'Complete Setup →'}</button>`;
+  }
+  document.getElementById('setup-overlay').classList.add('open');
+}
+function closeSetup(){
+  document.getElementById('setup-overlay').classList.remove('open');
+  if(_me?.userType&&_me?.profileComplete) bootDashboard();
+}
+async function saveCreator(){
+  const errEl=document.getElementById('setup-err');errEl.className='form-err';
+  const niches=[...document.querySelectorAll('#setup-form .niche-chip.active')].map(e=>e.dataset.n);
+  const name=val('s-name'),bio=val('s-bio'),aud=val('s-aud');
+  if(!name){showFormErr(errEl,'Please enter your name');return;}
+  if(!niches.length){showFormErr(errEl,'Select at least one niche');return;}
+  if(!bio){showFormErr(errEl,'Please enter your bio');return;}
+  if(!aud){showFormErr(errEl,'Please select your audience size');return;}
+
+  // Handle photo upload
+  let photoURL = val('s-photo') || _me.profilePhoto || '';
+  const photoFile = document.getElementById('s-photo-file')?.files?.[0];
+  if(photoFile){
+    try{
+      const saveBtn = document.querySelector('#setup-form .btn-primary');
+      if(saveBtn){ saveBtn.textContent='Uploading photo…'; saveBtn.disabled=true; }
+      photoURL = await uploadProfilePhoto(photoFile, _me.uid);
+    }catch(e){
+      showFormErr(errEl,'Photo upload failed: '+e.message);
+      const saveBtn = document.querySelector('#setup-form .btn-primary');
+      if(saveBtn){ saveBtn.textContent='Complete Setup →'; saveBtn.disabled=false; }
+      return;
+    }
+  }
+
+  const wa=val('s-wa');
+  if(wa) await DB.updateUser(_me.uid,{whatsapp:wa});
+  const ex=await DB.getCreator(_me.uid)||{};
+  await DB.setCreator(_me.uid,{
+    userId:_me.uid,name,whatsapp:wa||_me.whatsapp||'',
+    profilePhoto:photoURL,bio,niches,
+    instagram:val('s-insta'),youtube:val('s-yt'),linkedin:val('s-li'),
+    audienceSize:aud,engagementRate:val('s-eng'),pricing:val('s-price'),
+    featured:ex.featured||false,topSearch:ex.topSearch||false,
+    createdAt:ex.createdAt||new Date().toISOString()
+  });
+  _me={..._me,name,profileComplete:true,profilePhoto:photoURL,whatsapp:wa||_me.whatsapp||''};
+  await DB.setUser(_me.uid,_me);
+  closeSetup();toast('Profile saved! 🎉','success');bootDashboard();
+}
+async function saveFounder(){
+  const errEl=document.getElementById('setup-err');errEl.className='form-err';
+  const name=val('s-name'),sname=val('s-sname'),desc=val('s-desc'),ind=val('s-ind'),bud=val('s-bud'),ct=val('s-ctype');
+  if(!name){showFormErr(errEl,'Please enter your name');return;}
+  if(!sname||!desc){showFormErr(errEl,'Please fill Startup Name and Description');return;}
+  if(!ind||!bud||!ct){showFormErr(errEl,'Please fill Industry, Budget, and Collaboration Type');return;}
+
+  // Handle photo upload
+  let photoURL = val('s-photo') || _me.profilePhoto || '';
+  const photoFile = document.getElementById('s-photo-file')?.files?.[0];
+  if(photoFile){
+    try{
+      const saveBtn = document.querySelector('#setup-form .btn-primary');
+      if(saveBtn){ saveBtn.textContent='Uploading photo…'; saveBtn.disabled=true; }
+      photoURL = await uploadProfilePhoto(photoFile, _me.uid);
+    }catch(e){
+      showFormErr(errEl,'Photo upload failed: '+e.message);
+      const saveBtn = document.querySelector('#setup-form .btn-primary');
+      if(saveBtn){ saveBtn.textContent='Complete Setup →'; saveBtn.disabled=false; }
+      return;
+    }
+  }
+
+  const wa=val('s-wa');
+  if(wa) await DB.updateUser(_me.uid,{whatsapp:wa});
+  await DB.setFounder(_me.uid,{
+    userId:_me.uid,name,email:_me.email,whatsapp:wa||_me.whatsapp||'',
+    profilePhoto:photoURL,
+    startupName:sname,description:desc,industry:ind,
+    website:val('s-web'),budget:bud,collabType:ct,
+    lookingFor:val('s-looking'),createdAt:new Date().toISOString()
+  });
+  _me={..._me,name,profileComplete:true,profilePhoto:photoURL,whatsapp:wa||_me.whatsapp||''};
+  await DB.setUser(_me.uid,_me);
+  closeSetup();toast('Profile saved! 🎉','success');bootDashboard();
+}
+function showFormErr(el,msg){el.textContent=msg;el.className='form-err show';}
+
+// ══════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════
+async function showSection(sec){
+  ['home','requests','creators','profile','pricing'].forEach(s=>{
+    document.getElementById(`nav-${s}`)?.classList.toggle('active',s===sec);
+  });
+  const titles={home:'Dashboard',requests:'My Requests',creators:'Find Creators',profile:'My Profile',pricing:'Plans & Pricing'};
+  document.getElementById('topbar-title').textContent=titles[sec]||'Dashboard';
+  const content=document.getElementById('main-content');
+  content.innerHTML=`<div class="empty-state"><i class="fas fa-spinner fa-spin"></i></div>`;
+  closeSidebar();
+  if(sec==='home') await renderHome(content);
+  else if(sec==='requests') await renderRequests(content);
+  else if(sec==='creators') await renderCreators(content);
+  else if(sec==='profile') await renderProfile(content);
+  else if(sec==='pricing') renderPricing(content);
+}
+
+// ══════════════════════════════════════════════════════
+// HOME
+// ══════════════════════════════════════════════════════
+async function renderHome(el){
+  const isC=_me.userType==='creator';
+  const plan=_me.plan||'free';
+  const allR=Object.entries(await DB.getRequests());
+  const sent=allR.filter(([,r])=>r.founderId===_me.uid);
+  const recv=allR.filter(([,r])=>r.creatorId===_me.uid);
+  const acc=sent.filter(([,r])=>r.status==='accepted').length;
+  const cr=await DB.getCreator(_me.uid);
+  const fo=await DB.getFounder(_me.uid);
+  const h=new Date().getHours();
+  const greet=h<12?'Morning':h<17?'Afternoon':'Evening';
+  const chartData=[3,7,4,9,6,12,8];
+  const maxV=Math.max(...chartData,1);
+
+  el.innerHTML=`
+    <div style="margin-bottom:1.5rem">
+      <div style="display:flex;align-items:center;gap:.875rem">
+        <div class="avatar-wrap" style="width:3rem;height:3rem;">
+          <div class="avatar-ring" style="inset:-2px"></div>
+          <div class="avatar" style="width:3rem;height:3rem;font-size:1.1rem;position:relative;z-index:1">${(_me.name||'U').charAt(0).toUpperCase()}</div>
+          <div class="avatar-status"></div>
+        </div>
+        <div>
+          <div style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:1.5rem;letter-spacing:-.02em">Good ${greet}, ${_me.name?.split(' ')[0]} 👋</div>
+          <div style="font-size:.82rem;color:var(--muted);margin-top:.2rem">${isC?'Creator':'Founder'} Dashboard · <span class="plan-badge ${plan}">${plan.toUpperCase()}</span></div>
+        </div>
+        ${plan==='free'?`<button class="btn btn-primary btn-sm" style="margin-left:auto" onclick="showSection('pricing')"><i class="fas fa-crown"></i> Upgrade</button>`:''}
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-accent" style="background:var(--accent)"></div>
+        <div class="stat-icon" style="background:rgba(108,99,255,.15);color:var(--accent)"><i class="fas fa-paper-plane"></i></div>
+        <div class="stat-val">${sent.length}</div>
+        <div class="stat-label">Requests Sent</div>
+        <div class="stat-sub"><i class="fas fa-calendar-alt"></i> This month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-accent" style="background:var(--accent3)"></div>
+        <div class="stat-icon" style="background:rgba(0,212,170,.15);color:var(--accent3)"><i class="fas fa-inbox"></i></div>
+        <div class="stat-val">${recv.length}</div>
+        <div class="stat-label">Requests Received</div>
+        <div class="stat-sub up"><i class="fas fa-arrow-up"></i> Collaboration opportunities</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-accent" style="background:var(--gold)"></div>
+        <div class="stat-icon" style="background:rgba(245,166,35,.15);color:var(--gold)"><i class="fas fa-check-circle"></i></div>
+        <div class="stat-val">${acc}</div>
+        <div class="stat-label">Accepted</div>
+        <div class="stat-sub up"><i class="fas fa-handshake"></i> Active collabs</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-accent" style="background:var(--accent2)"></div>
+        <div class="stat-icon" style="background:rgba(255,107,107,.15);color:var(--accent2)"><i class="fas fa-${isC?'eye':'users'}"></i></div>
+        <div class="stat-val">${isC?recv.length:sent.length}</div>
+        <div class="stat-label">${isC?'Total Inquiries':'Creators Contacted'}</div>
+        <div class="stat-sub up"><i class="fas fa-arrow-up"></i> Active</div>
+      </div>
+    </div>
+
+    <div class="dash-grid">
+      <div style="display:flex;flex-direction:column;gap:1.25rem">
+        <!-- My Profile Card -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title"><i class="fas fa-user-circle"></i> My Profile</div>
+            <button class="btn btn-ghost btn-sm" onclick="openSetup()"><i class="fas fa-edit"></i> Edit</button>
+          </div>
+          <div class="panel-body">
+            ${isC&&cr?`
+              <div style="display:flex;gap:1rem;align-items:flex-start;margin-bottom:1rem">
+                <div class="creator-ava" style="width:3.5rem;height:3.5rem;font-size:1.25rem;border-radius:.875rem">
+                  ${cr.profilePhoto?`<img src="${cr.profilePhoto}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">`:(cr.name||'C').charAt(0)}
+                </div>
+                <div style="flex:1">
+                  <div style="font-weight:700;font-size:1.05rem">${cr.name}</div>
+                  <div style="font-size:.78rem;color:var(--muted);margin:.25rem 0 .5rem">${cr.audienceSize||'—'} audience · ${cr.engagementRate||'—'} ER</div>
+                  <div class="niche-tags">${(cr.niches||[]).map(n=>`<span class="niche-tag">${n}</span>`).join('')}</div>
+                </div>
+              </div>
+              <div style="font-size:.8rem;color:var(--muted);line-height:1.6;margin-bottom:.875rem">${cr.bio||''}</div>
+              <div class="creator-socials">
+                ${cr.instagram?`<a class="social-btn" href="https://instagram.com/${cr.instagram.replace('@','')}" target="_blank"><i class="fab fa-instagram"></i></a>`:''}
+                ${cr.youtube?`<a class="social-btn" href="https://youtube.com/${cr.youtube}" target="_blank"><i class="fab fa-youtube"></i></a>`:''}
+                ${cr.linkedin?`<a class="social-btn" href="https://${cr.linkedin.startsWith('http')?cr.linkedin.replace('https://',''):cr.linkedin}" target="_blank"><i class="fab fa-linkedin"></i></a>`:''}
+                ${cr.pricing?`<span style="font-size:.75rem;color:var(--accent3);margin-left:auto"><i class="fas fa-tag"></i> ${cr.pricing}</span>`:''}
+              </div>`:
+            fo?`
+              <div>
+                <div style="font-weight:700;font-size:1.1rem;margin-bottom:.25rem">${fo.startupName}</div>
+                <div style="font-size:.8rem;color:var(--muted);margin-bottom:.75rem">${fo.industry} · ${fo.budget}</div>
+                <div style="font-size:.82rem;line-height:1.6;color:var(--muted)">${fo.description}</div>
+                <div style="display:flex;gap:.875rem;margin-top:.75rem;font-size:.75rem;color:var(--muted);flex-wrap:wrap">
+                  ${fo.collabType?`<span><i class="fas fa-handshake"></i> ${fo.collabType}</span>`:''}
+                  ${fo.website?`<span><i class="fas fa-globe"></i> <a href="${fo.website}" target="_blank" style="color:var(--accent)">${fo.website}</a></span>`:''}
+                </div>
+              </div>`:
+            `<p style="font-size:.875rem;color:var(--muted)">Profile not set up yet. <a onclick="openSetup()" style="color:var(--accent);cursor:pointer">Set up now →</a></p>`}
+          </div>
+        </div>
+
+        <!-- Recent Requests -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title"><i class="fas fa-inbox"></i> Recent Requests</div>
+            <button class="btn btn-ghost btn-sm" onclick="showSection('requests')">View all</button>
+          </div>
+          <div class="panel-body">
+            ${await buildRecentRequests(isC,sent,recv)}
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div style="display:flex;flex-direction:column;gap:1.25rem">
+        <!-- Activity Chart -->
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><i class="fas fa-chart-bar"></i> Activity This Week</div></div>
+          <div class="panel-body">
+            <div class="chart-wrap">
+              ${chartData.map((v,i)=>`<div class="chart-bar" style="height:${(v/maxV*100)}%;background:linear-gradient(180deg,var(--accent),rgba(108,99,255,.3))" title="${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][i]}: ${v} actions"></div>`).join('')}
+            </div>
+            <div class="chart-labels">${['M','T','W','T','F','S','S'].map(d=>`<span>${d}</span>`).join('')}</div>
+          </div>
+        </div>
+
+        <!-- Analytics (Starter+) -->
+        ${plan!=='free'?`
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><i class="fas fa-chart-line"></i> Analytics</div></div>
+          <div class="panel-body">
+            <div style="display:flex;flex-direction:column;gap:.75rem;font-size:.82rem">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <span style="color:var(--muted)">Profile Views</span>
+                <span style="font-weight:700;color:var(--accent)">${Math.floor(Math.random()*200+50)}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <span style="color:var(--muted)">Response Rate</span>
+                <span style="font-weight:700;color:var(--accent3)">${Math.floor(Math.random()*40+50)}%</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <span style="color:var(--muted)">Collab Success</span>
+                <span style="font-weight:700;color:var(--gold)">${acc>0?Math.round((acc/Math.max(sent.length,1))*100):0}%</span>
+              </div>
+              ${plan==='pro'?`<div style="display:flex;justify-content:space-between;align-items:center">
+                <span style="color:var(--muted)">AI Match Score</span>
+                <span style="font-weight:700;color:#ef4444">94% ✨</span>
+              </div>`:''}
+            </div>
+          </div>
+        </div>`:``}
+
+        <!-- Plan Card -->
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><i class="fas fa-crown"></i> Your Plan</div></div>
+          <div class="panel-body">
+            ${buildPlanSummary(plan)}
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><i class="fas fa-bolt"></i> Quick Actions</div></div>
+          <div class="panel-body" style="display:flex;flex-direction:column;gap:.5rem">
+            ${!isC?`<button class="btn btn-primary btn-sm" style="justify-content:center" onclick="showSection('creators')"><i class="fas fa-search"></i> Find Creators</button>`:''}
+            <button class="btn btn-ghost btn-sm" style="justify-content:center" onclick="openSetup()"><i class="fas fa-edit"></i> Edit Profile</button>
+            <button class="btn btn-ghost btn-sm" style="justify-content:center" onclick="showSection('requests')"><i class="fas fa-inbox"></i> View Requests</button>
+            ${plan==='pro'?`<button class="btn btn-ghost btn-sm" style="justify-content:center;color:var(--accent3);border-color:rgba(0,212,170,.3)" onclick="showAiMatch()"><i class="fas fa-robot"></i> AI Match ✨</button>`:''}
+            ${plan!=='pro'?`<button class="btn btn-ghost btn-sm" style="justify-content:center;color:var(--gold);border-color:rgba(245,166,35,.3)" onclick="showSection('pricing')"><i class="fas fa-crown"></i> ${plan==='free'?'Upgrade Plan':'Go PRO'}</button>`:''}
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function getPlanLimits(plan){
+  return {
+    browseLimit:   plan==='free' ? 10   : Infinity,
+    requestLimit:  plan==='free' ? 3    : plan==='starter' ? 20 : Infinity,
+    advFilters:    plan!=='free',
+    directWA:      plan!=='free',
+    analytics:     plan!=='free',
+    aiMatch:       plan==='pro',
+    featured:      plan==='pro',
+    topPlacement:  plan==='pro',
+    noAds:         plan!=='free',
+    prioritySupport: plan==='pro',
+  };
+}
+
+function buildPlanSummary(plan){
+  const p=PLANS.find(x=>x.id===plan)||PLANS[0];
+  const next=plan==='free'?PLANS[1]:plan==='starter'?PLANS[2]:null;
+  return `
+    <div style="background:linear-gradient(135deg,rgba(108,99,255,.1),rgba(255,107,107,.05));border:1px solid rgba(108,99,255,.2);border-radius:.75rem;padding:1rem;margin-bottom:.875rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
+        <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:.95rem;color:${p.color}">${p.name}</span>
+        <span class="plan-badge ${plan}">${plan.toUpperCase()}</span>
+      </div>
+      <div style="font-size:.78rem;color:var(--muted)">${p.desc}</div>
+    </div>
+    ${next?`
+      <div style="font-size:.78rem;color:var(--muted);margin-bottom:.625rem">Unlock with ${next.name}:</div>
+      <div style="display:flex;flex-direction:column;gap:.3rem;margin-bottom:.875rem">
+        ${next.features.filter(f=>f.ok).slice(0,3).map(f=>`<div style="font-size:.75rem;display:flex;gap:.4rem;align-items:center;color:var(--muted2)"><i class="fas fa-lock" style="color:var(--accent);font-size:.65rem"></i>${f.text}</div>`).join('')}
+      </div>
+      <button class="btn btn-primary btn-sm" style="width:100%;justify-content:center" onclick="showSection('pricing')"><i class="fas fa-crown"></i> Upgrade to ${next.name} — ${next.price}/mo</button>`
+    :`<div style="text-align:center;font-size:.8rem;color:var(--accent3)"><i class="fas fa-check-circle"></i> You're on our best plan!</div>`}`;
+}
+
+async function buildRecentRequests(isC,sent,recv){
+  const recent=(isC?recv:sent).slice(-4).reverse();
+  if(!recent.length) return `<div class="empty-state" style="padding:1.5rem"><i class="fas fa-paper-plane"></i><p>No requests yet${!isC?'. <a onclick="showSection(\'creators\')" style="color:var(--accent)">Browse creators →</a>':''}</p></div>`;
+  const creators=await DB.getCreators();
+  return `<div class="req-list">${recent.map(([id,r])=>{
+    const name=isC?(r.founderName||'Founder'):(creators[r.creatorId]?.name||'Creator');
+    return `<div class="req-item">
+      <div class="req-ava">${name.charAt(0)}</div>
+      <div class="req-body">
+        <div class="req-name">${name}</div>
+        <div class="req-detail">${r.collabType||''} ${r.budget?'· '+r.budget:''}</div>
+        <div class="req-actions"><span class="status-badge ${r.status||'pending'}">${{pending:'⏳ Pending',accepted:'✓ Accepted',declined:'✗ Declined'}[r.status]||'⏳ Pending'}</span></div>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+// ══════════════════════════════════════════════════════
+// REQUESTS PAGE
+// ══════════════════════════════════════════════════════
+async function renderRequests(el){
+  const isC=_me.userType==='creator';
+  const allR=Object.entries(await DB.getRequests());
+  const sent=allR.filter(([,r])=>r.founderId===_me.uid);
+  const recv=allR.filter(([,r])=>r.creatorId===_me.uid);
+  const creators=await DB.getCreators();
+
+  const badge=(s)=>`<span class="status-badge ${s||'pending'}">${{pending:'⏳ Pending',accepted:'✓ Accepted',declined:'✗ Declined'}[s]||'⏳ Pending'}</span>`;
+
+  const recvHTML=recv.length?recv.reverse().map(([id,r])=>{
+    const wa=r.status==='accepted'&&r.founderWhatsapp?`<a class="wa-btn" href="https://wa.me/${r.founderWhatsapp.replace(/\D/g,'')}?text=${encodeURIComponent('Hi '+r.founderName+', regarding your PostHire request…')}" target="_blank"><i class="fab fa-whatsapp"></i> Chat</a>`:'';
+    const acts=r.status==='pending'?`<button class="accept-btn" onclick="updReq('${id}','accepted')"><i class="fas fa-check"></i> Accept</button><button class="decline-btn" onclick="updReq('${id}','declined')"><i class="fas fa-times"></i> Decline</button>`:wa;
+    return `<div class="req-item" id="ri-${id}">
+      <div class="req-ava"><i class="fas fa-rocket"></i></div>
+      <div class="req-body">
+        <div class="req-name">${r.founderName||'Founder'} · ${r.startupName||''}</div>
+        <div class="req-detail">${r.collabType||''} ${r.budget?'· '+r.budget:''} ${r.message?'· "'+r.message.slice(0,40)+'…"':''}</div>
+        <div class="req-detail" style="margin-bottom:.5rem">${r.createdAt?new Date(r.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):''}</div>
+        <div class="req-actions">${badge(r.status)}${acts}</div>
+      </div>
+    </div>`;
+  }).join(''):`<div class="empty-state"><i class="fas fa-inbox"></i><p>No requests received yet</p></div>`;
+
+  const sentHTML=sent.length?sent.reverse().map(([id,r])=>{
+    const cr=creators[r.creatorId];
+    const crName=(cr?.name)||'Creator';
+    const wa=r.status==='accepted'&&cr?.whatsapp?`<a class="wa-btn" href="https://wa.me/${cr.whatsapp.replace(/\D/g,'')}?text=${encodeURIComponent('Hi '+crName+', I found you on PostHire!')}" target="_blank"><i class="fab fa-whatsapp"></i> ${cr.whatsapp}</a>`:'';
+    return `<div class="req-item" id="rs-${id}">
+      <div class="req-ava"><i class="fas fa-video"></i></div>
+      <div class="req-body">
+        <div class="req-name">${crName}</div>
+        <div class="req-detail">${r.collabType||''} ${r.budget?'· '+r.budget:''}</div>
+        <div class="req-detail" style="margin-bottom:.5rem">${r.createdAt?new Date(r.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):''}</div>
+        <div class="req-actions">${badge(r.status)}${wa}</div>
+      </div>
+    </div>`;
+  }).join(''):`<div class="empty-state"><i class="fas fa-paper-plane"></i><p>No requests sent yet.<br><a onclick="showSection('creators')" style="color:var(--accent)">Browse creators →</a></p></div>`;
+
+  el.innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title"><i class="fas fa-inbox"></i> Received (${recv.length})</div>
+        </div>
+        <div class="panel-body"><div class="req-list">${recvHTML}</div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title"><i class="fas fa-paper-plane"></i> Sent (${sent.length})</div>
+          ${!isC?`<button class="btn btn-primary btn-sm" onclick="showSection('creators')"><i class="fas fa-plus"></i> New</button>`:''}
+        </div>
+        <div class="panel-body"><div class="req-list">${sentHTML}</div></div>
+      </div>
+    </div>`;
+}
+
+async function updReq(id,status){
+  await DB.updateRequest(id,{status, updatedAt: new Date().toISOString()});
+  toast(status==='accepted'?'✓ Accepted! WhatsApp revealed.':'Declined.', status==='accepted'?'success':'info');
+  await showSection('requests');
+  updateRequestBadge();
+}
+
+// ══════════════════════════════════════════════════════
+// CREATORS PAGE
+// ══════════════════════════════════════════════════════
+async function renderCreators(el){
+  if(_me.userType==='creator'){
+    el.innerHTML=`<div class="empty-state"><i class="fas fa-lock"></i><p>Creator discovery is for founders only.</p></div>`;return;
+  }
+  const plan=_me.plan||'free';
+  el.innerHTML=`
+    ${plan==='free'?`<div class="upgrade-banner"><div><h4>🔒 Limited to 10 profiles/day on Free plan</h4><p>Upgrade to Starter for unlimited browsing, advanced filters & direct WhatsApp access.</p></div><button class="btn btn-primary btn-sm" onclick="showSection('pricing')">Upgrade Now →</button></div>`:''}
+    <div class="filter-bar">
+      <input class="filter-input" id="f-search" placeholder="🔍 Search by name or bio…" oninput="filterCreators()">
+      ${plan==='free'
+        ? `<div style="position:relative;display:inline-block">
+             <select class="filter-select" disabled style="opacity:.45;cursor:not-allowed" title="Upgrade to Starter for niche filters">
+               <option>Niche Filter 🔒</option>
+             </select>
+           </div>
+           <div style="position:relative;display:inline-block">
+             <select class="filter-select" disabled style="opacity:.45;cursor:not-allowed" title="Upgrade to Starter for audience filters">
+               <option>Audience Size 🔒</option>
+             </select>
+           </div>`
+        : `<select class="filter-select" id="f-niche" onchange="filterCreators()">
+             <option value="">All Niches</option>
+             ${['AI','Finance','Startup','Tech','Lifestyle','Business','Marketing','SaaS','Education','Health'].map(n=>`<option>${n}</option>`).join('')}
+           </select>
+           <select class="filter-select" id="f-aud" onchange="filterCreators()">
+             <option value="">All Sizes</option>
+             ${['1K-10K','10K-50K','50K-100K','100K-500K','500K+'].map(v=>`<option>${v}</option>`).join('')}
+           </select>`
+      }
+    </div>
+    <div id="sort-info" style="font-size:.78rem;color:var(--muted);margin-bottom:.875rem">Loading creators…</div>
+    <div class="creators-grid" id="creators-grid"></div>`;
+  await filterCreators();
+}
+
+let _allCreators={};
+async function filterCreators(){
+  if(!Object.keys(_allCreators).length) _allCreators=await DB.getCreators();
+  const search=(document.getElementById('f-search')?.value||'').toLowerCase();
+  const niche=document.getElementById('f-niche')?.value||'';
+  const aud=document.getElementById('f-aud')?.value||'';
+  const plan=_me.plan||'free';
+  const allR=Object.values(await DB.getRequests());
+  const sentTo=new Set(allR.filter(r=>r.founderId===_me.uid).map(r=>r.creatorId));
+
+  let list=Object.values(_allCreators).filter(c=>{
+    if(c.userId===_me.uid) return false;
+    if(!c.bio) return false;
+    if(search&&!c.name?.toLowerCase().includes(search)&&!c.bio?.toLowerCase().includes(search)) return false;
+    if(niche&&!(c.niches||[]).includes(niche)) return false;
+    if(aud&&c.audienceSize!==aud) return false;
+    return true;
+  }).sort((a,b)=>{
+    // PRO users get top placement in search
+    const aScore = (a.plan==='pro'?100:0)+(a.topSearch?10:0)+(a.featured?5:0);
+    const bScore = (b.plan==='pro'?100:0)+(b.topSearch?10:0)+(b.featured?5:0);
+    return bScore - aScore;
+  });
+
+  const info=document.getElementById('sort-info');
+  const grid=document.getElementById('creators-grid');
+  if(!info||!grid) return;
+
+  const total=list.length;
+  if(plan==='free') list=list.slice(0,10);
+  info.textContent=`${total} creator${total!==1?'s':''} found${plan==='free'&&total>10?' (showing 10 on Free plan)':''}`;
+
+  if(!list.length){grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-search"></i><p>No creators found. Try different filters.</p></div>`;return;}
+
+  grid.innerHTML=list.map(c=>{
+    const alreadySent=sentTo.has(c.userId);
+    const plan=_me.plan||'free';
+    let btn='';
+    if(alreadySent){
+      btn=`<button class="collab-btn sent"><i class="fas fa-check"></i> Request Sent</button>`;
+    } else {
+      btn=`<button class="collab-btn active" onclick="sendCollab('${c.userId}')"><i class="fab fa-whatsapp"></i> Collaborate</button>`;
+    }
+    // PRO badge on featured creators
+    const proBadge = c.plan==='pro' ? `<span style="font-size:.6rem;background:rgba(239,68,68,.15);color:#ef4444;padding:.2em .5em;border-radius:99px;font-weight:700;margin-left:.4rem">PRO</span>` : '';
+    return `<div class="creator-card${c.featured?' featured-card':''}">
+      ${c.featured?`<div class="featured-badge">⭐ FEATURED</div>`:''}
+      <div class="creator-head">
+        <div class="creator-ava">${c.profilePhoto?`<img src="${c.profilePhoto}" onerror="this.style.display='none'">`:(c.name||'C').charAt(0)}</div>
+        <div>
+          <div class="creator-name">${c.name}${proBadge||''}</div>
+          <div class="creator-meta">${c.audienceSize||'—'} · ${c.engagementRate||'—'} ER</div>
+        </div>
+      </div>
+      <div class="niche-tags">${(c.niches||[]).slice(0,4).map(n=>`<span class="niche-tag">${n}</span>`).join('')}</div>
+      <div class="creator-bio">${c.bio||''}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="creator-socials">
+          ${c.instagram?`<a class="social-btn" href="https://instagram.com/${c.instagram.replace('@','')}" target="_blank"><i class="fab fa-instagram"></i></a>`:''}
+          ${c.youtube?`<a class="social-btn" href="https://youtube.com/${c.youtube}" target="_blank"><i class="fab fa-youtube"></i></a>`:''}
+          ${c.linkedin?`<a class="social-btn" href="https://${c.linkedin.startsWith('http')?c.linkedin.replace('https://',''):c.linkedin}" target="_blank"><i class="fab fa-linkedin"></i></a>`:''}
+        </div>
+        ${c.pricing?`<span style="font-size:.72rem;color:var(--accent3)"><i class="fas fa-tag"></i> ${c.pricing}</span>`:''}
+      </div>
+      ${btn}
+    </div>`;
+  }).join('');
+}
+
+async function sendCollab(creatorId){
+  const plan=_me.plan||'free';
+  const allR=Object.values(await DB.getRequests());
+  const monthR=allR.filter(r=>r.founderId===_me.uid&&new Date(r.createdAt)>new Date(Date.now()-30*86400000)).length;
+  if(plan==='free'&&monthR>=3){
+    toast('Free plan: 3 requests/month limit reached. Upgrade to send more!','error');
+    setTimeout(()=>showSection('pricing'),1500);return;
+  }
+  if(plan==='starter'&&monthR>=20){
+    toast('Starter plan: 20 requests/month limit reached. Upgrade to Pro!','error');
+    setTimeout(()=>showSection('pricing'),1500);return;
+  }
+  const fo=await DB.getFounder(_me.uid);
+  if(!fo){toast('Please set up your founder profile first.','error');await openSetup();return;}
+  const cr=await DB.getCreator(creatorId);
+  if(!cr) return;
+  await DB.saveRequest({
+    founderId:_me.uid,founderName:_me.name,founderWhatsapp:_me.whatsapp||'',
+    startupName:fo.startupName,creatorId,creatorName:cr.name,
+    collabType:fo.collabType,budget:fo.budget,
+    status:'pending',createdAt:new Date().toISOString()
+  });
+  toast(`Request sent to ${cr.name}! 🚀`,'success');
+  _allCreators={};
+  if(cr.whatsapp){
+    const waNum=cr.whatsapp.replace(/\D/g,'');
+    // Free plan: reveal WA only after accept. Starter+: show immediately
+    if(plan!=='free'){
+      setTimeout(()=>window.open(`https://wa.me/${waNum}?text=${encodeURIComponent('Hi '+cr.name+'! I found you on PostHire and would love to collaborate!')}`, '_blank'),600);
+    }
+  }
+  await filterCreators();
+}
+
+// ══════════════════════════════════════════════════════
+// PROFILE PAGE
+// ══════════════════════════════════════════════════════
+async function renderProfile(el){
+  const isC=_me.userType==='creator';
+  const cr=isC?await DB.getCreator(_me.uid):null;
+  const fo=!isC?await DB.getFounder(_me.uid):null;
+  const plan=_me.plan||'free';
+  const allR=Object.entries(await DB.getRequests());
+  const sent=allR.filter(([,r])=>r.founderId===_me.uid).length;
+  const recv=allR.filter(([,r])=>r.creatorId===_me.uid).length;
+
+  el.innerHTML=`
+    <div class="profile-grid">
+      <div>
+        <div class="panel" style="margin-bottom:1.25rem">
+          <div class="panel-head">
+            <div class="panel-title"><i class="fas fa-id-card"></i> ${isC?'Creator':'Founder'} Profile</div>
+            <button class="btn btn-primary btn-sm" onclick="openSetup()"><i class="fas fa-edit"></i> Edit</button>
+          </div>
+          <div class="panel-body">
+            ${isC&&cr?`
+              <div class="profile-header">
+                <div class="avatar-wrap" style="width:5rem;height:5rem;">
+                  <div class="avatar-ring"></div>
+                  <div class="avatar" style="width:5rem;height:5rem;font-size:1.75rem;position:relative;z-index:1">
+                    ${cr.profilePhoto?`<img src="${cr.profilePhoto}" onerror="this.style.display='none'">`:(cr.name||'C').charAt(0)}
+                  </div>
+                  <div class="avatar-status" style="width:.75rem;height:.75rem;border-width:2.5px"></div>
+                </div>
+                <div class="profile-info">
+                  <h2>${cr.name}</h2>
+                  <p>Creator · ${cr.audienceSize||'—'} audience · ${cr.engagementRate||'—'} ER</p>
+                  <div class="niche-tags" style="margin-top:.5rem">${(cr.niches||[]).map(n=>`<span class="niche-tag">${n}</span>`).join('')}</div>
+                </div>
+              </div>
+              <p style="font-size:.85rem;color:var(--muted);line-height:1.65;margin-bottom:1.25rem">${cr.bio||'No bio set.'}</p>
+              <div class="info-grid">
+                <div class="info-item"><div class="info-item-label">Audience</div><div class="info-item-val">${cr.audienceSize||'—'}</div></div>
+                <div class="info-item"><div class="info-item-label">Engagement Rate</div><div class="info-item-val">${cr.engagementRate||'—'}</div></div>
+                <div class="info-item"><div class="info-item-label">Pricing</div><div class="info-item-val">${cr.pricing||'Not set'}</div></div>
+                <div class="info-item"><div class="info-item-label">WhatsApp</div><div class="info-item-val">${_me.whatsapp||'Not set'}</div></div>
+              </div>
+              <div class="creator-socials" style="margin-top:1rem">
+                ${cr.instagram?`<a class="social-btn" href="https://instagram.com/${cr.instagram.replace('@','')}" target="_blank"><i class="fab fa-instagram"></i></a>`:''}
+                ${cr.youtube?`<a class="social-btn" href="https://youtube.com/${cr.youtube}" target="_blank"><i class="fab fa-youtube"></i></a>`:''}
+                ${cr.linkedin?`<a class="social-btn" href="https://${cr.linkedin}" target="_blank"><i class="fab fa-linkedin"></i></a>`:''}
+              </div>` :
+            fo?`
+              <div class="profile-header">
+                <div class="avatar-wrap" style="width:5rem;height:5rem;">
+                  <div class="avatar-ring"></div>
+                  <div class="avatar" style="width:5rem;height:5rem;font-size:1.75rem;background:linear-gradient(135deg,var(--accent3),var(--accent));position:relative;z-index:1">${fo.startupName?.charAt(0)||'S'}</div>
+                  <div class="avatar-status" style="width:.75rem;height:.75rem;border-width:2.5px"></div>
+                </div>
+                <div class="profile-info">
+                  <h2>${fo.startupName}</h2>
+                  <p>${fo.industry} · ${fo.budget}</p>
+                  ${fo.website?`<a href="${fo.website}" target="_blank" style="color:var(--accent);font-size:.8rem">${fo.website}</a>`:''}
+                </div>
+              </div>
+              <p style="font-size:.85rem;color:var(--muted);line-height:1.65;margin-bottom:1.25rem">${fo.description||'No description set.'}</p>
+              <div class="info-grid">
+                <div class="info-item"><div class="info-item-label">Industry</div><div class="info-item-val">${fo.industry||'—'}</div></div>
+                <div class="info-item"><div class="info-item-label">Budget</div><div class="info-item-val">${fo.budget||'—'}</div></div>
+                <div class="info-item"><div class="info-item-label">Collab Type</div><div class="info-item-val">${fo.collabType||'—'}</div></div>
+                <div class="info-item"><div class="info-item-label">WhatsApp</div><div class="info-item-val">${_me.whatsapp||'Not set'}</div></div>
+              </div>` :
+            `<p style="color:var(--muted);font-size:.875rem">Profile not set up. <a onclick="openSetup()" style="color:var(--accent);cursor:pointer">Set up now →</a></p>`}
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><i class="fas fa-chart-bar"></i> Activity Stats</div></div>
+          <div class="panel-body">
+            <div class="info-grid">
+              <div class="info-item"><div class="info-item-label">Requests Sent</div><div class="info-item-val" style="font-size:1.5rem;font-family:'Plus Jakarta Sans',sans-serif">${sent}</div></div>
+              <div class="info-item"><div class="info-item-label">Requests Received</div><div class="info-item-val" style="font-size:1.5rem;font-family:'Plus Jakarta Sans',sans-serif">${recv}</div></div>
+              <div class="info-item"><div class="info-item-label">Member Since</div><div class="info-item-val">${_me.createdAt?new Date(_me.createdAt).toLocaleDateString('en-IN',{month:'short',year:'numeric'}):'—'}</div></div>
+              <div class="info-item"><div class="info-item-label">Current Plan</div><div class="info-item-val"><span class="plan-badge ${plan}" style="font-size:.7rem">${plan.toUpperCase()}</span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:1.25rem">
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><i class="fas fa-crown"></i> Your Plan</div></div>
+          <div class="panel-body">
+            ${buildPlanSummary(plan)}
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title"><i class="fas fa-cog"></i> Account</div></div>
+          <div class="panel-body" style="display:flex;flex-direction:column;gap:.5rem">
+            <div style="font-size:.8rem;color:var(--muted);margin-bottom:.25rem"><i class="fas fa-envelope"></i> ${_me.email}</div>
+            <button class="btn btn-ghost btn-sm" style="justify-content:center" onclick="openSetup()"><i class="fas fa-edit"></i> Edit Profile</button>
+            <button class="btn btn-ghost btn-sm" style="justify-content:center" onclick="showSection('pricing')"><i class="fas fa-crown"></i> Manage Plan</button>
+            <button class="btn btn-danger btn-sm" style="justify-content:center;margin-top:.5rem" onclick="doSignOut()"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ══════════════════════════════════════════════════════
+// PRICING PAGE
+// ══════════════════════════════════════════════════════
+function renderPricing(el){
+  const plan=_me.plan||'free';
+  el.innerHTML=`
+    <div style="text-align:center;margin-bottom:2rem">
+      <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:1.75rem;font-weight:800;margin-bottom:.5rem">Choose Your Plan</div>
+      <div style="color:var(--muted);font-size:.9rem">Upgrade anytime. Cancel anytime. No hidden fees.</div>
+    </div>
+    <div class="pricing-grid">
+      ${PLANS.map(p=>{
+        const isCurrent=plan===p.id;
+        let btnHtml='';
+        if(isCurrent) btnHtml=`<div class="current-label" style="color:${p.color};background:rgba(108,99,255,.08)">✓ Current Plan</div>`;
+        else if(p.id==='free') btnHtml=`<button class="price-cta btn-ghost" onclick="selectPlan('free')" style="border:1px solid var(--border)">Downgrade to Free</button>`;
+        else btnHtml=`<button class="price-cta btn-primary" onclick="selectPlan('${p.id}')" style="background:${p.color}">${isCurrent?'Current Plan':'Upgrade to '+p.name+' →'}</button>`;
+        return `<div class="price-card${isCurrent?' current':''}${p.popular?' popular':''}">
+          ${p.popular?`<div class="popular-tag">MOST POPULAR</div>`:''}
+          <div>
+            <div class="price-name" style="color:${p.color}">${p.name}</div>
+            <div class="price-amount">${p.price}<span>${p.period}</span></div>
+            <div class="price-desc" style="margin:.5rem 0 1rem">${p.desc}</div>
+          </div>
+          <div class="price-features">
+            ${p.features.map(f=>`<div class="price-feature${f.ok?'':' locked'}">
+              <i class="fas fa-${f.ok?'check-circle':'times-circle'}"></i>${f.text}
+            </div>`).join('')}
+          </div>
+          ${btnHtml}
+        </div>`;
+      }).join('')}
+    </div>
+    <div style="text-align:center;margin-top:2rem;font-size:.8rem;color:var(--muted)">
+      <i class="fas fa-shield-alt"></i> Secure payments · Cancel anytime · 7-day refund policy
+    </div>`;
+}
+
+async function selectPlan(planId){
+  const cur=_me.plan||'free';
+  if(planId===cur){toast('You are already on this plan.','info');return;}
+
+  // Free downgrade — no payment needed
+  if(planId==='free'){
+    if(!confirm('Are you sure you want to downgrade to Free? You will lose access to paid features.')) return;
+    _me={..._me,plan:'free'};
+    await DB.setUser(_me.uid,_me);
+    updateSidebarUI();
+    toast('Downgraded to FREE plan.','info');
+    renderPricing(document.getElementById('main-content'));
+    closePlanOverlay();
+    _allCreators={};
+    return;
+  }
+
+  // Paid plans — open Razorpay checkout
+  const PLAN_AMOUNTS = { starter: 29900, pro: 59900 }; // in paise
+  const p = PLANS.find(x => x.id === planId);
+  const amount = PLAN_AMOUNTS[planId];
+  if(!amount){ toast('Invalid plan.','error'); return; }
+
+  const options = {
+    key: RAZORPAY_KEY,
+    amount: amount,
+    currency: 'INR',
+    name: 'PostHire',
+    description: `${p.name} Plan - Monthly`,
+    image: '', // optional logo URL
+    prefill: {
+      name:  _me.name  || '',
+      email: _me.email || '',
+      contact: _me.whatsapp ? '+' + _me.whatsapp : ''
+    },
+    notes: {
+      userId: _me.uid,
+      plan:   planId
+    },
+    theme: {
+      color: planId === 'pro' ? '#ef4444' : '#3b82f6'
+    },
+    handler: async function(response){
+      // Payment successful — response.razorpay_payment_id is the payment ID
+      try{
+        _me = {
+          ..._me,
+          plan: planId,
+          razorpay_payment_id: response.razorpay_payment_id,
+          planActivatedAt: new Date().toISOString()
+        };
+        await DB.setUser(_me.uid, _me);
+        updateSidebarUI();
+        closePlanOverlay();
+        toast(`🎉 Upgraded to ${p.name}! Payment ID: ${response.razorpay_payment_id}`, 'success');
+        renderPricing(document.getElementById('main-content'));
+        _allCreators = {};
+      } catch(e){
+        toast('Payment done but profile update failed. Please refresh.','error');
+        console.error('Plan update error:', e);
+      }
+    },
+    modal: {
+      ondismiss: function(){
+        toast('Payment cancelled.','info');
+      }
+    }
+  };
+
+  try{
+    const rzp = new Razorpay(options);
+    rzp.on('payment.failed', function(response){
+      toast('Payment failed: ' + (response.error.description || 'Unknown error'), 'error');
+      console.error('Razorpay error:', response.error);
+    });
+    rzp.open();
+  } catch(e){
+    toast('Could not open payment. Please try again.','error');
+    console.error('Razorpay init error:', e);
+  }
+}
+
+function openPlanOverlay(){
+  const plan=_me.plan||'free';
+  const cards=document.getElementById('plan-overlay-cards');
+  cards.innerHTML=PLANS.map(p=>{
+    const isCurrent=plan===p.id;
+    return `<div style="background:var(--surface2);border:2px solid ${isCurrent?p.color:'var(--border)'};border-radius:1rem;padding:1.25rem">
+      <div style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:.875rem;color:${p.color};margin-bottom:.25rem">${p.name}</div>
+      <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:1.5rem;font-weight:700;margin-bottom:.5rem">${p.price}<span style="font-size:.75rem;color:var(--muted)">${p.period}</span></div>
+      <div style="font-size:.75rem;color:var(--muted);margin-bottom:.875rem">${p.desc}</div>
+      ${isCurrent?`<div style="text-align:center;font-size:.75rem;color:${p.color};font-weight:600">✓ Current Plan</div>`
+      :`<button class="btn btn-primary btn-sm" style="width:100%;justify-content:center;background:${p.color}" onclick="selectPlan('${p.id}');closePlanOverlay()">Select ${p.name}</button>`}
+    </div>`;
+  }).join('');
+  document.getElementById('plan-overlay').classList.add('open');
+}
+function closePlanOverlay(){ document.getElementById('plan-overlay').classList.remove('open'); }
+
+// ══════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════
+function val(id){ const el=document.getElementById(id); return el?el.value.trim():''; }
+function toast(msg,type='info'){
+  const c=document.getElementById('toast-container');
+  const t=document.createElement('div');
+  t.className=`toast ${type}`;
+  const icon={success:'check-circle',error:'exclamation-circle',info:'info-circle'}[type]||'info-circle';
+  t.innerHTML=`<i class="fas fa-${icon}"></i> ${msg}`;
+  c.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(1rem)';setTimeout(()=>t.remove(),300);},3500);
+}
+function goToLanding(){ window.location.href='index.html'; }
+function goToAdmin(){ window.location.href='admin.html'; }
+async function doSignOut(){ await fbSignOut(auth); _me=null; window.location.href='index.html'; }
+function openSidebar(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebar-overlay').classList.add('show'); }
+function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('show'); }
+
+// Enter key in auth
+// Auth keydown removed — auth handled by landing page
+
+// Expose to window for onclick
+function showAiMatch(){
+  const plan=_me.plan||'free';
+  if(plan!=='pro'){
+    toast('AI Match suggestions are a PRO feature. Upgrade to access!','info');
+    setTimeout(()=>showSection('pricing'),1200);
+    return;
+  }
+  const niches=['AI','Finance','Startup','Tech','Lifestyle','Business','Marketing'];
+  const match = niches[Math.floor(Math.random()*niches.length)];
+  toast(`🤖 AI suggests: Look for ${match} creators with 50K-100K audience for best ROI!`, 'success');
+}
+
+function previewPhoto(input){
+  const file = input.files[0];
+  if(!file) return;
+  if(file.size > 2*1024*1024){ alert('Image must be under 2MB'); input.value=''; return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    const prev = document.getElementById('photo-preview');
+    if(prev) prev.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover">`;
+  };
+  reader.readAsDataURL(file);
+}
+
+Object.assign(window,{showSection,selectRole,confirmRole,openSetup,closeSetup,saveCreator,saveFounder,updReq,sendCollab,filterCreators,selectPlan,openPlanOverlay,closePlanOverlay,doSignOut,goToLanding,goToAdmin,openSidebar,closeSidebar,choosePlanAndContinue,showAiMatch,previewPhoto});
+</script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</body>
+</html>
 
