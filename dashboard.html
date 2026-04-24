@@ -454,7 +454,7 @@ const PLAN_AMOUNTS = {
   pro:     59900  // ₹599 in paise
 };
 import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, addDoc, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+// Firebase Storage removed — using Cloudinary (free) for photo uploads
 
 const fbConfig = {
   apiKey:"AIzaSyD1ElccdzrwPwKDmGimitEkQEwNMrUeHyE",
@@ -468,7 +468,11 @@ const fbConfig = {
 const fbApp = initializeApp(fbConfig);
 const auth = getAuth(fbApp);
 const db = getFirestore(fbApp);
-const storage = getStorage(fbApp);
+// ══════════════════════════════════════════════════════
+// CLOUDINARY CONFIG (free photo hosting)
+// ══════════════════════════════════════════════════════
+const CLOUDINARY_CLOUD_NAME = 'dwetuqy0d'; // 👈 apna cloud name yahan
+const CLOUDINARY_UPLOAD_PRESET = 'posthire_photos'; // 👈 apna preset name yahan
 
 // ══════════════════════════════════════════════════════
 // DB HELPERS
@@ -863,11 +867,21 @@ async function confirmRole(){
 // PHOTO UPLOAD HELPER
 // ══════════════════════════════════════════════════════
 async function uploadProfilePhoto(file, uid){
-  const ext = file.name.split('.').pop();
-  const path = `profile_photos/${uid}.${ext}`;
-  const sRef = storageRef(storage, path);
-  await uploadBytes(sRef, file);
-  return await getDownloadURL(sRef);
+  // Using Cloudinary (free) instead of Firebase Storage
+  if(file.size > 2 * 1024 * 1024) throw new Error('Image must be under 2MB');
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+  formData.append('public_id', 'profile_' + uid); // unique per user
+  formData.append('folder', 'posthire_profiles');
+  const res = await fetch(
+    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+    { method: 'POST', body: formData }
+  );
+  if(!res.ok) throw new Error('Cloudinary upload failed');
+  const data = await res.json();
+  if(data.error) throw new Error(data.error.message);
+  return data.secure_url; // public HTTPS URL
 }
 
 // ══════════════════════════════════════════════════════
@@ -1797,4 +1811,3 @@ Object.assign(window,{showSection,selectRole,confirmRole,openSetup,closeSetup,sa
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </body>
 </html>
-
