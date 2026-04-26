@@ -326,6 +326,7 @@ input,select,textarea{font-family:'Poppins',sans-serif;}
     <div class="nav-item active" id="nav-home" onclick="showSection('home')"><i class="fas fa-home"></i> Dashboard</div>
     <div class="nav-item" id="nav-requests" onclick="showSection('requests')"><i class="fas fa-inbox"></i> Requests <span class="nav-badge" id="req-badge" style="display:none">0</span></div>
     <div class="nav-item" id="nav-creators" onclick="showSection('creators')"><i class="fas fa-search"></i> Find Creators</div>
+    <div class="nav-item" id="nav-campaigns" onclick="showSection('campaigns')"><i class="fas fa-bullhorn"></i> Campaigns</div>
     <div class="nav-section-label">Account</div>
     <div class="nav-item" id="nav-profile" onclick="showSection('profile')"><i class="fas fa-user"></i> My Profile</div>
     <div class="nav-item" id="nav-pricing" onclick="showSection('pricing')"><i class="fas fa-crown"></i> Plans & Pricing</div>
@@ -471,7 +472,7 @@ const db = getFirestore(fbApp);
 // ══════════════════════════════════════════════════════
 // CLOUDINARY CONFIG (free photo hosting)
 // ══════════════════════════════════════════════════════
-const CLOUDINARY_CLOUD_NAME = 'dwetuqy0d'; // 👈 apna cloud name yahan
+const CLOUDINARY_CLOUD_NAME = 'YOUR_CLOUD_NAME'; // 👈 apna cloud name yahan
 const CLOUDINARY_UPLOAD_PRESET = 'posthire_photos'; // 👈 apna preset name yahan
 
 // ══════════════════════════════════════════════════════
@@ -543,6 +544,40 @@ const DB = {
     ];
     for(const c of creators) await setDoc(doc(db,'creators',c.userId), c);
     await setDoc(doc(db,'_meta','seeded'), {at: new Date().toISOString()});
+  },
+  async getCampaigns(){
+    const snap = await getDocs(query(collection(db,'campaigns'), orderBy('createdAt','desc')));
+    const result = {};
+    snap.forEach(d => { result[d.id] = d.data(); });
+    return result;
+  },
+  async saveCampaign(d){
+    const ref = await addDoc(collection(db,'campaigns'), d);
+    await updateDoc(ref, {id: ref.id});
+    return ref.id;
+  },
+  async updateCampaign(id, patch){
+    await updateDoc(doc(db,'campaigns',id), patch);
+  },
+  async getCampaignApplications(campaignId){
+    const snap = await getDocs(query(collection(db,'campaignApplications'), where('campaignId','==',campaignId)));
+    const result = {};
+    snap.forEach(d => { result[d.id] = d.data(); });
+    return result;
+  },
+  async saveApplication(d){
+    const ref = await addDoc(collection(db,'campaignApplications'), d);
+    await updateDoc(ref, {id: ref.id});
+    return ref.id;
+  },
+  async updateApplication(id, patch){
+    await updateDoc(doc(db,'campaignApplications',id), patch);
+  },
+  async getMyApplications(creatorId){
+    const snap = await getDocs(query(collection(db,'campaignApplications'), where('creatorId','==',creatorId)));
+    const result = {};
+    snap.forEach(d => { result[d.id] = d.data(); });
+    return result;
   }
 };
 
@@ -1064,10 +1099,10 @@ function showFormErr(el,msg){el.textContent=msg;el.className='form-err show';}
 // NAVIGATION
 // ══════════════════════════════════════════════════════
 async function showSection(sec){
-  ['home','requests','creators','profile','pricing'].forEach(s=>{
+  ['home','requests','creators','profile','pricing','campaigns'].forEach(s=>{
     document.getElementById(`nav-${s}`)?.classList.toggle('active',s===sec);
   });
-  const titles={home:'Dashboard',requests:'My Requests',creators:'Find Creators',profile:'My Profile',pricing:'Plans & Pricing'};
+  const titles={home:'Dashboard',requests:'My Requests',creators:'Find Creators',profile:'My Profile',pricing:'Plans & Pricing',campaigns:'Campaigns'};
   document.getElementById('topbar-title').textContent=titles[sec]||'Dashboard';
   const content=document.getElementById('main-content');
   content.innerHTML=`<div class="empty-state"><i class="fas fa-spinner fa-spin"></i></div>`;
@@ -1077,6 +1112,7 @@ async function showSection(sec){
   else if(sec==='creators') await renderCreators(content);
   else if(sec==='profile') await renderProfile(content);
   else if(sec==='pricing') renderPricing(content);
+  else if(sec==='campaigns') await renderCampaigns(content);
 }
 
 // ══════════════════════════════════════════════════════
@@ -1806,7 +1842,391 @@ function previewPhoto(input){
   reader.readAsDataURL(file);
 }
 
-Object.assign(window,{showSection,selectRole,confirmRole,openSetup,closeSetup,saveCreator,saveFounder,updReq,sendCollab,filterCreators,selectPlan,openPlanOverlay,closePlanOverlay,doSignOut,goToLanding,goToAdmin,openSidebar,closeSidebar,choosePlanAndContinue,showAiMatch,previewPhoto});
+// ══════════════════════════════════════════════════════
+// CAMPAIGNS FEATURE
+// ══════════════════════════════════════════════════════
+const COLLAB_TYPES = [
+  {id:'ugc', label:'UGC Content', icon:'fas fa-video', color:'#6c63ff'},
+  {id:'reel', label:'Instagram Reel', icon:'fab fa-instagram', color:'#e1306c'},
+  {id:'youtube', label:'YouTube Video', icon:'fab fa-youtube', color:'#ff0000'},
+  {id:'review', label:'Product Review', icon:'fas fa-star', color:'#f5a623'},
+  {id:'ambassador', label:'Brand Ambassador', icon:'fas fa-user-tie', color:'#00d4aa'},
+  {id:'blog', label:'Blog / Article', icon:'fas fa-pen-nib', color:'#3b82f6'},
+  {id:'podcast', label:'Podcast Feature', icon:'fas fa-microphone', color:'#8b5cf6'},
+  {id:'giveaway', label:'Giveaway Collab', icon:'fas fa-gift', color:'#ec4899'},
+];
+
+async function renderCampaigns(el){
+  const isC = _me.userType === 'creator';
+  let campaigns = {};
+  try { campaigns = await DB.getCampaigns(); } catch(e){}
+  const campArr = Object.values(campaigns);
+
+  if(isC){
+    // Creator view: browse open campaigns and apply
+    let myApps = {};
+    try { myApps = await DB.getMyApplications(_me.uid); } catch(e){}
+    const appliedIds = new Set(Object.values(myApps).map(a=>a.campaignId));
+
+    el.innerHTML = `
+      <div style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+        <div>
+          <div style="font-size:1.3rem;font-weight:700">🎯 Open Campaigns</div>
+          <div style="font-size:.82rem;color:var(--muted);margin-top:.2rem">Founders are looking for creators like you</div>
+        </div>
+      </div>
+      <div id="campaign-list-creator">
+        ${campArr.filter(c=>c.status==='open').length===0
+          ? `<div class="empty-state"><i class="fas fa-bullhorn"></i><p>No open campaigns yet.<br>Check back soon!</p></div>`
+          : campArr.filter(c=>c.status==='open').map(c=>`
+          <div class="panel" style="margin-bottom:1rem">
+            <div class="panel-body">
+              <div style="display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap">
+                <div style="flex:1;min-width:0">
+                  <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.4rem">
+                    <span style="font-weight:700;font-size:1rem">${c.title}</span>
+                    <span style="background:rgba(0,212,170,.12);color:var(--accent3);font-size:.65rem;font-weight:700;padding:.2em .6em;border-radius:99px;text-transform:uppercase">OPEN</span>
+                  </div>
+                  <div style="font-size:.78rem;color:var(--muted);margin-bottom:.6rem">by <strong>${c.founderName}</strong> · ${c.startupName}</div>
+                  <div style="font-size:.83rem;line-height:1.6;color:var(--muted);margin-bottom:.875rem">${c.description}</div>
+                  <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.875rem">
+                    ${(c.collabTypes||[]).map(t=>{
+                      const ct=COLLAB_TYPES.find(x=>x.id===t)||{label:t,icon:'fas fa-handshake',color:'var(--accent)'};
+                      return `<span style="display:inline-flex;align-items:center;gap:.35rem;background:rgba(108,99,255,.1);color:${ct.color};border:1px solid ${ct.color}33;padding:.25em .7em;border-radius:99px;font-size:.72rem;font-weight:600"><i class="${ct.icon}"></i>${ct.label}</span>`;
+                    }).join('')}
+                  </div>
+                  <div style="display:flex;flex-wrap:wrap;gap:1rem;font-size:.75rem;color:var(--muted)">
+                    ${c.niche?`<span><i class="fas fa-tag"></i> ${c.niche}</span>`:''}
+                    ${c.audienceRequired?`<span><i class="fas fa-users"></i> ${c.audienceRequired}+ audience</span>`:''}
+                    ${c.budget?`<span><i class="fas fa-rupee-sign"></i> ${c.budget}</span>`:''}
+                    ${c.deadline?`<span><i class="fas fa-calendar"></i> Apply by ${c.deadline}</span>`:''}
+                  </div>
+                </div>
+                <div style="flex-shrink:0">
+                  ${appliedIds.has(c.id)
+                    ? `<button class="btn btn-ghost btn-sm" disabled style="opacity:.6"><i class="fas fa-check"></i> Applied</button>`
+                    : `<button class="btn btn-primary btn-sm" onclick="openApplyModal('${c.id}')"><i class="fas fa-paper-plane"></i> Apply</button>`
+                  }
+                </div>
+              </div>
+            </div>
+          </div>`).join('')}
+      </div>
+
+      <!-- My Applications -->
+      <div style="margin-top:2rem;margin-bottom:1rem">
+        <div style="font-size:1.1rem;font-weight:700;margin-bottom:1rem">📋 My Applications</div>
+        ${Object.values(myApps).length===0
+          ? `<div style="color:var(--muted);font-size:.85rem;padding:1rem 0">You haven't applied to any campaign yet.</div>`
+          : Object.values(myApps).map(a=>`
+          <div class="panel" style="margin-bottom:.75rem">
+            <div class="panel-body" style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+              <div style="flex:1;min-width:0">
+                <div style="font-weight:600;font-size:.9rem">${a.campaignTitle||'Campaign'}</div>
+                <div style="font-size:.75rem;color:var(--muted);margin-top:.2rem">${a.pitch?.substring(0,100)}…</div>
+              </div>
+              <span style="flex-shrink:0;font-size:.72rem;font-weight:700;padding:.3em .8em;border-radius:99px;${
+                a.status==='accepted'?'background:rgba(0,212,170,.15);color:var(--accent3)':
+                a.status==='rejected'?'background:rgba(255,107,107,.15);color:var(--accent2)':
+                'background:rgba(108,99,255,.15);color:var(--accent)'
+              }">${a.status?.toUpperCase()||'PENDING'}</span>
+            </div>
+          </div>`).join('')}
+      </div>
+
+      <!-- Apply Modal -->
+      <div class="overlay" id="apply-modal" style="display:none">
+        <div class="modal-box">
+          <button class="modal-close" onclick="closeApplyModal()"><i class="fas fa-times"></i></button>
+          <div class="modal-title">📝 Apply for Campaign</div>
+          <div id="apply-modal-body"></div>
+        </div>
+      </div>
+    `;
+  } else {
+    // Founder view: launch campaigns & manage applications
+    const myCamps = campArr.filter(c=>c.founderId===_me.uid);
+
+    el.innerHTML = `
+      <div style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+        <div>
+          <div style="font-size:1.3rem;font-weight:700">📣 My Campaigns</div>
+          <div style="font-size:.82rem;color:var(--muted);margin-top:.2rem">Launch a campaign and let creators apply</div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="openLaunchModal()"><i class="fas fa-plus"></i> Launch Campaign</button>
+      </div>
+
+      <div id="founder-campaign-list">
+        ${myCamps.length===0
+          ? `<div class="empty-state"><i class="fas fa-bullhorn"></i><p>No campaigns yet.<br><button class="btn btn-primary btn-sm" style="margin-top:.75rem" onclick="openLaunchModal()"><i class="fas fa-plus"></i> Launch Your First Campaign</button></p></div>`
+          : myCamps.map(c=>`
+          <div class="panel" style="margin-bottom:1rem">
+            <div class="panel-body">
+              <div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap">
+                <div style="flex:1;min-width:0">
+                  <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.35rem">
+                    <span style="font-weight:700;font-size:1rem">${c.title}</span>
+                    <span style="font-size:.65rem;font-weight:700;padding:.2em .6em;border-radius:99px;text-transform:uppercase;${
+                      c.status==='open'?'background:rgba(0,212,170,.12);color:var(--accent3)':'background:rgba(255,107,107,.12);color:var(--accent2)'
+                    }">${c.status?.toUpperCase()}</span>
+                  </div>
+                  <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.75rem">
+                    ${(c.collabTypes||[]).map(t=>{
+                      const ct=COLLAB_TYPES.find(x=>x.id===t)||{label:t,icon:'fas fa-handshake',color:'var(--accent)'};
+                      return `<span style="display:inline-flex;align-items:center;gap:.3rem;background:rgba(108,99,255,.1);color:${ct.color};border:1px solid ${ct.color}33;padding:.2em .6em;border-radius:99px;font-size:.7rem;font-weight:600"><i class="${ct.icon}"></i>${ct.label}</span>`;
+                    }).join('')}
+                  </div>
+                  <div style="font-size:.8rem;color:var(--muted);line-height:1.5;margin-bottom:.75rem">${c.description}</div>
+                  <div style="display:flex;gap:.75rem;flex-wrap:wrap;font-size:.75rem;color:var(--muted)">
+                    ${c.budget?`<span><i class="fas fa-rupee-sign"></i> ${c.budget}</span>`:''}
+                    ${c.deadline?`<span><i class="fas fa-calendar"></i> Deadline: ${c.deadline}</span>`:''}
+                  </div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:.5rem;align-items:flex-end;flex-shrink:0">
+                  <button class="btn btn-ghost btn-sm" onclick="viewApplications('${c.id}','${c.title.replace(/'/g,"\\'")}')"><i class="fas fa-users"></i> View Applicants</button>
+                  <button class="btn btn-ghost btn-sm" onclick="toggleCampaignStatus('${c.id}','${c.status}')">
+                    ${c.status==='open'?'<i class="fas fa-pause"></i> Close':'<i class="fas fa-play"></i> Reopen'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>`).join('')}
+      </div>
+
+      <!-- Launch Modal -->
+      <div class="overlay" id="launch-modal" style="display:none">
+        <div class="modal-box wide">
+          <button class="modal-close" onclick="closeLaunchModal()"><i class="fas fa-times"></i></button>
+          <div class="modal-title">🚀 Launch a Campaign</div>
+          <div class="form-err" id="launch-err"></div>
+          <div style="margin-bottom:1rem">
+            <div class="form-group"><label>Campaign Title *</label><input id="lc-title" placeholder="e.g. Diwali Product Launch with Creators"></div>
+            <div class="form-group"><label>Description *</label><textarea id="lc-desc" placeholder="What is this campaign about? What should creators do?"></textarea></div>
+
+            <div class="form-group">
+              <label>Collab Type(s) * <span style="font-size:.72rem;color:var(--muted)">(select all that apply)</span></label>
+              <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem">
+                ${COLLAB_TYPES.map(ct=>`
+                  <div class="collab-type-chip" data-id="${ct.id}" onclick="toggleCollabChip(this)" style="display:inline-flex;align-items:center;gap:.4rem;padding:.4em 1em;border-radius:99px;border:1.5px solid var(--border);cursor:pointer;font-size:.78rem;font-weight:600;color:var(--muted);transition:all .2s">
+                    <i class="${ct.icon}"></i> ${ct.label}
+                  </div>`).join('')}
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group"><label>Niche / Category *</label>
+                <select id="lc-niche"><option value="">Select…</option>${['AI','Finance','Startup','Tech','Lifestyle','Business','Marketing','SaaS','Education','Health'].map(n=>`<option>${n}</option>`).join('')}</select>
+              </div>
+              <div class="form-group"><label>Min. Audience Size</label>
+                <select id="lc-aud"><option value="">Any</option>${['1K-10K','10K-50K','50K-100K','100K-500K','500K+'].map(v=>`<option>${v}</option>`).join('')}</select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Budget / Compensation</label><input id="lc-budget" placeholder="e.g. ₹5,000 - ₹15,000 or Barter"></div>
+              <div class="form-group"><label>Application Deadline</label><input id="lc-deadline" type="date"></div>
+            </div>
+          </div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem" onclick="launchCampaign()"><i class="fas fa-bullhorn"></i> Launch Campaign</button>
+        </div>
+      </div>
+
+      <!-- Applicants Modal -->
+      <div class="overlay" id="applicants-modal" style="display:none">
+        <div class="modal-box wide">
+          <button class="modal-close" onclick="closeApplicantsModal()"><i class="fas fa-times"></i></button>
+          <div class="modal-title" id="applicants-title">Applicants</div>
+          <div id="applicants-body"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i></div></div>
+        </div>
+      </div>
+    `;
+  }
+}
+
+function toggleCollabChip(el){
+  const active = el.getAttribute('data-active')==='1';
+  const id = el.getAttribute('data-id');
+  const ct = COLLAB_TYPES.find(x=>x.id===id);
+  if(!active){
+    el.setAttribute('data-active','1');
+    el.style.borderColor = ct.color;
+    el.style.background = ct.color+'22';
+    el.style.color = ct.color;
+  } else {
+    el.setAttribute('data-active','0');
+    el.style.borderColor = 'var(--border)';
+    el.style.background = 'transparent';
+    el.style.color = 'var(--muted)';
+  }
+}
+
+function openLaunchModal(){
+  document.getElementById('launch-modal').style.display='flex';
+}
+function closeLaunchModal(){
+  document.getElementById('launch-modal').style.display='none';
+}
+function closeApplicantsModal(){
+  document.getElementById('applicants-modal').style.display='none';
+}
+
+async function launchCampaign(){
+  const title = document.getElementById('lc-title').value.trim();
+  const desc = document.getElementById('lc-desc').value.trim();
+  const niche = document.getElementById('lc-niche').value;
+  const budget = document.getElementById('lc-budget').value.trim();
+  const deadline = document.getElementById('lc-deadline').value;
+  const audReq = document.getElementById('lc-aud').value;
+  const errEl = document.getElementById('launch-err');
+
+  const selectedTypes = [...document.querySelectorAll('.collab-type-chip[data-active="1"]')].map(el=>el.getAttribute('data-id'));
+
+  if(!title){ showFormErr(errEl,'Campaign title is required'); return; }
+  if(!desc){ showFormErr(errEl,'Description is required'); return; }
+  if(selectedTypes.length===0){ showFormErr(errEl,'Please select at least one collab type'); return; }
+  if(!niche){ showFormErr(errEl,'Please select a niche'); return; }
+
+  errEl.className='form-err';
+  const fo = await DB.getFounder(_me.uid);
+
+  try{
+    await DB.saveCampaign({
+      founderId: _me.uid,
+      founderName: _me.name,
+      startupName: fo?.startupName || _me.name,
+      title, description: desc, collabTypes: selectedTypes,
+      niche, audienceRequired: audReq, budget, deadline,
+      status: 'open',
+      createdAt: new Date().toISOString()
+    });
+    closeLaunchModal();
+    toast('Campaign launched! Creators can now apply 🎉','success');
+    await showSection('campaigns');
+  } catch(e){
+    showFormErr(errEl, 'Failed to launch: ' + e.message);
+  }
+}
+
+async function toggleCampaignStatus(id, currentStatus){
+  const newStatus = currentStatus==='open' ? 'closed' : 'open';
+  await DB.updateCampaign(id, {status: newStatus});
+  toast(`Campaign ${newStatus==='open'?'reopened':'closed'}`, 'success');
+  await showSection('campaigns');
+}
+
+async function viewApplications(campaignId, title){
+  document.getElementById('applicants-modal').style.display='flex';
+  document.getElementById('applicants-title').textContent = `👥 Applicants — ${title}`;
+  const body = document.getElementById('applicants-body');
+  body.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i></div>';
+
+  let apps = {};
+  try{ apps = await DB.getCampaignApplications(campaignId); } catch(e){}
+  const appArr = Object.values(apps);
+
+  if(appArr.length===0){
+    body.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>No applications yet.</p></div>';
+    return;
+  }
+
+  body.innerHTML = appArr.map(a=>`
+    <div class="panel" style="margin-bottom:.75rem">
+      <div class="panel-body">
+        <div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap">
+          <div class="avatar-lg" style="border-radius:.875rem;flex-shrink:0">
+            ${a.creatorPhoto?`<img src="${a.creatorPhoto}" style="width:100%;height:100%;object-fit:cover">`:(a.creatorName||'C').charAt(0)}
+          </div>
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:700;font-size:.95rem">${a.creatorName}</div>
+            <div style="font-size:.75rem;color:var(--muted);margin:.2rem 0 .5rem">${a.audienceSize||''} ${a.niches?'· '+a.niches.join(', '):''}</div>
+            <div style="font-size:.82rem;line-height:1.6;color:var(--muted);margin-bottom:.75rem">${a.pitch}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:.5rem;font-size:.75rem">
+              ${a.instagram?`<a href="https://instagram.com/${a.instagram.replace('@','')}" target="_blank" class="social-btn"><i class="fab fa-instagram"></i></a>`:''}
+              ${a.youtube?`<a href="https://youtube.com/${a.youtube}" target="_blank" class="social-btn"><i class="fab fa-youtube"></i></a>`:''}
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:.5rem;flex-shrink:0">
+            ${a.status==='pending'?`
+              <button class="btn btn-primary btn-sm" onclick="respondApp('${a.id}','accepted','${a.creatorWhatsapp||''}')"><i class="fas fa-check"></i> Accept</button>
+              <button class="btn btn-danger btn-sm" onclick="respondApp('${a.id}','rejected','')"><i class="fas fa-times"></i> Reject</button>
+            `:`<span style="font-size:.72rem;font-weight:700;padding:.3em .8em;border-radius:99px;${
+              a.status==='accepted'?'background:rgba(0,212,170,.15);color:var(--accent3)':'background:rgba(255,107,107,.15);color:var(--accent2)'
+            }">${a.status.toUpperCase()}</span>
+            ${a.status==='accepted'&&a.creatorWhatsapp?`<a href="https://wa.me/${a.creatorWhatsapp.replace(/\D/g,'')}" target="_blank" class="btn btn-ghost btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>`:''}`}
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+async function respondApp(appId, status, whatsapp){
+  await DB.updateApplication(appId, {status});
+  toast(status==='accepted'?'Creator accepted! 🎉':'Application rejected', status==='accepted'?'success':'info');
+  // Refresh applicants list
+  const title = document.getElementById('applicants-title').textContent.replace('👥 Applicants — ','');
+  const appData = await DB.getCampaignApplications(appId); // re-render
+  // just re-render the section
+  const apps = document.querySelectorAll('.panel');
+  // simplest: reload modal body
+  viewApplications(appId.split('_')[0], title);
+}
+
+function openApplyModal(campaignId){
+  // Find campaign from DOM data already rendered
+  const overlay = document.getElementById('apply-modal');
+  const body = document.getElementById('apply-modal-body');
+  overlay.style.display = 'flex';
+  body.innerHTML = `
+    <div class="form-err" id="apply-err"></div>
+    <div class="form-group"><label>Your Pitch *</label><textarea id="apply-pitch" placeholder="Why are you a great fit for this campaign? What will you create?" rows="4"></textarea></div>
+    <div class="form-group"><label>Your Rate / Expectation</label><input id="apply-rate" placeholder="e.g. ₹8,000 or Open to barter"></div>
+    <div style="margin-bottom:1.25rem;font-size:.8rem;color:var(--muted)">Your profile info (name, photo, niches, socials) will be shared with the founder automatically.</div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem" onclick="submitApplication('${campaignId}')"><i class="fas fa-paper-plane"></i> Submit Application</button>
+  `;
+}
+
+function closeApplyModal(){
+  const overlay = document.getElementById('apply-modal');
+  if(overlay) overlay.style.display='none';
+}
+
+async function submitApplication(campaignId){
+  const pitch = document.getElementById('apply-pitch').value.trim();
+  const rate = document.getElementById('apply-rate').value.trim();
+  const errEl = document.getElementById('apply-err');
+  if(!pitch){ showFormErr(errEl,'Please write your pitch'); return; }
+
+  errEl.className='form-err';
+  const cr = await DB.getCreator(_me.uid);
+
+  try{
+    // Get campaign title for reference
+    const campSnap = await getDoc(doc(db,'campaigns',campaignId));
+    const camp = campSnap.exists() ? campSnap.data() : {};
+
+    await DB.saveApplication({
+      campaignId,
+      campaignTitle: camp.title || '',
+      creatorId: _me.uid,
+      creatorName: cr?.name || _me.name,
+      creatorPhoto: cr?.profilePhoto || '',
+      audienceSize: cr?.audienceSize || '',
+      niches: cr?.niches || [],
+      instagram: cr?.instagram || '',
+      youtube: cr?.youtube || '',
+      creatorWhatsapp: cr?.whatsapp || _me.whatsapp || '',
+      pitch, rate,
+      status: 'pending',
+      appliedAt: new Date().toISOString()
+    });
+    closeApplyModal();
+    toast('Application submitted! 🎉 The founder will review it.','success');
+    await showSection('campaigns');
+  } catch(e){
+    showFormErr(errEl, 'Failed: ' + e.message);
+  }
+}
+
+Object.assign(window,{showSection,selectRole,confirmRole,openSetup,closeSetup,saveCreator,saveFounder,updReq,sendCollab,filterCreators,selectPlan,openPlanOverlay,closePlanOverlay,doSignOut,goToLanding,goToAdmin,openSidebar,closeSidebar,choosePlanAndContinue,showAiMatch,previewPhoto,openLaunchModal,closeLaunchModal,closeApplicantsModal,launchCampaign,toggleCampaignStatus,viewApplications,respondApp,openApplyModal,closeApplyModal,submitApplication,toggleCollabChip});
 </script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </body>
