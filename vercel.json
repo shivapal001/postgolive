@@ -1,5 +1,18 @@
 {
   "cleanUrls": true,
-  "trailingSlash": false
-}
+  "trailingSlash": false,
 
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "posthire.online"
+        }
+      ],
+      "destination": "https://www.posthire.online/$1",
+      "permanent": true
+    }
+  ]
+}
