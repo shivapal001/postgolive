@@ -328,6 +328,7 @@ input,select,textarea{font-family:'Poppins',sans-serif;}
     <div class="nav-item" id="nav-creators" onclick="showSection('creators')"><i class="fas fa-search"></i> Find Creators</div>
     <div class="nav-item" id="nav-campaigns" onclick="showSection('campaigns')"><i class="fas fa-bullhorn"></i> Campaigns</div>
     <div class="nav-section-label">Account</div>
+    <div class="nav-item" id="nav-messages" onclick="goToMessages()"><i class="fas fa-comment-dots"></i> Messages <span class="nav-badge" id="msg-badge" style="display:none">0</span></div>
     <div class="nav-item" id="nav-profile" onclick="showSection('profile')"><i class="fas fa-user"></i> My Profile</div>
     <div class="nav-item" id="nav-pricing" onclick="showSection('pricing')"><i class="fas fa-crown"></i> Plans & Pricing</div>
     <div class="nav-item" onclick="goToLanding()"><i class="fas fa-globe"></i> Landing Page</div>
@@ -454,7 +455,7 @@ const PLAN_AMOUNTS = {
   starter: 29900, // ₹299 in paise
   pro:     59900  // ₹599 in paise
 };
-import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, addDoc, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, addDoc, query, where, orderBy, serverTimestamp, increment, writeBatch, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 // Firebase Storage removed — using Cloudinary (free) for photo uploads
 
 const fbConfig = {
@@ -578,6 +579,34 @@ const DB = {
     const result = {};
     snap.forEach(d => { result[d.id] = d.data(); });
     return result;
+  },
+
+  // ── MESSAGING ──────────────────────────────────────
+  async getOrCreateConversation(founderId, creatorId){
+    // Check existing (both orderings)
+    const q1 = query(collection(db,'conversations'), where('founderId','==',founderId), where('creatorId','==',creatorId));
+    const q2 = query(collection(db,'conversations'), where('founderId','==',creatorId), where('creatorId','==',founderId));
+    const [s1,s2] = await Promise.all([getDocs(q1),getDocs(q2)]);
+    if(!s1.empty) return s1.docs[0].id;
+    if(!s2.empty) return s2.docs[0].id;
+    // Create new
+    const ref = await addDoc(collection(db,'conversations'),{
+      founderId, creatorId,
+      participants:[founderId,creatorId],
+      createdAt:serverTimestamp(),
+      updatedAt:serverTimestamp(),
+      lastMessage:'',
+      unreadCounts:{[founderId]:0,[creatorId]:0}
+    });
+    return ref.id;
+  },
+
+  async getUnreadCount(uid){
+    const q = query(collection(db,'conversations'), where('participants','array-contains',uid));
+    const snap = await getDocs(q);
+    let total=0;
+    snap.forEach(d=>{ total += (d.data().unreadCounts||{})[uid]||0; });
+    return total;
   }
 };
 
@@ -764,6 +793,7 @@ function bootDashboard(){
   }
   showSection('home');
   updateRequestBadge();
+  updateMessageBadge();
 }
 
 async function updateRequestBadge(){
@@ -775,6 +805,31 @@ async function updateRequestBadge(){
     badge.textContent = pending;
     badge.style.display = pending>0 ? '' : 'none';
   }catch(e){}
+}
+
+async function updateMessageBadge(){
+  try{
+    const count = await DB.getUnreadCount(_me.uid);
+    const badge = document.getElementById('msg-badge');
+    if(!badge) return;
+    badge.textContent = count > 99 ? '99+' : count;
+    badge.style.display = count > 0 ? '' : 'none';
+  }catch(e){}
+}
+
+function goToMessages(convId){
+  const url = convId ? `messages.html?conv=${convId}` : 'messages.html';
+  window.location.href = url;
+}
+
+async function openChatForRequest(founderId, creatorId){
+  try{
+    toast('Opening chat…','info',1500);
+    const convId = await DB.getOrCreateConversation(founderId, creatorId);
+    goToMessages(convId);
+  }catch(e){
+    toast('Could not open chat. Try again.','error');
+  }
 }
 
 function updateSidebarUI(){
@@ -1359,7 +1414,7 @@ async function renderRequests(el){
   const badge=(s)=>`<span class="status-badge ${s||'pending'}">${{pending:'⏳ Pending',accepted:'✓ Accepted',declined:'✗ Declined'}[s]||'⏳ Pending'}</span>`;
 
   const recvHTML=recv.length?recv.reverse().map(([id,r])=>{
-    const wa=r.status==='accepted'&&r.founderWhatsapp?`<a class="wa-btn" href="https://wa.me/${r.founderWhatsapp.replace(/\D/g,'')}?text=${encodeURIComponent('Hi '+r.founderName+', regarding your PostHire request…')}" target="_blank"><i class="fab fa-whatsapp"></i> Chat</a>`:'';
+    const wa=r.status==='accepted'?`<button class="accept-btn" onclick="openChatForRequest('${r.founderId}','${r.creatorId||_me.uid}')"><i class="fas fa-comment-dots"></i> Open Chat</button>`:'';
     const acts=r.status==='pending'?`<button class="accept-btn" onclick="updReq('${id}','accepted')"><i class="fas fa-check"></i> Accept</button><button class="decline-btn" onclick="updReq('${id}','declined')"><i class="fas fa-times"></i> Decline</button>`:wa;
     return `<div class="req-item" id="ri-${id}">
       <div class="req-ava"><i class="fas fa-rocket"></i></div>
@@ -1375,7 +1430,7 @@ async function renderRequests(el){
   const sentHTML=sent.length?sent.reverse().map(([id,r])=>{
     const cr=creators[r.creatorId];
     const crName=(cr?.name)||'Creator';
-    const wa=r.status==='accepted'&&cr?.whatsapp?`<a class="wa-btn" href="https://wa.me/${cr.whatsapp.replace(/\D/g,'')}?text=${encodeURIComponent('Hi '+crName+', I found you on PostHire!')}" target="_blank"><i class="fab fa-whatsapp"></i> ${cr.whatsapp}</a>`:'';
+    const wa=r.status==='accepted'?`<button class="accept-btn" onclick="openChatForRequest('${r.founderId||_me.uid}','${r.creatorId}')"><i class="fas fa-comment-dots"></i> Open Chat</button>`:'';
     return `<div class="req-item" id="rs-${id}">
       <div class="req-ava"><i class="fas fa-video"></i></div>
       <div class="req-body">
@@ -1407,7 +1462,19 @@ async function renderRequests(el){
 
 async function updReq(id,status){
   await DB.updateRequest(id,{status, updatedAt: new Date().toISOString()});
-  toast(status==='accepted'?'✓ Accepted! WhatsApp revealed.':'Declined.', status==='accepted'?'success':'info');
+  if(status==='accepted'){
+    toast('✓ Accepted! Opening chat…','success');
+    // Get request data to find both users
+    const allR = await DB.getRequests();
+    const r = allR[id];
+    if(r){
+      const convId = await DB.getOrCreateConversation(r.founderId, r.creatorId);
+      setTimeout(()=>goToMessages(convId), 800);
+      return;
+    }
+  } else {
+    toast('Declined.','info');
+  }
   await showSection('requests');
   updateRequestBadge();
 }
@@ -1421,7 +1488,7 @@ async function renderCreators(el){
   }
   const plan=_me.plan||'free';
   el.innerHTML=`
-    ${plan==='free'?`<div class="upgrade-banner"><div><h4>🔒 Limited to 10 profiles/day on Free plan</h4><p>Upgrade to Starter for unlimited browsing, advanced filters & direct WhatsApp access.</p></div><button class="btn btn-primary btn-sm" onclick="showSection('pricing')">Upgrade Now →</button></div>`:''}
+    ${plan==='free'?`<div class="upgrade-banner"><div><h4>🔒 Limited to 10 profiles/day on Free plan</h4><p>Upgrade to Starter for unlimited browsing, advanced filters & direct in-app messaging.</p></div><button class="btn btn-primary btn-sm" onclick="showSection('pricing')">Upgrade Now →</button></div>`:''}
     <div class="filter-bar">
       <input class="filter-input" id="f-search" placeholder="🔍 Search by name or bio…" oninput="filterCreators()">
       ${plan==='free'
@@ -1491,7 +1558,7 @@ async function filterCreators(){
     if(alreadySent){
       btn=`<button class="collab-btn sent"><i class="fas fa-check"></i> Request Sent</button>`;
     } else {
-      btn=`<button class="collab-btn active" onclick="sendCollab('${c.userId}')"><i class="fab fa-whatsapp"></i> Collaborate</button>`;
+      btn=`<button class="collab-btn active" onclick="sendCollab('${c.userId}')"><i class="fas fa-handshake"></i> Collaborate</button>`;
     }
     // PRO badge on featured creators
     const proBadge = c.plan==='pro' ? `<span style="font-size:.6rem;background:rgba(239,68,68,.15);color:#ef4444;padding:.2em .5em;border-radius:99px;font-weight:700;margin-left:.4rem">PRO</span>` : '';
@@ -1536,20 +1603,13 @@ async function sendCollab(creatorId){
   const cr=await DB.getCreator(creatorId);
   if(!cr) return;
   await DB.saveRequest({
-    founderId:_me.uid,founderName:_me.name,founderWhatsapp:_me.whatsapp||'',
+    founderId:_me.uid,founderName:_me.name,
     startupName:fo.startupName,creatorId,creatorName:cr.name,
     collabType:fo.collabType,budget:fo.budget,
     status:'pending',createdAt:new Date().toISOString()
   });
-  toast(`Request sent to ${cr.name}! 🚀`,'success');
+  toast(`Request sent to ${cr.name}! 🚀 They'll reply in-app.`,'success');
   _allCreators={};
-  if(cr.whatsapp){
-    const waNum=cr.whatsapp.replace(/\D/g,'');
-    // Free plan: reveal WA only after accept. Starter+: show immediately
-    if(plan!=='free'){
-      setTimeout(()=>window.open(`https://wa.me/${waNum}?text=${encodeURIComponent('Hi '+cr.name+'! I found you on PostHire and would love to collaborate!')}`, '_blank'),600);
-    }
-  }
   await filterCreators();
 }
 
@@ -2146,28 +2206,33 @@ async function viewApplications(campaignId, title){
           </div>
           <div style="display:flex;flex-direction:column;gap:.5rem;flex-shrink:0">
             ${a.status==='pending'?`
-              <button class="btn btn-primary btn-sm" onclick="respondApp('${a.id}','accepted','${a.creatorWhatsapp||''}')"><i class="fas fa-check"></i> Accept</button>
+              <button class="btn btn-primary btn-sm" onclick="respondApp('${a.id}','accepted','${a.creatorId||''}')"><i class="fas fa-check"></i> Accept</button>
               <button class="btn btn-danger btn-sm" onclick="respondApp('${a.id}','rejected','')"><i class="fas fa-times"></i> Reject</button>
             `:`<span style="font-size:.72rem;font-weight:700;padding:.3em .8em;border-radius:99px;${
               a.status==='accepted'?'background:rgba(0,212,170,.15);color:var(--accent3)':'background:rgba(255,107,107,.15);color:var(--accent2)'
             }">${a.status.toUpperCase()}</span>
-            ${a.status==='accepted'&&a.creatorWhatsapp?`<a href="https://wa.me/${a.creatorWhatsapp.replace(/\D/g,'')}" target="_blank" class="btn btn-ghost btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>`:''}`}
+            ${a.status==='accepted'&&a.creatorId?`<button class="btn btn-ghost btn-sm" onclick="openChatForRequest('${_me.uid}','${a.creatorId||''}')"><i class="fas fa-comment-dots"></i> Open Chat</button>`:''}`}
           </div>
         </div>
       </div>
     </div>`).join('');
 }
 
-async function respondApp(appId, status, whatsapp){
+async function respondApp(appId, status, creatorId){
   await DB.updateApplication(appId, {status});
+  if(status==='accepted' && creatorId){
+    toast('Creator accepted! Opening chat… 🎉','success');
+    try{
+      const convId = await DB.getOrCreateConversation(_me.uid, creatorId);
+      setTimeout(()=>goToMessages(convId), 800);
+    }catch(e){
+      toast('Creator accepted! 🎉','success');
+      viewApplications(appId.split('_')[0], document.getElementById('applicants-title')?.textContent?.replace('👥 Applicants — ',''));
+    }
+    return;
+  }
   toast(status==='accepted'?'Creator accepted! 🎉':'Application rejected', status==='accepted'?'success':'info');
-  // Refresh applicants list
-  const title = document.getElementById('applicants-title').textContent.replace('👥 Applicants — ','');
-  const appData = await DB.getCampaignApplications(appId); // re-render
-  // just re-render the section
-  const apps = document.querySelectorAll('.panel');
-  // simplest: reload modal body
-  viewApplications(appId.split('_')[0], title);
+  viewApplications(appId.split('_')[0], document.getElementById('applicants-title')?.textContent?.replace('👥 Applicants — ',''));
 }
 
 function openApplyModal(campaignId){
@@ -2226,7 +2291,7 @@ async function submitApplication(campaignId){
   }
 }
 
-Object.assign(window,{showSection,selectRole,confirmRole,openSetup,closeSetup,saveCreator,saveFounder,updReq,sendCollab,filterCreators,selectPlan,openPlanOverlay,closePlanOverlay,doSignOut,goToLanding,goToAdmin,openSidebar,closeSidebar,choosePlanAndContinue,showAiMatch,previewPhoto,openLaunchModal,closeLaunchModal,closeApplicantsModal,launchCampaign,toggleCampaignStatus,viewApplications,respondApp,openApplyModal,closeApplyModal,submitApplication,toggleCollabChip});
+Object.assign(window,{showSection,selectRole,confirmRole,openSetup,closeSetup,saveCreator,saveFounder,updReq,sendCollab,filterCreators,selectPlan,openPlanOverlay,closePlanOverlay,doSignOut,goToLanding,goToAdmin,openSidebar,closeSidebar,choosePlanAndContinue,showAiMatch,previewPhoto,openLaunchModal,closeLaunchModal,closeApplicantsModal,launchCampaign,toggleCampaignStatus,viewApplications,respondApp,openApplyModal,closeApplyModal,submitApplication,toggleCollabChip,goToMessages,openChatForRequest});
 </script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </body>
