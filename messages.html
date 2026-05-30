@@ -572,8 +572,31 @@ function openConversation(convId){
   const backBtn = document.getElementById('mob-back-btn');
   if(backBtn) backBtn.style.display='';
 
+  // Is this conversation still pending (not yet accepted)?
+  const isPending = conv.status === 'pending' || !conv.status;
+  const isFounder = _me.uid === conv.founderId;
+  // Founder sees "Waiting for acceptance", Creator sees input to reply = NO, must accept first via dashboard
+
   // Render chat header
   const chatArea = document.getElementById('chat-area');
+  const statusMeta = isPending
+    ? `<span style="color:var(--gold)"><i class="fas fa-clock"></i> Awaiting acceptance</span>`
+    : `<span style="color:var(--accent3)"><i class="fas fa-circle" style="font-size:.5rem"></i> Active</span>`;
+
+  const inputHTML = isPending
+    ? `<div style="padding:.875rem 1.375rem;border-top:1px solid var(--border);background:hsla(var(--hue),var(--sat),10%,.6);text-align:center;">
+        ${isFounder
+          ? `<div style="font-size:.8rem;color:var(--muted);padding:.5rem"><i class="fas fa-lock" style="color:var(--gold)"></i> Chat unlocks once <strong>${conv.otherUser?.name||'the creator'}</strong> accepts your request.</div>`
+          : `<div style="font-size:.8rem;color:var(--muted);padding:.5rem"><i class="fas fa-handshake" style="color:var(--accent)"></i> Accept the collaboration request from your <a onclick="goToDashboard()" style="color:var(--accent);cursor:pointer">Dashboard → Requests</a> to start chatting.</div>`
+        }
+      </div>`
+    : `<div class="chat-input-wrap">
+        <div class="chat-input-row">
+          <textarea class="chat-input" id="msg-input" placeholder="Type a message…" rows="1" onkeydown="handleMsgKey(event)" oninput="autoResizeInput(this)"></textarea>
+          <button class="send-btn" id="send-btn" onclick="sendMessage()" disabled><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </div>`;
+
   chatArea.innerHTML=`
     <div class="chat-header" id="chat-header">
       <div class="chat-header-ava" style="${!conv.otherUser?.profilePhoto?`background:linear-gradient(135deg,hsl(${hashColor(conv.otherId)},70%,50%),hsl(${hashColor(conv.otherId)+60},70%,45%))`:''}">
@@ -581,7 +604,7 @@ function openConversation(convId){
       </div>
       <div class="chat-header-info">
         <div class="chat-header-name">${conv.otherUser?.name||'User'}</div>
-        <div class="chat-header-meta" id="chat-status-text">Online</div>
+        <div class="chat-header-meta" id="chat-status-text">${statusMeta}</div>
       </div>
       <div class="chat-header-actions">
         <button class="btn btn-ghost btn-sm" onclick="goToDashboard()" style="font-size:.75rem"><i class="fas fa-th-large"></i> <span class="hide-xs">Dashboard</span></button>
@@ -590,20 +613,19 @@ function openConversation(convId){
     <div class="chat-messages" id="chat-messages">
       <div class="loading-center"><div class="spinner"></div></div>
     </div>
-    <div class="chat-input-wrap">
-      <div class="chat-input-row">
-        <textarea class="chat-input" id="msg-input" placeholder="Type a message…" rows="1" onkeydown="handleMsgKey(event)" oninput="autoResizeInput(this)"></textarea>
-        <button class="send-btn" id="send-btn" onclick="sendMessage()" disabled><i class="fas fa-paper-plane"></i></button>
-      </div>
-    </div>
+    ${inputHTML}
   `;
 
-  // Enable send button when typing
-  const inp = document.getElementById('msg-input');
-  inp.addEventListener('input',()=>{
-    document.getElementById('send-btn').disabled = !inp.value.trim();
-  });
-  inp.focus();
+  // Enable send button when typing (only if active)
+  if(!isPending){
+    const inp = document.getElementById('msg-input');
+    if(inp){
+      inp.addEventListener('input',()=>{
+        document.getElementById('send-btn').disabled = !inp.value.trim();
+      });
+      inp.focus();
+    }
+  }
 
   // Subscribe to messages
   subscribeMessages(convId);
@@ -801,4 +823,3 @@ Object.assign(window,{openConversation,filterConversations,sendMessage,handleMsg
 </script>
 </body>
 </html>
-
