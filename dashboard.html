@@ -582,31 +582,55 @@ const DB = {
   },
 
   // ── MESSAGING ──────────────────────────────────────
-  async getOrCreateConversation(founderId, creatorId){
+  async getOrCreateConversation(founderId, creatorId, inviteMsg=''){
     // Check existing (both orderings)
-    const q1 = query(collection(db,'conversations'), where('founderId','==',founderId), where('creatorId','==',creatorId));
-    const q2 = query(collection(db,'conversations'), where('founderId','==',creatorId), where('creatorId','==',founderId));
-    const [s1,s2] = await Promise.all([getDocs(q1),getDocs(q2)]);
-    if(!s1.empty) return s1.docs[0].id;
-    if(!s2.empty) return s2.docs[0].id;
-    // Create new
+    try {
+      const q1 = query(collection(db,'conversations'), where('founderId','==',founderId), where('creatorId','==',creatorId));
+      const q2 = query(collection(db,'conversations'), where('founderId','==',creatorId), where('creatorId','==',founderId));
+      const [s1,s2] = await Promise.all([getDocs(q1),getDocs(q2)]);
+      if(!s1.empty) return {id: s1.docs[0].id, isNew: false};
+      if(!s2.empty) return {id: s2.docs[0].id, isNew: false};
+    } catch(e) { /* index not ready, proceed to create */ }
+    // Create new with pending status
     const ref = await addDoc(collection(db,'conversations'),{
       founderId, creatorId,
       participants:[founderId,creatorId],
+      status:'pending',
       createdAt:serverTimestamp(),
       updatedAt:serverTimestamp(),
-      lastMessage:'',
+      lastMessage: inviteMsg || '',
+      inviteMessage: inviteMsg || '',
       unreadCounts:{[founderId]:0,[creatorId]:0}
     });
-    return ref.id;
+    // Save the invitation message
+    if(inviteMsg){
+      await addDoc(collection(db,'messages'),{
+        conversationId: ref.id,
+        senderId: founderId,
+        text: inviteMsg,
+        createdAt: serverTimestamp(),
+        seen: false,
+        isInvitation: true
+      });
+      await updateDoc(doc(db,'conversations',ref.id),{
+        [`unreadCounts.${creatorId}`]: increment(1)
+      });
+    }
+    return {id: ref.id, isNew: true};
+  },
+
+  async activateConversation(convId){
+    await updateDoc(doc(db,'conversations',convId),{ status:'active', activatedAt: serverTimestamp() });
   },
 
   async getUnreadCount(uid){
-    const q = query(collection(db,'conversations'), where('participants','array-contains',uid));
-    const snap = await getDocs(q);
-    let total=0;
-    snap.forEach(d=>{ total += (d.data().unreadCounts||{})[uid]||0; });
-    return total;
+    try {
+      const q = query(collection(db,'conversations'), where('participants','array-contains',uid));
+      const snap = await getDocs(q);
+      let total=0;
+      snap.forEach(d=>{ total += (d.data().unreadCounts||{})[uid]||0; });
+      return total;
+    } catch(e) { return 0; }
   }
 };
 
@@ -825,10 +849,12 @@ function goToMessages(convId){
 async function openChatForRequest(founderId, creatorId){
   try{
     toast('Opening chat…','info',1500);
-    const convId = await DB.getOrCreateConversation(founderId, creatorId);
+    const result = await DB.getOrCreateConversation(founderId, creatorId, '');
+    const convId = result.id || result;
     goToMessages(convId);
   }catch(e){
-    toast('Could not open chat. Try again.','error');
+    console.error('openChat error:',e);
+    toast('Could not open chat — Firestore rules may need to be deployed. See MESSAGING_IMPLEMENTATION.md','error',5000);
   }
 }
 
@@ -1464,13 +1490,20 @@ async function updReq(id,status){
   await DB.updateRequest(id,{status, updatedAt: new Date().toISOString()});
   if(status==='accepted'){
     toast('✓ Accepted! Opening chat…','success');
-    // Get request data to find both users
     const allR = await DB.getRequests();
     const r = allR[id];
     if(r){
-      const convId = await DB.getOrCreateConversation(r.founderId, r.creatorId);
-      setTimeout(()=>goToMessages(convId), 800);
-      return;
+      try{
+        const result = await DB.getOrCreateConversation(r.founderId, r.creatorId, '');
+        const convId = result.id || result;
+        // Activate so both can now message freely
+        await DB.activateConversation(convId);
+        setTimeout(()=>goToMessages(convId), 800);
+        return;
+      }catch(e){
+        console.error('Conv activate error:',e);
+        toast('Accepted! But chat could not open — check Firestore rules.','error');
+      }
     }
   } else {
     toast('Declined.','info');
@@ -1602,13 +1635,18 @@ async function sendCollab(creatorId){
   if(!fo){toast('Please set up your founder profile first.','error');await openSetup();return;}
   const cr=await DB.getCreator(creatorId);
   if(!cr) return;
-  await DB.saveRequest({
+  const reqId = await DB.saveRequest({
     founderId:_me.uid,founderName:_me.name,
     startupName:fo.startupName,creatorId,creatorName:cr.name,
     collabType:fo.collabType,budget:fo.budget,
     status:'pending',createdAt:new Date().toISOString()
   });
-  toast(`Request sent to ${cr.name}! 🚀 They'll reply in-app.`,'success');
+  // Create conversation with 1 invitation message
+  const inviteMsg = `Hi ${cr.name}! I'm ${_me.name} from ${fo.startupName||'my startup'}. I'd love to collaborate with you on ${fo.collabType||'a campaign'}${fo.budget?` — budget: ${fo.budget}`:''}. Let me know if you're interested!`;
+  try {
+    await DB.getOrCreateConversation(_me.uid, creatorId, inviteMsg);
+  } catch(e) { console.warn('Conv create failed, will retry on accept:', e); }
+  toast(`Request sent to ${cr.name}! 🚀 They'll reply in-app once they accept.`,'success');
   _allCreators={};
   await filterCreators();
 }
