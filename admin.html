@@ -1097,16 +1097,17 @@ async function loadBroadcastHistory(){
   const el=document.getElementById('broadcast-history');
   if(!el) return;
   try{
-    const snap=await getDocs(collection(db,'admin_broadcasts'));
-    if(!snap.exists()){el.innerHTML='<div class="empty"><i class="fas fa-bullhorn"></i><p>No broadcasts sent yet</p></div>';return;}
-    const broadcasts=Object.entries(snap.val()).sort((a,b)=>new Date(b[1].sentAt||0)-new Date(a[1].sentAt||0));
-    el.innerHTML=broadcasts.map(([id,b])=>`
+    const snap=await getDocs(query(collection(db,'admin_broadcasts'),orderBy('sentAt','desc')));
+    if(snap.empty){el.innerHTML='<div class="empty"><i class="fas fa-bullhorn"></i><p>No broadcasts sent yet</p></div>';return;}
+    const items=[];
+    snap.forEach(d=>items.push({id:d.id,...d.data()}));
+    el.innerHTML=items.map(b=>`
       <div class="log-item">
         <div class="log-dot" style="background:var(--accent)"></div>
-        <div class="log-text"><strong>${b.title||'Broadcast'}</strong><br><span style="color:var(--muted)">${b.body?.slice(0,60)||''}… → ${b.target} users</span></div>
+        <div class="log-text"><strong>${b.title||'Broadcast'}</strong><br><span style="color:var(--muted)">${(b.body||'').slice(0,60)}… → ${b.target} users</span></div>
         <div class="log-time">${b.sentAt?new Date(b.sentAt).toLocaleDateString('en-IN',{day:'numeric',month:'short'}):''}</div>
       </div>`).join('');
-  }catch(e){}
+  }catch(e){ console.warn('Broadcast history load failed:',e); }
 }
 
 async function sendBroadcast(){
@@ -1210,7 +1211,7 @@ async function loadPlatformSettings(){
   try{
     const snap=await getDoc(doc(db,'admin_settings','config'));
     if(!snap.exists()) return;
-    const s=snap.val();
+    const s=snap.data();
     if(document.getElementById('setting-maintenance')) document.getElementById('setting-maintenance').checked=!!s.maintenance;
     if(document.getElementById('setting-signups')) document.getElementById('setting-signups').checked=s.allowSignups!==false;
     if(document.getElementById('setting-free-requests')) document.getElementById('setting-free-requests').checked=s.freeRequests!==false;
@@ -1219,7 +1220,7 @@ async function loadPlatformSettings(){
 }
 
 async function saveSetting(key,val){
-  await updateDoc(doc(db,'admin_settings','config'),{[key]:val});
+  await setDoc(doc(db,'admin_settings','config'),{[key]:val},{merge:true});
   toast(`Setting "${key}" saved`,'success');
   addLog('system',`Setting updated: ${key} = ${val}`);
 }
@@ -1470,15 +1471,15 @@ function resetDemoData(){
   },'redo','btn-danger');
 }
 
-function dangerDeleteAll(collection,label){
-  showConfirm(`Delete ALL ${label}?`,`This will permanently delete ALL records from the ${collection} collection. This CANNOT be undone.`,async()=>{
-    const snap=await getDocs(collection(db,collection));
+function dangerDeleteAll(collName,label){
+  showConfirm(`Delete ALL ${label}?`,`This will permanently delete ALL records from the ${collName} collection. This CANNOT be undone.`,async()=>{
+    const snap=await getDocs(collection(db,collName));
     const batch=writeBatch(db);
     snap.forEach(d=>batch.delete(d.ref));
     await batch.commit();
-    _data[collection]={};
+    if(_data[collName]) _data[collName]={};
     toast(`All ${label} deleted`,'error');
-    addLog('system',`DANGER: Deleted all ${collection}`);
+    addLog('system',`DANGER: Deleted all ${collName}`);
     updateCounts();
   },'exclamation-triangle','btn-danger');
 }
