@@ -136,7 +136,7 @@ input,textarea{font-family:'Poppins',sans-serif;}
 .msg-ava-sm{width:1.625rem;height:1.625rem;border-radius:50%;background:linear-gradient(135deg,hsl(258,80%,55%),hsl(320,80%,58%));display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden;}
 .msg-ava-sm img{width:100%;height:100%;object-fit:cover;}
 .msg-ava-placeholder{width:1.625rem;flex-shrink:0;}
-.msg-bubble{max-width:68%;padding:.6em .875em;border-radius:1.25em;font-size:.82rem;line-height:1.55;word-break:break-word;position:relative;}
+.msg-bubble{max-width:68%;padding:.6em .875em;border-radius:1.25em;font-size:.82rem;line-height:1.55;word-break:break-word;position:relative;white-space:pre-wrap;}
 .msg-row.recv .msg-bubble{background:var(--surface2);border:1px solid var(--border);border-bottom-left-radius:.4em;}
 .msg-row.sent .msg-bubble{background:linear-gradient(135deg,hsl(258,80%,60%),hsl(258,70%,50%));color:#fff;border-bottom-right-radius:.4em;box-shadow:0 4px 16px hsla(258,80%,50%,.3);}
 .msg-meta{display:flex;align-items:center;gap:.3rem;font-size:.6rem;color:var(--muted);margin-top:.15rem;}
@@ -144,6 +144,43 @@ input,textarea{font-family:'Poppins',sans-serif;}
 .msg-status{color:var(--muted);}
 .msg-status.seen{color:var(--accent3);}
 .msg-date-divider{text-align:center;font-size:.67rem;color:var(--muted);padding:.875rem 0;display:flex;align-items:center;gap:.75rem;}
+
+/* ══ IMAGE / FILE MESSAGES ══ */
+.msg-bubble.msg-image-bubble{padding:.3em;background:transparent;border:none;box-shadow:none;}
+.msg-bubble.msg-image-bubble img.chat-img{max-width:240px;max-height:200px;border-radius:.875em;display:block;cursor:pointer;object-fit:cover;transition:opacity .15s;}
+.msg-bubble.msg-image-bubble img.chat-img:hover{opacity:.9;}
+.msg-row.sent .msg-bubble.msg-image-bubble{background:transparent;box-shadow:none;}
+.msg-bubble.msg-file-bubble{display:flex;align-items:center;gap:.625rem;padding:.55em .875em;min-width:180px;max-width:260px;}
+.msg-file-icon{width:2rem;height:2rem;border-radius:.5em;background:hsla(258,80%,60%,.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.9rem;color:var(--accent);}
+.msg-row.sent .msg-file-icon{background:hsla(255,255%,255%,.15);color:#fff;}
+.msg-file-info{flex:1;min-width:0;}
+.msg-file-name{font-size:.77rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.msg-file-size{font-size:.65rem;opacity:.65;margin-top:.1rem;}
+.msg-file-dl{font-size:.72rem;color:var(--accent);text-decoration:none;margin-left:auto;flex-shrink:0;transition:opacity .15s;}
+.msg-file-dl:hover{opacity:.7;}
+.msg-row.sent .msg-file-dl{color:rgba(255,255,255,.8);}
+
+/* ══ ATTACHMENT BUTTON ══ */
+.attach-btn{width:2.25rem;height:2.25rem;border-radius:50%;background:var(--glass);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.8rem;flex-shrink:0;transition:all var(--trans);}
+.attach-btn:hover{background:hsla(258,90%,72%,.12);color:var(--accent);border-color:hsla(258,90%,72%,.3);}
+
+/* ══ UPLOAD PROGRESS ══ */
+.upload-preview{display:flex;align-items:center;gap:.625rem;padding:.5rem .875rem;background:hsla(258,90%,72%,.08);border-radius:.75em;margin-bottom:.5rem;border:1px solid hsla(258,90%,72%,.2);}
+.upload-preview-thumb{width:2.5rem;height:2.5rem;border-radius:.4em;object-fit:cover;background:var(--surface2);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;font-size:.75rem;color:var(--muted);}
+.upload-preview-thumb img{width:100%;height:100%;object-fit:cover;}
+.upload-progress-bar-wrap{flex:1;min-width:0;}
+.upload-file-name-label{font-size:.73rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:.3rem;}
+.upload-progress-bar{height:.35rem;background:var(--border);border-radius:99px;overflow:hidden;}
+.upload-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),hsl(258,80%,60%));border-radius:99px;transition:width .2s linear;}
+.upload-cancel-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:.75rem;padding:.2em .4em;border-radius:.3em;transition:color .15s;}
+.upload-cancel-btn:hover{color:var(--accent2);}
+
+/* ══ IMAGE LIGHTBOX ══ */
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(8px);cursor:zoom-out;}
+.lightbox.open{display:flex;}
+.lightbox img{max-width:90vw;max-height:90vh;border-radius:1em;box-shadow:0 2em 6em rgba(0,0,0,.6);object-fit:contain;}
+.lightbox-close{position:absolute;top:1.25rem;right:1.25rem;width:2.5rem;height:2.5rem;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;}
+.lightbox-close:hover{background:rgba(255,255,255,.22);}
 .msg-date-divider::before,.msg-date-divider::after{content:'';flex:1;height:1px;background:var(--border);}
 .typing-indicator{display:flex;align-items:center;gap:.4rem;padding:.5rem 0;}
 .typing-dots{display:flex;gap:.25rem;padding:.5em .875em;background:var(--surface2);border:1px solid var(--border);border-radius:1.25em;border-bottom-left-radius:.4em;}
@@ -296,6 +333,12 @@ input,textarea{font-family:'Poppins',sans-serif;}
 
   </div>
 </main>
+
+<!-- ═══ LIGHTBOX ═══ -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()"><i class="fas fa-times"></i></button>
+  <img id="lightbox-img" src="" alt="Preview">
+</div>
 
 <!-- ═══ TOAST ═══ -->
 <div class="toast-container" id="toast-container"></div>
@@ -591,7 +634,10 @@ function openConversation(convId){
         }
       </div>`
     : `<div class="chat-input-wrap">
+        <div id="upload-preview-area"></div>
         <div class="chat-input-row">
+          <button class="attach-btn" id="attach-btn" title="Attach file or image" onclick="triggerFileInput()"><i class="fas fa-paperclip"></i></button>
+          <input type="file" id="file-input" style="display:none" accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx,.txt,.zip,.mp4,.mov" onchange="handleFileSelect(event)">
           <textarea class="chat-input" id="msg-input" placeholder="Type a message…" rows="1" onkeydown="handleMsgKey(event)" oninput="autoResizeInput(this)"></textarea>
           <button class="send-btn" id="send-btn" onclick="sendMessage()" disabled><i class="fas fa-paper-plane"></i></button>
         </div>
@@ -621,7 +667,7 @@ function openConversation(convId){
     const inp = document.getElementById('msg-input');
     if(inp){
       inp.addEventListener('input',()=>{
-        document.getElementById('send-btn').disabled = !inp.value.trim();
+        document.getElementById('send-btn').disabled = !inp.value.trim() && !_pendingFile;
       });
       inp.focus();
     }
@@ -709,7 +755,18 @@ function renderMessages(){
            </div>`
         : (isSent?'':' <div class="msg-ava-placeholder"></div>')}
       <div>
-        <div class="msg-bubble" id="msg-${msg.id}">${escHtml(msg.text)}</div>
+        <div class="msg-bubble${msg.type==='image'?' msg-image-bubble':msg.type==='file'?' msg-file-bubble':''}" id="msg-${msg.id}">
+          ${msg.type==='image'
+            ? `<img class="chat-img" src="${msg.fileUrl}" alt="${escHtml(msg.fileName||'image')}" onclick="openLightbox('${msg.fileUrl}')">`
+            : msg.type==='file'
+            ? `<div class="msg-file-icon"><i class="fas fa-${fileIcon(msg.fileName||'')}"></i></div>
+               <div class="msg-file-info">
+                 <div class="msg-file-name">${escHtml(msg.fileName||'File')}</div>
+                 <div class="msg-file-size">${msg.fileSize?fmtFileSize(msg.fileSize):''}</div>
+               </div>
+               <a class="msg-file-dl" href="${msg.fileUrl}" target="_blank" download="${escHtml(msg.fileName||'file')}" title="Download"><i class="fas fa-download"></i></a>`
+            : escHtml(msg.text)}
+        </div>
         ${isLast?`<div class="msg-meta">
           <span>${fmtMsgTime(ts)}</span>
           ${isSent?`<i class="fas fa-check${msg.seen?'-double':''} msg-status${msg.seen?' seen':''}"></i>`:''}
@@ -733,7 +790,11 @@ function scrollToBottom(){
 async function sendMessage(){
   const inp=document.getElementById('msg-input');
   const text=(inp?.value||'').trim();
-  if(!text||!_activeConvId) return;
+  if((!text && !_pendingFile) || !_activeConvId) return;
+  if(_pendingFile){
+    await uploadAndSendFile();
+    return;
+  }
   inp.value='';
   inp.style.height='auto';
   document.getElementById('send-btn').disabled=true;
@@ -743,10 +804,11 @@ async function sendMessage(){
     if(!conv) return;
 
     // Add message document
-    const msgRef = await addDoc(collection(db,'messages'),{
+    await addDoc(collection(db,'messages'),{
       conversationId: _activeConvId,
       senderId: _me.uid,
       text,
+      type: 'text',
       createdAt: serverTimestamp(),
       seen: false
     });
@@ -766,6 +828,194 @@ async function sendMessage(){
     document.getElementById('send-btn').disabled=false;
   }
 }
+
+// ══════════════════════════════════════════════════════════════════
+// FILE UPLOAD (Firebase Storage)
+// ══════════════════════════════════════════════════════════════════
+let _pendingFile = null;
+let _uploadTask = null;
+
+function triggerFileInput(){
+  document.getElementById('file-input')?.click();
+}
+
+function handleFileSelect(e){
+  const file = e.target.files?.[0];
+  if(!file) return;
+  e.target.value=''; // reset so same file can be re-selected
+  const MAX = 20 * 1024 * 1024; // 20MB
+  if(file.size > MAX){ toast('File too large. Max 20MB.','error'); return; }
+  _pendingFile = file;
+
+  const isImg = file.type.startsWith('image/');
+  const previewArea = document.getElementById('upload-preview-area');
+  if(!previewArea) return;
+
+  let thumbHtml = `<div class="upload-preview-thumb"><i class="fas fa-${fileIcon(file.name)}"></i></div>`;
+  if(isImg){
+    const url = URL.createObjectURL(file);
+    thumbHtml = `<div class="upload-preview-thumb"><img src="${url}" onload="URL.revokeObjectURL(this.src)"></div>`;
+  }
+  previewArea.innerHTML=`
+    <div class="upload-preview" id="upload-preview-row">
+      ${thumbHtml}
+      <div class="upload-progress-bar-wrap">
+        <div class="upload-file-name-label">${escHtml(file.name)}</div>
+        <div class="upload-progress-bar"><div class="upload-progress-fill" id="upload-prog" style="width:0%"></div></div>
+      </div>
+      <button class="upload-cancel-btn" onclick="cancelUpload()" title="Remove"><i class="fas fa-times"></i></button>
+    </div>`;
+
+  // Enable send button
+  document.getElementById('send-btn').disabled=false;
+}
+
+function cancelUpload(){
+  _pendingFile=null;
+  if(_uploadTask) _uploadTask.cancel();
+  _uploadTask=null;
+  const pa = document.getElementById('upload-preview-area');
+  if(pa) pa.innerHTML='';
+  const inp = document.getElementById('msg-input');
+  if(inp && !inp.value.trim()) document.getElementById('send-btn').disabled=true;
+}
+
+// ── Cloudinary config (same account already used for logo) ──
+const CLOUDINARY_CLOUD = 'dwetuqy0d';
+const CLOUDINARY_PRESET = 'posthire_chat'; // ← apna unsigned upload preset yahan daalo
+
+async function uploadAndSendFile(){
+  if(!_pendingFile||!_activeConvId) return;
+  const file = _pendingFile;
+  const conv=_conversations.find(c=>c.id===_activeConvId);
+  if(!conv) return;
+
+  document.getElementById('send-btn').disabled=true;
+
+  // Progress ticker
+  let prog=0;
+  const progInterval = setInterval(()=>{
+    prog = Math.min(prog+6, 88);
+    const el=document.getElementById('upload-prog');
+    if(el) el.style.width=prog+'%';
+  },150);
+
+  try{
+    const isMedia = file.type.startsWith('image/') || file.type.startsWith('video/');
+    let downloadUrl='', msgType='file';
+
+    if(isMedia){
+      // ── CLOUDINARY upload (images & videos — free 25GB/month) ──
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('upload_preset', CLOUDINARY_PRESET);
+      fd.append('folder', `posthire/chat/${_activeConvId}`);
+
+      const resourceType = file.type.startsWith('video/') ? 'video' : 'image';
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/${resourceType}/upload`,
+        { method:'POST', body:fd }
+      );
+      if(!res.ok){ const e=await res.text(); throw new Error('Cloudinary: '+e); }
+      const data = await res.json();
+      downloadUrl = data.secure_url;
+      msgType = file.type.startsWith('video/') ? 'video' : 'image';
+
+    } else {
+      // ── FIREBASE STORAGE upload (PDFs, docs, zips, etc.) ──
+      const token = await auth.currentUser.getIdToken();
+      const bucket = 'posthire-81b69.firebasestorage.app';
+      const storagePath = `chat-files/${_activeConvId}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+      const uploadUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o?uploadType=multipart&name=${encodeURIComponent(storagePath)}`;
+
+      const boundary = '----FB' + Math.random().toString(36).slice(2);
+      const metadata = JSON.stringify({contentType: file.type, name: storagePath});
+      const metaPart = `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${metadata}\r\n`;
+      const dataPart = `--${boundary}\r\nContent-Type: ${file.type}\r\n\r\n`;
+      const endPart  = `\r\n--${boundary}--`;
+
+      const enc = new TextEncoder();
+      const metaB=enc.encode(metaPart), dataB=enc.encode(dataPart), endB=enc.encode(endPart);
+      const fileB = await file.arrayBuffer();
+      const body  = new Uint8Array(metaB.length+dataB.length+fileB.byteLength+endB.length);
+      let off=0;
+      body.set(metaB,off);off+=metaB.length;
+      body.set(dataB,off);off+=dataB.length;
+      body.set(new Uint8Array(fileB),off);off+=fileB.byteLength;
+      body.set(endB,off);
+
+      const res = await fetch(uploadUrl,{
+        method:'POST',
+        headers:{'Authorization':`Bearer ${token}`,'Content-Type':`multipart/related; boundary=${boundary}`},
+        body: body.buffer
+      });
+      if(!res.ok){ const e=await res.text(); throw new Error('Firebase: '+e); }
+      const uploadData = await res.json();
+      downloadUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodeURIComponent(storagePath)}?alt=media&token=${uploadData.downloadTokens}`;
+      msgType = 'file';
+    }
+
+    clearInterval(progInterval);
+    const el=document.getElementById('upload-prog');
+    if(el) el.style.width='100%';
+
+    // Save to Firestore
+    const emojiMap={image:'📷',video:'🎥',file:'📎'};
+    const msgText = msgType==='image'?'📷 Image': msgType==='video'?`🎥 ${file.name}`:`📎 ${file.name}`;
+    await addDoc(collection(db,'messages'),{
+      conversationId: _activeConvId,
+      senderId: _me.uid,
+      text: msgText,
+      type: msgType,
+      fileUrl: downloadUrl,
+      fileName: file.name,
+      fileSize: file.size,
+      createdAt: serverTimestamp(),
+      seen: false
+    });
+    await updateDoc(doc(db,'conversations',_activeConvId),{
+      lastMessage: msgText,
+      lastMessageTime: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      [`unreadCounts.${conv.otherId}`]: increment(1)
+    });
+
+    _pendingFile=null;
+    const pa=document.getElementById('upload-preview-area');
+    if(pa) pa.innerHTML='';
+    document.getElementById('send-btn').disabled=true;
+    toast('Sent!','success');
+
+  }catch(err){
+    clearInterval(progInterval);
+    console.error('Upload error:',err);
+    toast('Upload failed. Try again.','error');
+    document.getElementById('send-btn').disabled=false;
+  }
+}
+
+function fileIcon(name=''){
+  const ext=(name.split('.').pop()||'').toLowerCase();
+  if(['jpg','jpeg','png','gif','webp','svg'].includes(ext)) return 'image';
+  if(['pdf'].includes(ext)) return 'file-pdf';
+  if(['doc','docx'].includes(ext)) return 'file-word';
+  if(['xls','xlsx'].includes(ext)) return 'file-excel';
+  if(['zip','rar','7z'].includes(ext)) return 'file-archive';
+  if(['mp4','mov','avi','mkv'].includes(ext)) return 'file-video';
+  if(['mp3','wav','ogg'].includes(ext)) return 'file-audio';
+  return 'file-alt';
+}
+function fmtFileSize(bytes){
+  if(bytes<1024) return bytes+'B';
+  if(bytes<1048576) return (bytes/1024).toFixed(1)+'KB';
+  return (bytes/1048576).toFixed(1)+'MB';
+}
+function openLightbox(url){
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  if(lb&&lbImg){ lbImg.src=url; lb.classList.add('open'); }
+}
+function closeLightbox(){ document.getElementById('lightbox')?.classList.remove('open'); }
 
 // ══════════════════════════════════════════════════════════════════
 // MARK READ
@@ -819,7 +1069,7 @@ function closeSidebar(){
 async function doSignOut(){ await fbSignOut(auth); window.location.href='index.html'; }
 
 // Expose to global for onclick handlers
-Object.assign(window,{openConversation,filterConversations,sendMessage,handleMsgKey,autoResizeInput,mobileBackToList,goToDashboard,goTo,openSidebar,closeSidebar,doSignOut});
+Object.assign(window,{openConversation,filterConversations,sendMessage,handleMsgKey,autoResizeInput,mobileBackToList,goToDashboard,goTo,openSidebar,closeSidebar,doSignOut,triggerFileInput,handleFileSelect,cancelUpload,openLightbox,closeLightbox});
 </script>
 </body>
 </html>
