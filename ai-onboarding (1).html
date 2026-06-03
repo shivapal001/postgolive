@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostHire — Profile Setup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #080b14;
+  --panel-l: #0c1020;
+  --panel-r: #090d1a;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --text: #e8eaf0;
+  --muted: #5a6278;
+  --muted2: #7a849e;
+  --accent: #4fffb0;
+  --accent-dim: rgba(79,255,176,0.1);
+  --accent-glow: rgba(79,255,176,0.25);
+  --user-bg: rgba(255,255,255,0.08);
+  --ai-bg: rgba(255,255,255,0.04);
+  --font: 'Sora', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+html, body { height: 100%; overflow: hidden; background: var(--bg); font-family: var(--font); color: var(--text); }
+
+/* TOPO SVG BACKGROUND */
+.topo-bg {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.18;
+}
+
+/* LAYOUT */
+.layout {
+  position: relative; z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  height: 100vh;
+}
+
+/* ═══ LEFT PANEL ═══ */
+.left-panel {
+  display: flex; flex-direction: column;
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+}
+
+/* Header */
+.lp-header {
+  padding: 20px 28px 18px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+  flex-shrink: 0;
+}
+.lp-header-top {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.logo { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; letter-spacing: -0.3px; }
+.logo-box {
+  width: 26px; height: 26px; background: var(--accent); border-radius: 5px;
+  display: flex; align-items: center; justify-content: center;
+}
+.logo-box svg { width: 13px; height: 13px; }
+.logout-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border: 1px solid rgba(255,80,80,0.25); border-radius: 8px;
+  background: rgba(255,80,80,0.07); color: #ff6b6b; font-size: 12px;
+  font-family: var(--font); cursor: pointer; font-weight: 500; transition: all 0.2s;
+}
+.logout-btn:hover { background: rgba(255,80,80,0.15); border-color: rgba(255,80,80,0.4); }
+
+.lp-title { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; }
+.lp-sub { font-size: 12.5px; color: var(--muted2); line-height: 1.6; max-width: 500px; margin: 0 auto; }
+
+/* Progress strip */
+.progress-strip {
+  padding: 10px 28px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+  flex-shrink: 0;
+}
+.prog-bar-wrap { flex: 1; height: 3px; background: var(--border2); border-radius: 99px; overflow: hidden; }
+.prog-bar-fill { height: 100%; background: var(--accent); border-radius: 99px; transition: width 0.5s ease; box-shadow: 0 0 8px var(--accent-glow); }
+.prog-label { font-size: 11px; color: var(--muted2); font-family: var(--mono); white-space: nowrap; }
+
+/* Chat scroll */
+.chat-scroll {
+  flex: 1; overflow-y: auto;
+  padding: 24px 28px;
+  display: flex; flex-direction: column; gap: 2px;
+  scroll-behavior: smooth;
+}
+.chat-scroll::-webkit-scrollbar { width: 4px; }
+.chat-scroll::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+/* Message groups */
+.msg-group { margin-bottom: 18px; }
+.msg-sender {
+  font-size: 11.5px; font-weight: 600; letter-spacing: 0.3px;
+  margin-bottom: 7px; color: var(--muted2);
+  display: flex; align-items: center; gap: 7px;
+}
+.sender-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); display: inline-block;
+  box-shadow: 0 0 6px var(--accent);
+}
+.sender-dot.user-dot { background: var(--muted2); box-shadow: none; }
+
+.bubble-wrap { display: flex; flex-direction: column; gap: 6px; }
+.bubble {
+  display: inline-block; padding: 11px 15px;
+  border-radius: 14px; font-size: 14px; line-height: 1.6;
+  max-width: 520px;
+}
+.ai-bubble {
+  background: var(--ai-bg); border: 1px solid var(--border2);
+  color: var(--text); border-top-left-radius: 4px;
+}
+.user-bubble {
+  background: var(--user-bg); border: 1px solid var(--border2);
+  color: var(--text); align-self: flex-end;
+  border-top-right-radius: 4px;
+}
+.user-group .bubble-wrap { align-items: flex-end; }
+.user-group .msg-sender { justify-content: flex-end; }
+
+/* Typing */
+.typing-bubble {
+  background: var(--ai-bg); border: 1px solid var(--border2);
+  border-radius: 14px; border-top-left-radius: 4px;
+  padding: 13px 16px; display: inline-flex; gap: 5px; align-items: center;
+}
+.dot { width: 5px; height: 5px; border-radius: 50%; background: var(--muted2); animation: bounce 1.3s infinite; }
+.dot:nth-child(2) { animation-delay: 0.18s; }
+.dot:nth-child(3) { animation-delay: 0.36s; }
+@keyframes bounce { 0%,60%,100%{ transform:translateY(0) } 30%{ transform:translateY(-5px) } }
+
+/* Chips */
+.chips-wrap { display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 0 10px; }
+.chip {
+  padding: 8px 18px; font-size: 13px; font-weight: 500;
+  border: 1px solid var(--border2); border-radius: 40px;
+  background: rgba(255,255,255,0.03); color: var(--text); cursor: pointer;
+  transition: all 0.15s; font-family: var(--font);
+  display: flex; align-items: center; gap: 7px;
+}
+.chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+.chip.selected { border-color: var(--accent); color: #080b14; background: var(--accent); font-weight: 600; }
+.chip-icon { font-size: 15px; }
+
+/* Input area */
+.input-area {
+  padding: 14px 28px 18px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0; display: flex; gap: 10px; align-items: flex-end;
+}
+.input-q-label {
+  font-size: 11px; color: var(--muted2); font-family: var(--mono);
+  padding: 0 28px 6px; flex-shrink: 0;
+}
+.msg-input {
+  flex: 1; background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border2); border-radius: 12px;
+  padding: 12px 16px; font-size: 14px; font-family: var(--font);
+  color: var(--text); outline: none; resize: none;
+  min-height: 46px; max-height: 110px; line-height: 1.5;
+  transition: border-color 0.2s;
+}
+.msg-input:focus { border-color: rgba(79,255,176,0.4); }
+.msg-input::placeholder { color: var(--muted); }
+.msg-input:disabled { opacity: 0.35; cursor: not-allowed; }
+.send-btn {
+  width: 44px; height: 44px; background: var(--accent);
+  border: none; border-radius: 10px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all 0.15s;
+  box-shadow: 0 0 14px var(--accent-glow);
+}
+.send-btn:hover { transform: scale(1.05); }
+.send-btn:disabled { opacity: 0.25; cursor: not-allowed; transform: none; box-shadow: none; }
+.send-btn svg { width: 16px; height: 16px; fill: #080b14; }
+
+/* ═══ RIGHT PANEL ═══ */
+.right-panel {
+  display: flex; flex-direction: column;
+  background: var(--panel-r);
+  overflow: hidden;
+}
+.rp-top {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; justify-content: flex-end;
+}
+
+/* Avatar */
+.rp-avatar-section {
+  padding: 28px 20px 20px;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.avatar-ring {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: rgba(255,255,255,0.06); border: 2px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.avatar-ring svg { width: 36px; height: 36px; fill: var(--muted); }
+.avatar-status {
+  position: absolute; bottom: 2px; right: 2px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--accent); border: 2px solid var(--panel-r);
+  box-shadow: 0 0 6px var(--accent);
+}
+.rp-name { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+.rp-sub { font-size: 12px; color: var(--muted2); }
+
+/* Profile fields */
+.rp-fields { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 10px; }
+.rp-fields::-webkit-scrollbar { width: 3px; }
+.rp-fields::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+.field-row {
+  padding: 10px 13px; border-radius: 10px;
+  background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 3px;
+  opacity: 0; transform: translateY(6px);
+  transition: opacity 0.3s, transform 0.3s;
+}
+.field-row.visible { opacity: 1; transform: translateY(0); }
+.field-label { font-size: 10.5px; font-family: var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.field-val { font-size: 13.5px; font-weight: 500; color: var(--accent); }
+
+/* Continue button */
+.rp-continue {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+}
+.continue-btn {
+  width: 100%; padding: 13px;
+  background: rgba(255,255,255,0.06); border: 1px solid var(--border2);
+  border-radius: 12px; color: var(--text); font-size: 14px; font-weight: 600;
+  font-family: var(--font); cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.continue-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--accent); color: var(--accent); }
+.continue-btn.primary { background: var(--accent); color: #080b14; border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
+.continue-btn.primary:hover { opacity: 0.9; }
+
+/* Appear animation */
+@keyframes fadeUp { from { opacity:0; transform:translateY(12px) } to { opacity:1; transform:translateY(0) } }
+.appear { animation: fadeUp 0.3s ease forwards; }
+</style>
+</head>
+<body>
+
+<!-- Topographic SVG background -->
+<svg class="topo-bg" viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>.tl{fill:none;stroke:#4fffb0;stroke-width:0.8}</style>
+  </defs>
+  <ellipse cx="700" cy="450" rx="680" ry="420" class="tl"/>
+  <ellipse cx="700" cy="450" rx="620" ry="370" class="tl"/>
+  <ellipse cx="700" cy="450" rx="550" ry="315" class="tl"/>
+  <ellipse cx="700" cy="450" rx="480" ry="260" class="tl"/>
+  <ellipse cx="700" cy="450" rx="410" ry="205" class="tl"/>
+  <ellipse cx="700" cy="450" rx="340" ry="155" class="tl"/>
+  <ellipse cx="700" cy="450" rx="270" ry="108" class="tl"/>
+  <ellipse cx="700" cy="450" rx="200" ry="66" class="tl"/>
+  <ellipse cx="700" cy="450" rx="130" ry="34" class="tl"/>
+  <ellipse cx="700" cy="450" rx="65" ry="14" class="tl"/>
+  <!-- Offset rings for organic feel -->
+  <ellipse cx="200" cy="200" rx="320" ry="200" class="tl"/>
+  <ellipse cx="200" cy="200" rx="260" ry="155" class="tl"/>
+  <ellipse cx="200" cy="200" rx="195" ry="110" class="tl"/>
+  <ellipse cx="1200" cy="700" rx="280" ry="180" class="tl"/>
+  <ellipse cx="1200" cy="700" rx="210" ry="130" class="tl"/>
+  <ellipse cx="1200" cy="700" rx="140" ry="85" class="tl"/>
+</svg>
+
+<div class="layout">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+
+    <div class="lp-header">
+      <div class="lp-header-top">
+        <div class="logo">
+          <div class="logo-box">
+            <svg viewBox="0 0 14 14" fill="#080b14"><rect x="1" y="1" width="5" height="12" rx="1.5"/><rect x="8" y="1" width="5" height="8" rx="1.5"/></svg>
+          </div>
+          PostHire
+        </div>
+        <button class="logout-btn">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Log out
+        </button>
+      </div>
+      <div class="lp-title">Profile Setup</div>
+      <div class="lp-sub">This is your chat with AI PostHire™. It will ask you questions to build your profile. The information you provide will be saved to your public profile.</div>
+    </div>
+
+    <div class="progress-strip">
+      <div class="prog-bar-wrap"><div class="prog-bar-fill" id="prog-fill" style="width:0%"></div></div>
+      <div class="prog-label" id="prog-label">Question 1 / 5</div>
+    </div>
+
+    <div class="chat-scroll" id="chat"></div>
+
+    <div class="input-q-label" id="q-label" style="display:none"></div>
+    <div class="input-area">
+      <textarea class="msg-input" id="user-input" placeholder="Your message…" rows="1" disabled></textarea>
+      <button class="send-btn" id="send-btn" disabled>
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+
+    <div class="rp-top">
+      <!-- space reserved -->
+    </div>
+
+    <div class="rp-avatar-section">
+      <div class="avatar-ring">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <div class="avatar-status"></div>
+      </div>
+      <div>
+        <div class="rp-name" id="rp-name">—</div>
+        <div class="rp-sub" id="rp-loc">Setting up profile…</div>
+      </div>
+    </div>
+
+    <div class="rp-fields" id="rp-fields">
+      <!-- Profile fields appear here -->
+    </div>
+
+    <div class="rp-continue">
+      <button class="continue-btn" id="continue-btn" style="display:none">Continue →</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const chatEl = document.getElementById('chat');
+const userInput = document.getElementById('user-input');
+const sendBtn = document.getElementById('send-btn');
+const progFill = document.getElementById('prog-fill');
+const progLabel = document.getElementById('prog-label');
+const rpName = document.getElementById('rp-name');
+const rpLoc = document.getElementById('rp-loc');
+const rpFields = document.getElementById('rp-fields');
+const qLabel = document.getElementById('q-label');
+const continueBtn = document.getElementById('continue-btn');
+
+let profile = {};
+let step = 0;
+let waitingChips = false;
+
+const TOTAL = 5;
+
+const FLOW = [
+  {
+    key: 'role', type: 'chips',
+    msg: "Hey! I'm your AI PostHire assistant. I'll help set up your profile in just a few steps.\n\nFirst — are you a <strong>Creator</strong> or a <strong>Founder</strong>?",
+    chips: [
+      { val: 'Creator', icon: '🎨', label: 'Creator — I make content' },
+      { val: 'Founder', icon: '🚀', label: 'Founder — I run a brand' },
+    ]
+  },
+  {
+    key: 'handle', type: 'text',
+    msgCreator: "Nice! What's your <strong>Instagram username</strong>? I'll use it to set up your creator profile.",
+    msgFounder: "Great! What's your <strong>company or startup name</strong>?",
+    phCreator: '@yourhandle',
+    phFounder: 'e.g. Acme Inc.',
+    qlabelCreator: 'Instagram handle',
+    qlabelFounder: 'Company name',
+  },
+  {
+    key: 'niche', type: 'chips',
+    msgCreator: "What <strong>niche</strong> does your content fall into?",
+    msgFounder: "What <strong>industry</strong> are you operating in?",
+    chipsCreator: [
+      { val:'Fashion', icon:'👗' }, { val:'Tech', icon:'💻' }, { val:'Finance', icon:'📈' },
+      { val:'Fitness', icon:'💪' }, { val:'Lifestyle', icon:'✨' }, { val:'Gaming', icon:'🎮' },
+      { val:'Education', icon:'📚' }, { val:'Business', icon:'💼' },
+    ],
+    chipsFounder: [
+      { val:'SaaS / Tech', icon:'⚙️' }, { val:'D2C / E-comm', icon:'🛍️' },
+      { val:'Finance', icon:'📈' }, { val:'Health', icon:'🏥' }, { val:'Other', icon:'🌐' },
+    ]
+  },
+  {
+    key: 'size', type: 'chips',
+    msgCreator: "What's your <strong>follower range</strong>?",
+    msgFounder: "What's your <strong>monthly influencer marketing budget</strong>?",
+    chipsCreator: [
+      { val:'1K – 10K', icon:'🌱' }, { val:'10K – 50K', icon:'📣' },
+      { val:'50K – 100K', icon:'🔥' }, { val:'100K+', icon:'⭐' },
+    ],
+    chipsFounder: [
+      { val:'Under ₹10K', icon:'💰' }, { val:'₹10K–₹50K', icon:'💰' },
+      { val:'₹50K–₹1L', icon:'💰' }, { val:'₹1L+', icon:'💰' },
+    ]
+  },
+  {
+    key: 'goal', type: 'chips',
+    msgCreator: "Last one! What's your <strong>main goal</strong> on PostHire?",
+    msgFounder: "Almost there! What's your <strong>main goal</strong> with PostHire?",
+    chipsCreator: [
+      { val:'Get brand deals', icon:'🤝' }, { val:'Build portfolio', icon:'📁' },
+      { val:'Connect with founders', icon:'🔗' }, { val:'Grow audience', icon:'📊' },
+    ],
+    chipsFounder: [
+      { val:'Find creators fast', icon:'⚡' }, { val:'Run campaigns', icon:'📢' },
+      { val:'Niche influencers', icon:'🎯' }, { val:'Manage collabs', icon:'🤝' },
+    ]
+  },
+];
+
+// ── Utilities ──
+function isCreator() { return profile.role === 'Creator'; }
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function scrollChat() {
+  setTimeout(() => { chatEl.scrollTop = chatEl.scrollHeight; }, 60);
+}
+
+function setProgress(n) {
+  const pct = Math.round((n / TOTAL) * 100);
+  progFill.style.width = pct + '%';
+  progLabel.textContent = n >= TOTAL ? 'Complete!' : `Question ${n + 1} / ${TOTAL}`;
+}
+
+function disableInput(d) {
+  userInput.disabled = d;
+  sendBtn.disabled = d;
+}
+
+function autoResize() {
+  userInput.style.height = 'auto';
+  userInput.style.height = Math.min(userInput.scrollHeight, 110) + 'px';
+}
+
+// ── Add messages ──
+function addTyping() {
+  const g = document.createElement('div');
+  g.className = 'msg-group appear';
+  g.id = 'typing-group';
+  g.innerHTML = `
+    <div class="msg-sender"><span class="sender-dot"></span> AI PostHire™</div>
+    <div class="bubble-wrap">
+      <div class="typing-bubble"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    </div>`;
+  chatEl.appendChild(g);
+  scrollChat();
+  return g;
+}
+
+function addAiMsg(html) {
+  return new Promise(resolve => {
+    const tg = addTyping();
+    setTimeout(() => {
+      tg.remove();
+      const g = document.createElement('div');
+      g.className = 'msg-group appear';
+      g.innerHTML = `
+        <div class="msg-sender"><span class="sender-dot"></span> AI PostHire™</div>
+        <div class="bubble-wrap">
+          <div class="bubble ai-bubble">${html}</div>
+        </div>`;
+      chatEl.appendChild(g);
+      scrollChat();
+      resolve();
+    }, 700 + Math.random() * 300);
+  });
+}
+
+function addUserMsg(text) {
+  const g = document.createElement('div');
+  g.className = 'msg-group user-group appear';
+  g.innerHTML = `
+    <div class="msg-sender"><span class="sender-dot user-dot"></span> You</div>
+    <div class="bubble-wrap">
+      <div class="bubble user-bubble">${escHtml(text)}</div>
+    </div>`;
+  chatEl.appendChild(g);
+  scrollChat();
+}
+
+function showChips(chips) {
+  const row = document.createElement('div');
+  row.className = 'chips-wrap appear';
+  row.id = 'chips-row';
+  chips.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.innerHTML = `<span class="chip-icon">${c.icon}</span>${c.label || c.val}`;
+    btn.onclick = () => {
+      if (!waitingChips) return;
+      document.querySelectorAll('#chips-row .chip').forEach(x => x.classList.remove('selected'));
+      btn.classList.add('selected');
+      const label = c.label ? c.val : c.val; // use val as stored value
+      setTimeout(() => handleChip(c.val, c.label || c.val), 280);
+    };
+    row.appendChild(btn);
+  });
+  chatEl.appendChild(row);
+  scrollChat();
+  waitingChips = true;
+}
+
+function clearChips() {
+  const r = document.getElementById('chips-row');
+  if (r) r.remove();
+  waitingChips = false;
+}
+
+// ── Profile panel ──
+const FIELD_LABELS = {
+  role: 'Role', handle: 'Handle / Company', niche: 'Niche / Industry',
+  size: 'Followers / Budget', goal: 'Main Goal'
+};
+
+function updatePanel() {
+  // Name
+  if (profile.handle) {
+    rpName.textContent = profile.handle;
+    rpLoc.textContent = profile.role === 'Creator' ? 'Creator · PostHire' : 'Founder · PostHire';
+  }
+
+  // Fields
+  rpFields.innerHTML = '';
+  Object.entries(FIELD_LABELS).forEach(([key, label]) => {
+    if (!profile[key]) return;
+    const div = document.createElement('div');
+    div.className = 'field-row';
+    div.innerHTML = `<div class="field-label">${label}</div><div class="field-val">${escHtml(profile[key])}</div>`;
+    rpFields.appendChild(div);
+    requestAnimationFrame(() => div.classList.add('visible'));
+  });
+}
+
+// ── Step logic ──
+async function handleChip(val, displayVal) {
+  clearChips();
+  addUserMsg(displayVal);
+  profile[FLOW[step].key] = val;
+  if (step === 0) { /* role stored as-is */ }
+  step++;
+  setProgress(step);
+  updatePanel();
+  await nextStep();
+}
+
+async function handleText() {
+  const val = userInput.value.trim();
+  if (!val) return;
+  userInput.value = '';
+  autoResize();
+  disableInput(true);
+  addUserMsg(val);
+  profile[FLOW[step].key] = val;
+  step++;
+  setProgress(step);
+  updatePanel();
+
+  const acks = ["Got it! ✅", "Perfect! 👌", "Noted 📝", "Awesome! 🙌"];
+  const ack = acks[Math.floor(Math.random() * acks.length)];
+  await addAiMsg(ack);
+  await nextStep();
+}
+
+async function nextStep() {
+  if (step >= FLOW.length) {
+    await showDone();
+    return;
+  }
+
+  const s = FLOW[step];
+  const isC = isCreator();
+  const msg = s.msg || (isC ? s.msgCreator : s.msgFounder);
+
+  await addAiMsg(msg);
+
+  if (s.type === 'chips') {
+    const chips = s.chips || (isC ? s.chipsCreator : s.chipsFounder);
+    showChips(chips);
+    disableInput(true);
+    qLabel.style.display = 'none';
+  } else {
+    disableInput(false);
+    const ph = isC ? s.phCreator : s.phFounder;
+    const ql = isC ? s.qlabelCreator : s.qlabelFounder;
+    userInput.placeholder = ph;
+    qLabel.textContent = 'Question ' + (step + 1) + ' / ' + TOTAL + ' · ' + ql;
+    qLabel.style.display = 'block';
+    userInput.focus();
+  }
+}
+
+async function showDone() {
+  disableInput(true);
+  qLabel.style.display = 'none';
+
+  progFill.style.width = '100%';
+  progLabel.textContent = 'Complete!';
+
+  await addAiMsg("You're all set! 🎉 Your profile has been saved. Head to your dashboard to start " + (isCreator() ? "getting brand deals" : "finding creators") + ".");
+
+  continueBtn.textContent = 'Go to Dashboard →';
+  continueBtn.classList.add('primary');
+  continueBtn.style.display = 'flex';
+  continueBtn.onclick = () => { window.location.href = 'dashboard.html'; };
+  updatePanel();
+}
+
+// ── Events ──
+userInput.addEventListener('input', autoResize);
+userInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleText(); }
+});
+sendBtn.addEventListener('click', handleText);
+
+// ── Init ──
+(async () => {
+  await addAiMsg("Hey! I'm your <strong>AI PostHire™</strong> assistant. I'll ask you a few quick questions to build your public profile.\n\nFirst up —");
+  await nextStep();
+})();
+</script>
+</body>
+</html>
