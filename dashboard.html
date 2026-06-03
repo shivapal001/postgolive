@@ -292,8 +292,61 @@ input,select,textarea{font-family:'Poppins',sans-serif;}
 .toast.info{border-color:hsla(258,90%,72%,.4);color:var(--accent);}
 @keyframes slideIn{from{opacity:0;transform:translateX(1rem);}to{opacity:1;transform:translateX(0);}}
 
+/* ══ CAMPAIGN CARDS ══ */
+.camp-card{background:var(--glass);border:1px solid var(--border);border-radius:1.5em;overflow:hidden;transition:all var(--trans);backdrop-filter:blur(8px);margin-bottom:1rem;position:relative;}
+.camp-card:hover{border-color:hsla(258,90%,72%,.4);box-shadow:0 1.25em 2.5em var(--shadow);}
+.camp-card-img{width:100%;height:160px;object-fit:cover;display:block;background:var(--surface2);}
+.camp-card-img-placeholder{width:100%;height:160px;background:linear-gradient(135deg,var(--surface2),var(--surface3));display:flex;align-items:center;justify-content:center;color:var(--muted2);font-size:2.5rem;}
+.camp-brand-row{display:flex;align-items:center;gap:.625rem;padding:.875rem 1.125rem .5rem;}
+.camp-brand-logo{width:2.25rem;height:2.25rem;border-radius:.625rem;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;color:var(--accent);flex-shrink:0;overflow:hidden;}
+.camp-brand-logo img{width:100%;height:100%;object-fit:cover;}
+.camp-brand-name{font-weight:700;font-size:.9rem;letter-spacing:-.01em;}
+.camp-category{font-size:.63rem;color:var(--muted);font-weight:500;}
+.camp-body{padding:.375rem 1.125rem 1rem;}
+.camp-title{font-weight:700;font-size:.975rem;margin-bottom:.3rem;line-height:1.35;}
+.camp-desc{font-size:.78rem;color:var(--muted);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:.75rem;}
+.camp-goal{display:inline-flex;align-items:center;gap:.35rem;font-size:.7rem;background:hsla(258,90%,72%,.1);color:var(--accent);border:1px solid hsla(258,90%,72%,.2);padding:.25em .7em;border-radius:99px;margin-bottom:.75rem;}
+.camp-links{display:flex;gap:.375rem;margin-bottom:.75rem;}
+.camp-meta-row{display:flex;gap:1rem;flex-wrap:wrap;font-size:.72rem;color:var(--muted);margin-bottom:.875rem;}
+.camp-meta-row span{display:flex;align-items:center;gap:.3rem;}
+.camp-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;padding:.75rem 1.125rem;border-top:1px solid var(--border);background:hsla(0,0%,0%,.06);}
+.camp-stat{text-align:center;}
+.camp-stat-val{font-size:.9rem;font-weight:700;line-height:1;}
+.camp-stat-label{font-size:.58rem;color:var(--muted);margin-top:.2rem;font-weight:500;}
+.camp-footer{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.75rem 1.125rem;border-top:1px solid var(--border);flex-wrap:wrap;}
+.camp-applicants-preview{display:flex;align-items:center;}
+.camp-applicants-preview .mini-ava{width:1.625rem;height:1.625rem;border-radius:50%;background:linear-gradient(135deg,hsl(258,80%,55%),hsl(320,80%,58%));border:2px solid var(--surface);display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:#fff;margin-left:-.5rem;flex-shrink:0;overflow:hidden;}
+.camp-applicants-preview .mini-ava:first-child{margin-left:0;}
+.camp-applicants-preview .mini-ava img{width:100%;height:100%;object-fit:cover;}
+.camp-match{display:inline-flex;align-items:center;gap:.3rem;font-size:.7rem;font-weight:700;padding:.25em .65em;border-radius:99px;}
+.camp-match.high{background:hsla(168,90%,45%,.15);color:var(--accent3);}
+.camp-match.mid{background:hsla(38,92%,55%,.15);color:var(--gold);}
+.camp-match.low{background:hsla(0,90%,68%,.12);color:var(--accent2);}
+.camp-status-badge{display:inline-flex;align-items:center;gap:.3rem;font-size:.62rem;font-weight:700;padding:.25em .65em;border-radius:99px;text-transform:uppercase;}
+.camp-status-badge.active{background:hsla(168,90%,45%,.12);color:var(--accent3);border:1px solid hsla(168,90%,45%,.25);}
+.camp-status-badge.reviewing{background:hsla(38,92%,55%,.12);color:var(--gold);border:1px solid hsla(38,92%,55%,.25);}
+.camp-status-badge.in-progress{background:hsla(214,90%,60%,.12);color:var(--starter);border:1px solid hsla(214,90%,60%,.25);}
+.camp-status-badge.closed{background:hsla(0,0%,50%,.1);color:var(--muted);border:1px solid hsla(0,0%,50%,.2);}
+.camp-alert{display:flex;align-items:center;gap:.4rem;font-size:.7rem;padding:.35em .75em;border-radius:.875em;margin-bottom:.375rem;}
+.camp-alert.warn{background:hsla(38,92%,55%,.1);color:var(--gold);border:1px solid hsla(38,92%,55%,.2);}
+.camp-alert.danger{background:hsla(0,90%,68%,.1);color:var(--accent2);border:1px solid hsla(0,90%,68%,.2);}
+.camp-alert.info{background:hsla(258,90%,72%,.1);color:var(--accent);border:1px solid hsla(258,90%,72%,.2);}
+.camp-analytics{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;margin-bottom:1.5rem;}
+.camp-analytics-card{background:var(--glass);border:1px solid var(--border);border-radius:1.25em;padding:.875rem;text-align:center;position:relative;overflow:hidden;}
+.camp-analytics-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.camp-analytics-card.views::before{background:linear-gradient(90deg,hsl(214,90%,60%),hsl(258,90%,72%));}
+.camp-analytics-card.applicants::before{background:linear-gradient(90deg,hsl(258,90%,72%),hsl(320,90%,68%));}
+.camp-analytics-card.shortlisted::before{background:linear-gradient(90deg,hsl(38,92%,55%),hsl(0,90%,68%));}
+.camp-analytics-card.accepted::before{background:linear-gradient(90deg,hsl(168,90%,45%),hsl(214,90%,60%));}
+.camp-analytics-card.completed::before{background:linear-gradient(90deg,hsl(168,90%,45%),hsl(120,60%,50%));}
+.camp-analytics-val{font-size:1.625rem;font-weight:700;letter-spacing:-.03em;line-height:1;}
+.camp-analytics-label{font-size:.62rem;color:var(--muted);margin-top:.3rem;font-weight:500;text-transform:uppercase;letter-spacing:.04em;}
+.camp-analytics-sub{font-size:.65rem;color:var(--muted2);margin-top:.2rem;}
+.camp-video-thumb{width:100%;height:120px;border-radius:.875rem;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:2rem;cursor:pointer;transition:all var(--trans);text-decoration:none;margin-bottom:.75rem;}
+.camp-video-thumb:hover{border-color:var(--accent);color:var(--accent);}
+.camp-section-head{font-size:1.1rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;}
 /* ══ RESPONSIVE ══ */
-@media(max-width:1100px){.dash-grid{grid-template-columns:1fr;}.stats-grid{grid-template-columns:repeat(2,1fr);}.profile-grid{grid-template-columns:1fr;}.pricing-grid{grid-template-columns:1fr;max-width:380px;}}
+@media(max-width:1100px){.dash-grid{grid-template-columns:1fr;}.stats-grid{grid-template-columns:repeat(2,1fr);}.profile-grid{grid-template-columns:1fr;}.pricing-grid{grid-template-columns:1fr;max-width:380px;}.camp-analytics{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:768px){
   .sidebar{transform:translateX(-100%);}
   .sidebar.open{transform:translateX(0);}
@@ -306,8 +359,10 @@ input,select,textarea{font-family:'Poppins',sans-serif;}
   .creators-grid{grid-template-columns:1fr;}
   .pricing-grid{grid-template-columns:1fr;max-width:340px;}
   .form-row{grid-template-columns:1fr;}
+  .camp-analytics{grid-template-columns:repeat(2,1fr);}
+  .camp-stats-row{grid-template-columns:repeat(2,1fr);}
 }
-@media(max-width:480px){.stats-grid{grid-template-columns:1fr;}.content{padding:1rem;}}
+@media(max-width:480px){.stats-grid{grid-template-columns:1fr;}.content{padding:1rem;}.camp-analytics{grid-template-columns:1fr 1fr;}.camp-stats-row{grid-template-columns:repeat(2,1fr);}}
 </style>
 </head>
 <body>
@@ -1954,6 +2009,31 @@ const COLLAB_TYPES = [
   {id:'giveaway', label:'Giveaway Collab', icon:'fas fa-gift', color:'#ec4899'},
 ];
 
+// ── Campaign helpers ──────────────────────────────────
+function _campStatusBadge(s){
+  const map={open:'active',closed:'closed',reviewing:'reviewing','in-progress':'in-progress'};
+  const cls=map[s]||'closed';
+  const label={open:'Active',closed:'Closed',reviewing:'Reviewing','in-progress':'In Progress'}[s]||s;
+  const icon={open:'circle',closed:'ban',reviewing:'search','in-progress':'spinner fa-spin'}[s]||'circle';
+  return `<span class="camp-status-badge ${cls}"><i class="fas fa-${icon}"></i>${label}</span>`;
+}
+function _campMatchChip(score){
+  const cls=score>=80?'high':score>=55?'mid':'low';
+  return `<span class="camp-match ${cls}"><i class="fas fa-bolt"></i>${score}% Match</span>`;
+}
+function _deadlineAlert(deadline){
+  if(!deadline) return '';
+  const diff=Math.ceil((new Date(deadline)-Date.now())/(1000*60*60*24));
+  if(diff<0) return `<div class="camp-alert danger"><i class="fas fa-exclamation-triangle"></i>Deadline passed</div>`;
+  if(diff<=3) return `<div class="camp-alert danger"><i class="fas fa-exclamation-triangle"></i>Deadline in ${diff} day${diff!==1?'s':''}!</div>`;
+  if(diff<=7) return `<div class="camp-alert warn"><i class="fas fa-clock"></i>Deadline in ${diff} days</div>`;
+  return '';
+}
+function _pendingAlert(count){
+  if(!count) return '';
+  return `<div class="camp-alert info"><i class="fas fa-bell"></i>${count} pending review${count!==1?'s':''}</div>`;
+}
+
 async function renderCampaigns(el){
   const isC = _me.userType === 'creator';
   let campaigns = {};
@@ -1961,10 +2041,14 @@ async function renderCampaigns(el){
   const campArr = Object.values(campaigns);
 
   if(isC){
-    // Creator view: browse open campaigns and apply
+    // ── CREATOR VIEW ──────────────────────────────────
     let myApps = {};
     try { myApps = await DB.getMyApplications(_me.uid); } catch(e){}
     const appliedIds = new Set(Object.values(myApps).map(a=>a.campaignId));
+    const openCamps = campArr.filter(c=>c.status==='open');
+
+    // Build fake match scores per campaign (deterministic from id)
+    const matchScore = id => { let h=0; for(let i=0;i<id.length;i++) h=(h*31+id.charCodeAt(i))&0xffff; return 55+Math.abs(h%46); };
 
     el.innerHTML = `
       <div style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
@@ -1972,48 +2056,69 @@ async function renderCampaigns(el){
           <div style="font-size:1.3rem;font-weight:700">🎯 Open Campaigns</div>
           <div style="font-size:.82rem;color:var(--muted);margin-top:.2rem">Founders are looking for creators like you</div>
         </div>
+        <span style="font-size:.78rem;color:var(--muted);background:var(--glass);border:1px solid var(--border);padding:.35em 1em;border-radius:99px">${openCamps.length} open</span>
       </div>
       <div id="campaign-list-creator">
-        ${campArr.filter(c=>c.status==='open').length===0
+        ${openCamps.length===0
           ? `<div class="empty-state"><i class="fas fa-bullhorn"></i><p>No open campaigns yet.<br>Check back soon!</p></div>`
-          : campArr.filter(c=>c.status==='open').map(c=>`
-          <div class="panel" style="margin-bottom:1rem">
-            <div class="panel-body">
-              <div style="display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap">
+          : openCamps.map(c=>{
+            const ms = matchScore(c.id||c.title||'');
+            const applied = appliedIds.has(c.id);
+            const imgHtml = c.productImage
+              ? `<img class="camp-card-img" src="${c.productImage}" alt="${c.title}" onerror="this.style.display='none'">`
+              : `<div class="camp-card-img-placeholder"><i class="fas fa-image"></i></div>`;
+            const logoHtml = c.brandLogo
+              ? `<div class="camp-brand-logo"><img src="${c.brandLogo}" alt="logo" onerror="this.style.display='none';this.parentElement.textContent='${(c.startupName||'B').charAt(0)}'"></div>`
+              : `<div class="camp-brand-logo">${(c.startupName||'B').charAt(0)}</div>`;
+            const demoBtn = c.demoVideo ? `<a href="${c.demoVideo}" target="_blank" rel="noopener" class="camp-video-thumb" title="Watch demo"><i class="fas fa-play-circle"></i></a>` : '';
+            return `
+            <div class="camp-card">
+              ${imgHtml}
+              <div class="camp-brand-row">
+                ${logoHtml}
                 <div style="flex:1;min-width:0">
-                  <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.4rem">
-                    <span style="font-weight:700;font-size:1rem">${c.title}</span>
-                    <span style="background:rgba(0,212,170,.12);color:var(--accent3);font-size:.65rem;font-weight:700;padding:.2em .6em;border-radius:99px;text-transform:uppercase">OPEN</span>
-                  </div>
-                  <div style="font-size:.78rem;color:var(--muted);margin-bottom:.6rem">by <strong>${c.founderName}</strong> · ${c.startupName}</div>
-                  <div style="font-size:.83rem;line-height:1.6;color:var(--muted);margin-bottom:.875rem">${c.description}</div>
-                  <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.875rem">
-                    ${(c.collabTypes||[]).map(t=>{
-                      const ct=COLLAB_TYPES.find(x=>x.id===t)||{label:t,icon:'fas fa-handshake',color:'var(--accent)'};
-                      return `<span style="display:inline-flex;align-items:center;gap:.35rem;background:rgba(108,99,255,.1);color:${ct.color};border:1px solid ${ct.color}33;padding:.25em .7em;border-radius:99px;font-size:.72rem;font-weight:600"><i class="${ct.icon}"></i>${ct.label}</span>`;
-                    }).join('')}
-                  </div>
-                  <div style="display:flex;flex-wrap:wrap;gap:1rem;font-size:.75rem;color:var(--muted)">
-                    ${c.niche?`<span><i class="fas fa-tag"></i> ${c.niche}</span>`:''}
-                    ${c.audienceRequired?`<span><i class="fas fa-users"></i> ${c.audienceRequired}+ audience</span>`:''}
-                    ${c.budget?`<span><i class="fas fa-rupee-sign"></i> ${c.budget}</span>`:''}
-                    ${c.deadline?`<span><i class="fas fa-calendar"></i> Apply by ${c.deadline}</span>`:''}
-                  </div>
+                  <div class="camp-brand-name">${c.startupName||c.founderName}</div>
+                  <div class="camp-category">${c.niche||''}</div>
                 </div>
-                <div style="flex-shrink:0">
-                  ${appliedIds.has(c.id)
+                ${_campMatchChip(ms)}
+              </div>
+              <div class="camp-body">
+                <div class="camp-title">${c.title}</div>
+                ${c.productName?`<div style="font-size:.72rem;color:var(--muted);margin-bottom:.3rem"><i class="fas fa-box" style="margin-right:.3rem"></i>${c.productName}${c.productCategory?' · '+c.productCategory:''}</div>`:''}
+                <div class="camp-desc">${c.description}</div>
+                ${c.campaignGoal?`<div class="camp-goal"><i class="fas fa-bullseye"></i>${c.campaignGoal}</div>`:''}
+                ${demoBtn}
+                <div class="camp-links">
+                  ${(c.collabTypes||[]).slice(0,3).map(t=>{
+                    const ct=COLLAB_TYPES.find(x=>x.id===t)||{label:t,icon:'fas fa-handshake',color:'var(--accent)'};
+                    return `<span style="display:inline-flex;align-items:center;gap:.3rem;background:rgba(108,99,255,.1);color:${ct.color};border:1px solid ${ct.color}33;padding:.22em .6em;border-radius:99px;font-size:.68rem;font-weight:600"><i class="${ct.icon}"></i>${ct.label}</span>`;
+                  }).join('')}
+                </div>
+                <div class="camp-meta-row">
+                  ${c.audienceRequired?`<span><i class="fas fa-users"></i>${c.audienceRequired}+ audience</span>`:''}
+                  ${c.budget?`<span><i class="fas fa-rupee-sign"></i>${c.budget}</span>`:''}
+                  ${c.deadline?`<span><i class="fas fa-calendar-alt"></i>Apply by ${c.deadline}</span>`:''}
+                  ${c.website?`<a href="${c.website}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.3rem;color:var(--accent);font-size:.72rem;text-decoration:none"><i class="fas fa-globe"></i>Website</a>`:''}
+                </div>
+                ${_deadlineAlert(c.deadline)}
+                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-top:.625rem">
+                  <div style="display:flex;align-items:center;gap:.75rem;font-size:.72rem;color:var(--muted)">
+                    <span><i class="fas fa-users"></i> ${c.applicantsCount||0} applied</span>
+                    <span><i class="fas fa-eye"></i> ${c.viewsCount||0} views</span>
+                  </div>
+                  ${applied
                     ? `<button class="btn btn-ghost btn-sm" disabled style="opacity:.6"><i class="fas fa-check"></i> Applied</button>`
-                    : `<button class="btn btn-primary btn-sm" onclick="openApplyModal('${c.id}')"><i class="fas fa-paper-plane"></i> Apply</button>`
+                    : `<button class="btn btn-primary btn-sm" onclick="openApplyModal('${c.id}')"><i class="fas fa-paper-plane"></i> Apply Now</button>`
                   }
                 </div>
               </div>
-            </div>
-          </div>`).join('')}
+            </div>`;
+          }).join('')}
       </div>
 
       <!-- My Applications -->
-      <div style="margin-top:2rem;margin-bottom:1rem">
-        <div style="font-size:1.1rem;font-weight:700;margin-bottom:1rem">📋 My Applications</div>
+      <div style="margin-top:2.5rem;margin-bottom:1rem">
+        <div class="camp-section-head"><i class="fas fa-clipboard-list" style="color:var(--accent)"></i>My Applications</div>
         ${Object.values(myApps).length===0
           ? `<div style="color:var(--muted);font-size:.85rem;padding:1rem 0">You haven't applied to any campaign yet.</div>`
           : Object.values(myApps).map(a=>`
@@ -2041,9 +2146,30 @@ async function renderCampaigns(el){
         </div>
       </div>
     `;
+
+    // Increment view count for each rendered campaign (fire-and-forget)
+    openCamps.forEach(c=>{ if(c.id) DB.updateCampaign(c.id,{viewsCount:(c.viewsCount||0)+1}).catch(()=>{}); });
+
   } else {
-    // Founder view: launch campaigns & manage applications
+    // ── FOUNDER VIEW ──────────────────────────────────
     const myCamps = campArr.filter(c=>c.founderId===_me.uid);
+
+    // Gather all applications for analytics
+    let allAppsMap = {};
+    for(const c of myCamps){
+      if(!c.id) continue;
+      try{
+        const apps = await DB.getCampaignApplications(c.id);
+        allAppsMap[c.id] = Object.values(apps);
+      }catch(e){ allAppsMap[c.id]=[]; }
+    }
+
+    // Aggregate analytics
+    const totalViews     = myCamps.reduce((s,c)=>s+(c.viewsCount||0),0);
+    const totalApplicants= myCamps.reduce((s,c)=>s+(c.applicantsCount||0)||(allAppsMap[c.id]?.length||0),0);
+    const totalShortlisted=Object.values(allAppsMap).flat().filter(a=>a.status==='shortlisted').length;
+    const totalAccepted  = Object.values(allAppsMap).flat().filter(a=>a.status==='accepted').length;
+    const totalCompleted = myCamps.filter(c=>c.status==='closed'||c.status==='completed').length;
 
     el.innerHTML = `
       <div style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
@@ -2054,41 +2180,120 @@ async function renderCampaigns(el){
         <button class="btn btn-primary btn-sm" onclick="openLaunchModal()"><i class="fas fa-plus"></i> Launch Campaign</button>
       </div>
 
+      <!-- Campaign Analytics -->
+      ${myCamps.length>0?`
+      <div class="camp-analytics">
+        <div class="camp-analytics-card views">
+          <div class="camp-analytics-val">${totalViews}</div>
+          <div class="camp-analytics-label">Views</div>
+          <div class="camp-analytics-sub">total impressions</div>
+        </div>
+        <div class="camp-analytics-card applicants">
+          <div class="camp-analytics-val">${totalApplicants}</div>
+          <div class="camp-analytics-label">Applicants</div>
+          <div class="camp-analytics-sub">across all campaigns</div>
+        </div>
+        <div class="camp-analytics-card shortlisted">
+          <div class="camp-analytics-val">${totalShortlisted}</div>
+          <div class="camp-analytics-label">Shortlisted</div>
+          <div class="camp-analytics-sub">under review</div>
+        </div>
+        <div class="camp-analytics-card accepted">
+          <div class="camp-analytics-val">${totalAccepted}</div>
+          <div class="camp-analytics-label">Accepted</div>
+          <div class="camp-analytics-sub">collaborations</div>
+        </div>
+        <div class="camp-analytics-card completed">
+          <div class="camp-analytics-val">${totalCompleted}</div>
+          <div class="camp-analytics-label">Completed</div>
+          <div class="camp-analytics-sub">closed campaigns</div>
+        </div>
+      </div>`:''}
+
       <div id="founder-campaign-list">
         ${myCamps.length===0
           ? `<div class="empty-state"><i class="fas fa-bullhorn"></i><p>No campaigns yet.<br><button class="btn btn-primary btn-sm" style="margin-top:.75rem" onclick="openLaunchModal()"><i class="fas fa-plus"></i> Launch Your First Campaign</button></p></div>`
-          : myCamps.map(c=>`
-          <div class="panel" style="margin-bottom:1rem">
-            <div class="panel-body">
-              <div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap">
+          : myCamps.map(c=>{
+            const apps = allAppsMap[c.id]||[];
+            const pendingApps = apps.filter(a=>a.status==='pending');
+            const imgHtml = c.productImage
+              ? `<img class="camp-card-img" src="${c.productImage}" alt="${c.title}" onerror="this.style.display='none'">`
+              : `<div class="camp-card-img-placeholder"><i class="fas fa-image"></i></div>`;
+            const logoHtml = c.brandLogo
+              ? `<div class="camp-brand-logo"><img src="${c.brandLogo}" alt="logo" onerror="this.style.display='none';this.parentElement.textContent='${(c.startupName||'B').charAt(0)}'"></div>`
+              : `<div class="camp-brand-logo">${(c.startupName||c.founderName||'B').charAt(0)}</div>`;
+            // Top 3 applicants preview avatars
+            const top3 = apps.slice(0,3);
+            const avatarPreviews = top3.map(a=>`<div class="mini-ava">${a.creatorPhoto?`<img src="${a.creatorPhoto}" onerror="this.style.display='none'">`:(a.creatorName||'C').charAt(0)}</div>`).join('');
+            const demoBtn = c.demoVideo ? `<a href="${c.demoVideo}" target="_blank" rel="noopener" class="camp-video-thumb" title="Watch demo video"><i class="fas fa-play-circle"></i></a>` : '';
+            const viewCount = c.viewsCount||0;
+            const appCount  = c.applicantsCount||apps.length||0;
+            const msgCount  = c.messagesCount||0;
+            return `
+            <div class="camp-card">
+              ${imgHtml}
+              <div class="camp-brand-row">
+                ${logoHtml}
                 <div style="flex:1;min-width:0">
-                  <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.35rem">
-                    <span style="font-weight:700;font-size:1rem">${c.title}</span>
-                    <span style="font-size:.65rem;font-weight:700;padding:.2em .6em;border-radius:99px;text-transform:uppercase;${
-                      c.status==='open'?'background:rgba(0,212,170,.12);color:var(--accent3)':'background:rgba(255,107,107,.12);color:var(--accent2)'
-                    }">${c.status?.toUpperCase()}</span>
-                  </div>
-                  <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.75rem">
-                    ${(c.collabTypes||[]).map(t=>{
-                      const ct=COLLAB_TYPES.find(x=>x.id===t)||{label:t,icon:'fas fa-handshake',color:'var(--accent)'};
-                      return `<span style="display:inline-flex;align-items:center;gap:.3rem;background:rgba(108,99,255,.1);color:${ct.color};border:1px solid ${ct.color}33;padding:.2em .6em;border-radius:99px;font-size:.7rem;font-weight:600"><i class="${ct.icon}"></i>${ct.label}</span>`;
-                    }).join('')}
-                  </div>
-                  <div style="font-size:.8rem;color:var(--muted);line-height:1.5;margin-bottom:.75rem">${c.description}</div>
-                  <div style="display:flex;gap:.75rem;flex-wrap:wrap;font-size:.75rem;color:var(--muted)">
-                    ${c.budget?`<span><i class="fas fa-rupee-sign"></i> ${c.budget}</span>`:''}
-                    ${c.deadline?`<span><i class="fas fa-calendar"></i> Deadline: ${c.deadline}</span>`:''}
-                  </div>
+                  <div class="camp-brand-name">${c.startupName||c.founderName}</div>
+                  <div class="camp-category">${c.niche||''}${c.productCategory?' · '+c.productCategory:''}</div>
                 </div>
-                <div style="display:flex;flex-direction:column;gap:.5rem;align-items:flex-end;flex-shrink:0">
-                  <button class="btn btn-ghost btn-sm" onclick="viewApplications('${c.id}','${c.title.replace(/'/g,"\\'")}')"><i class="fas fa-users"></i> View Applicants</button>
+                ${_campStatusBadge(c.status==='open'?'open':c.status)}
+              </div>
+              <div class="camp-body">
+                <div class="camp-title">${c.title}</div>
+                ${c.productName?`<div style="font-size:.72rem;color:var(--muted);margin-bottom:.3rem"><i class="fas fa-box" style="margin-right:.3rem"></i>${c.productName}</div>`:''}
+                <div class="camp-desc">${c.description}</div>
+                ${c.campaignGoal?`<div class="camp-goal"><i class="fas fa-bullseye"></i>${c.campaignGoal}</div>`:''}
+                ${demoBtn}
+                <div class="camp-links">
+                  ${(c.collabTypes||[]).slice(0,3).map(t=>{
+                    const ct=COLLAB_TYPES.find(x=>x.id===t)||{label:t,icon:'fas fa-handshake',color:'var(--accent)'};
+                    return `<span style="display:inline-flex;align-items:center;gap:.3rem;background:rgba(108,99,255,.1);color:${ct.color};border:1px solid ${ct.color}33;padding:.22em .6em;border-radius:99px;font-size:.68rem;font-weight:600"><i class="${ct.icon}"></i>${ct.label}</span>`;
+                  }).join('')}
+                </div>
+                <div class="camp-meta-row">
+                  ${c.budget?`<span><i class="fas fa-rupee-sign"></i>${c.budget}</span>`:''}
+                  ${c.deadline?`<span><i class="fas fa-calendar-alt"></i>Deadline: ${c.deadline}</span>`:''}
+                  ${c.website?`<a href="${c.website}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.3rem;color:var(--accent);font-size:.72rem;text-decoration:none"><i class="fas fa-globe"></i>Website</a>`:''}
+                  ${c.instagram?`<a href="https://instagram.com/${c.instagram.replace('@','')}" target="_blank" rel="noopener" class="social-btn" style="width:1.5rem;height:1.5rem;font-size:.7rem"><i class="fab fa-instagram"></i></a>`:''}
+                </div>
+                ${_deadlineAlert(c.deadline)}
+                ${_pendingAlert(pendingApps.length)}
+              </div>
+              <!-- Stats Row -->
+              <div class="camp-stats-row">
+                <div class="camp-stat">
+                  <div class="camp-stat-val"><i class="fas fa-eye" style="font-size:.7rem;color:var(--muted)"></i> ${viewCount}</div>
+                  <div class="camp-stat-label">Views</div>
+                </div>
+                <div class="camp-stat">
+                  <div class="camp-stat-val">${appCount}</div>
+                  <div class="camp-stat-label">Applicants</div>
+                </div>
+                <div class="camp-stat">
+                  <div class="camp-stat-val">${msgCount}</div>
+                  <div class="camp-stat-label">Messages</div>
+                </div>
+                <div class="camp-stat">
+                  <div class="camp-stat-val">${totalAccepted}</div>
+                  <div class="camp-stat-label">Accepted</div>
+                </div>
+              </div>
+              <!-- Footer -->
+              <div class="camp-footer">
+                <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+                  ${top3.length>0?`<div class="camp-applicants-preview" title="${appCount} applicant${appCount!==1?'s':''}">${avatarPreviews}${appCount>3?`<span style="margin-left:.5rem;font-size:.68rem;color:var(--muted)">+${appCount-3} more</span>`:''}</div>`:''}
+                </div>
+                <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+                  <button class="btn btn-ghost btn-sm" onclick="viewApplications('${c.id}','${c.title.replace(/'/g,"\\'")}')"><i class="fas fa-users"></i> Applicants${appCount>0?` (${appCount})`:''}</button>
                   <button class="btn btn-ghost btn-sm" onclick="toggleCampaignStatus('${c.id}','${c.status}')">
                     ${c.status==='open'?'<i class="fas fa-pause"></i> Close':'<i class="fas fa-play"></i> Reopen'}
                   </button>
                 </div>
               </div>
-            </div>
-          </div>`).join('')}
+            </div>`;
+          }).join('')}
       </div>
 
       <!-- Launch Modal -->
@@ -2100,6 +2305,22 @@ async function renderCampaigns(el){
           <div style="margin-bottom:1rem">
             <div class="form-group"><label>Campaign Title *</label><input id="lc-title" placeholder="e.g. Diwali Product Launch with Creators"></div>
             <div class="form-group"><label>Description *</label><textarea id="lc-desc" placeholder="What is this campaign about? What should creators do?"></textarea></div>
+
+            <div class="form-row">
+              <div class="form-group"><label>Product Name</label><input id="lc-product-name" placeholder="e.g. HydraGlow Serum"></div>
+              <div class="form-group"><label>Product Category</label><input id="lc-product-cat" placeholder="e.g. Skincare, Tech, Food"></div>
+            </div>
+            <div class="form-group"><label>Product Image URL <span style="font-size:.7rem;color:var(--muted)">(Cloudinary or any image URL)</span></label><input id="lc-product-img" placeholder="https://res.cloudinary.com/…/product.jpg" oninput="previewCampImg(this)"></div>
+            <div id="lc-img-preview" style="display:none;margin-bottom:.875rem"><img id="lc-img-el" style="width:100%;height:140px;object-fit:cover;border-radius:1rem;border:1px solid var(--border)"></div>
+            <div class="form-group"><label>Brand Logo URL</label><input id="lc-brand-logo" placeholder="https://res.cloudinary.com/…/logo.png"></div>
+            <div class="form-row">
+              <div class="form-group"><label>Campaign Goal</label><input id="lc-goal" placeholder="e.g. 50 UGC videos in 30 days"></div>
+              <div class="form-group"><label>Demo Video URL</label><input id="lc-demo" placeholder="https://youtube.com/…"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Website</label><input id="lc-website" placeholder="https://yourbrand.com"></div>
+              <div class="form-group"><label>Instagram Handle</label><input id="lc-instagram" placeholder="@yourbrand"></div>
+            </div>
 
             <div class="form-group">
               <label>Collab Type(s) * <span style="font-size:.72rem;color:var(--muted)">(select all that apply)</span></label>
