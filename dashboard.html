@@ -363,6 +363,60 @@ input,select,textarea{font-family:'Poppins',sans-serif;}
   .camp-stats-row{grid-template-columns:repeat(2,1fr);}
 }
 @media(max-width:480px){.stats-grid{grid-template-columns:1fr;}.content{padding:1rem;}.camp-analytics{grid-template-columns:1fr 1fr;}.camp-stats-row{grid-template-columns:repeat(2,1fr);}}
+
+/* ══ EDIT PROFILE MODAL (AI Onboarding style) ══ */
+.edit-profile-overlay{position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:1rem;}
+.edit-profile-overlay.open{display:flex;}
+.edit-profile-modal{width:100%;max-width:540px;max-height:90vh;background:#0e1220;border:1px solid rgba(255,255,255,.13);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.6);}
+.edit-profile-header{padding:1.25rem 1.5rem 1rem;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.edit-profile-header h2{font-size:1.05rem;font-weight:700;letter-spacing:-.02em;}
+.edit-profile-close{width:2rem;height:2rem;border-radius:.5rem;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--muted);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all .15s;font-family:'Poppins',sans-serif;}
+.edit-profile-close:hover{background:rgba(255,80,80,.12);color:#ff6b6b;border-color:rgba(255,80,80,.3);}
+.edit-profile-body{flex:1;overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;gap:1.25rem;}
+.edit-profile-body::-webkit-scrollbar{width:4px;}
+.edit-profile-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.13);border-radius:4px;}
+.edit-profile-footer{padding:1rem 1.5rem 1.25rem;border-top:1px solid rgba(255,255,255,.07);display:flex;gap:.625rem;flex-shrink:0;}
+.edit-profile-save{flex:1;padding:.8rem;background:var(--accent);border:none;border-radius:.75rem;color:#fff;font-size:.875rem;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;transition:opacity .15s;}
+.edit-profile-save:hover{opacity:.88;}
+.edit-profile-cancel{padding:.8rem 1.25rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.13);border-radius:.75rem;color:var(--muted);font-size:.875rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;transition:all .15s;}
+.edit-profile-cancel:hover{background:rgba(255,255,255,.08);color:var(--text);}
+/* DP Upload ring */
+.ep-dp-section{display:flex;flex-direction:column;align-items:center;gap:.875rem;}
+.ep-dp-ring{width:88px;height:88px;border-radius:50%;border:2px dashed rgba(255,255,255,.2);cursor:pointer;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.04);transition:border-color .2s;flex-shrink:0;}
+.ep-dp-ring:hover{border-color:var(--accent);}
+.ep-dp-ring img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.ep-dp-placeholder{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--muted2);font-size:.7rem;text-align:center;pointer-events:none;}
+.ep-dp-hint{font-size:.72rem;color:var(--muted2);text-align:center;}
+.ep-dp-remove{font-size:.72rem;color:#ff6b6b;background:none;border:none;cursor:pointer;font-family:'Poppins',sans-serif;display:none;}
+.ep-dp-remove.visible{display:block;}
+/* Fields */
+.ep-field-group{display:flex;flex-direction:column;gap:.4rem;}
+.ep-field-label{font-size:.68rem;color:var(--muted2);text-transform:uppercase;letter-spacing:.06em;font-weight:600;}
+.ep-input,.ep-textarea{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.13);border-radius:.625rem;padding:.7rem .875rem;font-size:.875rem;font-family:'Poppins',sans-serif;color:var(--text);outline:none;transition:border-color .2s;width:100%;}
+.ep-input:focus,.ep-textarea:focus{border-color:rgba(108,99,255,.5);}
+.ep-input::placeholder,.ep-textarea::placeholder{color:var(--muted2);}
+.ep-textarea{resize:vertical;min-height:80px;line-height:1.6;}
+/* Niche chips */
+.ep-niche-chips{display:flex;flex-wrap:wrap;gap:.375rem;}
+.ep-niche-chip{padding:.3em .75em;border-radius:99px;border:1px solid var(--border);background:var(--glass);color:var(--muted);font-size:.75rem;font-weight:500;cursor:pointer;transition:all .15s;}
+.ep-niche-chip.active{background:hsla(258,90%,72%,.15);color:var(--accent);border-color:hsla(258,90%,72%,.4);}
+/* Social links */
+.ep-social-grid{display:flex;flex-direction:column;gap:.625rem;}
+.ep-social-row{display:flex;align-items:center;gap:.625rem;}
+.ep-social-icon{width:2.25rem;height:2.25rem;border-radius:.5rem;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);border:1px solid var(--border);}
+.ep-social-icon svg{width:1rem;height:1rem;}
+.ep-social-input{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.13);border-radius:.625rem;padding:.625rem .875rem;font-size:.84rem;font-family:'Poppins',sans-serif;color:var(--text);outline:none;transition:border-color .2s;}
+.ep-social-input:focus{border-color:rgba(108,99,255,.5);}
+.ep-social-input::placeholder{color:var(--muted2);}
+/* Form row for 2-col */
+.ep-form-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+@media(max-width:500px){.ep-form-row{grid-template-columns:1fr;}}
+/* Select */
+.ep-select{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.13);border-radius:.625rem;padding:.7rem .875rem;font-size:.875rem;font-family:'Poppins',sans-serif;color:var(--text);outline:none;width:100%;appearance:none;cursor:pointer;}
+.ep-select:focus{border-color:rgba(108,99,255,.5);}
+/* Saved toast */
+.edit-save-toast{position:fixed;bottom:1.75rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--accent);color:#fff;font-size:.84rem;font-weight:700;padding:.625rem 1.375rem;border-radius:99px;z-index:900;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;box-shadow:0 8px 24px rgba(108,99,255,.4);}
+.edit-save-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 </style>
 </head>
 <body>
@@ -459,15 +513,27 @@ input,select,textarea{font-family:'Poppins',sans-serif;}
   </div>
 </div>
 
-<!-- ═══ PROFILE SETUP OVERLAY ═══ -->
-<div class="overlay" id="setup-overlay">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeSetup()"><i class="fas fa-times"></i></button>
-    <div class="modal-title" id="setup-title">Setup Profile</div>
-    <div class="form-err" id="setup-err"></div>
-    <div id="setup-form"></div>
+<!-- ═══ EDIT PROFILE MODAL (AI Onboarding style) ═══ -->
+<div class="edit-profile-overlay" id="edit-profile-overlay">
+  <div class="edit-profile-modal">
+    <div class="edit-profile-header">
+      <div style="display:flex;align-items:center;gap:.6rem">
+        <span id="edit-profile-title-icon">✏️</span>
+        <h2 id="edit-profile-title">Edit Profile</h2>
+      </div>
+      <button class="edit-profile-close" onclick="closeEditProfileModal()">✕</button>
+    </div>
+    <div class="edit-profile-body" id="edit-profile-body">
+      <!-- injected dynamically -->
+    </div>
+    <div class="edit-profile-footer">
+      <button class="edit-profile-cancel" onclick="closeEditProfileModal()">Cancel</button>
+      <button class="edit-profile-save" id="edit-profile-save-btn" onclick="saveEditProfile()">Save Changes</button>
+    </div>
   </div>
 </div>
+<!-- Save Toast -->
+<div class="edit-save-toast" id="edit-save-toast">✓ Profile updated!</div>
 
 <!-- ═══ PLAN OVERLAY ═══ -->
 <div class="overlay" id="plan-overlay">
@@ -964,11 +1030,10 @@ function showPlanSelectScreen(){
 
 async function choosePlanAndContinue(planId){
   if(planId === 'free'){
-    // Free plan — just mark selected and continue
     _me = {..._me, plan:'free', planSelected:true};
     await DB.setUser(_me.uid, _me);
     document.getElementById('plan-select-screen').style.display = 'none';
-    await openSetup();
+    window.location.href = 'ai-onboarding.html'; // AI onboarding for profile setup
     return;
   }
 
@@ -1001,7 +1066,7 @@ async function choosePlanAndContinue(planId){
       await DB.setUser(_me.uid, _me);
       document.getElementById('plan-select-screen').style.display = 'none';
       toast(`🎉 ${p.name} plan activated!`, 'success');
-      await openSetup(); // Now go to profile setup
+      setTimeout(() => { window.location.href = 'ai-onboarding.html'; }, 800); // Go to AI onboarding profile setup
     },
     modal: {
       ondismiss: function(){
@@ -1056,180 +1121,302 @@ async function uploadProfilePhoto(file, uid){
 }
 
 // ══════════════════════════════════════════════════════
-// PROFILE SETUP
+// PROFILE SETUP — AI Onboarding style Edit Modal
 // ══════════════════════════════════════════════════════
 async function openSetup(){
-  const isC=_me.userType==='creator';
-  const ex=isC?await DB.getCreator(_me.uid):await DB.getFounder(_me.uid);
-  const niches=['AI','Finance','Startup','Tech','Lifestyle','Business','Marketing','SaaS','Education','Health'];
-  document.getElementById('setup-title').textContent=isC?'🎨 Creator Profile':'🚀 Founder Profile';
-  document.getElementById('setup-err').className='form-err';
+  const isC = _me.userType === 'creator';
+  // If no profile yet → send to AI onboarding
+  const ex = isC ? await DB.getCreator(_me.uid) : await DB.getFounder(_me.uid);
+  if(!ex){
+    window.location.href = 'ai-onboarding.html';
+    return;
+  }
+  // Profile exists → open edit modal
+  openEditProfileModal();
+}
+
+async function openEditProfileModal(){
+  const isC = _me.userType === 'creator';
+  const ex = isC ? await DB.getCreator(_me.uid) : await DB.getFounder(_me.uid);
+  const NICHES = ['AI','Finance','Startup','Tech','Lifestyle','Business','Marketing','SaaS','Education','Health'];
+
+  document.getElementById('edit-profile-title').textContent = isC ? 'Edit Creator Profile' : 'Edit Founder Profile';
+  document.getElementById('edit-profile-title-icon').textContent = isC ? '🎨' : '🚀';
+
   if(isC){
-    document.getElementById('setup-form').innerHTML=`
+    document.getElementById('edit-profile-body').innerHTML = `
+      <!-- DP Upload -->
+      <div class="ep-dp-section">
+        <div class="ep-dp-ring" id="ep-dp-ring" onclick="document.getElementById('ep-dp-file').click()">
+          ${ex?.profilePhoto ? `<img id="ep-dp-preview" src="${ex.profilePhoto}">` : ''}
+          <div class="ep-dp-placeholder" id="ep-dp-placeholder" style="${ex?.profilePhoto?'display:none':''}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:22px;height:22px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Upload Photo
+          </div>
+          <input type="file" id="ep-dp-file" accept="image/*" style="display:none" onchange="epHandleDp(event)">
+        </div>
+        <div class="ep-dp-hint">JPG, PNG · Max 2MB</div>
+        <button class="ep-dp-remove" id="ep-dp-remove" onclick="epRemoveDp()" ${ex?.profilePhoto?'style="display:block"':''}>Remove photo</button>
+      </div>
+
       <!-- Name -->
-      <div class="form-group"><label>Full Name *</label><input id="s-name" placeholder="Your name" value="${_me.name||ex?.name||''}"></div>
-
-      <!-- Photo Upload -->
-      <div class="form-group">
-        <label>Profile Photo</label>
-        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:.5rem">
-          <div id="photo-preview" style="width:3.5rem;height:3.5rem;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:1.25rem;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden">
-            ${ex?.profilePhoto?`<img src="${ex.profilePhoto}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">`:((_me.name||'U').charAt(0).toUpperCase())}
-          </div>
-          <div style="flex:1">
-            <label for="s-photo-file" style="display:inline-flex;align-items:center;gap:.5rem;padding:.5em 1em;background:var(--surface2);border:1px solid var(--border);border-radius:.75em;cursor:pointer;font-size:.82rem;font-weight:500">
-              <i class="fas fa-upload"></i> Upload Photo
-            </label>
-            <input type="file" id="s-photo-file" accept="image/*" style="display:none" onchange="previewPhoto(this)">
-            <div style="font-size:.72rem;color:var(--muted);margin-top:.35rem">JPG, PNG up to 2MB</div>
-          </div>
-        </div>
-        <input id="s-photo" type="hidden" value="${ex?.profilePhoto||''}">
+      <div class="ep-field-group">
+        <div class="ep-field-label">Full Name *</div>
+        <input class="ep-input" id="ep-name" value="${ex?.name||_me.name||''}" placeholder="Your name">
       </div>
 
-      <div class="form-group"><label>Bio *</label><textarea id="s-bio" placeholder="Tell startups about yourself…">${ex?.bio||''}</textarea></div>
-      <div class="form-group"><label>Niche(s) *</label>
-        <div class="niche-chips">${niches.map(n=>`<div class="niche-chip${(ex?.niches||[]).includes(n)?' active':''}" data-n="${n}" onclick="this.classList.toggle('active')">${n}</div>`).join('')}</div>
+      <!-- Bio -->
+      <div class="ep-field-group">
+        <div class="ep-field-label">Bio * <span id="ep-bio-count" style="float:right;font-size:.65rem;color:var(--muted)">${(ex?.bio||'').length} / 250</span></div>
+        <textarea class="ep-textarea" id="ep-bio" maxlength="250" placeholder="Tell startups about yourself…" oninput="document.getElementById('ep-bio-count').textContent=this.value.length+' / 250'">${ex?.bio||''}</textarea>
       </div>
-      <div class="form-row">
-        <div class="form-group"><label>Instagram</label><input id="s-insta" placeholder="@username" value="${ex?.instagram||''}"></div>
-        <div class="form-group"><label>YouTube</label><input id="s-yt" placeholder="@channel" value="${ex?.youtube||''}"></div>
+
+      <!-- Niches -->
+      <div class="ep-field-group">
+        <div class="ep-field-label">Niches *</div>
+        <div class="ep-niche-chips">${NICHES.map(n=>`<div class="ep-niche-chip${(ex?.niches||[]).includes(n)?' active':''}" data-n="${n}" onclick="this.classList.toggle('active')">${n}</div>`).join('')}</div>
       </div>
-      <div class="form-row">
-        <div class="form-group"><label>Audience Size *</label>
-          <select id="s-aud"><option value="">Select…</option>${['1K-10K','10K-50K','50K-100K','100K-500K','500K+'].map(v=>`<option${ex?.audienceSize===v?' selected':''}>${v}</option>`).join('')}</select>
+
+      <!-- Socials Row -->
+      <div class="ep-form-row">
+        <div class="ep-field-group">
+          <div class="ep-field-label">Instagram</div>
+          <input class="ep-input" id="ep-insta" value="${ex?.instagram||''}" placeholder="@handle">
         </div>
-        <div class="form-group"><label>Engagement Rate</label><input id="s-eng" placeholder="e.g. 5.2%" value="${ex?.engagementRate||''}"></div>
+        <div class="ep-field-group">
+          <div class="ep-field-label">YouTube</div>
+          <input class="ep-input" id="ep-yt" value="${ex?.youtube||''}" placeholder="@channel">
+        </div>
       </div>
-      <div class="form-row">
-        <div class="form-group"><label>Pricing</label><input id="s-price" placeholder="From ₹5,000" value="${ex?.pricing||''}"></div>
-        <div class="form-group"><label>LinkedIn</label><input id="s-li" placeholder="linkedin.com/in/you" value="${ex?.linkedin||''}"></div>
+
+      <!-- Audience / ER row -->
+      <div class="ep-form-row">
+        <div class="ep-field-group">
+          <div class="ep-field-label">Audience Size *</div>
+          <select class="ep-select" id="ep-aud">
+            <option value="">Select…</option>
+            ${['1K-10K','10K-50K','50K-100K','100K-500K','500K+'].map(v=>`<option${ex?.audienceSize===v?' selected':''}>${v}</option>`).join('')}
+          </select>
+        </div>
+        <div class="ep-field-group">
+          <div class="ep-field-label">Engagement Rate</div>
+          <input class="ep-input" id="ep-eng" value="${ex?.engagementRate||''}" placeholder="e.g. 5.2%">
+        </div>
       </div>
-      <div class="form-group"><label>WhatsApp Number (for collabs)</label><input id="s-wa" placeholder="+91 XXXXX XXXXX" value="${_me.whatsapp||''}"></div>
-      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem;margin-top:.5rem;" onclick="saveCreator()">${ex?'Update Profile →':'Complete Setup →'}</button>`;
+
+      <!-- Pricing / LinkedIn -->
+      <div class="ep-form-row">
+        <div class="ep-field-group">
+          <div class="ep-field-label">Pricing</div>
+          <input class="ep-input" id="ep-price" value="${ex?.pricing||''}" placeholder="From ₹5,000">
+        </div>
+        <div class="ep-field-group">
+          <div class="ep-field-label">LinkedIn</div>
+          <input class="ep-input" id="ep-li" value="${ex?.linkedin||''}" placeholder="linkedin.com/in/you">
+        </div>
+      </div>
+
+      <!-- WhatsApp -->
+      <div class="ep-field-group">
+        <div class="ep-field-label">WhatsApp (for collabs)</div>
+        <input class="ep-input" id="ep-wa" value="${_me.whatsapp||''}" placeholder="+91 XXXXX XXXXX">
+      </div>
+    `;
   } else {
-    document.getElementById('setup-form').innerHTML=`
-      <!-- Name + Photo row -->
-      <div class="form-row">
-        <div class="form-group"><label>Your Name *</label><input id="s-name" placeholder="Your full name" value="${_me.name||''}"></div>
-        <div class="form-group">
-          <label>Profile Photo</label>
-          <div style="display:flex;align-items:center;gap:.75rem">
-            <div id="photo-preview" style="width:2.75rem;height:2.75rem;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden">
-              ${_me.profilePhoto?`<img src="${_me.profilePhoto}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">`:((_me.name||'U').charAt(0).toUpperCase())}
-            </div>
-            <label for="s-photo-file" style="display:inline-flex;align-items:center;gap:.4rem;padding:.45em .9em;background:var(--surface2);border:1px solid var(--border);border-radius:.75em;cursor:pointer;font-size:.8rem;font-weight:500">
-              <i class="fas fa-upload"></i> Upload
-            </label>
-            <input type="file" id="s-photo-file" accept="image/*" style="display:none" onchange="previewPhoto(this)">
-            <input id="s-photo" type="hidden" value="${_me.profilePhoto||''}">
+    document.getElementById('edit-profile-body').innerHTML = `
+      <!-- DP Upload (startup logo) -->
+      <div class="ep-dp-section">
+        <div class="ep-dp-ring" id="ep-dp-ring" onclick="document.getElementById('ep-dp-file').click()">
+          ${_me.profilePhoto ? `<img id="ep-dp-preview" src="${_me.profilePhoto}">` : ''}
+          <div class="ep-dp-placeholder" id="ep-dp-placeholder" style="${_me.profilePhoto?'display:none':''}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:22px;height:22px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Upload Logo
           </div>
+          <input type="file" id="ep-dp-file" accept="image/*" style="display:none" onchange="epHandleDp(event)">
+        </div>
+        <div class="ep-dp-hint">JPG, PNG · Max 2MB</div>
+        <button class="ep-dp-remove" id="ep-dp-remove" onclick="epRemoveDp()" ${_me.profilePhoto?'style="display:block"':''}>Remove photo</button>
+      </div>
+
+      <!-- Name -->
+      <div class="ep-field-group">
+        <div class="ep-field-label">Your Name *</div>
+        <input class="ep-input" id="ep-name" value="${ex?.name||_me.name||''}" placeholder="Your full name">
+      </div>
+
+      <!-- Startup Name -->
+      <div class="ep-field-group">
+        <div class="ep-field-label">Startup Name *</div>
+        <input class="ep-input" id="ep-sname" value="${ex?.startupName||''}" placeholder="Your Startup Inc.">
+      </div>
+
+      <!-- Description -->
+      <div class="ep-field-group">
+        <div class="ep-field-label">Description *</div>
+        <textarea class="ep-textarea" id="ep-desc" placeholder="Tell creators about your startup…">${ex?.description||''}</textarea>
+      </div>
+
+      <!-- Industry / Website -->
+      <div class="ep-form-row">
+        <div class="ep-field-group">
+          <div class="ep-field-label">Industry *</div>
+          <select class="ep-select" id="ep-ind">
+            <option value="">Select…</option>
+            ${['SaaS','Fintech','E-commerce','HealthTech','EdTech','AI/ML','D2C','B2B','Consumer','Other'].map(v=>`<option${ex?.industry===v?' selected':''}>${v}</option>`).join('')}
+          </select>
+        </div>
+        <div class="ep-field-group">
+          <div class="ep-field-label">Website</div>
+          <input class="ep-input" id="ep-web" value="${ex?.website||''}" placeholder="https://…">
         </div>
       </div>
 
-      <div class="form-group"><label>Startup Name *</label><input id="s-sname" placeholder="Your Startup Inc." value="${ex?.startupName||''}"></div>
-      <div class="form-group"><label>Description *</label><textarea id="s-desc" placeholder="Tell creators about your startup…">${ex?.description||''}</textarea></div>
-      <div class="form-row">
-        <div class="form-group"><label>Industry *</label>
-          <select id="s-ind"><option value="">Select…</option>${['SaaS','Fintech','E-commerce','HealthTech','EdTech','AI/ML','D2C','B2B','Consumer','Other'].map(v=>`<option${ex?.industry===v?' selected':''}>${v}</option>`).join('')}</select>
+      <!-- Budget / Collab Type -->
+      <div class="ep-form-row">
+        <div class="ep-field-group">
+          <div class="ep-field-label">Budget Range *</div>
+          <select class="ep-select" id="ep-bud">
+            <option value="">Select…</option>
+            ${['Under ₹10K','₹10K–₹25K','₹25K–₹50K','₹50K–₹1L','₹1L+'].map(v=>`<option${ex?.budget===v?' selected':''}>${v}</option>`).join('')}
+          </select>
         </div>
-        <div class="form-group"><label>Website</label><input id="s-web" placeholder="https://…" value="${ex?.website||''}"></div>
+        <div class="ep-field-group">
+          <div class="ep-field-label">Collab Type *</div>
+          <select class="ep-select" id="ep-ctype">
+            <option value="">Select…</option>
+            ${['Sponsored Posts','Product Review','Brand Ambassador','Content Creation','Long-term Partnership'].map(v=>`<option${ex?.collabType===v?' selected':''}>${v}</option>`).join('')}
+          </select>
+        </div>
       </div>
-      <div class="form-row">
-        <div class="form-group"><label>Budget Range *</label>
-          <select id="s-bud"><option value="">Select…</option>${['Under ₹10K','₹10K–₹25K','₹25K–₹50K','₹50K–₹1L','₹1L+'].map(v=>`<option${ex?.budget===v?' selected':''}>${v}</option>`).join('')}</select>
-        </div>
-        <div class="form-group"><label>Collab Type *</label>
-          <select id="s-ctype"><option value="">Select…</option>${['Sponsored Posts','Product Review','Brand Ambassador','Content Creation','Long-term Partnership'].map(v=>`<option${ex?.collabType===v?' selected':''}>${v}</option>`).join('')}</select>
-        </div>
+
+      <!-- Looking For / WhatsApp -->
+      <div class="ep-field-group">
+        <div class="ep-field-label">Looking For (Niches)</div>
+        <input class="ep-input" id="ep-looking" value="${ex?.lookingFor||''}" placeholder="e.g. Tech, SaaS, Startup creators">
       </div>
-      <div class="form-group"><label>Looking For (Niches)</label><input id="s-looking" placeholder="e.g. Tech, SaaS, Startup creators" value="${ex?.lookingFor||''}"></div>
-      <div class="form-group"><label>WhatsApp Number (for collabs)</label><input id="s-wa" placeholder="+91 XXXXX XXXXX" value="${_me.whatsapp||''}"></div>
-      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem;margin-top:.5rem;" onclick="saveFounder()">${ex?'Update Profile →':'Complete Setup →'}</button>`;
-  }
-  document.getElementById('setup-overlay').classList.add('open');
-}
-function closeSetup(){
-  document.getElementById('setup-overlay').classList.remove('open');
-  if(_me?.userType&&_me?.profileComplete) bootDashboard();
-}
-async function saveCreator(){
-  const errEl=document.getElementById('setup-err');errEl.className='form-err';
-  const niches=[...document.querySelectorAll('#setup-form .niche-chip.active')].map(e=>e.dataset.n);
-  const name=val('s-name'),bio=val('s-bio'),aud=val('s-aud');
-  if(!name){showFormErr(errEl,'Please enter your name');return;}
-  if(!niches.length){showFormErr(errEl,'Select at least one niche');return;}
-  if(!bio){showFormErr(errEl,'Please enter your bio');return;}
-  if(!aud){showFormErr(errEl,'Please select your audience size');return;}
-
-  // Handle photo upload
-  let photoURL = val('s-photo') || _me.profilePhoto || '';
-  const photoFile = document.getElementById('s-photo-file')?.files?.[0];
-  if(photoFile){
-    try{
-      const saveBtn = document.querySelector('#setup-form .btn-primary');
-      if(saveBtn){ saveBtn.textContent='Uploading photo…'; saveBtn.disabled=true; }
-      photoURL = await uploadProfilePhoto(photoFile, _me.uid);
-    }catch(e){
-      showFormErr(errEl,'Photo upload failed: '+e.message);
-      const saveBtn = document.querySelector('#setup-form .btn-primary');
-      if(saveBtn){ saveBtn.textContent='Complete Setup →'; saveBtn.disabled=false; }
-      return;
-    }
+      <div class="ep-field-group">
+        <div class="ep-field-label">WhatsApp (for collabs)</div>
+        <input class="ep-input" id="ep-wa" value="${_me.whatsapp||''}" placeholder="+91 XXXXX XXXXX">
+      </div>
+    `;
   }
 
-  const wa=val('s-wa');
-  if(wa) await DB.updateUser(_me.uid,{whatsapp:wa});
-  const ex=await DB.getCreator(_me.uid)||{};
-  await DB.setCreator(_me.uid,{
-    userId:_me.uid,name,whatsapp:wa||_me.whatsapp||'',
-    profilePhoto:photoURL,bio,niches,
-    instagram:val('s-insta'),youtube:val('s-yt'),linkedin:val('s-li'),
-    audienceSize:aud,engagementRate:val('s-eng'),pricing:val('s-price'),
-    featured:ex.featured||false,topSearch:ex.topSearch||false,
-    createdAt:ex.createdAt||new Date().toISOString()
-  });
-  _me={..._me,name,profileComplete:true,profilePhoto:photoURL,whatsapp:wa||_me.whatsapp||''};
-  await DB.setUser(_me.uid,_me);
-  closeSetup();toast('Profile saved! 🎉','success');bootDashboard();
-}
-async function saveFounder(){
-  const errEl=document.getElementById('setup-err');errEl.className='form-err';
-  const name=val('s-name'),sname=val('s-sname'),desc=val('s-desc'),ind=val('s-ind'),bud=val('s-bud'),ct=val('s-ctype');
-  if(!name){showFormErr(errEl,'Please enter your name');return;}
-  if(!sname||!desc){showFormErr(errEl,'Please fill Startup Name and Description');return;}
-  if(!ind||!bud||!ct){showFormErr(errEl,'Please fill Industry, Budget, and Collaboration Type');return;}
+  // Store pending photo URL
+  window._epPendingPhoto = null;
 
-  // Handle photo upload
-  let photoURL = val('s-photo') || _me.profilePhoto || '';
-  const photoFile = document.getElementById('s-photo-file')?.files?.[0];
-  if(photoFile){
-    try{
-      const saveBtn = document.querySelector('#setup-form .btn-primary');
-      if(saveBtn){ saveBtn.textContent='Uploading photo…'; saveBtn.disabled=true; }
-      photoURL = await uploadProfilePhoto(photoFile, _me.uid);
-    }catch(e){
-      showFormErr(errEl,'Photo upload failed: '+e.message);
-      const saveBtn = document.querySelector('#setup-form .btn-primary');
-      if(saveBtn){ saveBtn.textContent='Complete Setup →'; saveBtn.disabled=false; }
-      return;
-    }
+  document.getElementById('edit-profile-overlay').classList.add('open');
+}
+
+function closeEditProfileModal(){
+  document.getElementById('edit-profile-overlay').classList.remove('open');
+  window._epPendingPhoto = null;
+}
+
+// DP handlers
+function epHandleDp(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  if(file.size > 2*1024*1024){ toast('Image must be under 2MB','error'); return; }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    window._epDpFile = file;
+    const ring = document.getElementById('ep-dp-ring');
+    let img = document.getElementById('ep-dp-preview');
+    if(!img){ img = document.createElement('img'); img.id='ep-dp-preview'; ring.appendChild(img); }
+    img.src = ev.target.result;
+    img.style.display = '';
+    const ph = document.getElementById('ep-dp-placeholder');
+    if(ph) ph.style.display='none';
+    const rm = document.getElementById('ep-dp-remove');
+    if(rm) rm.style.display='block';
+  };
+  reader.readAsDataURL(file);
+}
+function epRemoveDp(){
+  window._epDpFile = null;
+  window._epPendingPhoto = '';
+  const img = document.getElementById('ep-dp-preview');
+  if(img){ img.style.display='none'; }
+  const ph = document.getElementById('ep-dp-placeholder');
+  if(ph) ph.style.display='flex';
+  const rm = document.getElementById('ep-dp-remove');
+  if(rm) rm.style.display='none';
+}
+
+// ── old aliases kept for backwards compat (choosePlanAndContinue etc calls closeSetup) ──
+function closeSetup(){ closeEditProfileModal(); if(_me?.userType&&_me?.profileComplete) bootDashboard(); }
+async function saveEditProfile(){
+  const isC = _me.userType === 'creator';
+  const saveBtn = document.getElementById('edit-profile-save-btn');
+  const g = v => { const el=document.getElementById(v); return el?el.value.trim():''; };
+
+  if(isC){
+    const name=g('ep-name'), bio=g('ep-bio'), aud=g('ep-aud');
+    const niches=[...document.querySelectorAll('.ep-niche-chip.active')].map(e=>e.dataset.n);
+    if(!name){ toast('Please enter your name','error'); return; }
+    if(!niches.length){ toast('Select at least one niche','error'); return; }
+    if(!bio){ toast('Please enter your bio','error'); return; }
+    if(!aud){ toast('Please select your audience size','error'); return; }
+
+    let photoURL = _me.profilePhoto || '';
+    if(window._epDpFile){
+      saveBtn.textContent='Uploading…'; saveBtn.disabled=true;
+      try{ photoURL = await uploadProfilePhoto(window._epDpFile, _me.uid); }
+      catch(e){ toast('Photo upload failed: '+e.message,'error'); saveBtn.textContent='Save Changes'; saveBtn.disabled=false; return; }
+    } else if(window._epPendingPhoto === ''){ photoURL = ''; }
+
+    const wa=g('ep-wa');
+    if(wa) await DB.updateUser(_me.uid,{whatsapp:wa});
+    const ex=await DB.getCreator(_me.uid)||{};
+    await DB.setCreator(_me.uid,{
+      userId:_me.uid, name, bio, niches,
+      profilePhoto: photoURL,
+      instagram: g('ep-insta'), youtube: g('ep-yt'), linkedin: g('ep-li'),
+      audienceSize: aud, engagementRate: g('ep-eng'), pricing: g('ep-price'),
+      whatsapp: wa||_me.whatsapp||'',
+      featured: ex.featured||false, topSearch: ex.topSearch||false,
+      createdAt: ex.createdAt||new Date().toISOString()
+    });
+    _me = {..._me, name, profileComplete:true, profilePhoto:photoURL, whatsapp:wa||_me.whatsapp||''};
+    await DB.setUser(_me.uid, _me);
+
+  } else {
+    const name=g('ep-name'), sname=g('ep-sname'), desc=g('ep-desc'), ind=g('ep-ind'), bud=g('ep-bud'), ct=g('ep-ctype');
+    if(!name){ toast('Please enter your name','error'); return; }
+    if(!sname||!desc){ toast('Please fill Startup Name and Description','error'); return; }
+    if(!ind||!bud||!ct){ toast('Please fill Industry, Budget, and Collaboration Type','error'); return; }
+
+    let photoURL = _me.profilePhoto || '';
+    if(window._epDpFile){
+      saveBtn.textContent='Uploading…'; saveBtn.disabled=true;
+      try{ photoURL = await uploadProfilePhoto(window._epDpFile, _me.uid); }
+      catch(e){ toast('Photo upload failed: '+e.message,'error'); saveBtn.textContent='Save Changes'; saveBtn.disabled=false; return; }
+    } else if(window._epPendingPhoto === ''){ photoURL = ''; }
+
+    const wa=g('ep-wa');
+    if(wa) await DB.updateUser(_me.uid,{whatsapp:wa});
+    await DB.setFounder(_me.uid,{
+      userId:_me.uid, name, email:_me.email,
+      whatsapp: wa||_me.whatsapp||'',
+      profilePhoto: photoURL,
+      startupName: sname, description: desc, industry: ind,
+      website: g('ep-web'), budget: bud, collabType: ct,
+      lookingFor: g('ep-looking'),
+      updatedAt: new Date().toISOString()
+    });
+    _me = {..._me, name, profileComplete:true, profilePhoto:photoURL, whatsapp:wa||_me.whatsapp||''};
+    await DB.setUser(_me.uid, _me);
   }
 
-  const wa=val('s-wa');
-  if(wa) await DB.updateUser(_me.uid,{whatsapp:wa});
-  await DB.setFounder(_me.uid,{
-    userId:_me.uid,name,email:_me.email,whatsapp:wa||_me.whatsapp||'',
-    profilePhoto:photoURL,
-    startupName:sname,description:desc,industry:ind,
-    website:val('s-web'),budget:bud,collabType:ct,
-    lookingFor:val('s-looking'),createdAt:new Date().toISOString()
-  });
-  _me={..._me,name,profileComplete:true,profilePhoto:photoURL,whatsapp:wa||_me.whatsapp||''};
-  await DB.setUser(_me.uid,_me);
-  closeSetup();toast('Profile saved! 🎉','success');bootDashboard();
+  saveBtn.textContent='Save Changes'; saveBtn.disabled=false;
+  window._epDpFile = null;
+  closeEditProfileModal();
+  updateSidebarUI();
+  const t = document.getElementById('edit-save-toast');
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2500);
+  bootDashboard();
 }
-function showFormErr(el,msg){el.textContent=msg;el.className='form-err show';}
+function showFormErr(el,msg){if(el){el.textContent=msg;el.className='form-err show';}}
 
 // ══════════════════════════════════════════════════════
 // NAVIGATION
@@ -2550,7 +2737,7 @@ async function submitApplication(campaignId){
   }
 }
 
-Object.assign(window,{showSection,selectRole,confirmRole,openSetup,closeSetup,saveCreator,saveFounder,updReq,sendCollab,filterCreators,selectPlan,openPlanOverlay,closePlanOverlay,doSignOut,goToLanding,goToAdmin,openSidebar,closeSidebar,choosePlanAndContinue,showAiMatch,previewPhoto,openLaunchModal,closeLaunchModal,closeApplicantsModal,launchCampaign,toggleCampaignStatus,viewApplications,respondApp,openApplyModal,closeApplyModal,submitApplication,toggleCollabChip,goToMessages,openChatForRequest});
+Object.assign(window,{showSection,selectRole,confirmRole,openSetup,openEditProfileModal,closeEditProfileModal,saveEditProfile,epHandleDp,epRemoveDp,updReq,sendCollab,filterCreators,selectPlan,openPlanOverlay,closePlanOverlay,doSignOut,goToLanding,goToAdmin,openSidebar,closeSidebar,choosePlanAndContinue,showAiMatch,previewPhoto,openLaunchModal,closeLaunchModal,closeApplicantsModal,launchCampaign,toggleCampaignStatus,viewApplications,respondApp,openApplyModal,closeApplyModal,submitApplication,toggleCollabChip,goToMessages,openChatForRequest});
 </script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </body>
