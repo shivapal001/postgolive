@@ -2228,7 +2228,8 @@ async function handleAuth(e){
       await setDoc(doc(db,'users',uid), user);
       // Pass pending plan via sessionStorage so dashboard can pick it up
       if(_pendingPlan) sessionStorage.setItem('pendingPlan', _pendingPlan);
-      window.location.href='dashboard.html';
+      // Redirect new users to AI onboarding instead of dashboard
+      window.location.href='ai-onboarding.html';
     }catch(ex){
       btn.innerHTML='<span id="auth-btn-txt">Create account</span>';btn.disabled=false;
       showErr(errEl, ex.code==='auth/email-already-in-use'?'Email already registered. Please sign in.':ex.message);
