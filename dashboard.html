@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>PostHire — Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -292,45 +292,103 @@ input,select,textarea{font-family:'Poppins',sans-serif;}
 .toast.info{border-color:hsla(258,90%,72%,.4);color:var(--accent);}
 @keyframes slideIn{from{opacity:0;transform:translateX(1rem);}to{opacity:1;transform:translateX(0);}}
 
-/* ══ CAMPAIGN CARDS ══ */
-.camp-card{background:var(--glass);border:1px solid var(--border);border-radius:1.5em;overflow:hidden;transition:all var(--trans);backdrop-filter:blur(8px);margin-bottom:1rem;position:relative;}
-.camp-card:hover{border-color:hsla(258,90%,72%,.4);box-shadow:0 1.25em 2.5em var(--shadow);}
-.camp-card-img{width:100%;height:160px;object-fit:cover;display:block;background:var(--surface2);}
-.camp-card-img-placeholder{width:100%;height:160px;background:linear-gradient(135deg,var(--surface2),var(--surface3));display:flex;align-items:center;justify-content:center;color:var(--muted2);font-size:2.5rem;}
-.camp-brand-row{display:flex;align-items:center;gap:.625rem;padding:.875rem 1.125rem .5rem;}
-.camp-brand-logo{width:2.25rem;height:2.25rem;border-radius:.625rem;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;color:var(--accent);flex-shrink:0;overflow:hidden;}
+/* ══ CAMPAIGN CARDS GRID ══ */
+.camp-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem;margin-bottom:1.5rem;}
+
+/* ══ CAMPAIGN CARD v3 ══ */
+.camp-card{background:#0B1418;border:1px solid rgba(255,255,255,0.08);border-radius:22px;overflow:hidden;transition:border-color .3s,box-shadow .3s,transform .3s;position:relative;display:flex;flex-direction:column;}
+.camp-card:hover{border-color:rgba(108,99,255,0.5);box-shadow:0 0 0 1px rgba(108,99,255,0.18),0 14px 48px rgba(108,99,255,0.18),0 0 60px rgba(108,99,255,0.07);transform:translateY(-4px);}
+
+/* Cover image */
+.camp-cover{position:relative;flex-shrink:0;}
+.camp-cover-img{width:100%;height:190px;object-fit:cover;display:block;}
+.camp-cover-svg{width:100%;height:190px;display:block;}
+.camp-cover-placeholder{width:100%;height:190px;display:flex;align-items:center;justify-content:center;font-size:3rem;color:rgba(255,255,255,0.15);}
+.camp-badge-cat{position:absolute;top:12px;left:12px;background:rgba(108,99,255,0.9);color:#fff;font-size:10px;font-weight:700;padding:4px 11px;border-radius:99px;letter-spacing:.05em;backdrop-filter:blur(6px);}
+.camp-badge-cat.skincare{background:rgba(0,165,120,0.88);}
+.camp-badge-cat.tech{background:rgba(59,130,246,0.88);}
+.camp-badge-cat.health{background:rgba(16,185,129,0.88);}
+.camp-badge-match{position:absolute;top:12px;right:46px;display:inline-flex;align-items:center;gap:4px;background:rgba(0,0,0,0.55);color:#2eeabc;border:1px solid rgba(0,212,170,0.4);font-size:10px;font-weight:800;padding:4px 10px;border-radius:99px;backdrop-filter:blur(8px);}
+.camp-heart-btn{position:absolute;top:12px;right:12px;width:30px;height:30px;background:rgba(0,0,0,0.5);border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(6px);cursor:pointer;color:#fff;font-size:14px;}
+
+/* Card body */
+.camp-body{padding:14px 16px 0;flex:1;}
+.camp-brand-row{display:flex;align-items:center;gap:10px;margin-bottom:11px;}
+.camp-brand-logo{width:40px;height:40px;border-radius:50%;border:2px solid rgba(255,255,255,0.12);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff;overflow:hidden;background:linear-gradient(135deg,#6c63ff,#e1306c);}
 .camp-brand-logo img{width:100%;height:100%;object-fit:cover;}
-.camp-brand-name{font-weight:700;font-size:.9rem;letter-spacing:-.01em;}
-.camp-category{font-size:.63rem;color:var(--muted);font-weight:500;}
-.camp-body{padding:.375rem 1.125rem 1rem;}
-.camp-title{font-weight:700;font-size:.975rem;margin-bottom:.3rem;line-height:1.35;}
-.camp-desc{font-size:.78rem;color:var(--muted);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:.75rem;}
-.camp-goal{display:inline-flex;align-items:center;gap:.35rem;font-size:.7rem;background:hsla(258,90%,72%,.1);color:var(--accent);border:1px solid hsla(258,90%,72%,.2);padding:.25em .7em;border-radius:99px;margin-bottom:.75rem;}
-.camp-links{display:flex;gap:.375rem;margin-bottom:.75rem;}
-.camp-meta-row{display:flex;gap:1rem;flex-wrap:wrap;font-size:.72rem;color:var(--muted);margin-bottom:.875rem;}
-.camp-meta-row span{display:flex;align-items:center;gap:.3rem;}
-.camp-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;padding:.75rem 1.125rem;border-top:1px solid var(--border);background:hsla(0,0%,0%,.06);}
-.camp-stat{text-align:center;}
-.camp-stat-val{font-size:.9rem;font-weight:700;line-height:1;}
-.camp-stat-label{font-size:.58rem;color:var(--muted);margin-top:.2rem;font-weight:500;}
-.camp-footer{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.75rem 1.125rem;border-top:1px solid var(--border);flex-wrap:wrap;}
-.camp-applicants-preview{display:flex;align-items:center;}
-.camp-applicants-preview .mini-ava{width:1.625rem;height:1.625rem;border-radius:50%;background:linear-gradient(135deg,hsl(258,80%,55%),hsl(320,80%,58%));border:2px solid var(--surface);display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:#fff;margin-left:-.5rem;flex-shrink:0;overflow:hidden;}
-.camp-applicants-preview .mini-ava:first-child{margin-left:0;}
-.camp-applicants-preview .mini-ava img{width:100%;height:100%;object-fit:cover;}
-.camp-match{display:inline-flex;align-items:center;gap:.3rem;font-size:.7rem;font-weight:700;padding:.25em .65em;border-radius:99px;}
-.camp-match.high{background:hsla(168,90%,45%,.15);color:var(--accent3);}
-.camp-match.mid{background:hsla(38,92%,55%,.15);color:var(--gold);}
-.camp-match.low{background:hsla(0,90%,68%,.12);color:var(--accent2);}
+.camp-brand-info{flex:1;min-width:0;}
+.camp-brand-name-wrap{display:flex;align-items:center;gap:5px;}
+.camp-brand-name{font-weight:700;font-size:13.5px;color:#f0eeff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.camp-brand-handle{font-size:11px;color:rgba(255,255,255,0.36);margin-top:2px;}
+.camp-blue-tick{width:16px;height:16px;flex-shrink:0;}
+
+.camp-title{font-weight:800;font-size:15px;color:#fff;line-height:1.35;margin-bottom:5px;}
+.camp-desc{font-size:12.5px;color:rgba(255,255,255,0.47);line-height:1.62;margin-bottom:11px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.camp-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:11px;}
+.camp-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:8px;font-size:11px;font-weight:600;border:1px solid;}
+.camp-chip-insta{background:rgba(225,48,108,0.1);color:#f472b6;border-color:rgba(225,48,108,0.22);}
+.camp-chip-purple{background:rgba(108,99,255,0.1);color:#a78bfa;border-color:rgba(108,99,255,0.22);}
+.camp-chip-teal{background:rgba(0,212,170,0.08);color:#2eeabc;border-color:rgba(0,212,170,0.2);}
+.camp-chip-amber{background:rgba(245,166,35,0.08);color:#f5a623;border-color:rgba(245,166,35,0.2);}
+.camp-chip-red{background:rgba(255,50,50,0.1);color:#ff6b6b;border-color:rgba(255,50,50,0.2);}
+.camp-chip-blue{background:rgba(59,130,246,0.1);color:#60a5fa;border-color:rgba(59,130,246,0.2);}
+
+.camp-meta{display:flex;flex-direction:column;gap:6px;margin-bottom:13px;}
+.camp-meta-row{display:flex;align-items:center;gap:7px;font-size:12px;color:rgba(255,255,255,0.45);}
+.camp-meta-row i{font-size:14px;width:16px;text-align:center;flex-shrink:0;}
+.camp-meta-val{color:rgba(255,255,255,0.82);font-weight:500;}
+
+/* View more toggle */
+.camp-view-more-btn{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;background:rgba(108,99,255,0.07);border:1px solid rgba(108,99,255,0.18);border-radius:10px;padding:9px;font-size:12px;font-weight:700;color:rgba(108,99,255,0.85);cursor:pointer;font-family:'Poppins',sans-serif;margin-bottom:13px;transition:background .2s;}
+.camp-view-more-btn:hover{background:rgba(108,99,255,0.13);}
+.camp-view-more-btn i.camp-chevron{transition:transform .3s;}
+.camp-view-more-btn.open i.camp-chevron{transform:rotate(180deg);}
+.camp-details-panel{display:none;margin-bottom:13px;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.06);}
+.camp-details-panel.open{display:block;}
+.camp-detail-row{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border-bottom:1px solid rgba(255,255,255,0.05);}
+.camp-detail-row:last-child{border-bottom:none;}
+.camp-detail-row:nth-child(odd){background:rgba(255,255,255,0.02);}
+.camp-detail-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;}
+.camp-detail-label{font-size:10.5px;color:rgba(255,255,255,0.32);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:2px;}
+.camp-detail-val{font-size:12.5px;color:rgba(255,255,255,0.8);font-weight:500;line-height:1.4;}
+
+/* Budget + footer */
+.camp-divider{height:1px;background:rgba(255,255,255,0.06);margin:0 -16px 13px;}
+.camp-footer{padding:0 16px 16px;display:flex;align-items:center;gap:10px;}
+.camp-budget-wrap{display:flex;flex-direction:column;}
+.camp-budget-label{font-size:10px;color:rgba(255,255,255,0.28);text-transform:uppercase;letter-spacing:.07em;font-weight:700;}
+.camp-budget-val{font-size:19px;font-weight:800;color:#a78bfa;letter-spacing:-.02em;}
+.camp-apply-btn{flex:1;background:linear-gradient(135deg,#6c63ff,#8b5cf6);color:#fff;border:none;border-radius:12px;padding:12px 0;font-size:13.5px;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;box-shadow:0 4px 18px rgba(108,99,255,0.32);transition:filter .2s,box-shadow .2s;}
+.camp-apply-btn:hover{filter:brightness(1.12);box-shadow:0 6px 24px rgba(108,99,255,0.48);}
+.camp-apply-btn:disabled{opacity:.6;cursor:default;filter:none;}
+
+/* Footer2 — applicant preview / founder controls */
+.camp-footer2{padding:10px 16px 14px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(255,255,255,0.06);flex-wrap:wrap;gap:.5rem;}
+.camp-mini-avatars{display:flex;align-items:center;}
+.camp-mini-av{width:22px;height:22px;border-radius:50%;border:2px solid #0B1418;font-size:8px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-left:-6px;flex-shrink:0;color:#fff;overflow:hidden;background:linear-gradient(135deg,hsl(258,80%,55%),hsl(320,80%,58%));}
+.camp-mini-av:first-child{margin-left:0;}
+.camp-mini-av img{width:100%;height:100%;object-fit:cover;}
+
+/* Status badges */
 .camp-status-badge{display:inline-flex;align-items:center;gap:.3rem;font-size:.62rem;font-weight:700;padding:.25em .65em;border-radius:99px;text-transform:uppercase;}
-.camp-status-badge.active{background:hsla(168,90%,45%,.12);color:var(--accent3);border:1px solid hsla(168,90%,45%,.25);}
-.camp-status-badge.reviewing{background:hsla(38,92%,55%,.12);color:var(--gold);border:1px solid hsla(38,92%,55%,.25);}
-.camp-status-badge.in-progress{background:hsla(214,90%,60%,.12);color:var(--starter);border:1px solid hsla(214,90%,60%,.25);}
-.camp-status-badge.closed{background:hsla(0,0%,50%,.1);color:var(--muted);border:1px solid hsla(0,0%,50%,.2);}
+.camp-status-badge.active{background:rgba(0,212,170,0.12);color:#2eeabc;border:1px solid rgba(0,212,170,0.25);}
+.camp-status-badge.reviewing{background:rgba(245,166,35,0.12);color:#f5a623;border:1px solid rgba(245,166,35,0.25);}
+.camp-status-badge.in-progress{background:rgba(59,130,246,0.12);color:#60a5fa;border:1px solid rgba(59,130,246,0.25);}
+.camp-status-badge.closed{background:rgba(127,127,127,0.1);color:var(--muted);border:1px solid rgba(127,127,127,0.2);}
+
+/* Match chip */
+.camp-match{display:inline-flex;align-items:center;gap:.3rem;font-size:10px;font-weight:800;padding:4px 10px;border-radius:99px;}
+.camp-match.high{background:rgba(0,0,0,0.55);color:#2eeabc;border:1px solid rgba(0,212,170,0.4);}
+.camp-match.mid{background:rgba(0,0,0,0.55);color:#f5a623;border:1px solid rgba(245,166,35,0.4);}
+.camp-match.low{background:rgba(0,0,0,0.55);color:#f472b6;border:1px solid rgba(225,48,108,0.4);}
+
+/* Alerts */
 .camp-alert{display:flex;align-items:center;gap:.4rem;font-size:.7rem;padding:.35em .75em;border-radius:.875em;margin-bottom:.375rem;}
-.camp-alert.warn{background:hsla(38,92%,55%,.1);color:var(--gold);border:1px solid hsla(38,92%,55%,.2);}
-.camp-alert.danger{background:hsla(0,90%,68%,.1);color:var(--accent2);border:1px solid hsla(0,90%,68%,.2);}
-.camp-alert.info{background:hsla(258,90%,72%,.1);color:var(--accent);border:1px solid hsla(258,90%,72%,.2);}
+.camp-alert.warn{background:rgba(245,166,35,0.1);color:#f5a623;border:1px solid rgba(245,166,35,0.2);}
+.camp-alert.danger{background:rgba(255,107,107,0.1);color:#ff6b6b;border:1px solid rgba(255,107,107,0.2);}
+.camp-alert.info{background:rgba(108,99,255,0.1);color:#a78bfa;border:1px solid rgba(108,99,255,0.2);}
+
+/* Analytics */
 .camp-analytics{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;margin-bottom:1.5rem;}
 .camp-analytics-card{background:var(--glass);border:1px solid var(--border);border-radius:1.25em;padding:.875rem;text-align:center;position:relative;overflow:hidden;}
 .camp-analytics-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
@@ -342,11 +400,25 @@ input,select,textarea{font-family:'Poppins',sans-serif;}
 .camp-analytics-val{font-size:1.625rem;font-weight:700;letter-spacing:-.03em;line-height:1;}
 .camp-analytics-label{font-size:.62rem;color:var(--muted);margin-top:.3rem;font-weight:500;text-transform:uppercase;letter-spacing:.04em;}
 .camp-analytics-sub{font-size:.65rem;color:var(--muted2);margin-top:.2rem;}
-.camp-video-thumb{width:100%;height:120px;border-radius:.875rem;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:2rem;cursor:pointer;transition:all var(--trans);text-decoration:none;margin-bottom:.75rem;}
-.camp-video-thumb:hover{border-color:var(--accent);color:var(--accent);}
+
+.camp-video-thumb{display:inline-flex;align-items:center;gap:.35rem;background:rgba(255,0,0,0.1);color:#ff6b6b;border:1px solid rgba(255,0,0,0.2);border-radius:99px;padding:.3em .8em;font-size:.72rem;font-weight:600;text-decoration:none;margin-bottom:.75rem;transition:all .2s;}
+.camp-video-thumb:hover{background:rgba(255,0,0,0.18);}
 .camp-section-head{font-size:1.1rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;}
+
+/* Upload progress */
+.camp-upload-progress{display:none;margin-top:.5rem;font-size:.75rem;color:var(--accent);align-items:center;gap:.4rem;}
+.camp-upload-progress.show{display:flex;}
+.camp-img-preview-wrap{position:relative;margin-bottom:.875rem;display:none;}
+.camp-img-preview-wrap.show{display:block;}
+.camp-img-preview{width:100%;height:140px;object-fit:cover;border-radius:1rem;border:1px solid var(--border);}
+.camp-img-remove{position:absolute;top:.5rem;right:.5rem;background:rgba(0,0,0,.6);border:none;color:#fff;width:1.75rem;height:1.75rem;border-radius:50%;cursor:pointer;font-size:.75rem;display:flex;align-items:center;justify-content:center;}
+.camp-upload-area{border:2px dashed var(--border);border-radius:1rem;padding:1.5rem;text-align:center;cursor:pointer;transition:all .2s;background:var(--glass);}
+.camp-upload-area:hover{border-color:var(--accent);background:rgba(108,99,255,.04);}
+.camp-upload-area input{display:none;}
+.camp-upload-icon{font-size:1.5rem;color:var(--muted);margin-bottom:.375rem;}
+.camp-upload-label{font-size:.78rem;color:var(--muted);font-weight:500;}
 /* ══ RESPONSIVE ══ */
-@media(max-width:1100px){.dash-grid{grid-template-columns:1fr;}.stats-grid{grid-template-columns:repeat(2,1fr);}.profile-grid{grid-template-columns:1fr;}.pricing-grid{grid-template-columns:1fr;max-width:380px;}.camp-analytics{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:1100px){.dash-grid{grid-template-columns:1fr;}.stats-grid{grid-template-columns:repeat(2,1fr);}.profile-grid{grid-template-columns:1fr;}.pricing-grid{grid-template-columns:1fr;max-width:380px;}.camp-analytics{grid-template-columns:repeat(3,1fr);}.camp-cards-grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr));}}
 @media(max-width:768px){
   .sidebar{transform:translateX(-100%);}
   .sidebar.open{transform:translateX(0);}
@@ -361,6 +433,7 @@ input,select,textarea{font-family:'Poppins',sans-serif;}
   .form-row{grid-template-columns:1fr;}
   .camp-analytics{grid-template-columns:repeat(2,1fr);}
   .camp-stats-row{grid-template-columns:repeat(2,1fr);}
+  .camp-cards-grid{grid-template-columns:1fr;}
 }
 @media(max-width:480px){.stats-grid{grid-template-columns:1fr;}.content{padding:1rem;}.camp-analytics{grid-template-columns:1fr 1fr;}.camp-stats-row{grid-template-columns:repeat(2,1fr);}}
 
@@ -2245,59 +2318,92 @@ async function renderCampaigns(el){
         </div>
         <span style="font-size:.78rem;color:var(--muted);background:var(--glass);border:1px solid var(--border);padding:.35em 1em;border-radius:99px">${openCamps.length} open</span>
       </div>
-      <div id="campaign-list-creator">
+      <div id="campaign-list-creator" class="camp-cards-grid">
         ${openCamps.length===0
-          ? `<div class="empty-state"><i class="fas fa-bullhorn"></i><p>No open campaigns yet.<br>Check back soon!</p></div>`
+          ? `<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-bullhorn"></i><p>No open campaigns yet.<br>Check back soon!</p></div>`
           : openCamps.map(c=>{
             const ms = matchScore(c.id||c.title||'');
             const applied = appliedIds.has(c.id);
-            const imgHtml = c.productImage
-              ? `<img class="camp-card-img" src="${c.productImage}" alt="${c.title}" onerror="this.style.display='none'">`
-              : `<div class="camp-card-img-placeholder"><i class="fas fa-image"></i></div>`;
+            const msCls = ms>=80?'high':ms>=65?'mid':'low';
+            // Cover image
+            const coverHtml = c.productImage
+              ? `<img class="camp-cover-img" src="${c.productImage}" alt="${c.title}" onerror="this.style.display='none'">`
+              : `<div class="camp-cover-placeholder"><i class="fas fa-image"></i></div>`;
+            // Brand logo
             const logoHtml = c.brandLogo
-              ? `<div class="camp-brand-logo"><img src="${c.brandLogo}" alt="logo" onerror="this.style.display='none';this.parentElement.textContent='${(c.startupName||'B').charAt(0)}'"></div>`
+              ? `<div class="camp-brand-logo" style="background:none"><img src="${c.brandLogo}" alt="logo" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#6c63ff,#e1306c)';this.parentElement.textContent='${(c.startupName||'B').charAt(0)}'"></div>`
               : `<div class="camp-brand-logo">${(c.startupName||'B').charAt(0)}</div>`;
-            const demoBtn = c.demoVideo ? `<a href="${c.demoVideo}" target="_blank" rel="noopener" class="camp-video-thumb" title="Watch demo"><i class="fas fa-play-circle"></i></a>` : '';
+            // Collab chips
+            const CHIP_COLORS = {ugc:'camp-chip-teal',reel:'camp-chip-insta',youtube:'camp-chip-red',review:'camp-chip-amber',ambassador:'camp-chip-purple',blog:'camp-chip-blue',podcast:'camp-chip-purple',giveaway:'camp-chip-insta'};
+            const chipsHtml = (c.collabTypes||[]).slice(0,3).map(t=>{
+              const ct=COLLAB_TYPES.find(x=>x.id===t)||{label:t,icon:'fas fa-handshake'};
+              const cls=CHIP_COLORS[t]||'camp-chip-purple';
+              return `<span class="camp-chip ${cls}"><i class="${ct.icon}"></i>${ct.label}</span>`;
+            }).join('');
+            // Deadline text
+            const deadlineText = c.deadline ? (() => {
+              const diff = Math.ceil((new Date(c.deadline)-Date.now())/(1000*60*60*24));
+              if(diff<0) return `<div class="camp-meta-row" style="color:#ff6b6b"><i class="fas fa-exclamation-triangle"></i>Deadline passed</div>`;
+              if(diff<=5) return `<div class="camp-meta-row" style="color:#f5a623"><i class="fas fa-clock"></i><span style="color:#f5a623;font-weight:600">${diff} day${diff!==1?'s':''} left to apply</span></div>`;
+              return `<div class="camp-meta-row"><i class="fas fa-calendar-alt"></i>Apply by <span class="camp-meta-val" style="margin-left:3px">${c.deadline}</span></div>`;
+            })() : '';
+            const uniqueId = 'camp_' + (c.id||Math.random().toString(36).slice(2));
             return `
             <div class="camp-card">
-              ${imgHtml}
-              <div class="camp-brand-row">
-                ${logoHtml}
-                <div style="flex:1;min-width:0">
-                  <div class="camp-brand-name">${c.startupName||c.founderName}</div>
-                  <div class="camp-category">${c.niche||''}</div>
+              <div class="camp-cover">
+                ${coverHtml}
+                <div class="camp-badge-cat${c.niche?(' '+(c.niche||'').toLowerCase()):''}">${c.niche||'Campaign'}</div>
+                <div class="camp-badge-match">
+                  <svg width="9" height="12" viewBox="0 0 9 12" fill="none"><path d="M5 0L0 7h4l-1 5L9 5H5L6 0z" fill="#2eeabc"/></svg>
+                  ${ms}% Match
                 </div>
-                ${_campMatchChip(ms)}
               </div>
               <div class="camp-body">
-                <div class="camp-title">${c.title}</div>
-                ${c.productName?`<div style="font-size:.72rem;color:var(--muted);margin-bottom:.3rem"><i class="fas fa-box" style="margin-right:.3rem"></i>${c.productName}${c.productCategory?' · '+c.productCategory:''}</div>`:''}
-                <div class="camp-desc">${c.description}</div>
-                ${c.campaignGoal?`<div class="camp-goal"><i class="fas fa-bullseye"></i>${c.campaignGoal}</div>`:''}
-                ${demoBtn}
-                <div class="camp-links">
-                  ${(c.collabTypes||[]).slice(0,3).map(t=>{
-                    const ct=COLLAB_TYPES.find(x=>x.id===t)||{label:t,icon:'fas fa-handshake',color:'var(--accent)'};
-                    return `<span style="display:inline-flex;align-items:center;gap:.3rem;background:rgba(108,99,255,.1);color:${ct.color};border:1px solid ${ct.color}33;padding:.22em .6em;border-radius:99px;font-size:.68rem;font-weight:600"><i class="${ct.icon}"></i>${ct.label}</span>`;
-                  }).join('')}
-                </div>
-                <div class="camp-meta-row">
-                  ${c.audienceRequired?`<span><i class="fas fa-users"></i>${c.audienceRequired}+ audience</span>`:''}
-                  ${c.budget?`<span><i class="fas fa-rupee-sign"></i>${c.budget}</span>`:''}
-                  ${c.deadline?`<span><i class="fas fa-calendar-alt"></i>Apply by ${c.deadline}</span>`:''}
-                  ${c.website?`<a href="${c.website}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.3rem;color:var(--accent);font-size:.72rem;text-decoration:none"><i class="fas fa-globe"></i>Website</a>`:''}
-                </div>
-                ${_deadlineAlert(c.deadline)}
-                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-top:.625rem">
-                  <div style="display:flex;align-items:center;gap:.75rem;font-size:.72rem;color:var(--muted)">
-                    <span><i class="fas fa-users"></i> ${c.applicantsCount||0} applied</span>
-                    <span><i class="fas fa-eye"></i> ${c.viewsCount||0} views</span>
+                <div class="camp-brand-row">
+                  ${logoHtml}
+                  <div class="camp-brand-info">
+                    <div class="camp-brand-name-wrap">
+                      <span class="camp-brand-name">${c.startupName||c.founderName||'Brand'}</span>
+                      <svg class="camp-blue-tick" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="8" fill="#1877F2"/><path d="M4.5 8.2L6.8 10.5L11.5 5.5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <div class="camp-brand-handle">${c.instagram?'@'+c.instagram.replace('@',''):c.website||''}</div>
                   </div>
-                  ${applied
-                    ? `<button class="btn btn-ghost btn-sm" disabled style="opacity:.6"><i class="fas fa-check"></i> Applied</button>`
-                    : `<button class="btn btn-primary btn-sm" onclick="openApplyModal('${c.id}')"><i class="fas fa-paper-plane"></i> Apply Now</button>`
-                  }
                 </div>
+                <div class="camp-title">${c.title}</div>
+                <div class="camp-desc">${c.description}</div>
+                ${chipsHtml?`<div class="camp-chips">${chipsHtml}</div>`:''}
+                <div class="camp-meta">
+                  ${c.budget?`<div class="camp-meta-row"><i class="fas fa-rupee-sign"></i><span class="camp-meta-val">${c.budget}</span></div>`:''}
+                  ${c.audienceRequired?`<div class="camp-meta-row"><i class="fas fa-users"></i>${c.audienceRequired}+ audience</div>`:''}
+                  ${deadlineText}
+                </div>
+                ${c.campaignGoal||c.audienceRequired||c.website?`
+                <button class="camp-view-more-btn" id="btn_${uniqueId}" onclick="toggleCampDetails('panel_${uniqueId}','btn_${uniqueId}')">
+                  <i class="fas fa-info-circle"></i>
+                  View More Details
+                  <i class="fas fa-chevron-down camp-chevron"></i>
+                </button>
+                <div class="camp-details-panel" id="panel_${uniqueId}">
+                  ${c.campaignGoal?`<div class="camp-detail-row"><div class="camp-detail-icon" style="background:rgba(108,99,255,0.1)"><i class="fas fa-bullseye" style="color:#a78bfa"></i></div><div><div class="camp-detail-label">Campaign Goal</div><div class="camp-detail-val">${c.campaignGoal}</div></div></div>`:''}
+                  ${c.audienceRequired?`<div class="camp-detail-row"><div class="camp-detail-icon" style="background:rgba(225,48,108,0.1)"><i class="fas fa-users" style="color:#f472b6"></i></div><div><div class="camp-detail-label">Creator Requirement</div><div class="camp-detail-val">${c.audienceRequired}+ audience${c.niche?' · '+c.niche+' niche':''}</div></div></div>`:''}
+                  ${c.productName?`<div class="camp-detail-row"><div class="camp-detail-icon" style="background:rgba(245,166,35,0.1)"><i class="fas fa-box" style="color:#f5a623"></i></div><div><div class="camp-detail-label">Product</div><div class="camp-detail-val">${c.productName}${c.productCategory?' — '+c.productCategory:''}</div></div></div>`:''}
+                  ${c.website?`<div class="camp-detail-row"><div class="camp-detail-icon" style="background:rgba(0,212,170,0.1)"><i class="fas fa-globe" style="color:#2eeabc"></i></div><div><div class="camp-detail-label">Website</div><div class="camp-detail-val"><a href="${c.website}" target="_blank" style="color:#2eeabc">${c.website}</a></div></div></div>`:''}
+                  ${c.demoVideo?`<div class="camp-detail-row"><div class="camp-detail-icon" style="background:rgba(255,0,0,0.1)"><i class="fas fa-play-circle" style="color:#ff6b6b"></i></div><div><div class="camp-detail-label">Demo Video</div><div class="camp-detail-val"><a href="${c.demoVideo}" target="_blank" style="color:#ff6b6b">Watch Demo</a></div></div></div>`:''}
+                </div>`:''  }
+              </div>
+              <div class="camp-divider"></div>
+              <div class="camp-footer">
+                <div class="camp-budget-wrap">
+                  <div class="camp-budget-label">Budget</div>
+                  <div class="camp-budget-val">${c.budget||'Open'}</div>
+                </div>
+                ${applied
+                  ? `<button class="camp-apply-btn" disabled><i class="fas fa-check"></i> Applied</button>`
+                  : `<button class="camp-apply-btn" onclick="openApplyModal('${c.id}')">Apply Now</button>`
+                }
+              </div>
+              <div class="camp-footer2">
+                <div style="font-size:11px;color:rgba(255,255,255,0.32)"><i class="fas fa-users" style="margin-right:4px"></i>${c.applicantsCount||0} applied &nbsp;·&nbsp; <i class="fas fa-eye"></i> ${c.viewsCount||0} views</div>
               </div>
             </div>`;
           }).join('')}
@@ -2397,91 +2503,80 @@ async function renderCampaigns(el){
         </div>
       </div>`:''}
 
-      <div id="founder-campaign-list">
+      <div id="founder-campaign-list" class="camp-cards-grid">
         ${myCamps.length===0
-          ? `<div class="empty-state"><i class="fas fa-bullhorn"></i><p>No campaigns yet.<br><button class="btn btn-primary btn-sm" style="margin-top:.75rem" onclick="openLaunchModal()"><i class="fas fa-plus"></i> Launch Your First Campaign</button></p></div>`
+          ? `<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-bullhorn"></i><p>No campaigns yet.<br><button class="btn btn-primary btn-sm" style="margin-top:.75rem" onclick="openLaunchModal()"><i class="fas fa-plus"></i> Launch Your First Campaign</button></p></div>`
           : myCamps.map(c=>{
             const apps = allAppsMap[c.id]||[];
             const pendingApps = apps.filter(a=>a.status==='pending');
-            const imgHtml = c.productImage
-              ? `<img class="camp-card-img" src="${c.productImage}" alt="${c.title}" onerror="this.style.display='none'">`
-              : `<div class="camp-card-img-placeholder"><i class="fas fa-image"></i></div>`;
-            const logoHtml = c.brandLogo
-              ? `<div class="camp-brand-logo"><img src="${c.brandLogo}" alt="logo" onerror="this.style.display='none';this.parentElement.textContent='${(c.startupName||'B').charAt(0)}'"></div>`
-              : `<div class="camp-brand-logo">${(c.startupName||c.founderName||'B').charAt(0)}</div>`;
-            // Top 3 applicants preview avatars
             const top3 = apps.slice(0,3);
-            const avatarPreviews = top3.map(a=>`<div class="mini-ava">${a.creatorPhoto?`<img src="${a.creatorPhoto}" onerror="this.style.display='none'">`:(a.creatorName||'C').charAt(0)}</div>`).join('');
-            const demoBtn = c.demoVideo ? `<a href="${c.demoVideo}" target="_blank" rel="noopener" class="camp-video-thumb" title="Watch demo video"><i class="fas fa-play-circle"></i></a>` : '';
+            const appCount = c.applicantsCount||apps.length||0;
             const viewCount = c.viewsCount||0;
-            const appCount  = c.applicantsCount||apps.length||0;
-            const msgCount  = c.messagesCount||0;
+            // Cover image
+            const coverHtml = c.productImage
+              ? `<img class="camp-cover-img" src="${c.productImage}" alt="${c.title}" onerror="this.style.display='none'">`
+              : `<div class="camp-cover-placeholder"><i class="fas fa-image"></i></div>`;
+            // Brand logo
+            const logoHtml = c.brandLogo
+              ? `<div class="camp-brand-logo" style="background:none"><img src="${c.brandLogo}" alt="logo" onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#6c63ff,#e1306c)';this.parentElement.textContent='${(c.startupName||'B').charAt(0)}'"></div>`
+              : `<div class="camp-brand-logo">${(c.startupName||c.founderName||'B').charAt(0)}</div>`;
+            // Collab chips
+            const CHIP_COLORS = {ugc:'camp-chip-teal',reel:'camp-chip-insta',youtube:'camp-chip-red',review:'camp-chip-amber',ambassador:'camp-chip-purple',blog:'camp-chip-blue',podcast:'camp-chip-purple',giveaway:'camp-chip-insta'};
+            const chipsHtml = (c.collabTypes||[]).slice(0,3).map(t=>{
+              const ct=COLLAB_TYPES.find(x=>x.id===t)||{label:t,icon:'fas fa-handshake'};
+              const cls=CHIP_COLORS[t]||'camp-chip-purple';
+              return `<span class="camp-chip ${cls}"><i class="${ct.icon}"></i>${ct.label}</span>`;
+            }).join('');
+            const avatarPreviews = top3.map(a=>`<div class="camp-mini-av">${a.creatorPhoto?`<img src="${a.creatorPhoto}" onerror="this.style.display='none'">`:(a.creatorName||'C').charAt(0)}</div>`).join('');
             return `
             <div class="camp-card">
-              ${imgHtml}
-              <div class="camp-brand-row">
-                ${logoHtml}
-                <div style="flex:1;min-width:0">
-                  <div class="camp-brand-name">${c.startupName||c.founderName}</div>
-                  <div class="camp-category">${c.niche||''}${c.productCategory?' · '+c.productCategory:''}</div>
-                </div>
+              <div class="camp-cover">
+                ${coverHtml}
+                <div class="camp-badge-cat">${c.niche||'Campaign'}</div>
                 ${_campStatusBadge(c.status==='open'?'open':c.status)}
               </div>
               <div class="camp-body">
-                <div class="camp-title">${c.title}</div>
-                ${c.productName?`<div style="font-size:.72rem;color:var(--muted);margin-bottom:.3rem"><i class="fas fa-box" style="margin-right:.3rem"></i>${c.productName}</div>`:''}
-                <div class="camp-desc">${c.description}</div>
-                ${c.campaignGoal?`<div class="camp-goal"><i class="fas fa-bullseye"></i>${c.campaignGoal}</div>`:''}
-                ${demoBtn}
-                <div class="camp-links">
-                  ${(c.collabTypes||[]).slice(0,3).map(t=>{
-                    const ct=COLLAB_TYPES.find(x=>x.id===t)||{label:t,icon:'fas fa-handshake',color:'var(--accent)'};
-                    return `<span style="display:inline-flex;align-items:center;gap:.3rem;background:rgba(108,99,255,.1);color:${ct.color};border:1px solid ${ct.color}33;padding:.22em .6em;border-radius:99px;font-size:.68rem;font-weight:600"><i class="${ct.icon}"></i>${ct.label}</span>`;
-                  }).join('')}
+                <div class="camp-brand-row">
+                  ${logoHtml}
+                  <div class="camp-brand-info">
+                    <div class="camp-brand-name-wrap">
+                      <span class="camp-brand-name">${c.startupName||c.founderName||'My Brand'}</span>
+                    </div>
+                    <div class="camp-brand-handle">${c.instagram?'@'+c.instagram.replace('@',''):c.niche||''}</div>
+                  </div>
                 </div>
-                <div class="camp-meta-row">
-                  ${c.budget?`<span><i class="fas fa-rupee-sign"></i>${c.budget}</span>`:''}
-                  ${c.deadline?`<span><i class="fas fa-calendar-alt"></i>Deadline: ${c.deadline}</span>`:''}
-                  ${c.website?`<a href="${c.website}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.3rem;color:var(--accent);font-size:.72rem;text-decoration:none"><i class="fas fa-globe"></i>Website</a>`:''}
-                  ${c.instagram?`<a href="https://instagram.com/${c.instagram.replace('@','')}" target="_blank" rel="noopener" class="social-btn" style="width:1.5rem;height:1.5rem;font-size:.7rem"><i class="fab fa-instagram"></i></a>`:''}
+                <div class="camp-title">${c.title}</div>
+                <div class="camp-desc">${c.description}</div>
+                ${chipsHtml?`<div class="camp-chips">${chipsHtml}</div>`:''}
+                <div class="camp-meta">
+                  ${c.budget?`<div class="camp-meta-row"><i class="fas fa-rupee-sign"></i><span class="camp-meta-val">${c.budget}</span></div>`:''}
+                  ${c.deadline?`<div class="camp-meta-row"><i class="fas fa-calendar-alt"></i>Deadline: <span class="camp-meta-val" style="margin-left:3px">${c.deadline}</span></div>`:''}
                 </div>
                 ${_deadlineAlert(c.deadline)}
                 ${_pendingAlert(pendingApps.length)}
               </div>
-              <!-- Stats Row -->
-              <div class="camp-stats-row">
-                <div class="camp-stat">
-                  <div class="camp-stat-val"><i class="fas fa-eye" style="font-size:.7rem;color:var(--muted)"></i> ${viewCount}</div>
-                  <div class="camp-stat-label">Views</div>
-                </div>
-                <div class="camp-stat">
-                  <div class="camp-stat-val">${appCount}</div>
-                  <div class="camp-stat-label">Applicants</div>
-                </div>
-                <div class="camp-stat">
-                  <div class="camp-stat-val">${msgCount}</div>
-                  <div class="camp-stat-label">Messages</div>
-                </div>
-                <div class="camp-stat">
-                  <div class="camp-stat-val">${totalAccepted}</div>
-                  <div class="camp-stat-label">Accepted</div>
-                </div>
-              </div>
-              <!-- Footer -->
+              <div class="camp-divider"></div>
               <div class="camp-footer">
-                <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
-                  ${top3.length>0?`<div class="camp-applicants-preview" title="${appCount} applicant${appCount!==1?'s':''}">${avatarPreviews}${appCount>3?`<span style="margin-left:.5rem;font-size:.68rem;color:var(--muted)">+${appCount-3} more</span>`:''}</div>`:''}
+                <div class="camp-budget-wrap">
+                  <div class="camp-budget-label">Budget</div>
+                  <div class="camp-budget-val">${c.budget||'Open'}</div>
                 </div>
-                <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
-                  <button class="btn btn-ghost btn-sm" onclick="viewApplications('${c.id}','${c.title.replace(/'/g,"\\'")}')"><i class="fas fa-users"></i> Applicants${appCount>0?` (${appCount})`:''}</button>
-                  <button class="btn btn-ghost btn-sm" onclick="toggleCampaignStatus('${c.id}','${c.status}')">
-                    ${c.status==='open'?'<i class="fas fa-pause"></i> Close':'<i class="fas fa-play"></i> Reopen'}
-                  </button>
+                <button class="camp-apply-btn" onclick="viewApplications('${c.id}','${c.title.replace(/'/g,"\'")}')">
+                  <i class="fas fa-users"></i> Applicants${appCount>0?` (${appCount})`:''}
+                </button>
+              </div>
+              <div class="camp-footer2">
+                <div class="camp-mini-avatars">
+                  ${top3.length>0?avatarPreviews:''}
+                  ${appCount>0?`<span style="margin-left:${top3.length>0?'10':'-'0}px;font-size:11px;color:rgba(255,255,255,0.32)">${appCount>3?'+'+(appCount-3)+' more':''}${top3.length===0?appCount+' applied':''}</span>`:''}
                 </div>
+                <button class="btn btn-ghost btn-sm" onclick="toggleCampaignStatus('${c.id}','${c.status}')">
+                  ${c.status==='open'?'<i class="fas fa-pause"></i> Close':'<i class="fas fa-play"></i> Reopen'}
+                </button>
               </div>
             </div>`;
           }).join('')}
-      </div>
+      </div>      </div>
 
       <!-- Launch Modal -->
       <div class="overlay" id="launch-modal" style="display:none">
@@ -2497,9 +2592,36 @@ async function renderCampaigns(el){
               <div class="form-group"><label>Product Name</label><input id="lc-product-name" placeholder="e.g. HydraGlow Serum"></div>
               <div class="form-group"><label>Product Category</label><input id="lc-product-cat" placeholder="e.g. Skincare, Tech, Food"></div>
             </div>
-            <div class="form-group"><label>Product Image URL <span style="font-size:.7rem;color:var(--muted)">(Cloudinary or any image URL)</span></label><input id="lc-product-img" placeholder="https://res.cloudinary.com/…/product.jpg" oninput="previewCampImg(this)"></div>
-            <div id="lc-img-preview" style="display:none;margin-bottom:.875rem"><img id="lc-img-el" style="width:100%;height:140px;object-fit:cover;border-radius:1rem;border:1px solid var(--border)"></div>
-            <div class="form-group"><label>Brand Logo URL</label><input id="lc-brand-logo" placeholder="https://res.cloudinary.com/…/logo.png"></div>
+
+            <!-- Product Image Upload (Cloudinary) -->
+            <div class="form-group">
+              <label>Product / Campaign Image <span style="font-size:.7rem;color:var(--muted)">(Upload or paste URL)</span></label>
+              <div class="camp-img-preview-wrap" id="lc-img-preview-wrap">
+                <img id="lc-img-preview" class="camp-img-preview" src="" alt="preview">
+                <button class="camp-img-remove" onclick="removeCampImg()" title="Remove image"><i class="fas fa-times"></i></button>
+              </div>
+              <div class="camp-upload-area" id="lc-upload-area" onclick="document.getElementById('lc-img-file').click()">
+                <input type="file" id="lc-img-file" accept="image/*" style="display:none" onchange="handleCampImgFile(event)">
+                <div class="camp-upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                <div class="camp-upload-label">Click to upload image (JPG, PNG · Max 5MB)</div>
+              </div>
+              <div class="camp-upload-progress" id="lc-upload-progress"><i class="fas fa-spinner fa-spin"></i> Uploading to Cloudinary…</div>
+              <div class="form-group" style="margin-top:.5rem;margin-bottom:0"><label style="font-size:.62rem">Or paste image URL</label><input id="lc-product-img" placeholder="https://res.cloudinary.com/…/product.jpg" oninput="previewCampImgUrl(this)"></div>
+            </div>
+
+            <!-- Brand Logo Upload -->
+            <div class="form-group">
+              <label>Brand Logo <span style="font-size:.7rem;color:var(--muted)">(Upload or paste URL)</span></label>
+              <div style="display:flex;gap:.75rem;align-items:center">
+                <div id="lc-logo-preview" style="width:3rem;height:3rem;border-radius:.75rem;background:linear-gradient(135deg,#6c63ff,#e1306c);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:1.2rem;flex-shrink:0;overflow:hidden;cursor:pointer" onclick="document.getElementById('lc-logo-file').click()">
+                  <i class="fas fa-image" style="font-size:.9rem;opacity:.6"></i>
+                  <input type="file" id="lc-logo-file" accept="image/*" style="display:none" onchange="handleCampLogoFile(event)">
+                </div>
+                <input id="lc-brand-logo" placeholder="https://res.cloudinary.com/…/logo.png" style="flex:1" oninput="previewCampLogoUrl(this)">
+              </div>
+              <div class="camp-upload-progress" id="lc-logo-upload-progress"><i class="fas fa-spinner fa-spin"></i> Uploading logo…</div>
+            </div>
+
             <div class="form-row">
               <div class="form-group"><label>Campaign Goal</label><input id="lc-goal" placeholder="e.g. 50 UGC videos in 30 days"></div>
               <div class="form-group"><label>Demo Video URL</label><input id="lc-demo" placeholder="https://youtube.com/…"></div>
@@ -2521,7 +2643,7 @@ async function renderCampaigns(el){
 
             <div class="form-row">
               <div class="form-group"><label>Niche / Category *</label>
-                <select id="lc-niche"><option value="">Select…</option>${['AI','Finance','Startup','Tech','Lifestyle','Business','Marketing','SaaS','Education','Health'].map(n=>`<option>${n}</option>`).join('')}</select>
+                <select id="lc-niche"><option value="">Select…</option>${['AI','Finance','Startup','Tech','Lifestyle','Business','Marketing','SaaS','Education','Health','Fashion','Food','Travel','Gaming','Beauty','Sports'].map(n=>`<option>${n}</option>`).join('')}</select>
               </div>
               <div class="form-group"><label>Min. Audience Size</label>
                 <select id="lc-aud"><option value="">Any</option>${['1K-10K','10K-50K','50K-100K','100K-500K','500K+'].map(v=>`<option>${v}</option>`).join('')}</select>
@@ -2532,7 +2654,7 @@ async function renderCampaigns(el){
               <div class="form-group"><label>Application Deadline</label><input id="lc-deadline" type="date"></div>
             </div>
           </div>
-          <button class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem" onclick="launchCampaign()"><i class="fas fa-bullhorn"></i> Launch Campaign</button>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem" id="lc-submit-btn" onclick="launchCampaign()"><i class="fas fa-bullhorn"></i> Launch Campaign</button>
         </div>
       </div>
 
@@ -2565,7 +2687,117 @@ function toggleCollabChip(el){
   }
 }
 
+// ── Campaign Image Upload Helpers ────────────────────
+let _lcProductImageUrl = '';
+let _lcBrandLogoUrl = '';
+
+function previewCampImgUrl(input){
+  const url = input.value.trim();
+  if(!url){ removeCampImg(); return; }
+  _lcProductImageUrl = url;
+  const wrap = document.getElementById('lc-img-preview-wrap');
+  const img = document.getElementById('lc-img-preview');
+  if(img){ img.src=url; }
+  if(wrap){ wrap.classList.add('show'); }
+  const area = document.getElementById('lc-upload-area');
+  if(area) area.style.display='none';
+}
+function removeCampImg(){
+  _lcProductImageUrl = '';
+  const wrap = document.getElementById('lc-img-preview-wrap');
+  const img = document.getElementById('lc-img-preview');
+  const urlInput = document.getElementById('lc-product-img');
+  const area = document.getElementById('lc-upload-area');
+  if(wrap) wrap.classList.remove('show');
+  if(img) img.src='';
+  if(urlInput) urlInput.value='';
+  if(area) area.style.display='';
+}
+async function handleCampImgFile(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  if(file.size > 5*1024*1024){ toast('Image must be under 5MB','error'); return; }
+  const progress = document.getElementById('lc-upload-progress');
+  if(progress) progress.classList.add('show');
+  try{
+    const url = await uploadCampaignAsset(file, 'campaign_img_'+_me.uid+'_'+Date.now());
+    _lcProductImageUrl = url;
+    const wrap = document.getElementById('lc-img-preview-wrap');
+    const img = document.getElementById('lc-img-preview');
+    const area = document.getElementById('lc-upload-area');
+    const urlInput = document.getElementById('lc-product-img');
+    if(img) img.src = url;
+    if(wrap) wrap.classList.add('show');
+    if(area) area.style.display='none';
+    if(urlInput) urlInput.value = url;
+    toast('Image uploaded! ✅','success');
+  }catch(e){
+    toast('Upload failed: '+e.message,'error');
+  }finally{
+    if(progress) progress.classList.remove('show');
+  }
+}
+async function handleCampLogoFile(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  if(file.size > 2*1024*1024){ toast('Logo must be under 2MB','error'); return; }
+  const progress = document.getElementById('lc-logo-upload-progress');
+  if(progress) progress.classList.add('show');
+  try{
+    const url = await uploadCampaignAsset(file, 'campaign_logo_'+_me.uid+'_'+Date.now());
+    _lcBrandLogoUrl = url;
+    const logoPreview = document.getElementById('lc-logo-preview');
+    const logoUrlInput = document.getElementById('lc-brand-logo');
+    if(logoPreview) logoPreview.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover"><input type="file" id="lc-logo-file" accept="image/*" style="display:none" onchange="handleCampLogoFile(event)">`;
+    if(logoUrlInput) logoUrlInput.value = url;
+    toast('Logo uploaded! ✅','success');
+  }catch(e){
+    toast('Logo upload failed: '+e.message,'error');
+  }finally{
+    if(progress) progress.classList.remove('show');
+  }
+}
+function previewCampLogoUrl(input){
+  const url = input.value.trim();
+  _lcBrandLogoUrl = url;
+  const logoPreview = document.getElementById('lc-logo-preview');
+  if(logoPreview && url){
+    logoPreview.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'"><input type="file" id="lc-logo-file" accept="image/*" style="display:none" onchange="handleCampLogoFile(event)">`;
+  }
+}
+async function uploadCampaignAsset(file, publicId){
+  // Use Cloudinary for campaign images (same as profile photos)
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+  formData.append('public_id', publicId);
+  formData.append('folder', 'posthire_campaigns');
+  const res = await fetch(
+    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+    { method: 'POST', body: formData }
+  );
+  if(!res.ok) throw new Error('Cloudinary upload failed');
+  const data = await res.json();
+  if(data.error) throw new Error(data.error.message);
+  return data.secure_url;
+}
+// ── Toggle View More in campaign cards ──────────────
+function toggleCampDetails(panelId, btnId){
+  const panel = document.getElementById(panelId);
+  const btn = document.getElementById(btnId);
+  if(!panel||!btn) return;
+  const isOpen = panel.classList.contains('open');
+  panel.classList.toggle('open', !isOpen);
+  btn.classList.toggle('open', !isOpen);
+}
+
 function openLaunchModal(){
+  // Reset upload state
+  _lcProductImageUrl = '';
+  _lcBrandLogoUrl = '';
+  removeCampImg();
+  const logoPreview = document.getElementById('lc-logo-preview');
+  if(logoPreview) logoPreview.innerHTML = `<i class="fas fa-image" style="font-size:.9rem;opacity:.6"></i><input type="file" id="lc-logo-file" accept="image/*" style="display:none" onchange="handleCampLogoFile(event)">`;
   document.getElementById('launch-modal').style.display='flex';
 }
 function closeLaunchModal(){
@@ -2583,6 +2815,15 @@ async function launchCampaign(){
   const deadline = document.getElementById('lc-deadline').value;
   const audReq = document.getElementById('lc-aud').value;
   const errEl = document.getElementById('launch-err');
+  const productName = document.getElementById('lc-product-name')?.value.trim()||'';
+  const productCat = document.getElementById('lc-product-cat')?.value.trim()||'';
+  const goal = document.getElementById('lc-goal')?.value.trim()||'';
+  const demo = document.getElementById('lc-demo')?.value.trim()||'';
+  const website = document.getElementById('lc-website')?.value.trim()||'';
+  const instagram = document.getElementById('lc-instagram')?.value.trim()||'';
+  // Image URLs — prefer uploaded file URL, fallback to URL field
+  const productImg = _lcProductImageUrl || document.getElementById('lc-product-img')?.value.trim() || '';
+  const brandLogo = _lcBrandLogoUrl || document.getElementById('lc-brand-logo')?.value.trim() || '';
 
   const selectedTypes = [...document.querySelectorAll('.collab-type-chip[data-active="1"]')].map(el=>el.getAttribute('data-id'));
 
@@ -2592,6 +2833,8 @@ async function launchCampaign(){
   if(!niche){ showFormErr(errEl,'Please select a niche'); return; }
 
   errEl.className='form-err';
+  const submitBtn = document.getElementById('lc-submit-btn');
+  if(submitBtn){ submitBtn.disabled=true; submitBtn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Launching…'; }
   const fo = await DB.getFounder(_me.uid);
 
   try{
@@ -2601,6 +2844,11 @@ async function launchCampaign(){
       startupName: fo?.startupName || _me.name,
       title, description: desc, collabTypes: selectedTypes,
       niche, audienceRequired: audReq, budget, deadline,
+      productName, productCategory: productCat,
+      campaignGoal: goal, demoVideo: demo,
+      website, instagram,
+      productImage: productImg,
+      brandLogo: brandLogo,
       status: 'open',
       createdAt: new Date().toISOString()
     });
@@ -2737,7 +2985,7 @@ async function submitApplication(campaignId){
   }
 }
 
-Object.assign(window,{showSection,selectRole,confirmRole,openSetup,openEditProfileModal,closeEditProfileModal,saveEditProfile,epHandleDp,epRemoveDp,updReq,sendCollab,filterCreators,selectPlan,openPlanOverlay,closePlanOverlay,doSignOut,goToLanding,goToAdmin,openSidebar,closeSidebar,choosePlanAndContinue,showAiMatch,previewPhoto,openLaunchModal,closeLaunchModal,closeApplicantsModal,launchCampaign,toggleCampaignStatus,viewApplications,respondApp,openApplyModal,closeApplyModal,submitApplication,toggleCollabChip,goToMessages,openChatForRequest});
+Object.assign(window,{showSection,selectRole,confirmRole,openSetup,openEditProfileModal,closeEditProfileModal,saveEditProfile,epHandleDp,epRemoveDp,updReq,sendCollab,filterCreators,selectPlan,openPlanOverlay,closePlanOverlay,doSignOut,goToLanding,goToAdmin,openSidebar,closeSidebar,choosePlanAndContinue,showAiMatch,previewPhoto,openLaunchModal,closeLaunchModal,closeApplicantsModal,launchCampaign,toggleCampaignStatus,viewApplications,respondApp,openApplyModal,closeApplyModal,submitApplication,toggleCollabChip,goToMessages,openChatForRequest,toggleCampDetails,handleCampImgFile,handleCampLogoFile,previewCampImgUrl,previewCampLogoUrl,removeCampImg});
 </script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </body>
