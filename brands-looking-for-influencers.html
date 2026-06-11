@@ -1,26 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Brands Looking for Influencers | PostHire</title>
-  <meta name="description" content="Discover influencers for your brand campaigns with PostHire.">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Brands Looking for Influencers | Posthire</title>
+  <meta name="description" content="Discover influencers for your brand campaigns with Posthire.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root{--bg:#060a14;--surface:#111b2f;--surface-soft:#101925;--text:#eef2ff;--muted:#94a3b8;--accent:#f97316;--accent2:#fb923c;--border:rgba(255,255,255,.08);--shadow:0 24px 80px rgba(15,23,42,.22);}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{min-height:100vh;background:linear-gradient(180deg,#060a14 0%,#07101b 55%,#05080f 100%);color:var(--text);font-family:Poppins,sans-serif;}
+    a{color:inherit;text-decoration:none;}
+    body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 12% 14%,rgba(249,115,22,.18),transparent 14%),radial-gradient(circle at 90% 12%,rgba(251,146,60,.16),transparent 15%);pointer-events:none;}
+    .wrapper{max-width:1180px;margin:0 auto;padding:1.25rem 1.25rem 3.5rem;}
+    .topbar{position:sticky;top:0;z-index:20;background:rgba(6,10,20,.9);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 1rem;margin-bottom:2rem;}
+    .brand{font-size:1.05rem;font-weight:700;}
+    .nav-links{display:flex;gap:1rem;flex-wrap:wrap;}
+    .nav-links a{font-size:.92rem;color:var(--muted);transition:color .2s;}
+    .nav-links a:hover{color:var(--text);}
+    .btn-primary{display:inline-flex;align-items:center;gap:.6rem;padding:.95rem 1.6rem;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:700;box-shadow:0 20px 55px rgba(249,115,22,.22);transition:transform .2s;}
+    .btn-primary:hover{transform:translateY(-2px);}
+    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:2rem;position:relative;}
+    .hero::before{content:'';position:absolute;top:-12%;right:-16%;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(249,115,22,.24),transparent 55%);filter:blur(50px);}
+    .hero::after{content:'';position:absolute;bottom:-14%;left:-12%;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(251,146,60,.16),transparent 55%);filter:blur(40px);}
+    .hero-copy{position:relative;z-index:1;}
+    .tag{display:inline-flex;align-items:center;gap:.6rem;padding:.75rem 1rem;border-radius:999px;background:rgba(249,115,22,.12);border:1px solid rgba(249,115,22,.18);font-size:.78rem;font-weight:700;color:#ffe7d5;margin-bottom:1.25rem;}
+    .tag .dot{width:.6rem;height:.6rem;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--accent2));}
+    .hero-title{font-size:clamp(3rem,5vw,4.5rem);line-height:1;letter-spacing:-.05em;margin-bottom:1rem;background:linear-gradient(135deg,#fff,#fde68a);-webkit-background-clip:text;color:transparent;}
+    .hero-text{max-width:40rem;font-size:1rem;line-height:1.8;color:var(--muted);margin-bottom:2rem;}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:1rem;}
+    .hero-grid{display:grid;gap:1rem;}
+    .hero-card{padding:1.6rem;border-radius:1.8rem;background:rgba(15,23,40,.9);border:1px solid rgba(255,255,255,.06);box-shadow:0 24px 70px rgba(10,25,50,.22);animation:fadeUp .7s ease both;}
+    .hero-card:nth-child(1){animation-delay:.1s;}
+    .hero-card:nth-child(2){animation-delay:.18s;}
+    .hero-card:nth-child(3){animation-delay:.26s;}
+    .hero-card strong{display:block;font-size:1rem;margin-bottom:.85rem;color:#fff;}
+    .hero-card p{color:var(--muted);line-height:1.75;}
+    .section{margin-top:4rem;}
+    .section-title{font-size:clamp(2rem,4vw,3rem);line-height:1.05;max-width:720px;margin-bottom:1.25rem;}
+    .feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;}
+    .feature{padding:1.8rem;border-radius:1.75rem;background:rgba(15,23,40,.9);border:1px solid rgba(255,255,255,.06);box-shadow:0 24px 55px rgba(10,25,50,.17);animation:fadeUp .7s ease both;}
+    .feature:nth-child(1){animation-delay:.1s;}
+    .feature:nth-child(2){animation-delay:.18s;}
+    .feature:nth-child(3){animation-delay:.26s;}
+    .feature-icon{width:2.9rem;height:2.9rem;border-radius:1.1rem;background:rgba(255,255,255,.05);display:grid;place-items:center;font-size:1.25rem;margin-bottom:1rem;color:var(--text);}
+    .feature-title{font-size:1.05rem;font-weight:700;margin-bottom:.75rem;}
+    .feature-text{color:var(--muted);line-height:1.8;}
+    .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:3rem;}
+    .stat{padding:1.85rem;border-radius:1.75rem;background:rgba(15,23,40,.9);border:1px solid rgba(255,255,255,.06);text-align:center;animation:fadeUp .7s ease both;}
+    .stat:nth-child(1){animation-delay:.12s;}
+    .stat:nth-child(2){animation-delay:.18s;}
+    .stat:nth-child(3){animation-delay:.24s;}
+    .stat-number{font-size:2.25rem;font-weight:700;margin-bottom:.5rem;color:#fff;}
+    .stat-label{color:var(--muted);font-size:.95rem;}
+    .steps{display:grid;gap:1rem;margin-top:2rem;}
+    .step{display:grid;gap:.55rem;padding:1.6rem;border-radius:1.65rem;background:rgba(15,23,40,.92);border:1px solid rgba(255,255,255,.06);animation:fadeUp .7s ease both;}
+    .step:nth-child(1){animation-delay:.14s;}
+    .step:nth-child(2){animation-delay:.2s;}
+    .step:nth-child(3){animation-delay:.26s;}
+    .step-head{display:flex;align-items:center;gap:.85rem;font-size:.95rem;font-weight:700;}
+    .step-dot{width:2rem;height:2rem;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#fff;font-weight:700;}
+    .step-copy{color:var(--muted);line-height:1.75;}
+    .footer{margin-top:4rem;padding:2rem 0;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;font-size:.9rem;border-top:1px solid rgba(255,255,255,.08);}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+    @media(max-width:980px){.hero{grid-template-columns:1fr;}.feature-grid,.stats{grid-template-columns:1fr;}}    
+    @media(max-width:640px){.topbar{padding:1rem .75rem;}.hero-title{font-size:2.75rem;}}
+  </style>
 </head>
-
 <body>
-
-<h1>Brands Looking for Influencers</h1>
-
-<p>Many brands are actively searching for influencers to promote their products. Finding the right creators can be difficult.</p>
-
-<h2>Benefits</h2>
-<ul>
-<li>Access to multiple creators</li>
-<li>Faster campaigns</li>
-<li>Better ROI</li>
-</ul>
-
-<p>PostHire makes it easy to connect with the right influencers.</p>
-
-<a href="index.html">Back to Home</a>
-
+  <div class="wrapper">
+    <header class="topbar">
+      <a href="index.html" class="brand">Posthire</a>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="company.html">About</a>
+        <a href="get-brand-deals.html">Creators</a>
+        <a href="hire-instagram-influencers-india.html">Instagram</a>
+      </nav>
+      <a href="dashboard.html" class="btn-primary"><i class="fas fa-arrow-right"></i> Start hiring</a>
+    </header>
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="tag"><span class="dot"></span>Brand Discovery</span>
+        <h1 class="hero-title">Find Instagram influencers across India with transparency.</h1>
+        <p class="hero-text">Posthire lets founders discover creators by niche, engagement and campaign fit — so every collaboration starts with the right match.</p>
+        <div class="hero-actions">
+          <a href="dashboard.html" class="btn-primary">Browse creators</a>
+          <a href="#work" class="btn-ghost">See the process</a>
+        </div>
+      </div>
+      <div class="hero-grid">
+        <div class="info-card"><strong>Accelerated search</strong><p>Find creators with the right audience, style and campaign readiness in minutes, not days.</p></div>
+        <div class="info-card"><strong>Better briefs</strong><p>Creators respond to clear campaign requests that explain deliverables, platform, timeline and budget.</p></div>
+        <div class="info-card"><strong>Local talent</strong><p>Connect with Instagram creators who understand the Indian market, culture and customer behaviour.</p></div>
+        <div class="info-card"><strong>Scalable process</strong><p>Run multiple campaigns simultaneously while keeping creator communication organised.</p></div>
+      </div>
+    </section>
+    <section class="section" id="work">
+      <div class="section-title">How Posthire makes Instagram hiring painless.</div>
+      <div class="feature-grid">
+        <div class="feature"><div class="feature-icon"><i class="fas fa-search"></i></div><div class="feature-title">Search creators fast</div><div class="feature-text">Filter by niche, platform, audience size, language, region and campaign type so you see the most relevant creators first.</div></div>
+        <div class="feature"><div class="feature-icon"><i class="fas fa-file-lines"></i></div><div class="feature-title">Send a brief</div><div class="feature-text">Build a campaign request with clear objectives, budget range and deliverables. Creators can decide quickly.</div></div>
+        <div class="feature"><div class="feature-icon"><i class="fas fa-handshake"></i></div><div class="feature-title">Manage invites</div><div class="feature-text">Track who has accepted, declined or asked for more details — all within your Posthire dashboard.</div></div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-title">Startup-friendly results.</div>
+      <div class="stats">
+        <div class="stat"><span class="stat-number">3.4x</span><span class="stat-label">Faster campaign launches</span></div>
+        <div class="stat"><span class="stat-number">87%</span><span class="stat-label">Influencer response rate</span></div>
+        <div class="stat"><span class="stat-number">62%</span><span class="stat-label">Brands reuse creators</span></div>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="step-head"><span class="step-dot">1</span><span>Pick your campaign goal</span></div><div class="step-copy">Choose whether you want awareness, product launches, lead generation or audience growth.</div></div>
+        <div class="step"><div class="step-head"><span class="step-dot">2</span><span>Filter creator profiles</span></div><div class="step-copy">Search by content style, platform, geography, audience age and engagement to narrow results.</div></div>
+        <div class="step"><div class="step-head"><span class="step-dot">3</span><span>Invite the right creator</span></div><div class="step-copy">Send campaign requests to creators who are ready to work with brands like yours.</div></div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-title">Trusted by founders who need speed and clarity.</div>
+      <p style="max-width:720px;color:var(--muted);line-height:1.8;margin-top:1rem;">Posthire was built for growing founders, not agencies. If you want a quick influencer discovery process with real creator transparency, this page is your starting point.</p>
+    </section>
+    <footer class="footer"><span>© 2026 Posthire</span><span><a href="index.html">Back to Home</a> · <a href="company.html">About</a></span></footer>
+  </div>
 </body>
 </html>

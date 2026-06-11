@@ -1,26 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Get Brand Deals as a Creator | PostHire</title>
-  <meta name="description" content="Join PostHire and start getting brand deals as a creator.">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Get Brand Deals as a Creator | Posthire</title>
+  <meta name="description" content="Join Posthire and start getting brand deals as a creator.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root{--bg:#050710;--surface:#0f1723;--surface-soft:#111b2b;--text:#eef2ff;--muted:#94a3b8;--accent:#8b5cf6;--accent2:#7c3aed;--border:rgba(255,255,255,.08);--shadow:0 24px 80px rgba(15,23,42,.18);}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{min-height:100vh;background:linear-gradient(180deg,#050710 0%,#08101d 55%,#06080f 100%);color:var(--text);font-family:Poppins,sans-serif;}
+    a{color:inherit;text-decoration:none;}
+    body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at top right,rgba(139,92,246,.22),transparent 22%),radial-gradient(circle at 15% 20%,rgba(56,189,248,.12),transparent 18%);pointer-events:none;}
+    .wrapper{width:min(1200px,calc(100% - 2rem));margin:0 auto;padding:1.25rem 0 3.5rem;}
+    .topbar{position:sticky;top:0;z-index:20;background:rgba(5,7,16,.9);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 1rem;margin-bottom:2rem;}
+    .brand{font-size:1.05rem;font-weight:700;letter-spacing:-.03em;}
+    .nav-links{display:flex;gap:1rem;flex-wrap:wrap;}
+    .nav-links a{font-size:.92rem;color:var(--muted);transition:color .2s;}
+    .nav-links a:hover{color:var(--text);}
+    .btn-primary{display:inline-flex;align-items:center;gap:.6rem;padding:.95rem 1.6rem;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:700;box-shadow:0 20px 55px rgba(139,92,246,.22);transition:transform .2s;}
+    .btn-primary:hover{transform:translateY(-2px);}
+    .btn-ghost{display:inline-flex;align-items:center;gap:.5rem;padding:.95rem 1.35rem;border-radius:999px;border:1px solid rgba(255,255,255,.12);color:var(--text);background:rgba(255,255,255,.04);transition:background .2s;}
+    .btn-ghost:hover{background:rgba(255,255,255,.08);}
+    .hero{display:grid;gap:2rem;grid-template-columns:1.2fr .8fr;align-items:start;position:relative;}
+    .hero::before{content:'';position:absolute;top:-8%;right:-10%;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.24),transparent 55%);filter:blur(50px);}
+    .hero::after{content:'';position:absolute;bottom:-10%;left:-10%;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.16),transparent 55%);filter:blur(35px);}
+    .hero-copy{position:relative;z-index:1;}
+    .tag{display:inline-flex;align-items:center;gap:.6rem;padding:.75rem 1rem;border-radius:999px;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.18);font-size:.78rem;font-weight:700;color:#d8d0ff;margin-bottom:1.25rem;}
+    .tag .dot{width:.6rem;height:.6rem;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--accent2));}
+    .hero-title{font-size:clamp(3rem,5vw,4.5rem);line-height:1;letter-spacing:-.05em;margin-bottom:1rem;background:linear-gradient(135deg,#fff,#d8d0ff);-webkit-background-clip:text;color:transparent;}
+    .hero-text{max-width:40rem;font-size:1rem;line-height:1.8;color:var(--muted);margin-bottom:2rem;}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:1rem;}
+    .hero-grid{display:grid;gap:1rem;}
+    .info-card{padding:1.6rem;border-radius:1.8rem;background:rgba(15,23,40,.9);border:1px solid rgba(255,255,255,.06);box-shadow:0 24px 80px rgba(15,23,40,.22);animation:fadeUp .7s ease both;}
+    .info-card:nth-child(1){animation-delay:.1s;}
+    .info-card:nth-child(2){animation-delay:.18s;}
+    .info-card:nth-child(3){animation-delay:.26s;}
+    .info-card strong{display:block;font-size:1rem;margin-bottom:.75rem;color:#fff;}
+    .info-card p{color:var(--muted);line-height:1.75;}
+    .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:3rem;}
+    .stat{padding:1.85rem;border-radius:1.75rem;background:rgba(15,23,40,.9);border:1px solid rgba(255,255,255,.06);text-align:center;animation:fadeUp .7s ease both;}
+    .stat:nth-child(1){animation-delay:.12s;}
+    .stat:nth-child(2){animation-delay:.18s;}
+    .stat:nth-child(3){animation-delay:.24s;}
+    .stat-number{font-size:2.25rem;font-weight:700;margin-bottom:.5rem;color:#fff;}
+    .stat-label{color:var(--muted);font-size:.95rem;}
+    .section{margin-top:4rem;}
+    .section-title{font-size:clamp(2rem,4vw,3rem);line-height:1.05;max-width:760px;margin-bottom:1.25rem;}
+    .feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;}
+    .feature{padding:1.8rem;border-radius:1.75rem;background:rgba(15,23,40,.9);border:1px solid rgba(255,255,255,.06);box-shadow:0 24px 55px rgba(15,23,40,.17);animation:fadeUp .7s ease both;}
+    .feature:nth-child(1){animation-delay:.1s;}
+    .feature:nth-child(2){animation-delay:.18s;}
+    .feature:nth-child(3){animation-delay:.26s;}
+    .feature-icon{width:2.9rem;height:2.9rem;border-radius:1.1rem;background:rgba(255,255,255,.05);display:grid;place-items:center;font-size:1.25rem;margin-bottom:1rem;color:var(--text);}
+    .feature-title{font-size:1.05rem;font-weight:700;margin-bottom:.75rem;}
+    .feature-text{color:var(--muted);line-height:1.8;}
+    .steps{display:grid;gap:1rem;margin-top:2rem;}
+    .step{display:grid;gap:.55rem;padding:1.6rem;border-radius:1.65rem;background:rgba(15,23,40,.92);border:1px solid rgba(255,255,255,.06);animation:fadeUp .7s ease both;}
+    .step:nth-child(1){animation-delay:.14s;}
+    .step:nth-child(2){animation-delay:.2s;}
+    .step:nth-child(3){animation-delay:.26s;}
+    .step-head{display:flex;align-items:center;gap:.85rem;font-size:.95rem;font-weight:700;}
+    .step-dot{width:2rem;height:2rem;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#fff;font-weight:700;}
+    .step-copy{color:var(--muted);line-height:1.75;}
+    .faq{margin-top:2rem;display:grid;gap:1rem;}
+    .faq-item{padding:1.4rem 1.5rem;border-radius:1.6rem;background:rgba(15,23,40,.9);border:1px solid rgba(255,255,255,.06);cursor:pointer;transition:transform .2s,box-shadow .2s;}
+    .faq-item:hover{transform:translateY(-2px);box-shadow:0 18px 45px rgba(15,23,40,.16);}
+    .faq-summary{display:flex;align-items:center;justify-content:space-between;gap:1rem;font-weight:600;}
+    .faq-answer{margin-top:1rem;color:var(--muted);line-height:1.75;display:none;}
+    .faq-item.open .faq-answer{display:block;}
+    .footer{margin-top:4rem;padding:2rem 0;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;font-size:.9rem;border-top:1px solid rgba(255,255,255,.08);}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+    @media(max-width:980px){.hero{grid-template-columns:1fr;}.stats{grid-template-columns:1fr;}.feature-grid{grid-template-columns:1fr;}}    
+    @media(max-width:640px){.topbar{padding:1rem .75rem;}.hero{padding-top:2rem;}.section-title{font-size:2rem;}}
+  </style>
 </head>
-
 <body>
-
-<h1>Get Brand Deals as a Creator</h1>
-
-<p>Creators often struggle to find brand deals. PostHire helps you connect with brands easily.</p>
-
-<h2>Why Join?</h2>
-<ul>
-<li>Direct brand access</li>
-<li>Save time</li>
-<li>Grow income</li>
-</ul>
-
-<p>Create your profile and start receiving offers.</p>
-
-<a href="index.html">Back to Home</a>
-
+  <div class="wrapper">
+    <header class="topbar">
+      <a href="index.html" class="brand">Posthire</a>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="company.html">About</a>
+        <a href="brands-looking-for-influencers.html">Brands</a>
+        <a href="hire-instagram-influencers-india.html">Influencers</a>
+      </nav>
+      <a href="dashboard.html" class="btn-primary"><i class="fas fa-arrow-right"></i> Start now</a>
+    </header>
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="tag"><span class="dot"></span>Brand Deals</span>
+        <h1 class="hero-title">Get brand deals that match your voice and audience.</h1>
+        <p class="hero-text">Posthire helps creators in India turn audience impact into real paid work. Build a profile once, attract vetted brand requests, and say goodbye to cold messaging.</p>
+        <div class="hero-actions">
+          <a href="dashboard.html" class="btn-primary">Create Your Profile</a>
+          <a href="#benefits" class="btn-ghost">See benefits</a>
+        </div>
+      </div>
+      <div class="hero-grid">
+        <div class="info-card"><strong>More brand requests</strong><p>Creators receive campaign briefs from startups who are actively hiring influencers.</p></div>
+        <div class="info-card"><strong>Quality opportunities</strong><p>Only brands with live campaign budgets and clear deliverables are invited to Posthire.</p></div>
+        <div class="info-card"><strong>Zero spam</strong><p>Messages are tracked and requests are curated so creators waste less time.</p></div>
+        <div class="info-card"><strong>Better discovery</strong><p>Show your niche, platforms, audience and past work in a clean creator profile.</p></div>
+      </div>
+    </section>
+    <section class="section" id="benefits">
+      <div class="section-title">Why creators choose Posthire</div>
+      <div class="feature-grid">
+        <div class="feature"><div class="feature-icon"><i class="fas fa-magnet"></i></div><div class="feature-title">Pull in real briefs</div><div class="feature-text">Founders search by niche, content format, budget and platform. If you're a fit, your profile shows up instantly.</div></div>
+        <div class="feature"><div class="feature-icon"><i class="fas fa-clock"></i></div><div class="feature-title">Work on your schedule</div><div class="feature-text">Set the types of campaigns you accept and the times you’re available, so you stay in control.</div></div>
+        <div class="feature"><div class="feature-icon"><i class="fas fa-chart-line"></i></div><div class="feature-title">Grow recurring deals</div><div class="feature-text">Brands can invite you back for follow-up campaigns, product launches, and longer-term collaborations.</div></div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-title">A creator workflow designed for growth</div>
+      <div class="stats">
+        <div class="stat"><span class="stat-number">1,240+</span><span class="stat-label">Active creators</span></div>
+        <div class="stat"><span class="stat-number">4,850</span><span class="stat-label">Collab requests sent</span></div>
+        <div class="stat"><span class="stat-number">92%</span><span class="stat-label">Request clarity score</span></div>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="step-head"><span class="step-dot">1</span><span>Fill your creator profile</span></div><div class="step-copy">Share your niche, audience, content style and pricing so founders can assess fit quickly.</div></div>
+        <div class="step"><div class="step-head"><span class="step-dot">2</span><span>Set campaign preferences</span></div><div class="step-copy">Choose the campaign types you want — reels, stories, product unboxing, brand collaborations.</div></div>
+        <div class="step"><div class="step-head"><span class="step-dot">3</span><span>Accept requests</span></div><div class="step-copy">Review full briefs and budgets before you say yes. Only accept the deals that fit your brand.</div></div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="section-title">Common creator questions</div>
+      <div class="faq">
+        <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-summary"><span>How fast will I receive my first request?</span><span><i class="fas fa-plus"></i></span></div><div class="faq-answer">Most creators receive their first brand request within 3-5 days. Profiles with clear niche, platforms and pricing tend to match fastest.</div></div>
+        <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-summary"><span>Can I set my own rates?</span><span><i class="fas fa-plus"></i></span></div><div class="faq-answer">Yes. You control your minimum charges and campaign terms. Posthire helps you surface only requests that fit your rate range.</div></div>
+        <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-summary"><span>Do brands pay through Posthire?</span><span><i class="fas fa-plus"></i></span></div><div class="faq-answer">Posthire currently connects creators with brands and manages the introduction. Payments are agreed directly between you and the brand.</div></div>
+      </div>
+    </section>
+    <footer class="footer"><span>© 2026 Posthire</span><span><a href="index.html">Back to Home</a> · <a href="company.html">About</a></span></footer>
+  </div>
+  <script>
+    document.querySelectorAll('.faq-item').forEach(item=>item.addEventListener('click',()=>item.classList.toggle('open')));
+  </script>
 </body>
 </html>
