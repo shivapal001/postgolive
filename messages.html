@@ -355,6 +355,16 @@ input,textarea{font-family:'Poppins',sans-serif;}
 <div class="toast-container" id="toast-container"></div>
 
 <script type="module">
+// Apply theme from dashboard if available
+try{
+  const raw = localStorage.getItem('posthire_theme');
+  if(raw){
+    const theme = JSON.parse(raw);
+    const root = document.documentElement;
+    Object.keys(theme).forEach(k=>{try{root.style.setProperty(k, theme[k].trim());}catch(e){}});
+    // don't remove immediately in case other pages need it; keep for future navigations
+  }
+}catch(e){/* ignore */}
 // ══════════════════════════════════════════════════════════════════
 // FIREBASE IMPORTS
 // ══════════════════════════════════════════════════════════════════

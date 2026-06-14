@@ -7,7 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"><style>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
   --hue: 228;
@@ -754,7 +755,16 @@ function bootDashboard(){
 
 async function updateRequestBadge(){try{const allR=Object.entries(await DB.getRequests());const isC=_me.userType==='creator';const pending=allR.filter(([,r])=>isC?(r.creatorId===_me.uid&&r.status==='pending'):false).length;const badge=document.getElementById('req-badge');badge.textContent=pending;badge.style.display=pending>0?'':'none';}catch(e){}}
 async function updateMessageBadge(){try{const count=await DB.getUnreadCount(_me.uid);const badge=document.getElementById('msg-badge');if(!badge)return;badge.textContent=count>99?'99+':count;badge.style.display=count>0?'':'none';}catch(e){}}
-function goToMessages(convId){window.location.href=convId?`messages.html?conv=${convId}`:'messages.html';}
+function goToMessages(convId){
+  try{
+    const vars=['--hue','--sat','--bg','--surface','--surface2','--surface3','--border','--border-glow','--text','--muted','--muted2','--accent','--accent-glow','--accent2','--accent3','--gold','--free','--starter','--pro','--sidebar','--camp-bg','--glass','--glass-blur','--shadow','--trans'];
+    const root = getComputedStyle(document.documentElement);
+    const theme = {};
+    vars.forEach(v=>{const val=root.getPropertyValue(v); if(val) theme[v]=val});
+    localStorage.setItem('posthire_theme', JSON.stringify(theme));
+  }catch(e){/* ignore */}
+  window.location.href = convId?`messages.html?conv=${convId}`:'messages.html';
+}
 async function openChatForRequest(founderId,creatorId){try{toast('Opening chat…','info',1500);const result=await DB.getOrCreateConversation(founderId,creatorId,'');goToMessages(result.id||result);}catch(e){toast('Could not open chat','error');}}
 function updateSidebarUI(){const plan=_me.plan||'free';document.getElementById('sb-name').textContent=_me.name||_me.email;document.getElementById('sb-role').textContent=_me.userType==='creator'?'Creator':'Founder';const pb=document.getElementById('sb-plan');pb.textContent=plan.toUpperCase();pb.className=`plan-badge ${plan}`;document.getElementById('sb-avatar').textContent=(_me.name||'U').charAt(0).toUpperCase();}
 
