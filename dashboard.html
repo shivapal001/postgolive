@@ -1359,6 +1359,8 @@ async function showSection(sec){
   if(mainEl)mainEl.classList.toggle('messages-active',sec==='messages');
   content.innerHTML=`<div class="empty-state"><i class="fas fa-spinner fa-spin"></i></div>`;
   closeSidebar();
+  const mobTopbar=document.querySelector('.mobile-topbar');
+  if(mobTopbar) mobTopbar.style.display=(sec==='home'&&window.innerWidth<=768)?'none':'';
   if(sec==='home')await renderHome(content);
   else if(sec==='requests')await renderRequests(content);
   else if(sec==='creators')await renderCreators(content);
