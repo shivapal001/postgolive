@@ -815,6 +815,7 @@ input,select,textarea,button{font-family:'Plus Jakarta Sans','Poppins',sans-seri
 .mh3-spot-scroll::-webkit-scrollbar{display:none;}
 .mh3-spot-card{flex-shrink:0;width:14rem;background:var(--surf);border-radius:1.25rem;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.03);border:1px solid rgba(194,198,216,.1);}
 .mh3-spot-img{position:relative;width:100%;height:20rem;cursor:pointer;background:var(--surf-hi);}
+.mh3-spot-img img{object-position:center top;}
 .mh3-spot-grad{position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(0,0,0,.6) 100%);}
 .mh3-spot-badge{position:absolute;top:.75rem;left:.75rem;display:flex;align-items:center;gap:3px;background:rgba(255,255,255,.2);backdrop-filter:blur(6px);color:#fff;font-size:10px;font-weight:700;padding:.3em .55em;border-radius:8px;}
 .mh3-spot-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;}
@@ -889,8 +890,8 @@ input,select,textarea,button{font-family:'Plus Jakarta Sans','Poppins',sans-seri
     <div class="bn-item active" id="bn-home" onclick="showSection('home')">
       <i class="fas fa-home"></i><span>Home</span>
     </div>
-    <div class="bn-item" id="bn-requests" onclick="showSection('requests')">
-      <i class="fas fa-inbox"></i><span>Requests</span>
+    <div class="bn-item" id="bn-campaigns" onclick="showSection('campaigns')">
+      <i class="fas fa-bullhorn"></i><span>Campaigns</span>
       <span class="bn-badge" id="bn-req-badge" style="display:none">0</span>
     </div>
     <div class="bn-item" id="bn-creators" onclick="showSection('creators')">
@@ -1345,7 +1346,7 @@ async function saveEditProfile(){
 // ── NAVIGATION ────────────────────────────────────────
 async function showSection(sec){
   ['home','requests','creators','profile','pricing','campaigns','messages','notifications'].forEach(s=>document.getElementById(`nav-${s}`)?.classList.toggle('active',s===sec));
-  ['home','requests','creators','profile','messages'].forEach(s=>document.getElementById(`bn-${s}`)?.classList.toggle('active',s===sec));
+  ['home','campaigns','creators','profile','messages'].forEach(s=>document.getElementById(`bn-${s}`)?.classList.toggle('active',s===sec));
   const titles={home:'Dashboard',requests:'My Requests',creators:'Find Creators',profile:'My Profile',pricing:'Plans & Pricing',campaigns:'Campaigns',messages:'Messages',notifications:'Notifications'};
   document.getElementById('topbar-title').textContent=titles[sec]||'Dashboard';
   if(sec!=='messages'){
@@ -1395,7 +1396,7 @@ async function renderHome(el){
           <div class="avatar-status"></div>
         </div>
         <div>
-          <div style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:1.5rem;letter-spacing:-.02em">Good ${greet}, ${_me.name?.split(' ')[0]} 👋</div>
+          <div style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:1.5rem;letter-spacing:-.02em">Good ${greet}, ${(()=>{const n=(_me.name||'').trim();return (n&&!/^[a-z]+\d{3,}$/i.test(n.replace(/\s+/g,'')))?n.split(' ')[0]:'there';})()} 👋</div>
           <div style="font-size:.82rem;color:var(--muted);margin-top:.2rem">${isC?'Creator':'Founder'} Dashboard · <span class="plan-badge ${plan}">${plan.toUpperCase()}</span></div>
         </div>
         ${plan==='free'?`<button class="btn btn-primary btn-sm" style="margin-left:auto" onclick="showSection('pricing')"><i class="fas fa-crown"></i> Upgrade</button>`:''}
@@ -1462,7 +1463,9 @@ async function renderMobileHome(el){
 
   const h=new Date().getHours();
   const greet=h<12?'Morning':h<17?'Afternoon':'Evening';
-  const firstName=(_me.name||'there').split(' ')[0];
+  const _rawName=(_me.name||'').trim();
+  const _looksAuto=/^[a-z]+\d{3,}$/i.test(_rawName.replace(/\s+/g,''));
+  const firstName=(_rawName && !_looksAuto)?_rawName.split(' ')[0]:'there';
 
   // Weekly trend — real delta from request timestamps, not invented
   const now=Date.now();
@@ -1688,7 +1691,9 @@ async function renderMobileHomeFounder(el){
 
   const h=new Date().getHours();
   const greet=h<12?'Morning':h<17?'Afternoon':'Evening';
-  const firstName=(_me.name||'there').split(' ')[0];
+  const _rawName=(_me.name||'').trim();
+  const _looksAuto=/^[a-z]+\d{3,}$/i.test(_rawName.replace(/\s+/g,''));
+  const firstName=(_rawName && !_looksAuto)?_rawName.split(' ')[0]:'there';
 
   // Weekly trend — real delta from request timestamps, not invented
   const now=Date.now();
