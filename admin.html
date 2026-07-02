@@ -18,13 +18,10 @@
 }
 *{scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
 ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:var(--border);}
-body{font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.01em;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
-
-/* ══ SIDEBAR ══ */
+body{font-family:"Plus Jakarta Sans",sans-serif;letter-spacing:-.01em;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .sidebar{position:fixed;left:0;top:0;bottom:0;width:var(--sidebar);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:200;}
 .sidebar-logo{padding:1.25rem 1rem;display:flex;align-items:center;gap:.625rem;border-bottom:1px solid var(--border);}
-.logo-img{width:1.5rem;height:1.5rem;object-fit:contain;}
-.logo-text{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;letter-spacing:-.02em;}
+.logo-text{font-family:"Syne",sans-serif;font-size:1.15rem;font-weight:800;letter-spacing:-.02em;}
 .admin-tag{font-size:.55rem;font-weight:700;background:rgba(255,107,107,.2);color:var(--admin);border:1px solid rgba(255,107,107,.3);padding:.2em .5em;border-radius:.3rem;letter-spacing:.05em;margin-left:auto;}
 .sidebar-nav{flex:1;padding:.75rem;overflow-y:auto;}
 .nav-section{font-size:.58rem;font-weight:700;color:var(--muted2);letter-spacing:.12em;text-transform:uppercase;padding:.75rem .5rem .3rem;margin-top:.5rem;}
@@ -39,18 +36,14 @@ body{font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.01em;background
 .admin-info{flex:1;min-width:0;}
 .admin-name{font-size:.78rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .admin-role{font-size:.65rem;color:var(--admin);}
-
-/* ══ MAIN ══ */
 .main{margin-left:var(--sidebar);min-height:100vh;display:flex;flex-direction:column;}
 .topbar{padding:.875rem 1.75rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(8,10,15,.8);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100;}
-.topbar-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:1.05rem;font-weight:700;display:flex;align-items:center;gap:.625rem;letter-spacing:-.02em;}
+.topbar-title{font-size:1.05rem;font-weight:700;display:flex;align-items:center;gap:.625rem;letter-spacing:-.02em;}
 .topbar-title .badge{font-size:.6rem;font-weight:700;background:rgba(255,107,107,.2);color:var(--admin);padding:.3em .7em;border-radius:.4rem;border:1px solid rgba(255,107,107,.3);}
 .topbar-actions{display:flex;align-items:center;gap:.625rem;}
 .last-refresh{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:.35rem;}
 .content{padding:1.75rem;flex:1;}
-
-/* ══ BUTTONS ══ */
-.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem .875rem;border-radius:.625rem;border:none;cursor:pointer;font:.84rem/1 'DM Sans',sans-serif;font-weight:500;transition:.15s ease;}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem .875rem;border-radius:.625rem;border:none;cursor:pointer;font:.84rem/1 "Plus Jakarta Sans",sans-serif;font-weight:500;transition:.15s ease;}
 .btn:disabled{opacity:.5;cursor:not-allowed;}
 .btn-primary{background:var(--accent);color:#fff;}.btn-primary:hover:not(:disabled){filter:brightness(1.1);}
 .btn-danger{background:rgba(255,71,87,.15);color:var(--red);border:1px solid rgba(255,71,87,.3);}.btn-danger:hover:not(:disabled){background:rgba(255,71,87,.25);}
@@ -59,26 +52,20 @@ body{font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.01em;background
 .btn-ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border);}.btn-ghost:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
 .btn-sm{padding:.35rem .625rem;font-size:.76rem;}
 .btn-xs{padding:.25rem .5rem;font-size:.7rem;}
-
-/* ══ STAT CARDS ══ */
 .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;margin-bottom:1.75rem;}
 .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:1rem;padding:1.25rem;position:relative;overflow:hidden;transition:.2s ease;}
 .kpi-card:hover{transform:translateY(-2px);border-color:rgba(108,99,255,.3);}
 .kpi-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:1rem 1rem 0 0;}
 .kpi-icon{width:2.25rem;height:2.25rem;border-radius:.625rem;display:flex;align-items:center;justify-content:center;font-size:.875rem;margin-bottom:.75rem;}
-.kpi-val{font-family:'Syne',sans-serif;font-size:2.25rem;font-weight:800;line-height:1;letter-spacing:-.04em;}
+.kpi-val{font-family:"Syne",sans-serif;font-size:2.25rem;font-weight:800;line-height:1;letter-spacing:-.04em;}
 .kpi-label{font-size:.73rem;color:var(--muted);margin-top:.3rem;}
 .kpi-sub{font-size:.67rem;margin-top:.4rem;color:var(--muted);}
-
-/* ══ PANELS ══ */
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:1rem;overflow:hidden;margin-bottom:1.25rem;}
 .panel-head{padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;}
 .panel-title{font-weight:600;font-size:.9rem;display:flex;align-items:center;gap:.5rem;}
 .panel-title i{color:var(--accent);}
 .panel-body{padding:1.25rem;}
 .panel-actions{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
-
-/* ══ TABLE ══ */
 .table-wrap{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-size:.8rem;}
 th{text-align:left;padding:.625rem .875rem;background:var(--surface2);color:var(--muted);font-weight:600;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);white-space:nowrap;}
@@ -87,8 +74,6 @@ tr:hover td{background:rgba(255,255,255,.02);}
 tr:last-child td{border-bottom:none;}
 .user-cell{display:flex;align-items:center;gap:.625rem;}
 .ava-sm{width:1.75rem;height:1.75rem;border-radius:.4rem;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.7rem;color:#fff;flex-shrink:0;}
-
-/* ══ BADGES ══ */
 .badge{display:inline-flex;align-items:center;font-size:.65rem;font-weight:700;padding:.25em .6em;border-radius:.3rem;gap:.25rem;}
 .badge-free{background:rgba(108,99,255,.15);color:#6c63ff;}
 .badge-starter{background:rgba(59,158,255,.15);color:#3b9eff;}
@@ -99,48 +84,35 @@ tr:last-child td{border-bottom:none;}
 .badge-pending{background:rgba(245,166,35,.12);color:var(--gold);}
 .badge-accepted{background:rgba(46,213,115,.12);color:var(--green);}
 .badge-declined{background:rgba(255,71,87,.12);color:var(--red);}
-.badge-admin{background:rgba(255,107,107,.15);color:var(--admin);}
-
-/* ══ SEARCH & FILTER ══ */
-.filter-bar{display:flex;gap:.625rem;align-items:center;flex-wrap:wrap;}
-.filter-input{background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;padding:.45rem .875rem;color:var(--text);font:.8rem/1 'DM Sans',sans-serif;outline:none;transition:.15s ease;min-width:180px;}
+.filter-input{background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;padding:.45rem .875rem;color:var(--text);font:.8rem/1 "Plus Jakarta Sans",sans-serif;outline:none;transition:.15s ease;min-width:180px;}
 .filter-input:focus{border-color:var(--accent);}
-.filter-select{background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;padding:.45rem .875rem;color:var(--text);font:.8rem/1 'DM Sans',sans-serif;outline:none;cursor:pointer;}
-
-/* ══ MODAL ══ */
+.filter-select{background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;padding:.45rem .875rem;color:var(--text);font:.8rem/1 "Plus Jakarta Sans",sans-serif;outline:none;cursor:pointer;}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:800;display:none;align-items:center;justify-content:center;padding:1rem;}
 .modal-overlay.open{display:flex;}
 .modal-box{background:var(--surface);border:1px solid var(--border);border-radius:1.25rem;width:100%;max-width:520px;max-height:calc(100vh - 2rem);overflow-y:auto;position:relative;padding:1.75rem;}
 .modal-box.lg{max-width:700px;}
 .modal-close{position:absolute;top:1rem;right:1rem;background:var(--surface2);border:1px solid var(--border);color:var(--muted);width:2rem;height:2rem;border-radius:.5rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;}
 .modal-close:hover{color:var(--text);border-color:var(--accent);}
-.modal-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:1.25rem;font-weight:800;margin-bottom:1.25rem;letter-spacing:-.03em;}
+.modal-title{font-size:1.25rem;font-weight:800;margin-bottom:1.25rem;letter-spacing:-.03em;}
 .form-group{margin-bottom:.875rem;}
 .form-group label{display:block;font-size:.75rem;font-weight:600;color:var(--muted);margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.04em;}
-.form-group input,.form-group select,.form-group textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;padding:.575rem .875rem;color:var(--text);font:.85rem/1.4 'DM Sans',sans-serif;outline:none;transition:.15s;}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;padding:.575rem .875rem;color:var(--text);font:.85rem/1.4 "Plus Jakarta Sans",sans-serif;outline:none;transition:.15s;}
 .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent);}
 .form-group textarea{resize:vertical;min-height:80px;}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
 .form-err{background:rgba(255,71,87,.1);border:1px solid rgba(255,71,87,.3);color:var(--red);border-radius:.5rem;padding:.5rem .875rem;font-size:.8rem;margin-bottom:.75rem;display:none;}
 .form-err.show{display:block;}
+.form-hint{font-size:.7rem;color:var(--muted);margin-top:.3rem;}
 .checkbox-row{display:flex;align-items:center;gap:.5rem;font-size:.85rem;cursor:pointer;}
 .checkbox-row input[type=checkbox]{accent-color:var(--accent);width:1rem;height:1rem;cursor:pointer;}
-
-/* ══ CHARTS (pure CSS) ══ */
-.mini-bar{display:flex;align-items:flex-end;gap:3px;height:40px;}
-.mini-bar-item{flex:1;border-radius:2px 2px 0 0;min-height:3px;transition:.3s;}
-
-/* ══ AUTH SCREEN ══ */
 .auth-screen{position:fixed;inset:0;background:var(--bg);z-index:900;display:flex;align-items:center;justify-content:center;}
 .auth-box{background:var(--surface);border:1px solid rgba(255,107,107,.3);border-radius:1.5rem;padding:2.25rem;width:100%;max-width:380px;text-align:center;}
-.auth-logo{display:flex;align-items:center;justify-content:center;gap:.5rem;font-family:'Plus Jakarta Sans',sans-serif;font-size:1.25rem;font-weight:800;margin-bottom:.75rem;letter-spacing:-.03em;}
+.auth-logo{display:flex;align-items:center;justify-content:center;gap:.5rem;font-size:1.25rem;font-weight:800;margin-bottom:.75rem;letter-spacing:-.03em;}
 .auth-badge{font-size:.65rem;font-weight:700;background:rgba(255,107,107,.15);color:var(--admin);padding:.3em .7em;border-radius:.35rem;border:1px solid rgba(255,107,107,.3);}
-.auth-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:1.75rem;font-weight:800;margin-bottom:.3rem;letter-spacing:-.04em;}
+.auth-title{font-size:1.75rem;font-weight:800;margin-bottom:.3rem;letter-spacing:-.04em;}
 .auth-sub{font-size:.82rem;color:var(--muted);margin-bottom:1.5rem;}
 .auth-err{background:rgba(255,71,87,.1);border:1px solid rgba(255,71,87,.3);color:var(--red);border-radius:.5rem;padding:.5rem;font-size:.8rem;margin-bottom:.75rem;display:none;}
 .auth-err.show{display:block;}
-
-/* ══ TOAST ══ */
 .toast-box{position:fixed;bottom:1.5rem;right:1.5rem;z-index:999;display:flex;flex-direction:column;gap:.5rem;}
 .toast{background:var(--surface);border:1px solid var(--border);border-radius:.75rem;padding:.7rem 1rem;font-size:.83rem;font-weight:500;display:flex;align-items:center;gap:.5rem;min-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.5);animation:tin .25s ease;}
 .toast.success{border-color:rgba(46,213,115,.4);color:var(--green);}
@@ -148,51 +120,45 @@ tr:last-child td{border-bottom:none;}
 .toast.info{border-color:rgba(108,99,255,.4);color:var(--accent);}
 .toast.warning{border-color:rgba(245,166,35,.4);color:var(--gold);}
 @keyframes tin{from{opacity:0;transform:translateX(1rem);}to{opacity:1;transform:none;}}
-
-/* ══ EMPTY STATE ══ */
 .empty{text-align:center;padding:2.5rem 1rem;color:var(--muted);}
 .empty i{font-size:2.5rem;opacity:.25;display:block;margin-bottom:.75rem;}
 .empty p{font-size:.85rem;line-height:1.6;}
-
-/* ══ DANGER ZONE ══ */
 .danger-zone{background:rgba(255,71,87,.04);border:1px solid rgba(255,71,87,.2);border-radius:.875rem;padding:1.25rem;}
 .danger-zone h4{color:var(--red);font-size:.875rem;margin-bottom:.5rem;}
 .danger-zone p{font-size:.78rem;color:var(--muted);margin-bottom:.875rem;}
-
-/* ══ INFO CARD ══ */
-.info-card{background:var(--surface2);border-radius:.625rem;padding:.875rem;margin-bottom:.625rem;}
-.info-label{font-size:.67rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem;}
-.info-val{font-size:.9rem;font-weight:600;}
-
-/* ══ ACTIVITY LOG ══ */
 .log-item{display:flex;gap:.75rem;padding:.625rem 0;border-bottom:1px solid rgba(34,40,64,.4);}
 .log-item:last-child{border-bottom:none;}
 .log-dot{width:.5rem;height:.5rem;border-radius:50%;flex-shrink:0;margin-top:.3rem;}
 .log-text{font-size:.78rem;line-height:1.5;}
 .log-time{font-size:.68rem;color:var(--muted);flex-shrink:0;margin-left:auto;white-space:nowrap;}
-
-/* ══ TOGGLE SWITCH ══ */
 .toggle{position:relative;display:inline-block;width:2.5rem;height:1.25rem;}
 .toggle input{opacity:0;width:0;height:0;}
 .toggle-slider{position:absolute;inset:0;background:var(--border);border-radius:99px;cursor:pointer;transition:.2s;}
 .toggle input:checked+.toggle-slider{background:var(--accent);}
-.toggle-slider::before{content:'';position:absolute;height:.9rem;width:.9rem;left:.18rem;top:.175rem;background:#fff;border-radius:50%;transition:.2s;}
+.toggle-slider::before{content:"";position:absolute;height:.9rem;width:.9rem;left:.18rem;top:.175rem;background:#fff;border-radius:50%;transition:.2s;}
 .toggle input:checked+.toggle-slider::before{transform:translateX(1.2rem);}
-
-/* ══ RESPONSIVE ══ */
+.spot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;}
+.spot-card{background:var(--surface2);border:1px solid var(--border);border-radius:.875rem;overflow:hidden;position:relative;transition:.2s;}
+.spot-card:hover{border-color:rgba(108,99,255,.4);}
+.spot-card.inactive{opacity:.5;}
+.spot-vid-wrap{position:relative;width:100%;aspect-ratio:9/14;background:#000;overflow:hidden;}
+.spot-vid-wrap video{width:100%;height:100%;object-fit:cover;display:block;}
+.spot-order-badge{position:absolute;top:.5rem;left:.5rem;background:rgba(0,0,0,.65);color:#fff;font-size:.65rem;font-weight:700;padding:.2em .55em;border-radius:.4rem;}
+.spot-status-badge{position:absolute;top:.5rem;right:.5rem;}
+.spot-info{padding:.75rem;}
+.spot-name{font-weight:700;font-size:.85rem;}
+.spot-niche{font-size:.7rem;color:var(--muted);margin-top:.15rem;}
+.spot-url{font-size:.62rem;color:var(--muted2);margin-top:.3rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.spot-actions{display:flex;gap:.3rem;padding:0 .75rem .75rem;}
 @media(max-width:1200px){.kpi-grid{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr);}.sidebar{display:none;}.main{margin-left:0;}}
 </style>
 </head>
 <body>
 
-<!-- ═══ AUTH SCREEN ═══ -->
 <div class="auth-screen" id="auth-screen">
   <div class="auth-box">
-    <div class="auth-logo">
-      <img id="auth-logo" style="width:1.5rem;height:1.5rem;object-fit:contain;" alt="">
-      Posthire
-    </div>
+    <div class="auth-logo">Posthire</div>
     <div class="auth-badge">ADMIN PANEL</div>
     <div class="auth-title" style="margin-top:.875rem">Admin Access</div>
     <div class="auth-sub">Restricted to authorized administrators only</div>
@@ -204,10 +170,8 @@ tr:last-child td{border-bottom:none;}
   </div>
 </div>
 
-<!-- ═══ SIDEBAR ═══ -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">
-    <img id="logo-img" class="logo-img" alt="Posthire">
     <span class="logo-text">Posthire</span>
     <span class="admin-tag">ADMIN</span>
   </div>
@@ -215,21 +179,18 @@ tr:last-child td{border-bottom:none;}
     <div class="nav-section">Overview</div>
     <div class="nav-item active" id="nav-overview" onclick="showPage('overview')"><i class="fas fa-chart-line"></i> Dashboard</div>
     <div class="nav-item" id="nav-analytics" onclick="showPage('analytics')"><i class="fas fa-chart-bar"></i> Analytics</div>
-
     <div class="nav-section">Users</div>
     <div class="nav-item" id="nav-users" onclick="showPage('users')"><i class="fas fa-users"></i> All Users <span class="nav-count" id="cnt-users">0</span></div>
     <div class="nav-item" id="nav-founders" onclick="showPage('founders')"><i class="fas fa-rocket"></i> Founders <span class="nav-count" id="cnt-founders">0</span></div>
     <div class="nav-item" id="nav-creators" onclick="showPage('creators')"><i class="fas fa-paint-brush"></i> Creators <span class="nav-count" id="cnt-creators">0</span></div>
-
     <div class="nav-section">Content</div>
     <div class="nav-item" id="nav-requests" onclick="showPage('requests')"><i class="fas fa-inbox"></i> Requests <span class="nav-count" id="cnt-requests">0</span></div>
-    <div class="nav-item" id="nav-plans" onclick="showPage('plans')"><i class="fas fa-crown"></i> Plans & Revenue</div>
-
+    <div class="nav-item" id="nav-spotlight" onclick="showPage('spotlight')"><i class="fas fa-video"></i> Creator Spotlight <span class="nav-count" id="cnt-spotlight">0</span></div>
+    <div class="nav-item" id="nav-plans" onclick="showPage('plans')"><i class="fas fa-crown"></i> Plans &amp; Revenue</div>
     <div class="nav-section">Control</div>
     <div class="nav-item" id="nav-featured" onclick="showPage('featured')"><i class="fas fa-star"></i> Featured Control</div>
     <div class="nav-item" id="nav-broadcast" onclick="showPage('broadcast')"><i class="fas fa-bullhorn"></i> Broadcast</div>
     <div class="nav-item" id="nav-settings" onclick="showPage('settings')"><i class="fas fa-cog"></i> Settings</div>
-
     <div class="nav-section">Navigation</div>
     <div class="nav-item" onclick="window.location.href='dashboard.html'"><i class="fas fa-tachometer-alt"></i> User Dashboard</div>
     <div class="nav-item" onclick="window.location.href='index.html'"><i class="fas fa-globe"></i> Landing Page</div>
@@ -246,23 +207,20 @@ tr:last-child td{border-bottom:none;}
   </div>
 </aside>
 
-<!-- ═══ MAIN ═══ -->
 <main class="main">
   <div class="topbar">
     <div class="topbar-title" id="topbar-title">Dashboard <span class="badge">ADMIN</span></div>
     <div class="topbar-actions">
-      <div class="last-refresh"><i class="fas fa-sync-alt fa-spin" id="refresh-spin" style="display:none"></i><span id="refresh-time">—</span></div>
+      <div class="last-refresh"><i class="fas fa-sync-alt fa-spin" id="refresh-spin" style="display:none"></i><span id="refresh-time">&mdash;</span></div>
       <button class="btn btn-ghost btn-sm" onclick="refreshAll()"><i class="fas fa-sync-alt"></i> Refresh</button>
       <button class="btn btn-primary btn-sm" onclick="showPage('broadcast')"><i class="fas fa-bullhorn"></i> Broadcast</button>
-      <button class="btn btn-ghost btn-sm" onclick="window.open('index.html','_blank')" title="View landing page"><i class="fas fa-external-link-alt"></i> View Site</button>
     </div>
   </div>
   <div class="content" id="main-content">
-    <div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Loading admin panel…</p></div>
+    <div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Loading&hellip;</p></div>
   </div>
 </main>
 
-<!-- ═══ EDIT USER MODAL ═══ -->
 <div class="modal-overlay" id="edit-user-modal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('edit-user-modal')"><i class="fas fa-times"></i></button>
@@ -271,16 +229,6 @@ tr:last-child td{border-bottom:none;}
     <div id="edit-user-form"></div>
   </div>
 </div>
-
-<!-- ═══ VIEW USER MODAL ═══ -->
-<div class="modal-overlay" id="view-user-modal">
-  <div class="modal-box lg">
-    <button class="modal-close" onclick="closeModal('view-user-modal')"><i class="fas fa-times"></i></button>
-    <div id="view-user-content"></div>
-  </div>
-</div>
-
-<!-- ═══ EDIT CREATOR MODAL ═══ -->
 <div class="modal-overlay" id="edit-creator-modal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('edit-creator-modal')"><i class="fas fa-times"></i></button>
@@ -289,11 +237,17 @@ tr:last-child td{border-bottom:none;}
     <div id="edit-creator-form"></div>
   </div>
 </div>
-
-<!-- ═══ CONFIRM MODAL ═══ -->
+<div class="modal-overlay" id="edit-spotlight-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('edit-spotlight-modal')"><i class="fas fa-times"></i></button>
+    <div class="modal-title" id="edit-spotlight-title">Add Spotlight Creator</div>
+    <div class="form-err" id="edit-spotlight-err"></div>
+    <div id="edit-spotlight-form"></div>
+  </div>
+</div>
 <div class="modal-overlay" id="confirm-modal">
   <div class="modal-box" style="max-width:400px;text-align:center;">
-    <div style="font-size:2.5rem;margin-bottom:.75rem" id="confirm-icon">⚠️</div>
+    <div style="font-size:2.5rem;margin-bottom:.75rem" id="confirm-icon">&#9888;&#65039;</div>
     <div class="modal-title" id="confirm-title">Are you sure?</div>
     <div style="font-size:.85rem;color:var(--muted);margin-bottom:1.5rem" id="confirm-msg"></div>
     <div style="display:flex;gap:.75rem;justify-content:center;">
@@ -302,18 +256,14 @@ tr:last-child td{border-bottom:none;}
     </div>
   </div>
 </div>
-
-<!-- ═══ TOAST ═══ -->
 <div class="toast-box" id="toast-box"></div>
 
 <script type="module">
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut as fbSignOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, getDocs, addDoc, query, orderBy, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, getDocs, addDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// ═══════════════════════════════════════════════
-// FIREBASE
-// ═══════════════════════════════════════════════
 const fbApp = initializeApp({
   apiKey:"AIzaSyD1ElccdzrwPwKDmGimitEkQEwNMrUeHyE",
   authDomain:"posthire-81b69.firebaseapp.com",
@@ -325,1200 +275,530 @@ const fbApp = initializeApp({
 });
 const auth = getAuth(fbApp);
 const db = getFirestore(fbApp);
-
-// ADMIN EMAILS — add yours here
 const ADMIN_EMAILS = ['admin@posthire.in','shiva@posthire.in'];
 
-// ═══════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════
-let _admin = null;
-let _data = { users:{}, creators:{}, founders:{}, requests:{} };
-let _logs = [];
-let _confirmCb = null;
+let _admin=null, _data={users:{},creators:{},founders:{},requests:{},spotlights:{}}, _logs=[];
 
-// Logo
-const LOGO = 'data:image/png;base64,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';
-['auth-logo','logo-img'].forEach(id=>{const el=document.getElementById(id);if(el)el.src=LOGO;});
-
-// ═══════════════════════════════════════════════
-// AUTH
-// ═══════════════════════════════════════════════
-onAuthStateChanged(auth, async (fbUser) => {
-  if(!fbUser){ showAuthScreen(); return; }
-  if(!ADMIN_EMAILS.includes(fbUser.email)){
-    await fbSignOut(auth);
-    showAuthErr('Access denied. Not an admin account.');
-    showAuthScreen(); return;
-  }
-  _admin = fbUser;
+onAuthStateChanged(auth, async fbUser=>{
+  if(!fbUser){showAuthScreen();return;}
+  if(!ADMIN_EMAILS.includes(fbUser.email)){await fbSignOut(auth);showAuthErr('Access denied.');showAuthScreen();return;}
+  _admin=fbUser;
   document.getElementById('auth-screen').style.display='none';
-  document.getElementById('admin-name').textContent = fbUser.email.split('@')[0];
-  document.getElementById('admin-ava').textContent = fbUser.email.charAt(0).toUpperCase();
-  addLog('system',`Admin logged in: ${fbUser.email}`);
+  document.getElementById('admin-name').textContent=fbUser.email.split('@')[0];
+  document.getElementById('admin-ava').textContent=fbUser.email.charAt(0).toUpperCase();
+  addLog('system','Admin logged in: '+fbUser.email);
   await refreshAll();
   showPage('overview');
 });
-
-function showAuthScreen(){ document.getElementById('auth-screen').style.display='flex'; }
-function showAuthErr(msg){ const e=document.getElementById('auth-err');e.textContent=msg;e.className='auth-err show'; }
-
+function showAuthScreen(){document.getElementById('auth-screen').style.display='flex';}
+function showAuthErr(msg){const e=document.getElementById('auth-err');e.textContent=msg;e.className='auth-err show';}
 async function adminLogin(){
   const email=document.getElementById('a-email').value.trim();
   const pass=document.getElementById('a-pass').value;
   const btn=document.getElementById('login-btn');
   document.getElementById('auth-err').className='auth-err';
-  if(!email||!pass){ showAuthErr('Please fill all fields'); return; }
-  btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Verifying…';
-  try{
-    await signInWithEmailAndPassword(auth,email,pass);
-  }catch(e){
-    showAuthErr(e.code==='auth/invalid-credential'?'Invalid credentials.':e.message);
-    btn.disabled=false; btn.innerHTML='<i class="fas fa-shield-alt"></i> Access Admin Panel';
-  }
+  if(!email||!pass){showAuthErr('Please fill all fields');return;}
+  btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Verifying…';
+  try{await signInWithEmailAndPassword(auth,email,pass);}
+  catch(e){showAuthErr(e.code==='auth/invalid-credential'?'Invalid credentials.':e.message);btn.disabled=false;btn.innerHTML='<i class="fas fa-shield-alt"></i> Access Admin Panel';}
 }
+async function adminLogout(){await fbSignOut(auth);_admin=null;window.location.href='index.html';}
 
-async function adminLogout(){
-  await fbSignOut(auth); _admin=null;
-  window.location.href='index.html';
-}
-
-// ═══════════════════════════════════════════════
-// DATA LOADING
-// ═══════════════════════════════════════════════
 async function refreshAll(){
   document.getElementById('refresh-spin').style.display='';
   try{
-    const toObj = snap => { const r={}; snap.forEach(d=>{ r[d.id]=d.data(); }); return r; };
-    const [usersSnap,creatorsSnap,foundersSnap,requestsSnap] = await Promise.all([
-      getDocs(collection(db,'users')), getDocs(collection(db,'creators')),
-      getDocs(collection(db,'founders')), getDocs(collection(db,'requests'))
+    const toObj=snap=>{const r={};snap.forEach(d=>{r[d.id]=d.data();});return r;};
+    const [usersSnap,creatorsSnap,foundersSnap,requestsSnap,spotSnap]=await Promise.all([
+      getDocs(collection(db,'users')),getDocs(collection(db,'creators')),
+      getDocs(collection(db,'founders')),getDocs(collection(db,'requests')),
+      getDocs(collection(db,'spotlight_creators'))
     ]);
-    _data.users    = toObj(usersSnap);
-    _data.creators = toObj(creatorsSnap);
-    _data.founders = toObj(foundersSnap);
-    _data.requests = toObj(requestsSnap);
+    _data.users=toObj(usersSnap);_data.creators=toObj(creatorsSnap);
+    _data.founders=toObj(foundersSnap);_data.requests=toObj(requestsSnap);
+    _data.spotlights=toObj(spotSnap);
     updateCounts();
-    document.getElementById('refresh-time').textContent = 'Updated '+new Date().toLocaleTimeString();
-  }catch(e){ toast('Failed to load data: '+e.message,'error'); }
+    document.getElementById('refresh-time').textContent='Updated '+new Date().toLocaleTimeString();
+  }catch(e){toast('Failed to load: '+e.message,'error');}
   document.getElementById('refresh-spin').style.display='none';
 }
-
 function updateCounts(){
-  const users=Object.values(_data.users);
-  document.getElementById('cnt-users').textContent = users.length;
-  document.getElementById('cnt-founders').textContent = users.filter(u=>u.userType==='founder').length;
-  document.getElementById('cnt-creators').textContent = users.filter(u=>u.userType==='creator').length;
-  document.getElementById('cnt-requests').textContent = Object.keys(_data.requests).length;
+  const u=Object.values(_data.users);
+  document.getElementById('cnt-users').textContent=u.length;
+  document.getElementById('cnt-founders').textContent=u.filter(x=>x.userType==='founder').length;
+  document.getElementById('cnt-creators').textContent=u.filter(x=>x.userType==='creator').length;
+  document.getElementById('cnt-requests').textContent=Object.keys(_data.requests).length;
+  document.getElementById('cnt-spotlight').textContent=Object.keys(_data.spotlights).length;
 }
 
-// ═══════════════════════════════════════════════
-// NAVIGATION
-// ═══════════════════════════════════════════════
-const pageTitles={overview:'Dashboard',analytics:'Analytics',users:'All Users',founders:'Founders',creators:'Creators',requests:'Collaboration Requests',plans:'Plans & Revenue',featured:'Featured Control',broadcast:'Broadcast',settings:'Settings'};
-
+const pageTitles={overview:'Dashboard',analytics:'Analytics',users:'All Users',founders:'Founders',creators:'Creators',requests:'Collaboration Requests',spotlight:'Creator Spotlight',plans:'Plans & Revenue',featured:'Featured Control',broadcast:'Broadcast',settings:'Settings'};
 function showPage(page){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  const nav=document.getElementById('nav-'+page);
-  if(nav) nav.classList.add('active');
+  const nav=document.getElementById('nav-'+page);if(nav)nav.classList.add('active');
   document.getElementById('topbar-title').innerHTML=`${pageTitles[page]||page} <span class="badge">ADMIN</span>`;
   const content=document.getElementById('main-content');
   content.innerHTML='<div class="empty"><i class="fas fa-spinner fa-spin"></i></div>';
-  const pages={overview:renderOverview,analytics:renderAnalytics,users:renderUsers,founders:renderFounders,creators:renderCreators,requests:renderRequests,plans:renderPlans,featured:renderFeatured,broadcast:renderBroadcast,settings:renderSettings};
-  if(pages[page]) pages[page](content);
+  const pages={overview:renderOverview,analytics:renderAnalytics,users:renderUsers,founders:renderFounders,creators:renderCreators,requests:renderRequests,spotlight:renderSpotlight,plans:renderPlans,featured:renderFeatured,broadcast:renderBroadcast,settings:renderSettings};
+  if(pages[page])pages[page](content);
 }
 
-// ═══════════════════════════════════════════════
-// OVERVIEW
-// ═══════════════════════════════════════════════
 function renderOverview(el){
-  const users=Object.values(_data.users);
-  const reqs=Object.values(_data.requests);
-  const total=users.length;
-  const founders=users.filter(u=>u.userType==='founder').length;
-  const creators=users.filter(u=>u.userType==='creator').length;
-  const pending=reqs.filter(r=>r.status==='pending').length;
-  const accepted=reqs.filter(r=>r.status==='accepted').length;
-  const revenue=users.reduce((sum,u)=>sum+(u.plan==='pro'?599:u.plan==='starter'?299:0),0);
-  const proUsers=users.filter(u=>u.plan==='pro').length;
-  const starterUsers=users.filter(u=>u.plan==='starter').length;
-  const freeUsers=users.filter(u=>!u.plan||u.plan==='free').length;
-
-  // Recent users
+  const users=Object.values(_data.users),reqs=Object.values(_data.requests);
+  const total=users.length,founders=users.filter(u=>u.userType==='founder').length,creators=users.filter(u=>u.userType==='creator').length;
+  const pending=reqs.filter(r=>r.status==='pending').length,accepted=reqs.filter(r=>r.status==='accepted').length;
+  const revenue=users.reduce((s,u)=>s+(u.plan==='pro'?599:u.plan==='starter'?299:0),0);
+  const proUsers=users.filter(u=>u.plan==='pro').length,starterUsers=users.filter(u=>u.plan==='starter').length,freeUsers=users.filter(u=>!u.plan||u.plan==='free').length;
   const recentUsers=users.sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0)).slice(0,5);
-  // Recent requests
   const recentReqs=reqs.sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0)).slice(0,5);
-
-  // Chart data (mock 7-day trend)
-  const chartData=[4,7,5,12,9,15,11];
-  const maxV=Math.max(...chartData,1);
-
+  const spotCount=Object.keys(_data.spotlights).length;
   el.innerHTML=`
     <div class="kpi-grid">
-      <div class="kpi-card">
-        <div class="kpi-accent" style="background:var(--accent)"></div>
-        <div class="kpi-icon" style="background:rgba(108,99,255,.15);color:var(--accent)"><i class="fas fa-users"></i></div>
-        <div class="kpi-val">${total}</div>
-        <div class="kpi-label">Total Users</div>
-        <div class="kpi-sub"><span style="color:var(--accent3)">${founders} founders</span> · <span style="color:var(--gold)">${creators} creators</span></div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-accent" style="background:var(--accent3)"></div>
-        <div class="kpi-icon" style="background:rgba(0,212,170,.15);color:var(--accent3)"><i class="fas fa-inbox"></i></div>
-        <div class="kpi-val">${reqs.length}</div>
-        <div class="kpi-label">Total Requests</div>
-        <div class="kpi-sub"><span style="color:var(--gold)">${pending} pending</span> · <span style="color:var(--green)">${accepted} accepted</span></div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-accent" style="background:var(--gold)"></div>
-        <div class="kpi-icon" style="background:rgba(245,166,35,.15);color:var(--gold)"><i class="fas fa-rupee-sign"></i></div>
-        <div class="kpi-val">₹${revenue.toLocaleString()}</div>
-        <div class="kpi-label">Monthly Revenue</div>
-        <div class="kpi-sub">${proUsers} Pro · ${starterUsers} Starter · ${freeUsers} Free</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-accent" style="background:var(--accent2)"></div>
-        <div class="kpi-icon" style="background:rgba(255,107,107,.15);color:var(--accent2)"><i class="fas fa-check-circle"></i></div>
-        <div class="kpi-val">${reqs.length?Math.round((accepted/reqs.length)*100):0}%</div>
-        <div class="kpi-label">Acceptance Rate</div>
-        <div class="kpi-sub">${accepted} of ${reqs.length} requests</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-accent" style="background:var(--blue)"></div>
-        <div class="kpi-icon" style="background:rgba(59,158,255,.15);color:var(--blue)"><i class="fas fa-paint-brush"></i></div>
-        <div class="kpi-val">${Object.keys(_data.creators).length}</div>
-        <div class="kpi-label">Creator Profiles</div>
-        <div class="kpi-sub">${Object.values(_data.creators).filter(c=>c.featured).length} featured</div>
-      </div>
+      <div class="kpi-card"><div class="kpi-accent" style="background:var(--accent)"></div><div class="kpi-icon" style="background:rgba(108,99,255,.15);color:var(--accent)"><i class="fas fa-users"></i></div><div class="kpi-val">${total}</div><div class="kpi-label">Total Users</div><div class="kpi-sub"><span style="color:var(--accent3)">${founders} founders</span> · <span style="color:var(--gold)">${creators} creators</span></div></div>
+      <div class="kpi-card"><div class="kpi-accent" style="background:var(--accent3)"></div><div class="kpi-icon" style="background:rgba(0,212,170,.15);color:var(--accent3)"><i class="fas fa-inbox"></i></div><div class="kpi-val">${reqs.length}</div><div class="kpi-label">Total Requests</div><div class="kpi-sub"><span style="color:var(--gold)">${pending} pending</span> · <span style="color:var(--green)">${accepted} accepted</span></div></div>
+      <div class="kpi-card"><div class="kpi-accent" style="background:var(--gold)"></div><div class="kpi-icon" style="background:rgba(245,166,35,.15);color:var(--gold)"><i class="fas fa-rupee-sign"></i></div><div class="kpi-val">₹${revenue.toLocaleString()}</div><div class="kpi-label">Monthly Revenue</div><div class="kpi-sub">${proUsers} Pro · ${starterUsers} Starter · ${freeUsers} Free</div></div>
+      <div class="kpi-card"><div class="kpi-accent" style="background:var(--accent2)"></div><div class="kpi-icon" style="background:rgba(255,107,107,.15);color:var(--accent2)"><i class="fas fa-check-circle"></i></div><div class="kpi-val">${reqs.length?Math.round(accepted/reqs.length*100):0}%</div><div class="kpi-label">Acceptance Rate</div><div class="kpi-sub">${accepted} of ${reqs.length} requests</div></div>
+      <div class="kpi-card" onclick="showPage('spotlight')" style="cursor:pointer"><div class="kpi-accent" style="background:var(--gold)"></div><div class="kpi-icon" style="background:rgba(245,166,35,.15);color:var(--gold)"><i class="fas fa-video"></i></div><div class="kpi-val">${spotCount}</div><div class="kpi-label">Spotlight Creators</div><div class="kpi-sub">${Object.values(_data.spotlights).filter(s=>s.active!==false).length} live on dashboard</div></div>
     </div>
-
-    <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.25rem;margin-bottom:1.25rem">
-      <!-- Plan Distribution -->
-      <div class="panel">
-        <div class="panel-head"><div class="panel-title"><i class="fas fa-crown"></i> Plan Distribution & Revenue</div></div>
-        <div class="panel-body">
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.25rem">
-            ${[
-              {id:'free',label:'Free',count:freeUsers,revenue:0,color:'var(--accent)'},
-              {id:'starter',label:'Starter',count:starterUsers,revenue:starterUsers*299,color:'var(--blue)'},
-              {id:'pro',label:'Pro',count:proUsers,revenue:proUsers*599,color:'var(--admin)'}
-            ].map(p=>`
-              <div style="background:var(--surface2);border-radius:.75rem;padding:1rem;text-align:center">
-                <div class="badge badge-${p.id}" style="margin-bottom:.5rem">${p.label.toUpperCase()}</div>
-                <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:1.75rem;font-weight:800;letter-spacing:-.04em;color:${p.color}">${p.count}</div>
-                <div style="font-size:.72rem;color:var(--muted)">users</div>
-                <div style="font-size:.85rem;font-weight:600;color:var(--accent3);margin-top:.25rem">₹${p.revenue.toLocaleString()}/mo</div>
-              </div>`).join('')}
-          </div>
-          <div style="background:var(--surface2);border-radius:.625rem;padding:.875rem">
-            <div style="font-size:.75rem;color:var(--muted);margin-bottom:.5rem">Plan breakdown</div>
-            <div style="height:8px;border-radius:4px;overflow:hidden;background:var(--border);display:flex">
-              <div style="width:${total?Math.round(freeUsers/total*100):0}%;background:var(--accent);transition:.5s"></div>
-              <div style="width:${total?Math.round(starterUsers/total*100):0}%;background:var(--blue);transition:.5s"></div>
-              <div style="width:${total?Math.round(proUsers/total*100):0}%;background:var(--admin);transition:.5s"></div>
-            </div>
-            <div style="display:flex;gap:1rem;margin-top:.5rem;font-size:.7rem;color:var(--muted)">
-              <span><span style="color:var(--accent)">●</span> Free ${total?Math.round(freeUsers/total*100):0}%</span>
-              <span><span style="color:var(--blue)">●</span> Starter ${total?Math.round(starterUsers/total*100):0}%</span>
-              <span><span style="color:var(--admin)">●</span> Pro ${total?Math.round(proUsers/total*100):0}%</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Activity Chart -->
-      <div class="panel">
-        <div class="panel-head"><div class="panel-title"><i class="fas fa-chart-area"></i> Activity (7d)</div></div>
-        <div class="panel-body">
-          <div class="mini-bar" style="height:80px">
-            ${chartData.map((v,i)=>`<div class="mini-bar-item" style="height:${v/maxV*100}%;background:linear-gradient(180deg,var(--accent),rgba(108,99,255,.3))" title="${['M','T','W','T','F','S','S'][i]}: ${v}"></div>`).join('')}
-          </div>
-          <div style="display:flex;font-size:.62rem;color:var(--muted);margin-top:.375rem">
-            ${['M','T','W','T','F','S','S'].map(d=>`<div style="flex:1;text-align:center">${d}</div>`).join('')}
-          </div>
-          <div style="margin-top:1rem;padding-top:.875rem;border-top:1px solid var(--border)">
-            <div style="font-size:.75rem;color:var(--muted);margin-bottom:.375rem">Success metrics</div>
-            <div style="display:flex;justify-content:space-between;font-size:.8rem">
-              <span>Avg requests/user</span>
-              <span style="font-weight:600">${users.length?((reqs.length/users.length)||0).toFixed(1):'—'}</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-top:.3rem">
-              <span>Profile completion</span>
-              <span style="font-weight:600;color:var(--accent3)">${total?Math.round(users.filter(u=>u.profileComplete).length/total*100):0}%</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
-      <!-- Recent Users -->
-      <div class="panel">
-        <div class="panel-head">
-          <div class="panel-title"><i class="fas fa-user-plus"></i> Recent Signups</div>
-          <button class="btn btn-ghost btn-sm" onclick="showPage('users')">View all</button>
-        </div>
-        <div class="panel-body" style="padding:0">
-          <table>
-            <thead><tr><th>User</th><th>Type</th><th>Plan</th><th>Joined</th></tr></thead>
-            <tbody>
-              ${recentUsers.length?recentUsers.map(u=>`
-                <tr>
-                  <td><div class="user-cell"><div class="ava-sm">${(u.name||'U').charAt(0)}</div><div><div style="font-weight:600;font-size:.82rem">${u.name||'—'}</div><div style="font-size:.7rem;color:var(--muted)">${u.email}</div></div></div></td>
-                  <td><span class="badge badge-${u.userType||'founder'}">${u.userType||'—'}</span></td>
-                  <td><span class="badge badge-${u.plan||'free'}">${(u.plan||'free').toUpperCase()}</span></td>
-                  <td style="font-size:.75rem;color:var(--muted)">${u.createdAt?new Date(u.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short'}):'—'}</td>
-                </tr>`).join(''):'<tr><td colspan="4"><div class="empty" style="padding:1rem"><p>No users yet</p></div></td></tr>'}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Recent Requests -->
-      <div class="panel">
-        <div class="panel-head">
-          <div class="panel-title"><i class="fas fa-handshake"></i> Recent Requests</div>
-          <button class="btn btn-ghost btn-sm" onclick="showPage('requests')">View all</button>
-        </div>
-        <div class="panel-body" style="padding:0">
-          <table>
-            <thead><tr><th>Founder</th><th>Creator</th><th>Status</th><th>Date</th></tr></thead>
-            <tbody>
-              ${recentReqs.length?recentReqs.map(r=>`
-                <tr>
-                  <td style="font-size:.8rem;font-weight:600">${r.founderName||'—'}</td>
-                  <td style="font-size:.8rem">${r.creatorName||_data.creators[r.creatorId]?.name||'—'}</td>
-                  <td><span class="badge badge-${r.status||'pending'}">${r.status||'pending'}</span></td>
-                  <td style="font-size:.75rem;color:var(--muted)">${r.createdAt?new Date(r.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short'}):'—'}</td>
-                </tr>`).join(''):'<tr><td colspan="4"><div class="empty" style="padding:1rem"><p>No requests yet</p></div></td></tr>'}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <div class="panel"><div class="panel-head"><div class="panel-title"><i class="fas fa-user-plus"></i> Recent Signups</div><button class="btn btn-ghost btn-sm" onclick="showPage('users')">View all</button></div><div class="panel-body" style="padding:0"><table><thead><tr><th>User</th><th>Type</th><th>Plan</th><th>Joined</th></tr></thead><tbody>${recentUsers.length?recentUsers.map(u=>`<tr><td><div class="user-cell"><div class="ava-sm">${(u.name||'U').charAt(0)}</div><div><div style="font-weight:600;font-size:.82rem">${u.name||'—'}</div><div style="font-size:.7rem;color:var(--muted)">${u.email||''}</div></div></div></td><td><span class="badge badge-${u.userType||'founder'}">${u.userType||'—'}</span></td><td><span class="badge badge-${u.plan||'free'}">${(u.plan||'free').toUpperCase()}</span></td><td style="font-size:.75rem;color:var(--muted)">${u.createdAt?new Date(u.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short'}):'—'}</td></tr>`).join(''):'<tr><td colspan="4"><div class="empty" style="padding:1rem"><p>No users yet</p></div></td></tr>'}</tbody></table></div></div>
+      <div class="panel"><div class="panel-head"><div class="panel-title"><i class="fas fa-handshake"></i> Recent Requests</div><button class="btn btn-ghost btn-sm" onclick="showPage('requests')">View all</button></div><div class="panel-body" style="padding:0"><table><thead><tr><th>Founder</th><th>Creator</th><th>Status</th></tr></thead><tbody>${recentReqs.length?recentReqs.map(r=>`<tr><td style="font-size:.82rem;font-weight:600">${r.founderName||'—'}</td><td style="font-size:.82rem">${r.creatorName||'—'}</td><td><span class="badge badge-${r.status||'pending'}">${r.status||'pending'}</span></td></tr>`).join(''):'<tr><td colspan="3"><div class="empty" style="padding:1rem"><p>No requests yet</p></div></td></tr>'}</tbody></table></div></div>
     </div>`;
 }
 
-// ═══════════════════════════════════════════════
-// ALL USERS
-// ═══════════════════════════════════════════════
-function renderUsers(el){
-  renderUserTable(el, Object.entries(_data.users), 'All Users');
+function renderUsers(el){renderUserTable(el,Object.entries(_data.users),'All Users');}
+function renderFounders(el){renderUserTable(el,Object.entries(_data.users).filter(([,u])=>u.userType==='founder'),'Founders');}
+function renderUserTable(el,entries,title){
+  el.innerHTML=`<div class="panel"><div class="panel-head"><div class="panel-title"><i class="fas fa-users"></i> ${title} (${entries.length})</div><div class="panel-actions"><input class="filter-input" id="user-search" placeholder="Search…" oninput="filterUsersTable()" style="min-width:200px"><select class="filter-select" id="user-plan-filter" onchange="filterUsersTable()"><option value="">All Plans</option><option>free</option><option>starter</option><option>pro</option></select><select class="filter-select" id="user-type-filter" onchange="filterUsersTable()"><option value="">All Types</option><option>founder</option><option>creator</option></select></div></div><div class="table-wrap"><table><thead><tr><th>User</th><th>Type</th><th>Plan</th><th>Joined</th><th>Actions</th></tr></thead><tbody id="users-tbody">${buildUsersRows(entries)}</tbody></table></div></div>`;
+  window._userEntries=entries;
 }
-function renderFounders(el){
-  const entries=Object.entries(_data.users).filter(([,u])=>u.userType==='founder');
-  renderUserTable(el, entries, 'Founders');
-}
-
-function renderUserTable(el, entries, title){
-  let filtered=entries;
-  el.innerHTML=`
-    <div class="panel">
-      <div class="panel-head">
-        <div class="panel-title"><i class="fas fa-users"></i> ${title} (${entries.length})</div>
-        <div class="panel-actions">
-          <input class="filter-input" id="user-search" placeholder="🔍 Search name or email…" oninput="filterUsersTable()" style="min-width:220px">
-          <select class="filter-select" id="user-plan-filter" onchange="filterUsersTable()">
-            <option value="">All Plans</option><option>free</option><option>starter</option><option>pro</option>
-          </select>
-          <select class="filter-select" id="user-type-filter" onchange="filterUsersTable()">
-            <option value="">All Types</option><option>founder</option><option>creator</option>
-          </select>
-        </div>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>User</th><th>Type</th><th>Plan</th><th>WhatsApp</th><th>Profile</th><th>Joined</th><th>Actions</th></tr></thead>
-          <tbody id="users-tbody">
-            ${buildUsersRows(entries)}
-          </tbody>
-        </table>
-      </div>
-    </div>`;
-  window._userEntries = entries;
-}
-
 function buildUsersRows(entries){
-  if(!entries.length) return `<tr><td colspan="7"><div class="empty" style="padding:1.5rem"><i class="fas fa-users"></i><p>No users found</p></div></td></tr>`;
-  return entries.map(([uid,u])=>`
-    <tr>
-      <td><div class="user-cell"><div class="ava-sm">${(u.name||'U').charAt(0)}</div><div><div style="font-weight:600;font-size:.82rem">${u.name||'—'}</div><div style="font-size:.7rem;color:var(--muted)">${u.email}</div></div></div></td>
-      <td><span class="badge badge-${u.userType||'founder'}">${u.userType||'—'}</span></td>
-      <td><span class="badge badge-${u.plan||'free'}">${(u.plan||'free').toUpperCase()}</span></td>
-      <td style="font-size:.8rem">${u.whatsapp||'—'}</td>
-      <td><span class="badge ${u.profileComplete?'badge-active':'badge-pending'}">${u.profileComplete?'Complete':'Incomplete'}</span></td>
-      <td style="font-size:.75rem;color:var(--muted)">${u.createdAt?new Date(u.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'—'}</td>
-      <td>
-        <div style="display:flex;gap:.3rem;flex-wrap:wrap">
-          <button class="btn btn-ghost btn-xs" onclick="viewUser('${uid}')"><i class="fas fa-eye"></i></button>
-          <button class="btn btn-ghost btn-xs" onclick="editUser('${uid}')"><i class="fas fa-edit"></i></button>
-          <button class="btn btn-warning btn-xs" onclick="changePlan('${uid}','${u.plan||'free'}')"><i class="fas fa-crown"></i></button>
-          <button class="btn btn-danger btn-xs" onclick="deleteUser('${uid}','${u.name||u.email}')"><i class="fas fa-trash"></i></button>
-        </div>
-      </td>
-    </tr>`).join('');
+  if(!entries.length)return`<tr><td colspan="5"><div class="empty" style="padding:1.5rem"><p>No users found</p></div></td></tr>`;
+  return entries.map(([uid,u])=>`<tr><td><div class="user-cell"><div class="ava-sm">${(u.name||'U').charAt(0)}</div><div><div style="font-weight:600;font-size:.82rem">${u.name||'—'}</div><div style="font-size:.7rem;color:var(--muted)">${u.email||''}</div></div></div></td><td><span class="badge badge-${u.userType||'founder'}">${u.userType||'—'}</span></td><td><span class="badge badge-${u.plan||'free'}">${(u.plan||'free').toUpperCase()}</span></td><td style="font-size:.75rem;color:var(--muted)">${u.createdAt?new Date(u.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'—'}</td><td><div style="display:flex;gap:.3rem"><button class="btn btn-ghost btn-xs" onclick="editUser('${uid}')"><i class="fas fa-edit"></i></button><button class="btn btn-warning btn-xs" onclick="changePlan('${uid}','${u.plan||'free'}')"><i class="fas fa-crown"></i></button><button class="btn btn-danger btn-xs" onclick="deleteUser('${uid}','${u.name||u.email}')"><i class="fas fa-trash"></i></button></div></td></tr>`).join('');
 }
-
 function filterUsersTable(){
-  const search=(document.getElementById('user-search')?.value||'').toLowerCase();
-  const plan=document.getElementById('user-plan-filter')?.value||'';
-  const type=document.getElementById('user-type-filter')?.value||'';
-  const filtered=(window._userEntries||[]).filter(([,u])=>{
-    if(search&&!u.name?.toLowerCase().includes(search)&&!u.email?.toLowerCase().includes(search)) return false;
-    if(plan&&(u.plan||'free')!==plan) return false;
-    if(type&&u.userType!==type) return false;
+  const s=(document.getElementById('user-search')?.value||'').toLowerCase();
+  const p=document.getElementById('user-plan-filter')?.value||'';
+  const t=document.getElementById('user-type-filter')?.value||'';
+  const f=(window._userEntries||[]).filter(([,u])=>{
+    if(s&&!u.name?.toLowerCase().includes(s)&&!u.email?.toLowerCase().includes(s))return false;
+    if(p&&(u.plan||'free')!==p)return false;
+    if(t&&u.userType!==t)return false;
     return true;
   });
-  const tbody=document.getElementById('users-tbody');
-  if(tbody) tbody.innerHTML=buildUsersRows(filtered);
+  const tb=document.getElementById('users-tbody');if(tb)tb.innerHTML=buildUsersRows(f);
 }
 
-// ═══════════════════════════════════════════════
-// CREATORS
-// ═══════════════════════════════════════════════
 function renderCreators(el){
   const entries=Object.entries(_data.creators);
-  el.innerHTML=`
-    <div class="panel">
-      <div class="panel-head">
-        <div class="panel-title"><i class="fas fa-paint-brush"></i> Creator Profiles (${entries.length})</div>
-        <div class="panel-actions">
-          <input class="filter-input" id="cr-search" placeholder="🔍 Search name…" oninput="filterCreatorsTable()" style="min-width:200px">
-          <select class="filter-select" id="cr-niche-filter" onchange="filterCreatorsTable()">
-            <option value="">All Niches</option>
-            ${['AI','Finance','Startup','Tech','Lifestyle','Business','Marketing','SaaS','Education','Health'].map(n=>`<option>${n}</option>`).join('')}
-          </select>
-        </div>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Creator</th><th>Niches</th><th>Audience</th><th>ER</th><th>Pricing</th><th>Featured</th><th>Top Search</th><th>Actions</th></tr></thead>
-          <tbody id="creators-tbody">
-            ${buildCreatorsRows(entries)}
-          </tbody>
-        </table>
-      </div>
-    </div>`;
+  el.innerHTML=`<div class="panel"><div class="panel-head"><div class="panel-title"><i class="fas fa-paint-brush"></i> Creator Profiles (${entries.length})</div></div><div class="table-wrap"><table><thead><tr><th>Creator</th><th>Niches</th><th>Audience</th><th>ER</th><th>Featured</th><th>Top Search</th><th>Actions</th></tr></thead><tbody>${buildCreatorsRows(entries)}</tbody></table></div></div>`;
   window._creatorEntries=entries;
 }
-
 function buildCreatorsRows(entries){
-  if(!entries.length) return `<tr><td colspan="8"><div class="empty" style="padding:1.5rem"><i class="fas fa-paint-brush"></i><p>No creators yet</p></div></td></tr>`;
-  return entries.map(([uid,c])=>`
-    <tr>
-      <td><div class="user-cell"><div class="ava-sm">${(c.name||'C').charAt(0)}</div><div><div style="font-weight:600;font-size:.82rem">${c.name||'—'}</div><div style="font-size:.7rem;color:var(--muted)">${c.instagram||'—'}</div></div></div></td>
-      <td style="max-width:150px">${(c.niches||[]).slice(0,3).map(n=>`<span class="badge badge-free" style="margin-right:.2rem;margin-bottom:.2rem;font-size:.6rem">${n}</span>`).join('')}</td>
-      <td style="font-size:.8rem">${c.audienceSize||'—'}</td>
-      <td style="font-size:.8rem;color:var(--accent3)">${c.engagementRate||'—'}</td>
-      <td style="font-size:.8rem">${c.pricing||'—'}</td>
-      <td><label class="toggle"><input type="checkbox" ${c.featured?'checked':''} onchange="toggleCreatorField('${uid}','featured',this.checked)"><span class="toggle-slider"></span></label></td>
-      <td><label class="toggle"><input type="checkbox" ${c.topSearch?'checked':''} onchange="toggleCreatorField('${uid}','topSearch',this.checked)"><span class="toggle-slider"></span></label></td>
-      <td>
-        <div style="display:flex;gap:.3rem">
-          <button class="btn btn-ghost btn-xs" onclick="editCreator('${uid}')"><i class="fas fa-edit"></i></button>
-          <button class="btn btn-danger btn-xs" onclick="deleteCreator('${uid}','${c.name||uid}')"><i class="fas fa-trash"></i></button>
-        </div>
-      </td>
-    </tr>`).join('');
+  if(!entries.length)return`<tr><td colspan="7"><div class="empty" style="padding:1.5rem"><p>No creators yet</p></div></td></tr>`;
+  return entries.map(([uid,c])=>`<tr><td><div class="user-cell"><div class="ava-sm">${(c.name||'C').charAt(0)}</div><div><div style="font-weight:600;font-size:.82rem">${c.name||'—'}</div><div style="font-size:.7rem;color:var(--muted)">${c.instagram||''}</div></div></div></td><td style="max-width:140px;font-size:.75rem">${(c.niches||[]).slice(0,3).join(', ')}</td><td style="font-size:.8rem">${c.audienceSize||'—'}</td><td style="font-size:.8rem;color:var(--accent3)">${c.engagementRate||'—'}</td><td><label class="toggle"><input type="checkbox" ${c.featured?'checked':''} onchange="toggleCreatorField('${uid}','featured',this.checked)"><span class="toggle-slider"></span></label></td><td><label class="toggle"><input type="checkbox" ${c.topSearch?'checked':''} onchange="toggleCreatorField('${uid}','topSearch',this.checked)"><span class="toggle-slider"></span></label></td><td><div style="display:flex;gap:.3rem"><button class="btn btn-ghost btn-xs" onclick="editCreator('${uid}')"><i class="fas fa-edit"></i></button><button class="btn btn-danger btn-xs" onclick="deleteCreator('${uid}','${c.name||uid}')"><i class="fas fa-trash"></i></button></div></td></tr>`).join('');
 }
 
-function filterCreatorsTable(){
-  const search=(document.getElementById('cr-search')?.value||'').toLowerCase();
-  const niche=document.getElementById('cr-niche-filter')?.value||'';
-  const filtered=(window._creatorEntries||[]).filter(([,c])=>{
-    if(search&&!c.name?.toLowerCase().includes(search)) return false;
-    if(niche&&!(c.niches||[]).includes(niche)) return false;
-    return true;
-  });
-  const tbody=document.getElementById('creators-tbody');
-  if(tbody) tbody.innerHTML=buildCreatorsRows(filtered);
-}
-
-// ═══════════════════════════════════════════════
-// REQUESTS
-// ═══════════════════════════════════════════════
 function renderRequests(el){
   const entries=Object.entries(_data.requests);
-  el.innerHTML=`
-    <div class="panel">
-      <div class="panel-head">
-        <div class="panel-title"><i class="fas fa-inbox"></i> All Requests (${entries.length})</div>
-        <div class="panel-actions">
-          <input class="filter-input" id="req-search" placeholder="🔍 Search founder or creator…" oninput="filterRequestsTable()" style="min-width:200px">
-          <select class="filter-select" id="req-status-filter" onchange="filterRequestsTable()">
-            <option value="">All Statuses</option><option>pending</option><option>accepted</option><option>declined</option>
-          </select>
-        </div>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Founder</th><th>Creator</th><th>Collab Type</th><th>Budget</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
-          <tbody id="reqs-tbody">
-            ${buildRequestsRows(entries)}
-          </tbody>
-        </table>
-      </div>
-    </div>`;
-  window._requestEntries=entries;
+  el.innerHTML=`<div class="panel"><div class="panel-head"><div class="panel-title"><i class="fas fa-inbox"></i> All Requests (${entries.length})</div></div><div class="table-wrap"><table><thead><tr><th>Founder</th><th>Creator</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>${buildRequestsRows(entries)}</tbody></table></div></div>`;
 }
-
 function buildRequestsRows(entries){
-  if(!entries.length) return `<tr><td colspan="7"><div class="empty" style="padding:1.5rem"><i class="fas fa-inbox"></i><p>No requests yet</p></div></td></tr>`;
-  return entries.sort((a,b)=>new Date(b[1].createdAt||0)-new Date(a[1].createdAt||0)).map(([id,r])=>`
-    <tr>
-      <td style="font-weight:600;font-size:.82rem">${r.founderName||'—'}<div style="font-size:.7rem;color:var(--muted)">${r.startupName||''}</div></td>
-      <td style="font-size:.82rem">${r.creatorName||_data.creators[r.creatorId]?.name||r.creatorId||'—'}</td>
-      <td style="font-size:.78rem">${r.collabType||'—'}</td>
-      <td style="font-size:.78rem;color:var(--accent3)">${r.budget||'—'}</td>
-      <td><span class="badge badge-${r.status||'pending'}">${r.status||'pending'}</span></td>
-      <td style="font-size:.75rem;color:var(--muted)">${r.createdAt?new Date(r.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'—'}</td>
-      <td>
-        <div style="display:flex;gap:.3rem;flex-wrap:wrap">
-          ${r.status==='pending'?`<button class="btn btn-success btn-xs" onclick="updateReqStatus('${id}','accepted')"><i class="fas fa-check"></i></button><button class="btn btn-danger btn-xs" onclick="updateReqStatus('${id}','declined')"><i class="fas fa-times"></i></button>`:''}
-          <button class="btn btn-danger btn-xs" onclick="deleteRequest('${id}')"><i class="fas fa-trash"></i></button>
+  if(!entries.length)return`<tr><td colspan="5"><div class="empty" style="padding:1.5rem"><p>No requests yet</p></div></td></tr>`;
+  return entries.sort((a,b)=>new Date(b[1].createdAt||0)-new Date(a[1].createdAt||0)).map(([id,r])=>`<tr><td style="font-weight:600;font-size:.82rem">${r.founderName||'—'}</td><td style="font-size:.82rem">${r.creatorName||'—'}</td><td><span class="badge badge-${r.status||'pending'}">${r.status||'pending'}</span></td><td style="font-size:.75rem;color:var(--muted)">${r.createdAt?new Date(r.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'—'}</td><td><div style="display:flex;gap:.3rem">${r.status==='pending'?`<button class="btn btn-success btn-xs" onclick="updateReqStatus('${id}','accepted')"><i class="fas fa-check"></i></button><button class="btn btn-danger btn-xs" onclick="updateReqStatus('${id}','declined')"><i class="fas fa-times"></i></button>`:''}<button class="btn btn-danger btn-xs" onclick="deleteRequest('${id}')"><i class="fas fa-trash"></i></button></div></td></tr>`).join('');
+}
+async function updateReqStatus(id,status){
+  await updateDoc(doc(db,'requests',id),{status});
+  if(_data.requests[id])_data.requests[id].status=status;
+  toast('Request '+status,'success');
+  renderRequests(document.getElementById('main-content'));
+}
+async function deleteRequest(id){
+  showConfirm('Delete this request?','This will permanently remove it.',async()=>{
+    await deleteDoc(doc(db,'requests',id));delete _data.requests[id];
+    toast('Request deleted','success');renderRequests(document.getElementById('main-content'));
+  },'trash','btn-danger');
+}
+
+// ═══ CREATOR SPOTLIGHT ═══
+async function renderSpotlight(el){
+  const entries=Object.entries(_data.spotlights||{}).sort((a,b)=>(a[1].order||99)-(b[1].order||99));
+  const activeCount=entries.filter(([,s])=>s.active!==false).length;
+  el.innerHTML=`
+  <div style="display:grid;grid-template-columns:1fr 320px;gap:1.25rem;align-items:start">
+    <div>
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title"><i class="fas fa-video" style="color:var(--gold)"></i> Spotlight Creators <span style="color:var(--muted);font-weight:400">(${entries.length} total · ${activeCount} live)</span></div>
+          <div class="panel-actions"><button class="btn btn-primary" onclick="openSpotlightModal()"><i class="fas fa-plus"></i> Add Creator</button></div>
         </div>
-      </td>
-    </tr>`).join('');
+        <div class="panel-body">
+          ${entries.length===0
+            ?`<div class="empty"><i class="fas fa-video"></i><p>No spotlight creators yet.<br>Add your first one — they'll appear live on the founder home screen instantly.</p></div>`
+            :`<div class="spot-grid">${entries.map(([id,s])=>`
+              <div class="spot-card ${s.active===false?'inactive':''}">
+                <div class="spot-vid-wrap">
+                  ${s.videoUrl
+                    ?`<video src="${s.videoUrl}" muted playsinline loop preload="metadata" poster="${s.thumbnailUrl||''}"
+                        style="width:100%;height:100%;object-fit:cover"
+                        onmouseenter="this.play()" onmouseleave="this.pause();this.currentTime=0"></video>`
+                    :`<div style="width:100%;height:100%;background:linear-gradient(135deg,#1e1b4b,#312e81);display:flex;align-items:center;justify-content:center"><i class="fas fa-video" style="color:rgba(255,255,255,.2);font-size:2.5rem"></i></div>`}
+                  <div class="spot-order-badge">#${s.order||'—'}</div>
+                  <div class="spot-status-badge"><span class="badge ${s.active===false?'badge-declined':'badge-active'}">${s.active===false?'Hidden':'Live'}</span></div>
+                </div>
+                <div class="spot-info">
+                  <div class="spot-name">${s.creatorName||'—'}</div>
+                  <div class="spot-niche">${(s.niches||[]).slice(0,2).join(' & ')||'—'}</div>
+                  <div class="spot-url" title="${s.videoUrl||''}">${s.videoUrl||'No video URL'}</div>
+                </div>
+                <div class="spot-actions">
+                  <button class="btn btn-ghost btn-xs" style="flex:1;justify-content:center" onclick="openSpotlightModal('${id}')"><i class="fas fa-edit"></i> Edit</button>
+                  <button class="btn btn-ghost btn-xs" title="${s.active===false?'Activate':'Hide'}" onclick="toggleSpotlightActive('${id}',${s.active!==false})"><i class="fas fa-${s.active===false?'eye':'eye-slash'}"></i></button>
+                  <button class="btn btn-danger btn-xs" onclick="deleteSpotlight('${id}','${(s.creatorName||'').replace(/'/g,'')}')"><i class="fas fa-trash"></i></button>
+                </div>
+              </div>`).join('')}</div>`}
+        </div>
+      </div>
+      ${entries.length>0?`
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title"><i class="fas fa-sort-numeric-up"></i> Display Order</div><span style="font-size:.75rem;color:var(--muted)">Edit order number → auto-saves</span></div>
+        <div class="panel-body" style="padding:0">
+          <table><thead><tr><th>Order</th><th>Creator Name</th><th>Niches</th><th>Status</th></tr></thead>
+          <tbody>${entries.map(([id,s])=>`
+            <tr>
+              <td><input type="number" value="${s.order||''}" min="1" max="99"
+                style="width:55px;background:var(--surface2);border:1px solid var(--border);border-radius:.375rem;padding:.3rem .5rem;color:var(--text);font-size:.8rem;outline:none"
+                onchange="updateSpotlightOrder('${id}',this.value)" onblur="updateSpotlightOrder('${id}',this.value)"></td>
+              <td style="font-weight:600;font-size:.82rem">${s.creatorName||'—'}</td>
+              <td style="font-size:.75rem;color:var(--muted)">${(s.niches||[]).join(', ')||'—'}</td>
+              <td><span class="badge ${s.active===false?'badge-declined':'badge-active'}">${s.active===false?'Hidden':'Live'}</span></td>
+            </tr>`).join('')}
+          </tbody></table>
+        </div>
+      </div>`:''}
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title"><i class="fas fa-info-circle"></i> How It Works</div></div>
+        <div class="panel-body" style="font-size:.8rem;line-height:1.8;color:var(--muted)">
+          <p>Creators added here appear on the <strong style="color:var(--text)">Founder Home Screen</strong> as scrollable video cards.</p><br>
+          <p>✅ <strong style="color:var(--text)">No file upload</strong> — just paste a direct video URL</p>
+          <p>✅ <strong style="color:var(--text)">Instant live</strong> — no app update needed</p>
+          <p>✅ <strong style="color:var(--text)">Order control</strong> — lower number = shows first</p>
+          <p>✅ <strong style="color:var(--text)">Toggle visibility</strong> — hide without deleting</p>
+          <br>
+          <p style="color:var(--text);font-weight:600">Supported video URL types:</p>
+          <p>• Direct <code style="background:var(--surface2);padding:.1em .35em;border-radius:.25rem;font-size:.72rem">.mp4</code> link</p>
+          <p>• Cloudinary video URL</p>
+          <p>• Google Drive: <code style="background:var(--surface2);padding:.1em .35em;border-radius:.25rem;font-size:.68rem">drive.google.com/uc?export=download&amp;id=FILE_ID</code></p>
+          <p>• Bunny CDN / any direct stream</p>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title"><i class="fas fa-database"></i> Firestore Collection</div></div>
+        <div class="panel-body" style="font-size:.78rem">
+          <code style="color:var(--accent);background:var(--surface2);padding:.3em .7em;border-radius:.375rem;display:block;margin-bottom:.75rem">spotlight_creators</code>
+          <div style="color:var(--muted);line-height:2">
+            <div><span style="color:var(--text)">creatorName</span>: string</div>
+            <div><span style="color:var(--text)">videoUrl</span>: string</div>
+            <div><span style="color:var(--text)">thumbnailUrl</span>: string</div>
+            <div><span style="color:var(--text)">niches</span>: string[]</div>
+            <div><span style="color:var(--text)">order</span>: number</div>
+            <div><span style="color:var(--text)">active</span>: boolean</div>
+            <div><span style="color:var(--text)">plan</span>: "PRO" | "FREE"</div>
+            <div><span style="color:var(--text)">creatorId</span>: string (uid)</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title" style="color:var(--red)"><i class="fas fa-bolt"></i> Quick Actions</div></div>
+        <div class="panel-body" style="display:flex;flex-direction:column;gap:.5rem">
+          <button class="btn btn-warning" style="justify-content:center" onclick="hideAllSpotlights()"><i class="fas fa-eye-slash"></i> Hide All</button>
+          <button class="btn btn-success" style="justify-content:center" onclick="activateAllSpotlights()"><i class="fas fa-eye"></i> Show All</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
 }
 
-function filterRequestsTable(){
-  const search=(document.getElementById('req-search')?.value||'').toLowerCase();
-  const status=document.getElementById('req-status-filter')?.value||'';
-  const filtered=(window._requestEntries||[]).filter(([,r])=>{
-    if(search&&!r.founderName?.toLowerCase().includes(search)&&!(r.creatorName||_data.creators[r.creatorId]?.name||'').toLowerCase().includes(search)) return false;
-    if(status&&r.status!==status) return false;
-    return true;
-  });
-  const tbody=document.getElementById('reqs-tbody');
-  if(tbody) tbody.innerHTML=buildRequestsRows(filtered);
+function openSpotlightModal(id){
+  const s=id?(_data.spotlights[id]||{}):{};
+  const isEdit=!!id;
+  document.getElementById('edit-spotlight-title').textContent=isEdit?'Edit Spotlight Creator':'Add Spotlight Creator';
+  document.getElementById('edit-spotlight-err').className='form-err';
+  document.getElementById('edit-spotlight-form').innerHTML=`
+    <div class="form-group">
+      <label>Creator Name <span style="color:var(--red)">*</span></label>
+      <input id="sp-name" value="${s.creatorName||''}" placeholder="e.g. Explain India">
+    </div>
+    <div class="form-group">
+      <label>Video URL <span style="color:var(--red)">*</span></label>
+      <input id="sp-video" value="${s.videoUrl||''}" placeholder="https://... direct .mp4 or streamable URL" oninput="previewSpotlightVideo(this.value)">
+      <div class="form-hint">Paste direct .mp4 link. Google Drive: use uc?export=download&id=FILE_ID</div>
+    </div>
+    <div id="sp-video-preview" style="margin-top:.5rem;display:${s.videoUrl?'block':'none'}">
+      <div style="font-size:.72rem;color:var(--muted);margin-bottom:.35rem">Video Preview (hover to play):</div>
+      <video id="sp-preview-vid" src="${s.videoUrl||''}" muted playsinline controls style="width:100%;max-height:180px;border-radius:.5rem;background:#000;object-fit:contain"></video>
+    </div>
+    <div class="form-group" style="margin-top:.875rem">
+      <label>Thumbnail/Cover Image URL (optional)</label>
+      <input id="sp-thumb" value="${s.thumbnailUrl||''}" placeholder="https://... image used as poster before video loads">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Niches (comma-separated)</label>
+        <input id="sp-niches" value="${(s.niches||[]).join(', ')}" placeholder="Tech, Finance, AI">
+      </div>
+      <div class="form-group">
+        <label>Display Order</label>
+        <input id="sp-order" type="number" value="${s.order||''}" placeholder="1" min="1" max="99">
+        <div class="form-hint">1 = shows first</div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Plan Badge</label>
+        <select id="sp-plan">
+          <option value="PRO" ${(s.plan||'PRO')==='PRO'?'selected':''}>PRO</option>
+          <option value="FREE" ${s.plan==='FREE'?'selected':''}>FREE</option>
+          <option value="" ${!s.plan?'selected':''}>None</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Creator Firebase UID (optional)</label>
+        <input id="sp-uid" value="${s.creatorId||''}" placeholder="Links Watch Sample button to chat">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="checkbox-row">
+        <input type="checkbox" id="sp-active" ${s.active===false?'':'checked'}> Active (visible on dashboard)
+      </label>
+    </div>
+    <div style="display:flex;gap:.5rem;margin-top:1.25rem">
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveSpotlight('${id||''}')">
+        <i class="fas fa-${isEdit?'save':'plus'}"></i> ${isEdit?'Save Changes':'Add to Spotlight'}
+      </button>
+      <button class="btn btn-ghost" onclick="closeModal('edit-spotlight-modal')">Cancel</button>
+    </div>`;
+  openModal('edit-spotlight-modal');
 }
 
-// ═══════════════════════════════════════════════
-// PLANS & REVENUE
-// ═══════════════════════════════════════════════
+function previewSpotlightVideo(url){
+  const wrap=document.getElementById('sp-video-preview');
+  const vid=document.getElementById('sp-preview-vid');
+  if(url&&(url.startsWith('http')||url.startsWith('blob'))){
+    vid.src=url;wrap.style.display='block';
+  } else {wrap.style.display='none';}
+}
+
+async function saveSpotlight(id){
+  const name=(document.getElementById('sp-name')?.value||'').trim();
+  const videoUrl=(document.getElementById('sp-video')?.value||'').trim();
+  const errEl=document.getElementById('edit-spotlight-err');
+  if(!name||!videoUrl){errEl.textContent='Creator name and video URL are required.';errEl.className='form-err show';return;}
+  const payload={
+    creatorName:name,
+    videoUrl,
+    thumbnailUrl:(document.getElementById('sp-thumb')?.value||'').trim(),
+    niches:(document.getElementById('sp-niches')?.value||'').split(',').map(n=>n.trim()).filter(Boolean),
+    order:parseInt(document.getElementById('sp-order')?.value)||99,
+    plan:document.getElementById('sp-plan')?.value||'',
+    creatorId:(document.getElementById('sp-uid')?.value||'').trim(),
+    active:document.getElementById('sp-active')?.checked!==false,
+    updatedAt:new Date().toISOString()
+  };
+  if(!id)payload.addedAt=new Date().toISOString();
+  try{
+    if(id){
+      await updateDoc(doc(db,'spotlight_creators',id),payload);
+      _data.spotlights[id]={..._data.spotlights[id],...payload};
+      toast(name+' updated','success');addLog('user','Spotlight updated: '+name);
+    } else {
+      const ref=await addDoc(collection(db,'spotlight_creators'),payload);
+      _data.spotlights[ref.id]={...payload,id:ref.id};
+      toast(name+' added to spotlight!','success');addLog('user','Spotlight added: '+name);
+    }
+    closeModal('edit-spotlight-modal');
+    updateCounts();
+    renderSpotlight(document.getElementById('main-content'));
+  }catch(e){errEl.textContent='Error: '+e.message;errEl.className='form-err show';}
+}
+
+async function toggleSpotlightActive(id,currentlyActive){
+  const newVal=!currentlyActive;
+  await updateDoc(doc(db,'spotlight_creators',id),{active:newVal});
+  if(_data.spotlights[id])_data.spotlights[id].active=newVal;
+  toast('Spotlight '+(newVal?'activated':'hidden'),'success');
+  renderSpotlight(document.getElementById('main-content'));
+}
+
+async function updateSpotlightOrder(id,val){
+  const order=parseInt(val)||99;
+  if(_data.spotlights[id]&&_data.spotlights[id].order===order)return;
+  await updateDoc(doc(db,'spotlight_creators',id),{order});
+  if(_data.spotlights[id])_data.spotlights[id].order=order;
+  toast('Order updated','success');
+}
+
+function deleteSpotlight(id,name){
+  showConfirm('Remove "'+name+'" from spotlight?','They will disappear from the home screen immediately.',async()=>{
+    await deleteDoc(doc(db,'spotlight_creators',id));
+    delete _data.spotlights[id];
+    updateCounts();toast(name+' removed','success');
+    addLog('user','Spotlight deleted: '+name);
+    renderSpotlight(document.getElementById('main-content'));
+  },'trash','btn-danger');
+}
+
+async function hideAllSpotlights(){
+  const batch=writeBatch(db);
+  Object.keys(_data.spotlights).forEach(id=>{batch.update(doc(db,'spotlight_creators',id),{active:false});_data.spotlights[id].active=false;});
+  await batch.commit();toast('All spotlight hidden','warning');renderSpotlight(document.getElementById('main-content'));
+}
+async function activateAllSpotlights(){
+  const batch=writeBatch(db);
+  Object.keys(_data.spotlights).forEach(id=>{batch.update(doc(db,'spotlight_creators',id),{active:true});_data.spotlights[id].active=true;});
+  await batch.commit();toast('All spotlight active','success');renderSpotlight(document.getElementById('main-content'));
+}
+
 function renderPlans(el){
   const users=Object.values(_data.users);
   const free=users.filter(u=>!u.plan||u.plan==='free');
   const starter=users.filter(u=>u.plan==='starter');
   const pro=users.filter(u=>u.plan==='pro');
   const mrr=starter.length*299+pro.length*599;
-
-  el.innerHTML=`
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:1.25rem">
-      ${[
-        {name:'Free',count:free.length,color:'var(--accent)',revenue:0,desc:'₹0/month · No revenue'},
-        {name:'Starter',count:starter.length,color:'var(--blue)',revenue:starter.length*299,desc:'₹299/month each'},
-        {name:'Pro',count:pro.length,color:'var(--admin)',revenue:pro.length*599,desc:'₹599/month each'},
-      ].map(p=>`
-        <div class="kpi-card">
-          <div class="kpi-accent" style="background:${p.color}"></div>
-          <div class="kpi-val" style="color:${p.color}">${p.count}</div>
-          <div class="kpi-label">${p.name} Users</div>
-          <div class="kpi-sub" style="color:var(--accent3);font-size:.8rem;margin-top:.5rem">₹${p.revenue.toLocaleString()}/mo</div>
-          <div class="kpi-sub">${p.desc}</div>
-        </div>`).join('')}
-    </div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem">
-      <div class="panel">
-        <div class="panel-head"><div class="panel-title"><i class="fas fa-rupee-sign"></i> Revenue Summary</div></div>
-        <div class="panel-body">
-          <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:2.5rem;font-weight:800;letter-spacing:-.05em;color:var(--accent3)">₹${mrr.toLocaleString()}</div>
-          <div style="color:var(--muted);font-size:.82rem;margin-bottom:1.5rem">Monthly Recurring Revenue</div>
-          <div style="display:flex;flex-direction:column;gap:.625rem">
-            ${[{name:'Starter',count:starter.length,rate:299,color:'var(--blue)'},{name:'Pro',count:pro.length,rate:599,color:'var(--admin)'}].map(p=>`
-              <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:.5rem;padding:.75rem">
-                <div><div style="font-weight:600;font-size:.85rem">${p.name}</div><div style="font-size:.72rem;color:var(--muted)">${p.count} users × ₹${p.rate}</div></div>
-                <div style="font-weight:700;color:${p.color}">₹${(p.count*p.rate).toLocaleString()}</div>
-              </div>`).join('')}
-            <div style="display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,rgba(0,212,170,.1),rgba(108,99,255,.05));border:1px solid rgba(0,212,170,.2);border-radius:.5rem;padding:.75rem">
-              <div style="font-weight:700">Total MRR</div>
-              <div style="font-weight:800;font-size:1.1rem;color:var(--accent3)">₹${mrr.toLocaleString()}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="panel-head"><div class="panel-title"><i class="fas fa-users"></i> Upgrade Candidates</div><button class="btn btn-primary btn-sm" onclick="showPage('broadcast')"><i class="fas fa-bullhorn"></i> Send Upgrade Message</button></div>
-        <div class="panel-body" style="padding:0">
-          <table>
-            <thead><tr><th>User</th><th>Current</th><th>Action</th></tr></thead>
-            <tbody>
-              ${free.slice(0,8).map(u=>`
-                <tr>
-                  <td><div style="font-weight:600;font-size:.82rem">${u.name||'—'}</div><div style="font-size:.7rem;color:var(--muted)">${u.email}</div></td>
-                  <td><span class="badge badge-free">FREE</span></td>
-                  <td><button class="btn btn-warning btn-xs" onclick="adminChangePlanDirect('${u.uid}','starter')">→ Starter</button></td>
-                </tr>`).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="panel-head"><div class="panel-title"><i class="fas fa-list"></i> All Paid Users</div></div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>User</th><th>Email</th><th>Plan</th><th>Type</th><th>Monthly Value</th><th>Change Plan</th></tr></thead>
-          <tbody>
-            ${[...starter,...pro].map(u=>`
-              <tr>
-                <td style="font-weight:600;font-size:.82rem">${u.name||'—'}</td>
-                <td style="font-size:.78rem;color:var(--muted)">${u.email}</td>
-                <td><span class="badge badge-${u.plan}">${u.plan?.toUpperCase()}</span></td>
-                <td><span class="badge badge-${u.userType||'founder'}">${u.userType||'—'}</span></td>
-                <td style="color:var(--accent3);font-weight:600">₹${u.plan==='pro'?599:299}/mo</td>
-                <td>
-                  <div style="display:flex;gap:.3rem">
-                    ${u.plan!=='free'?`<button class="btn btn-ghost btn-xs" onclick="adminChangePlanDirect('${u.uid}','free')">Free</button>`:''}
-                    ${u.plan!=='starter'?`<button class="btn btn-ghost btn-xs" onclick="adminChangePlanDirect('${u.uid}','starter')">Starter</button>`:''}
-                    ${u.plan!=='pro'?`<button class="btn btn-ghost btn-xs" onclick="adminChangePlanDirect('${u.uid}','pro')">Pro</button>`:''}
-                  </div>
-                </td>
-              </tr>`).join('')}
-          </tbody>
-        </table>
-      </div>
-    </div>`;
+  el.innerHTML=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:1.25rem">${[{name:'Free',count:free.length,color:'var(--accent)',rev:0},{name:'Starter',count:starter.length,color:'var(--blue)',rev:starter.length*299},{name:'Pro',count:pro.length,color:'var(--admin)',rev:pro.length*599}].map(p=>`<div class="kpi-card"><div class="kpi-accent" style="background:${p.color}"></div><div class="kpi-val" style="color:${p.color}">${p.count}</div><div class="kpi-label">${p.name} Users</div><div class="kpi-sub" style="color:var(--accent3);font-size:.8rem;margin-top:.5rem">₹${p.rev.toLocaleString()}/mo</div></div>`).join('')}</div><div class="kpi-card" style="text-align:center;margin-bottom:1.25rem"><div class="kpi-val" style="font-size:2.5rem;color:var(--accent3)">₹${mrr.toLocaleString()}</div><div class="kpi-label">Monthly Recurring Revenue</div></div>`;
 }
 
-// ═══════════════════════════════════════════════
-// ANALYTICS
-// ═══════════════════════════════════════════════
 function renderAnalytics(el){
-  const users=Object.values(_data.users);
-  const reqs=Object.values(_data.requests);
   const creators=Object.values(_data.creators);
-
-  // Niche distribution
+  const reqs=Object.values(_data.requests);
   const nicheCounts={};
   creators.forEach(c=>(c.niches||[]).forEach(n=>nicheCounts[n]=(nicheCounts[n]||0)+1));
   const nicheEntries=Object.entries(nicheCounts).sort((a,b)=>b[1]-a[1]);
   const maxNiche=Math.max(...Object.values(nicheCounts),1);
-
-  // Audience size distribution
-  const audCounts={};
-  creators.forEach(c=>{ if(c.audienceSize) audCounts[c.audienceSize]=(audCounts[c.audienceSize]||0)+1; });
-
-  // Request status breakdown
   const statusCounts={pending:0,accepted:0,declined:0};
-  reqs.forEach(r=>{ if(statusCounts[r.status]!==undefined) statusCounts[r.status]++; });
-
-  el.innerHTML=`
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem">
-      <div class="panel">
-        <div class="panel-head"><div class="panel-title"><i class="fas fa-tag"></i> Niche Distribution</div></div>
-        <div class="panel-body">
-          ${nicheEntries.length?nicheEntries.map(([niche,count])=>`
-            <div style="margin-bottom:.625rem">
-              <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:.25rem">
-                <span>${niche}</span><span style="color:var(--muted)">${count} creator${count!==1?'s':''}</span>
-              </div>
-              <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden">
-                <div style="height:100%;width:${(count/maxNiche*100)}%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:.5s"></div>
-              </div>
-            </div>`).join(''):'<div class="empty" style="padding:1rem"><p>No creator niches data yet</p></div>'}
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="panel-head"><div class="panel-title"><i class="fas fa-chart-pie"></i> Request Status</div></div>
-        <div class="panel-body">
-          ${Object.entries(statusCounts).map(([status,count])=>`
-            <div style="display:flex;align-items:center;gap:.875rem;padding:.875rem;background:var(--surface2);border-radius:.625rem;margin-bottom:.5rem">
-              <div style="width:2.5rem;height:2.5rem;border-radius:.5rem;display:flex;align-items:center;justify-content:center;font-size:1.25rem">
-                ${{pending:'⏳',accepted:'✅',declined:'❌'}[status]}
-              </div>
-              <div style="flex:1">
-                <div style="font-weight:600;font-size:.875rem;text-transform:capitalize">${status}</div>
-                <div style="font-size:.72rem;color:var(--muted)">${reqs.length?Math.round(count/reqs.length*100):0}% of total</div>
-              </div>
-              <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:1.5rem;font-weight:800;letter-spacing:-.04em">${count}</div>
-            </div>`).join('')}
-        </div>
-      </div>
-    </div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
-      <div class="panel">
-        <div class="panel-head"><div class="panel-title"><i class="fas fa-users"></i> Audience Size Distribution</div></div>
-        <div class="panel-body">
-          ${Object.entries(audCounts).length?Object.entries(audCounts).map(([size,count])=>`
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid rgba(34,40,64,.4)">
-              <span style="font-size:.82rem">${size}</span>
-              <div style="display:flex;align-items:center;gap:.625rem">
-                <div style="height:4px;width:${count*20}px;max-width:80px;background:var(--accent3);border-radius:2px"></div>
-                <span style="font-weight:600;font-size:.85rem">${count}</span>
-              </div>
-            </div>`).join(''):'<div class="empty" style="padding:1rem"><p>No data yet</p></div>'}
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="panel-head"><div class="panel-title"><i class="fas fa-star"></i> Top Creators by Engagement</div></div>
-        <div class="panel-body" style="padding:0">
-          <table>
-            <thead><tr><th>Creator</th><th>Audience</th><th>ER</th></tr></thead>
-            <tbody>
-              ${creators.sort((a,b)=>parseFloat(b.engagementRate||0)-parseFloat(a.engagementRate||0)).slice(0,6).map(c=>`
-                <tr>
-                  <td style="font-weight:600;font-size:.82rem">${c.name||'—'}</td>
-                  <td style="font-size:.78rem">${c.audienceSize||'—'}</td>
-                  <td style="color:var(--accent3);font-weight:700;font-size:.85rem">${c.engagementRate||'—'}</td>
-                </tr>`).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>`;
+  reqs.forEach(r=>{if(statusCounts[r.status]!==undefined)statusCounts[r.status]++;});
+  el.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem"><div class="panel"><div class="panel-head"><div class="panel-title"><i class="fas fa-tag"></i> Niche Distribution</div></div><div class="panel-body">${nicheEntries.length?nicheEntries.map(([n,c])=>`<div style="margin-bottom:.625rem"><div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:.25rem"><span>${n}</span><span style="color:var(--muted)">${c}</span></div><div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:${c/maxNiche*100}%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px"></div></div></div>`).join(''):'<div class="empty" style="padding:1rem"><p>No data yet</p></div>'}</div></div><div class="panel"><div class="panel-head"><div class="panel-title"><i class="fas fa-chart-pie"></i> Request Status</div></div><div class="panel-body">${Object.entries(statusCounts).map(([s,c])=>`<div style="display:flex;align-items:center;gap:.875rem;padding:.875rem;background:var(--surface2);border-radius:.625rem;margin-bottom:.5rem"><div style="font-size:1.5rem">${{pending:'⏳',accepted:'✅',declined:'❌'}[s]}</div><div style="flex:1"><div style="font-weight:600;font-size:.875rem;text-transform:capitalize">${s}</div><div style="font-size:.72rem;color:var(--muted)">${reqs.length?Math.round(c/reqs.length*100):0}% of total</div></div><div style="font-size:1.5rem;font-weight:800">${c}</div></div>`).join('')}</div></div></div>`;
 }
 
-// ═══════════════════════════════════════════════
-// FEATURED CONTROL
-// ═══════════════════════════════════════════════
 function renderFeatured(el){
   const creators=Object.entries(_data.creators);
-  const featured=creators.filter(([,c])=>c.featured);
-  const topSearch=creators.filter(([,c])=>c.topSearch);
-
-  el.innerHTML=`
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
-      <div class="panel">
-        <div class="panel-head">
-          <div class="panel-title"><i class="fas fa-star" style="color:var(--gold)"></i> Featured Creators (${featured.length})</div>
-          <div style="font-size:.75rem;color:var(--muted)">Shown with ⭐ badge</div>
-        </div>
-        <div class="panel-body" style="padding:0">
-          <table>
-            <thead><tr><th>Creator</th><th>Niches</th><th>Featured</th><th>Top Search</th></tr></thead>
-            <tbody>
-              ${creators.map(([uid,c])=>`
-                <tr>
-                  <td><div style="font-weight:600;font-size:.82rem">${c.name||'—'}</div><div style="font-size:.7rem;color:var(--muted)">${c.audienceSize||''}</div></td>
-                  <td style="font-size:.72rem">${(c.niches||[]).slice(0,2).join(', ')}</td>
-                  <td><label class="toggle"><input type="checkbox" ${c.featured?'checked':''} onchange="toggleCreatorField('${uid}','featured',this.checked)"><span class="toggle-slider"></span></label></td>
-                  <td><label class="toggle"><input type="checkbox" ${c.topSearch?'checked':''} onchange="toggleCreatorField('${uid}','topSearch',this.checked)"><span class="toggle-slider"></span></label></td>
-                </tr>`).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div style="display:flex;flex-direction:column;gap:1.25rem">
-        <div class="panel">
-          <div class="panel-head"><div class="panel-title"><i class="fas fa-info-circle"></i> Featured Info</div></div>
-          <div class="panel-body">
-            <div class="info-card"><div class="info-label">Featured Creators</div><div class="info-val" style="color:var(--gold)">${featured.length} creators</div></div>
-            <div class="info-card"><div class="info-label">Top Search Creators</div><div class="info-val" style="color:var(--accent)">${topSearch.length} creators</div></div>
-            <div class="info-card"><div class="info-label">Total Creators</div><div class="info-val">${creators.length} creators</div></div>
-            <div style="margin-top:1rem;font-size:.78rem;color:var(--muted);line-height:1.6">
-              <strong style="color:var(--text)">Featured</strong> — Shows ⭐ badge on creator card<br>
-              <strong style="color:var(--text)">Top Search</strong> — Appears at top of search results
-            </div>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="panel-head"><div class="panel-title"><i class="fas fa-bolt"></i> Quick Actions</div></div>
-          <div class="panel-body" style="display:flex;flex-direction:column;gap:.5rem">
-            <button class="btn btn-warning" style="justify-content:center" onclick="clearAllFeatured()"><i class="fas fa-star"></i> Clear All Featured</button>
-            <button class="btn btn-ghost" style="justify-content:center" onclick="clearAllTopSearch()"><i class="fas fa-search"></i> Clear All Top Search</button>
-          </div>
-        </div>
-      </div>
-    </div>`;
+  el.innerHTML=`<div class="panel"><div class="panel-head"><div class="panel-title"><i class="fas fa-star" style="color:var(--gold)"></i> Featured Creators</div></div><div class="panel-body" style="padding:0"><table><thead><tr><th>Creator</th><th>Niches</th><th>Featured</th><th>Top Search</th></tr></thead><tbody>${creators.map(([uid,c])=>`<tr><td style="font-weight:600;font-size:.82rem">${c.name||'—'}</td><td style="font-size:.72rem">${(c.niches||[]).slice(0,2).join(', ')}</td><td><label class="toggle"><input type="checkbox" ${c.featured?'checked':''} onchange="toggleCreatorField('${uid}','featured',this.checked)"><span class="toggle-slider"></span></label></td><td><label class="toggle"><input type="checkbox" ${c.topSearch?'checked':''} onchange="toggleCreatorField('${uid}','topSearch',this.checked)"><span class="toggle-slider"></span></label></td></tr>`).join('')}</tbody></table></div></div>`;
 }
 
-// ═══════════════════════════════════════════════
-// BROADCAST
-// ═══════════════════════════════════════════════
 function renderBroadcast(el){
   const users=Object.values(_data.users);
-  el.innerHTML=`
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
-      <div class="panel">
-        <div class="panel-head"><div class="panel-title"><i class="fas fa-bullhorn"></i> Send Broadcast Message</div></div>
-        <div class="panel-body">
-          <div class="form-group">
-            <label>Target Audience</label>
-            <select class="filter-select" id="bc-target" style="width:100%;padding:.575rem .875rem" onchange="updateBroadcastCount()">
-              <option value="all">All Users (${users.length})</option>
-              <option value="founders">Founders only (${users.filter(u=>u.userType==='founder').length})</option>
-              <option value="creators">Creators only (${users.filter(u=>u.userType==='creator').length})</option>
-              <option value="free">Free plan users (${users.filter(u=>!u.plan||u.plan==='free').length})</option>
-              <option value="paid">Paid users (${users.filter(u=>u.plan==='starter'||u.plan==='pro').length})</option>
-            </select>
-          </div>
-          <div style="background:var(--surface2);border-radius:.5rem;padding:.625rem .875rem;font-size:.8rem;color:var(--muted);margin-bottom:1rem">
-            <i class="fas fa-users"></i> Will reach: <strong style="color:var(--text)" id="bc-count">${users.length}</strong> users
-          </div>
-          <div class="form-group">
-            <label>Message Type</label>
-            <select class="filter-select" id="bc-type" style="width:100%;padding:.575rem .875rem">
-              <option value="info">📢 Announcement</option>
-              <option value="upgrade">🚀 Upgrade Offer</option>
-              <option value="feature">✨ New Feature</option>
-              <option value="custom">✍️ Custom</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Message Title</label>
-            <input id="bc-title" placeholder="e.g. Big news from Posthire!">
-          </div>
-          <div class="form-group">
-            <label>Message Body</label>
-            <textarea id="bc-body" placeholder="Write your message here…" style="min-height:120px"></textarea>
-          </div>
-          <div style="font-size:.75rem;color:var(--muted);margin-bottom:.875rem"><i class="fas fa-info-circle"></i> This saves a broadcast notification to Firebase. In production, connect to email/push service.</div>
-          <button class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem" onclick="sendBroadcast()"><i class="fas fa-paper-plane"></i> Send Broadcast</button>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="panel-head"><div class="panel-title"><i class="fas fa-history"></i> Broadcast History</div></div>
-        <div class="panel-body" id="broadcast-history">
-          <div class="empty"><i class="fas fa-bullhorn"></i><p>No broadcasts sent yet</p></div>
-        </div>
-      </div>
-    </div>`;
-  loadBroadcastHistory();
+  el.innerHTML=`<div class="panel"><div class="panel-head"><div class="panel-title"><i class="fas fa-bullhorn"></i> Send Broadcast Message</div></div><div class="panel-body"><div class="form-group"><label>Target Audience</label><select class="filter-select" id="bc-target" style="width:100%;padding:.575rem .875rem" onchange="updateBroadcastCount()"><option value="all">All Users (${users.length})</option><option value="founders">Founders only (${users.filter(u=>u.userType==='founder').length})</option><option value="creators">Creators only (${users.filter(u=>u.userType==='creator').length})</option></select></div><div style="background:var(--surface2);border-radius:.5rem;padding:.625rem .875rem;font-size:.8rem;color:var(--muted);margin-bottom:1rem"><i class="fas fa-users"></i> Will reach: <strong style="color:var(--text)" id="bc-count">${users.length}</strong> users</div><div class="form-group"><label>Message Title</label><input id="bc-title" placeholder="e.g. Big news from Posthire!"></div><div class="form-group"><label>Message Body</label><textarea id="bc-body" placeholder="Write your message here…" style="min-height:120px"></textarea></div><button class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem" onclick="sendBroadcast()"><i class="fas fa-paper-plane"></i> Send Broadcast</button></div></div>`;
 }
-
 function updateBroadcastCount(){
-  const target=document.getElementById('bc-target')?.value;
-  const users=Object.values(_data.users);
-  const counts={all:users.length,founders:users.filter(u=>u.userType==='founder').length,creators:users.filter(u=>u.userType==='creator').length,free:users.filter(u=>!u.plan||u.plan==='free').length,paid:users.filter(u=>u.plan==='starter'||u.plan==='pro').length};
-  const el=document.getElementById('bc-count');
-  if(el) el.textContent=counts[target]||0;
+  const t=document.getElementById('bc-target')?.value;
+  const u=Object.values(_data.users);
+  const c={all:u.length,founders:u.filter(x=>x.userType==='founder').length,creators:u.filter(x=>x.userType==='creator').length};
+  const el=document.getElementById('bc-count');if(el)el.textContent=c[t]||0;
 }
-
-async function loadBroadcastHistory(){
-  const el=document.getElementById('broadcast-history');
-  if(!el) return;
-  try{
-    const snap=await getDocs(collection(db,'admin_broadcasts'));
-    if(!snap.exists()){el.innerHTML='<div class="empty"><i class="fas fa-bullhorn"></i><p>No broadcasts sent yet</p></div>';return;}
-    const broadcasts=Object.entries(snap.val()).sort((a,b)=>new Date(b[1].sentAt||0)-new Date(a[1].sentAt||0));
-    el.innerHTML=broadcasts.map(([id,b])=>`
-      <div class="log-item">
-        <div class="log-dot" style="background:var(--accent)"></div>
-        <div class="log-text"><strong>${b.title||'Broadcast'}</strong><br><span style="color:var(--muted)">${b.body?.slice(0,60)||''}… → ${b.target} users</span></div>
-        <div class="log-time">${b.sentAt?new Date(b.sentAt).toLocaleDateString('en-IN',{day:'numeric',month:'short'}):''}</div>
-      </div>`).join('');
-  }catch(e){}
-}
-
 async function sendBroadcast(){
   const title=document.getElementById('bc-title')?.value.trim();
   const body=document.getElementById('bc-body')?.value.trim();
   const target=document.getElementById('bc-target')?.value;
   if(!title||!body){toast('Please fill title and message','error');return;}
-  const r=await addDoc(collection(db,'admin_broadcasts'),{title,body,target,type:document.getElementById('bc-type')?.value||'info',sentAt:new Date().toISOString(),sentBy:_admin?.email});
-  await updateDoc(r,{id:r.id});
-  toast(`Broadcast saved! Would reach ${document.getElementById('bc-count')?.textContent||'—'} users`,'success');
-  addLog('broadcast',`Broadcast sent: "${title}" to ${target}`);
-  loadBroadcastHistory();
+  await addDoc(collection(db,'admin_broadcasts'),{title,body,target,sentAt:new Date().toISOString(),sentBy:_admin?.email});
+  toast('Broadcast saved!','success');addLog('broadcast','Broadcast: '+title);
 }
 
-// ═══════════════════════════════════════════════
-// SETTINGS
-// ═══════════════════════════════════════════════
 function renderSettings(el){
-  el.innerHTML=`
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
-      <div>
-        <div class="panel">
-          <div class="panel-head"><div class="panel-title"><i class="fas fa-sliders-h"></i> Platform Settings</div></div>
-          <div class="panel-body">
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem 0;border-bottom:1px solid var(--border)">
-              <div><div style="font-weight:600;font-size:.875rem">Maintenance Mode</div><div style="font-size:.75rem;color:var(--muted)">Show maintenance page to users</div></div>
-              <label class="toggle"><input type="checkbox" id="setting-maintenance" onchange="saveSetting('maintenance',this.checked)"><span class="toggle-slider"></span></label>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem 0;border-bottom:1px solid var(--border)">
-              <div><div style="font-weight:600;font-size:.875rem">Allow New Signups</div><div style="font-size:.75rem;color:var(--muted)">Enable/disable new user registration</div></div>
-              <label class="toggle"><input type="checkbox" id="setting-signups" checked onchange="saveSetting('allowSignups',this.checked)"><span class="toggle-slider"></span></label>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem 0;border-bottom:1px solid var(--border)">
-              <div><div style="font-weight:600;font-size:.875rem">Free Plan Requests</div><div style="font-size:.75rem;color:var(--muted)">Allow free users to send requests</div></div>
-              <label class="toggle"><input type="checkbox" id="setting-free-requests" checked onchange="saveSetting('freeRequests',this.checked)"><span class="toggle-slider"></span></label>
-            </div>
-            <div style="padding:.75rem 0">
-              <div style="font-weight:600;font-size:.875rem;margin-bottom:.5rem">Free Plan Request Limit</div>
-              <div style="display:flex;gap:.5rem;align-items:center">
-                <input type="number" id="setting-free-limit" value="3" min="0" max="50" style="width:80px;background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;padding:.4rem .625rem;color:var(--text);font-size:.85rem;outline:none">
-                <span style="font-size:.8rem;color:var(--muted)">requests/month</span>
-                <button class="btn btn-primary btn-sm" onclick="saveSetting('freeLimit',document.getElementById('setting-free-limit').value)">Save</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="panel-head"><div class="panel-title"><i class="fas fa-shield-alt"></i> Admin Access</div></div>
-          <div class="panel-body">
-            <div style="font-size:.8rem;color:var(--muted);margin-bottom:.875rem">Current admin emails:</div>
-            ${ADMIN_EMAILS.map(e=>`<div style="display:flex;align-items:center;gap:.5rem;padding:.5rem;background:var(--surface2);border-radius:.5rem;margin-bottom:.375rem"><i class="fas fa-shield-alt" style="color:var(--admin);font-size:.75rem"></i><span style="font-size:.82rem">${e}</span></div>`).join('')}
-            <div style="margin-top:.75rem;font-size:.75rem;color:var(--muted)"><i class="fas fa-info-circle"></i> To add admin emails, edit the ADMIN_EMAILS array in the source code.</div>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <div class="panel">
-          <div class="panel-head"><div class="panel-title"><i class="fas fa-database"></i> Database Actions</div></div>
-          <div class="panel-body" style="display:flex;flex-direction:column;gap:.625rem">
-            <button class="btn btn-ghost" style="justify-content:center" onclick="refreshAll().then(()=>toast('Data refreshed!','success'))"><i class="fas fa-sync-alt"></i> Refresh All Data</button>
-            <button class="btn btn-ghost" style="justify-content:center" onclick="exportData()"><i class="fas fa-download"></i> Export All Data (JSON)</button>
-            <button class="btn btn-warning" style="justify-content:center" onclick="reseedDemo()"><i class="fas fa-seedling"></i> Re-seed Demo Creators</button>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="panel-head"><div class="panel-title" style="color:var(--red)"><i class="fas fa-exclamation-triangle" style="color:var(--red)"></i> Danger Zone</div></div>
-          <div class="panel-body">
-            <div class="danger-zone" style="margin-bottom:.75rem">
-              <h4>Delete All Requests</h4>
-              <p>Permanently delete all collaboration requests from the database. This cannot be undone.</p>
-              <button class="btn btn-danger btn-sm" onclick="dangerDeleteAll('requests','all collaboration requests')"><i class="fas fa-trash"></i> Delete All Requests</button>
-            </div>
-            <div class="danger-zone">
-              <h4>Reset Demo Data</h4>
-              <p>Delete demo creators and re-seed fresh demo data.</p>
-              <button class="btn btn-danger btn-sm" onclick="resetDemoData()"><i class="fas fa-redo"></i> Reset Demo Data</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="panel-head"><div class="panel-title"><i class="fas fa-history"></i> Activity Log</div></div>
-          <div class="panel-body" style="max-height:250px;overflow-y:auto" id="activity-log">
-            ${_logs.length?_logs.slice(-15).reverse().map(l=>`
-              <div class="log-item">
-                <div class="log-dot" style="background:${{system:'var(--accent)',broadcast:'var(--gold)',user:'var(--accent3)',error:'var(--red)'}[l.type]||'var(--muted)'}"></div>
-                <div class="log-text">${l.msg}</div>
-                <div class="log-time">${new Date(l.ts).toLocaleTimeString()}</div>
-              </div>`).join(''):'<div class="empty" style="padding:1rem"><p>No activity yet</p></div>'}
-          </div>
-        </div>
-      </div>
-    </div>`;
-  loadPlatformSettings();
+  el.innerHTML=`<div class="panel"><div class="panel-head"><div class="panel-title"><i class="fas fa-cog"></i> Settings</div></div><div class="panel-body"><div class="danger-zone"><h4>Delete All Requests</h4><p>Permanently delete all collaboration requests. Cannot be undone.</p><button class="btn btn-danger btn-sm" onclick="dangerDeleteAll()"><i class="fas fa-trash"></i> Delete All Requests</button></div><div style="margin-top:1rem"><button class="btn btn-ghost" onclick="exportData()"><i class="fas fa-download"></i> Export All Data (JSON)</button></div></div></div><div class="panel"><div class="panel-head"><div class="panel-title"><i class="fas fa-history"></i> Activity Log</div></div><div class="panel-body" style="max-height:300px;overflow-y:auto">${_logs.length?_logs.slice(-15).reverse().map(l=>`<div class="log-item"><div class="log-dot" style="background:${{system:'var(--accent)',broadcast:'var(--gold)',user:'var(--accent3)'}[l.type]||'var(--muted)'}"></div><div class="log-text">${l.msg}</div><div class="log-time">${new Date(l.ts).toLocaleTimeString()}</div></div>`).join(''):'<div class="empty" style="padding:1rem"><p>No activity yet</p></div>'}</div></div>`;
 }
-
-async function loadPlatformSettings(){
-  try{
-    const snap=await getDoc(doc(db,'admin_settings','config'));
-    if(!snap.exists()) return;
-    const s=snap.val();
-    if(document.getElementById('setting-maintenance')) document.getElementById('setting-maintenance').checked=!!s.maintenance;
-    if(document.getElementById('setting-signups')) document.getElementById('setting-signups').checked=s.allowSignups!==false;
-    if(document.getElementById('setting-free-requests')) document.getElementById('setting-free-requests').checked=s.freeRequests!==false;
-    if(document.getElementById('setting-free-limit')) document.getElementById('setting-free-limit').value=s.freeLimit||3;
-  }catch(e){}
+async function dangerDeleteAll(){
+  showConfirm('Delete ALL requests?','This cannot be undone.',async()=>{
+    const snap=await getDocs(collection(db,'requests'));
+    const batch=writeBatch(db);snap.forEach(d=>batch.delete(d.ref));await batch.commit();
+    _data.requests={};updateCounts();toast('All requests deleted','error');
+  },'trash','btn-danger');
 }
-
-async function saveSetting(key,val){
-  await updateDoc(doc(db,'admin_settings','config'),{[key]:val});
-  toast(`Setting "${key}" saved`,'success');
-  addLog('system',`Setting updated: ${key} = ${val}`);
-}
-
-// ═══════════════════════════════════════════════
-// USER ACTIONS
-// ═══════════════════════════════════════════════
-function viewUser(uid){
-  const u=_data.users[uid];
-  const cr=_data.creators[uid];
-  const fo=_data.founders[uid];
-  const reqs=Object.values(_data.requests);
-  const sent=reqs.filter(r=>r.founderId===uid);
-  const recv=reqs.filter(r=>r.creatorId===uid);
-
-  document.getElementById('view-user-content').innerHTML=`
-    <div style="display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.5rem">
-      <div style="width:4rem;height:4rem;border-radius:1rem;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.5rem;color:#fff;flex-shrink:0">${(u.name||'U').charAt(0)}</div>
-      <div>
-        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:1.375rem;font-weight:700;letter-spacing:-.03em">${u.name||'—'}</div>
-        <div style="color:var(--muted);font-size:.85rem;margin:.2rem 0 .5rem">${u.email}</div>
-        <div style="display:flex;gap:.4rem"><span class="badge badge-${u.userType||'founder'}">${u.userType||'—'}</span><span class="badge badge-${u.plan||'free'}">${(u.plan||'free').toUpperCase()}</span><span class="badge ${u.profileComplete?'badge-active':'badge-pending'}">${u.profileComplete?'Profile Complete':'Incomplete'}</span></div>
-      </div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.625rem;margin-bottom:1.25rem">
-      <div class="info-card"><div class="info-label">WhatsApp</div><div class="info-val" style="font-size:.85rem">${u.whatsapp||'—'}</div></div>
-      <div class="info-card"><div class="info-label">Requests Sent</div><div class="info-val">${sent.length}</div></div>
-      <div class="info-card"><div class="info-label">Requests Received</div><div class="info-val">${recv.length}</div></div>
-      <div class="info-card"><div class="info-label">Member Since</div><div class="info-val" style="font-size:.85rem">${u.createdAt?new Date(u.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'—'}</div></div>
-      <div class="info-card" style="grid-column:span 2"><div class="info-label">UID</div><div class="info-val" style="font-size:.7rem;font-family:'JetBrains Mono',monospace;word-break:break-all">${uid}</div></div>
-    </div>
-    ${cr?`<div class="info-card" style="margin-bottom:.625rem"><div class="info-label">Creator Profile</div><div style="font-size:.85rem;margin-top:.25rem"><strong>${cr.audienceSize||'—'}</strong> audience · <strong>${cr.engagementRate||'—'}</strong> ER · ${(cr.niches||[]).join(', ')}</div></div>`:''}
-    ${fo?`<div class="info-card" style="margin-bottom:.625rem"><div class="info-label">Founder Profile</div><div style="font-size:.85rem;margin-top:.25rem"><strong>${fo.startupName||'—'}</strong> · ${fo.industry||'—'} · ${fo.budget||'—'}</div></div>`:''}
-    <div style="display:flex;gap:.5rem;margin-top:1rem;flex-wrap:wrap">
-      <button class="btn btn-ghost btn-sm" onclick="closeModal('view-user-modal');editUser('${uid}')"><i class="fas fa-edit"></i> Edit User</button>
-      <button class="btn btn-warning btn-sm" onclick="closeModal('view-user-modal');changePlan('${uid}','${u.plan||'free'}')"><i class="fas fa-crown"></i> Change Plan</button>
-      <button class="btn btn-danger btn-sm" onclick="closeModal('view-user-modal');deleteUser('${uid}','${u.name||u.email}')"><i class="fas fa-trash"></i> Delete User</button>
-    </div>`;
-  openModal('view-user-modal');
+function exportData(){
+  const blob=new Blob([JSON.stringify({users:_data.users,creators:_data.creators,requests:_data.requests,spotlights:_data.spotlights,exportedAt:new Date().toISOString()},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`posthire_export_${new Date().toISOString().split('T')[0]}.json`;a.click();
+  toast('Data exported!','success');
 }
 
 function editUser(uid){
   const u=_data.users[uid];
-  document.getElementById('edit-user-title').textContent=`Edit: ${u.name||u.email}`;
+  document.getElementById('edit-user-title').textContent='Edit: '+(u.name||u.email);
   document.getElementById('edit-user-err').className='form-err';
-  document.getElementById('edit-user-form').innerHTML=`
-    <div class="form-group"><label>Full Name</label><input id="eu-name" value="${u.name||''}"></div>
-    <div class="form-group"><label>WhatsApp</label><input id="eu-wa" value="${u.whatsapp||''}"></div>
-    <div class="form-group"><label>User Type</label>
-      <select id="eu-type"><option value="founder"${u.userType==='founder'?' selected':''}>Founder</option><option value="creator"${u.userType==='creator'?' selected':''}>Creator</option></select>
-    </div>
-    <div class="form-group"><label>Plan</label>
-      <select id="eu-plan"><option value="free"${(u.plan||'free')==='free'?' selected':''}>Free</option><option value="starter"${u.plan==='starter'?' selected':''}>Starter</option><option value="pro"${u.plan==='pro'?' selected':''}>Pro</option></select>
-    </div>
-    <div class="form-group"><label class="checkbox-row"><input type="checkbox" id="eu-complete" ${u.profileComplete?'checked':''}> Profile Complete</label></div>
-    <div style="display:flex;gap:.5rem;margin-top:1rem">
-      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveEditUser('${uid}')">Save Changes</button>
-      <button class="btn btn-ghost" onclick="closeModal('edit-user-modal')">Cancel</button>
-    </div>`;
+  document.getElementById('edit-user-form').innerHTML=`<div class="form-group"><label>Full Name</label><input id="eu-name" value="${u.name||''}"></div><div class="form-group"><label>User Type</label><select id="eu-type"><option value="founder"${u.userType==='founder'?' selected':''}>Founder</option><option value="creator"${u.userType==='creator'?' selected':''}>Creator</option></select></div><div class="form-group"><label>Plan</label><select id="eu-plan"><option value="free"${(u.plan||'free')==='free'?' selected':''}>Free</option><option value="starter"${u.plan==='starter'?' selected':''}>Starter</option><option value="pro"${u.plan==='pro'?' selected':''}>Pro</option></select></div><div style="display:flex;gap:.5rem;margin-top:1rem"><button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveEditUser('${uid}')">Save</button><button class="btn btn-ghost" onclick="closeModal('edit-user-modal')">Cancel</button></div>`;
   openModal('edit-user-modal');
 }
-
 async function saveEditUser(uid){
-  const updates={name:document.getElementById('eu-name')?.value.trim(),whatsapp:document.getElementById('eu-wa')?.value.trim(),userType:document.getElementById('eu-type')?.value,plan:document.getElementById('eu-plan')?.value,profileComplete:document.getElementById('eu-complete')?.checked};
+  const updates={name:document.getElementById('eu-name')?.value.trim(),userType:document.getElementById('eu-type')?.value,plan:document.getElementById('eu-plan')?.value};
   await updateDoc(doc(db,'users',uid),updates);
   _data.users[uid]={..._data.users[uid],...updates};
-  closeModal('edit-user-modal');
-  toast(`User ${updates.name||uid} updated`,'success');
-  addLog('user',`Edited user: ${updates.name||uid}`);
-  updateCounts();
+  closeModal('edit-user-modal');toast('User updated','success');updateCounts();
 }
-
 function changePlan(uid,currentPlan){
   document.getElementById('edit-user-title').textContent='Change Plan';
   document.getElementById('edit-user-err').className='form-err';
-  document.getElementById('edit-user-form').innerHTML=`
-    <div style="font-size:.85rem;color:var(--muted);margin-bottom:1rem">Current plan: <strong style="color:var(--text)">${currentPlan?.toUpperCase()}</strong></div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.625rem;margin-bottom:1rem">
-      ${['free','starter','pro'].map(p=>`
-        <button class="btn btn-${p==='free'?'ghost':p==='starter'?'primary':'danger'}" style="justify-content:center;flex-direction:column;gap:.2rem;padding:.875rem;opacity:${p===currentPlan?.toLowerCase()?.replace(' ','')?.split(' ')[0]?'.5':'1'}" onclick="adminChangePlanDirect('${uid}','${p}');closeModal('edit-user-modal')">
-          <span style="font-weight:700">${p.toUpperCase()}</span>
-          <span style="font-size:.7rem">${p==='free'?'₹0':p==='starter'?'₹299':p==='pro'?'₹599':''}/mo</span>
-        </button>`).join('')}
-    </div>
-    <button class="btn btn-ghost" style="width:100%;justify-content:center" onclick="closeModal('edit-user-modal')">Cancel</button>`;
+  document.getElementById('edit-user-form').innerHTML=`<div style="font-size:.85rem;color:var(--muted);margin-bottom:1rem">Current: <strong style="color:var(--text)">${currentPlan?.toUpperCase()}</strong></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.625rem;margin-bottom:1rem">${['free','starter','pro'].map(p=>`<button class="btn btn-ghost" style="justify-content:center;flex-direction:column;gap:.2rem;padding:.875rem" onclick="adminChangePlanDirect('${uid}','${p}');closeModal('edit-user-modal')"><span style="font-weight:700">${p.toUpperCase()}</span><span style="font-size:.7rem">${p==='free'?'₹0':p==='starter'?'₹299':'₹599'}/mo</span></button>`).join('')}</div><button class="btn btn-ghost" style="width:100%;justify-content:center" onclick="closeModal('edit-user-modal')">Cancel</button>`;
   openModal('edit-user-modal');
 }
-
 async function adminChangePlanDirect(uid,plan){
   await updateDoc(doc(db,'users',uid),{plan});
-  if(_data.users[uid]) _data.users[uid].plan=plan;
-  toast(`Plan changed to ${plan.toUpperCase()}`,'success');
-  addLog('user',`Plan changed for ${_data.users[uid]?.name||uid}: ${plan}`);
-  updateCounts();
-  const cur=document.getElementById('topbar-title')?.textContent;
-  if(cur?.includes('Plans')) renderPlans(document.getElementById('main-content'));
+  if(_data.users[uid])_data.users[uid].plan=plan;
+  toast('Plan changed to '+plan.toUpperCase(),'success');updateCounts();
 }
-
 function deleteUser(uid,name){
-  showConfirm(`Delete "${name}"?`,`This will permanently delete the user account, their profile, and all associated data. This CANNOT be undone.`,async()=>{
+  showConfirm('Delete "'+name+'"?','This will permanently delete the user account.',async()=>{
     await Promise.all([deleteDoc(doc(db,'users',uid)),deleteDoc(doc(db,'creators',uid)),deleteDoc(doc(db,'founders',uid))]);
     delete _data.users[uid];delete _data.creators[uid];delete _data.founders[uid];
-    toast(`User "${name}" deleted`,'success');
-    addLog('user',`Deleted user: ${name} (${uid})`);
-    updateCounts();
-    showPage('users');
+    toast('User deleted','success');updateCounts();showPage('users');
   },'trash','btn-danger');
 }
 
-// ═══════════════════════════════════════════════
-// CREATOR ACTIONS
-// ═══════════════════════════════════════════════
 async function toggleCreatorField(uid,field,val){
   await updateDoc(doc(db,'creators',uid),{[field]:val});
-  if(_data.creators[uid]) _data.creators[uid][field]=val;
-  toast(`Creator ${field} ${val?'enabled':'disabled'}`,'success');
-  addLog('user',`Creator ${_data.creators[uid]?.name||uid}: ${field}=${val}`);
+  if(_data.creators[uid])_data.creators[uid][field]=val;
+  toast('Creator '+field+' '+(val?'enabled':'disabled'),'success');
 }
-
 function editCreator(uid){
   const c=_data.creators[uid];
   const niches=['AI','Finance','Startup','Tech','Lifestyle','Business','Marketing','SaaS','Education','Health'];
   document.getElementById('edit-creator-err').className='form-err';
-  document.getElementById('edit-creator-form').innerHTML=`
-    <div class="form-group"><label>Name</label><input id="ec-name" value="${c.name||''}"></div>
-    <div class="form-group"><label>Bio</label><textarea id="ec-bio">${c.bio||''}</textarea></div>
-    <div class="form-group"><label>Niches</label>
-      <div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.375rem">
-        ${niches.map(n=>`<div style="font-size:.72rem;font-weight:600;padding:.3em .7em;border-radius:.375rem;cursor:pointer;transition:.15s;background:${(c.niches||[]).includes(n)?'rgba(108,99,255,.15)':'var(--surface2)'};border:1px solid ${(c.niches||[]).includes(n)?'rgba(108,99,255,.4)':'var(--border)'};color:${(c.niches||[]).includes(n)?'var(--accent)':'var(--muted)'}" onclick="this.dataset.active=this.dataset.active==='1'?'0':'1';this.style.background=this.dataset.active==='1'?'rgba(108,99,255,.15)':'var(--surface2)';this.style.borderColor=this.dataset.active==='1'?'rgba(108,99,255,.4)':'var(--border)';this.style.color=this.dataset.active==='1'?'var(--accent)':'var(--muted)'" data-n="${n}" data-active="${(c.niches||[]).includes(n)?'1':'0'}">${n}</div>`).join('')}
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>Audience Size</label>
-        <select id="ec-aud"><option value="">—</option>${['1K-10K','10K-50K','50K-100K','100K-500K','500K+'].map(v=>`<option${c.audienceSize===v?' selected':''}>${v}</option>`).join('')}</select>
-      </div>
-      <div class="form-group"><label>Engagement Rate</label><input id="ec-er" value="${c.engagementRate||''}"></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>Pricing</label><input id="ec-price" value="${c.pricing||''}"></div>
-      <div class="form-group"><label>WhatsApp</label><input id="ec-wa" value="${c.whatsapp||''}"></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label class="checkbox-row"><input type="checkbox" id="ec-feat" ${c.featured?'checked':''}> Featured</label></div>
-      <div class="form-group"><label class="checkbox-row"><input type="checkbox" id="ec-top" ${c.topSearch?'checked':''}> Top Search</label></div>
-    </div>
-    <div style="display:flex;gap:.5rem;margin-top:1rem">
-      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveEditCreator('${uid}')">Save</button>
-      <button class="btn btn-ghost" onclick="closeModal('edit-creator-modal')">Cancel</button>
-    </div>`;
+  document.getElementById('edit-creator-form').innerHTML=`<div class="form-group"><label>Name</label><input id="ec-name" value="${c.name||''}"></div><div class="form-group"><label>Bio</label><textarea id="ec-bio">${c.bio||''}</textarea></div><div class="form-group"><label>Niches</label><div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.375rem">${niches.map(n=>`<div style="font-size:.72rem;font-weight:600;padding:.3em .7em;border-radius:.375rem;cursor:pointer;transition:.15s;background:${(c.niches||[]).includes(n)?'rgba(108,99,255,.15)':'var(--surface2)'};border:1px solid ${(c.niches||[]).includes(n)?'rgba(108,99,255,.4)':'var(--border)'};color:${(c.niches||[]).includes(n)?'var(--accent)':'var(--muted)'}" onclick="this.dataset.active=this.dataset.active==='1'?'0':'1';this.style.background=this.dataset.active==='1'?'rgba(108,99,255,.15)':'var(--surface2)';this.style.borderColor=this.dataset.active==='1'?'rgba(108,99,255,.4)':'var(--border)';this.style.color=this.dataset.active==='1'?'var(--accent)':'var(--muted)'" data-n="${n}" data-active="${(c.niches||[]).includes(n)?'1':'0'}">${n}</div>`).join('')}</div></div><div class="form-row"><div class="form-group"><label>Audience Size</label><select id="ec-aud"><option value="">—</option>${['1K-10K','10K-50K','50K-100K','100K-500K','500K+'].map(v=>`<option${c.audienceSize===v?' selected':''}>${v}</option>`).join('')}</select></div><div class="form-group"><label>Engagement Rate</label><input id="ec-er" value="${c.engagementRate||''}"></div></div><div style="display:flex;gap:.5rem;margin-top:1rem"><button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveEditCreator('${uid}')">Save</button><button class="btn btn-ghost" onclick="closeModal('edit-creator-modal')">Cancel</button></div>`;
   openModal('edit-creator-modal');
 }
-
 async function saveEditCreator(uid){
-  const niches=[...document.querySelectorAll('#edit-creator-form [data-n]')].filter(el=>el.dataset.active==='1').map(el=>el.dataset.n);
-  const updates={name:document.getElementById('ec-name')?.value.trim(),bio:document.getElementById('ec-bio')?.value.trim(),niches,audienceSize:document.getElementById('ec-aud')?.value,engagementRate:document.getElementById('ec-er')?.value.trim(),pricing:document.getElementById('ec-price')?.value.trim(),whatsapp:document.getElementById('ec-wa')?.value.trim(),featured:document.getElementById('ec-feat')?.checked,topSearch:document.getElementById('ec-top')?.checked};
+  const niches=[...document.querySelectorAll('#edit-creator-form [data-n]')].filter(e=>e.dataset.active==='1').map(e=>e.dataset.n);
+  const updates={name:document.getElementById('ec-name')?.value.trim(),bio:document.getElementById('ec-bio')?.value.trim(),niches,audienceSize:document.getElementById('ec-aud')?.value,engagementRate:document.getElementById('ec-er')?.value.trim()};
   await updateDoc(doc(db,'creators',uid),updates);
   _data.creators[uid]={..._data.creators[uid],...updates};
-  closeModal('edit-creator-modal');
-  toast('Creator updated','success');
-  addLog('user',`Edited creator: ${updates.name||uid}`);
+  closeModal('edit-creator-modal');toast('Creator updated','success');
 }
-
 function deleteCreator(uid,name){
-  showConfirm(`Delete creator "${name}"?`,'This will remove their creator profile. The user account will remain.',async()=>{
-    await deleteDoc(doc(db,'creators',uid));
-    delete _data.creators[uid];
-    toast(`Creator "${name}" deleted`,'success');
-    addLog('user',`Deleted creator: ${name}`);
-    showPage('creators');
+  showConfirm('Delete creator "'+name+'"?','Creator profile will be removed.',async()=>{
+    await deleteDoc(doc(db,'creators',uid));delete _data.creators[uid];
+    toast('Creator deleted','success');showPage('creators');
   },'trash','btn-danger');
 }
 
-// ═══════════════════════════════════════════════
-// REQUEST ACTIONS
-// ═══════════════════════════════════════════════
-async function updateReqStatus(id,status){
-  await updateDoc(doc(db,'requests',id),{status});
-  if(_data.requests[id]) _data.requests[id].status=status;
-  toast(`Request ${status}`,'success');
-  addLog('system',`Request ${id} marked as ${status}`);
-  const tbody=document.getElementById('reqs-tbody');
-  if(tbody) tbody.innerHTML=buildRequestsRows(Object.entries(_data.requests));
-}
-
-function deleteRequest(id){
-  showConfirm('Delete this request?','This will permanently remove the collaboration request.',async()=>{
-    await deleteDoc(doc(db,'requests',id));
-    delete _data.requests[id];
-    toast('Request deleted','success');
-    addLog('system',`Deleted request: ${id}`);
-    showPage('requests');
-  },'trash','btn-danger');
-}
-
-// ═══════════════════════════════════════════════
-// FEATURED ACTIONS
-// ═══════════════════════════════════════════════
-function clearAllFeatured(){
-  showConfirm('Clear all featured creators?','This will remove the Featured badge from all creators.',async()=>{
-    const batch=writeBatch(db);
-    Object.keys(_data.creators).forEach(uid=>{ batch.update(doc(db,'creators',uid),{featured:false}); _data.creators[uid].featured=false; });
-    await batch.commit();
-    toast('All featured cleared','success');
-    addLog('system','Cleared all featured creators');
-    showPage('featured');
-  },'star','btn-warning');
-}
-function clearAllTopSearch(){
-  showConfirm('Clear all top search creators?','This will reset the top search ordering for all creators.',async()=>{
-    const batch=writeBatch(db);
-    Object.keys(_data.creators).forEach(uid=>{ batch.update(doc(db,'creators',uid),{topSearch:false}); _data.creators[uid].topSearch=false; });
-    await batch.commit();
-    toast('All top search cleared','success');
-    addLog('system','Cleared all top search creators');
-    showPage('featured');
-  },'search','btn-warning');
-}
-
-// ═══════════════════════════════════════════════
-// SETTINGS ACTIONS
-// ═══════════════════════════════════════════════
-function exportData(){
-  const data={users:_data.users,creators:_data.creators,founders:_data.founders,requests:_data.requests,exportedAt:new Date().toISOString(),exportedBy:_admin?.email};
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download=`posthire_export_${new Date().toISOString().split('T')[0]}.json`;
-  a.click();
-  toast('Data exported!','success');
-  addLog('system','Data exported to JSON');
-}
-
-async function reseedDemo(){
-  showConfirm('Re-seed demo creators?','This will reset the seeded flag so demo creators get re-added on next page load.',async()=>{
-    await deleteDoc(doc(db,'_meta','seeded'));
-    toast('Demo seed flag cleared. Refresh the main dashboard to re-seed.','info');
-  },'seedling','btn-warning');
-}
-
-function resetDemoData(){
-  showConfirm('Reset demo data?','This will delete all demo creators (d1-d6) and clear the seed flag.',async()=>{
-    const demoIds=['d1','d2','d3','d4','d5','d6'];
-    await Promise.all([...demoIds.map(id=>deleteDoc(doc(db,'creators',id))),deleteDoc(doc(db,'_meta','seeded'))]);
-    demoIds.forEach(id=>delete _data.creators[id]);
-    toast('Demo data reset!','success');
-    addLog('system','Demo data reset');
-    showPage('creators');
-  },'redo','btn-danger');
-}
-
-function dangerDeleteAll(collection,label){
-  showConfirm(`Delete ALL ${label}?`,`This will permanently delete ALL records from the ${collection} collection. This CANNOT be undone.`,async()=>{
-    const snap=await getDocs(collection(db,collection));
-    const batch=writeBatch(db);
-    snap.forEach(d=>batch.delete(d.ref));
-    await batch.commit();
-    _data[collection]={};
-    toast(`All ${label} deleted`,'error');
-    addLog('system',`DANGER: Deleted all ${collection}`);
-    updateCounts();
-  },'exclamation-triangle','btn-danger');
-}
-
-// ═══════════════════════════════════════════════
-// MODAL HELPERS
-// ═══════════════════════════════════════════════
-function openModal(id){ document.getElementById(id).classList.add('open'); }
-function closeModal(id){ document.getElementById(id).classList.remove('open'); }
-
-function showConfirm(title,msg,cb,icon='exclamation-triangle',btnClass='btn-danger'){
-  document.getElementById('confirm-icon').textContent={trash:'🗑️',star:'⭐',search:'🔍',seedling:'🌱',redo:'🔄','exclamation-triangle':'⚠️'}[icon]||'⚠️';
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function showConfirm(title,msg,cb,icon='trash',btnClass='btn-danger'){
+  document.getElementById('confirm-icon').textContent={trash:'🗑️',star:'⭐',search:'🔍'}[icon]||'⚠️';
   document.getElementById('confirm-title').textContent=title;
   document.getElementById('confirm-msg').textContent=msg;
-  const btn=document.getElementById('confirm-btn');
-  btn.className=`btn ${btnClass}`;
-  btn.onclick=()=>{ closeModal('confirm-modal'); cb(); };
+  const btn=document.getElementById('confirm-btn');btn.className='btn '+btnClass;
+  btn.onclick=()=>{closeModal('confirm-modal');cb();};
   openModal('confirm-modal');
 }
-
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open')); });
-
-// ═══════════════════════════════════════════════
-// TOAST & LOG
-// ═══════════════════════════════════════════════
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open'));});
 function toast(msg,type='info'){
-  const c=document.getElementById('toast-box');
-  const t=document.createElement('div');
-  t.className=`toast ${type}`;
+  const c=document.getElementById('toast-box');const t=document.createElement('div');t.className='toast '+type;
   const icons={success:'check-circle',error:'exclamation-circle',info:'info-circle',warning:'exclamation-triangle'};
   t.innerHTML=`<i class="fas fa-${icons[type]||'info-circle'}"></i> ${msg}`;
-  c.appendChild(t);
-  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(1rem)';setTimeout(()=>t.remove(),300);},4000);
+  c.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(1rem)';setTimeout(()=>t.remove(),300);},4000);
 }
+function addLog(type,msg){_logs.push({type,msg,ts:Date.now()});}
 
-function addLog(type,msg){ _logs.push({type,msg,ts:Date.now()}); }
+Object.assign(window,{adminLogin,adminLogout,showPage,refreshAll,renderSpotlight,openSpotlightModal,previewSpotlightVideo,saveSpotlight,toggleSpotlightActive,updateSpotlightOrder,deleteSpotlight,hideAllSpotlights,activateAllSpotlights,editUser,saveEditUser,changePlan,adminChangePlanDirect,deleteUser,editCreator,saveEditCreator,deleteCreator,toggleCreatorField,updateReqStatus,deleteRequest,filterUsersTable,sendBroadcast,updateBroadcastCount,dangerDeleteAll,exportData,openModal,closeModal});
 
-// Expose to window
-Object.assign(window,{adminLogin,adminLogout,showPage,refreshAll,viewUser,editUser,saveEditUser,changePlan,adminChangePlanDirect,deleteUser,editCreator,saveEditCreator,deleteCreator,toggleCreatorField,updateReqStatus,deleteRequest,clearAllFeatured,clearAllTopSearch,filterUsersTable,filterCreatorsTable,filterRequestsTable,sendBroadcast,updateBroadcastCount,saveSetting,exportData,reseedDemo,resetDemoData,dangerDeleteAll,openModal,closeModal});
 </script>
 </body>
 </html>
-
