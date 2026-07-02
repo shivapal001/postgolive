@@ -1714,33 +1714,46 @@ async function renderMobileHomeFounder(el){
     if(ranked.length) trending=ranked.slice(0,5);
   }catch(e){}
 
-  // Creator Spotlight — real featured/top creators, vertical photo cards
+  // Creator Spotlight — Firestore spotlight_creators (admin-managed, video URL based)
   let spotlightHTML='';
   try{
-    const creators=await DB.getCreators();
-    const list=Object.entries(creators).filter(([id])=>id!==_me.uid);
-    const featured=list.filter(([,c])=>c.featured).concat(list.filter(([,c])=>!c.featured)).slice(0,8);
-    spotlightHTML=featured.map(([id,c])=>{
-      const hue=hashColor(id);
-      const img=c.profilePhoto
-        ? `<img src="${c.profilePhoto}" style="width:100%;height:100%;object-fit:cover">`
-        : `<div style="width:100%;height:100%;background:linear-gradient(160deg,hsl(${hue},65%,38%),hsl(${hue+45},65%,22%))"></div>`;
-      return `<div class="mh3-spot-card">
-        <div class="mh3-spot-img" onclick="openChatForRequest('${_me.uid}','${id}')">
-          ${img}
-          <div class="mh3-spot-grad"></div>
-          ${c.featured?`<div class="mh3-spot-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg> PRO</div>`:''}
-          <div class="mh3-spot-play"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div>
-          <div class="mh3-spot-info">
-            <div class="mh3-spot-name">${escHtml(c.name||'Creator')}</div>
-            <div class="mh3-spot-niche">${(c.niches||[]).slice(0,2).join(' & ')||'Creator'}</div>
+    const spSnap=await getDocs(collection(db,'spotlight_creators'));
+    const spots=[];
+    spSnap.forEach(d=>spots.push({id:d.id,...d.data()}));
+    const activeSpots=spots.filter(s=>s.active!==false).sort((a,b)=>(a.order||99)-(b.order||99));
+    if(activeSpots.length>0){
+      spotlightHTML=activeSpots.map(s=>`
+        <div class="mh3-spot-card">
+          <div class="mh3-spot-img" onclick="${s.creatorId?`openChatForRequest('${_me.uid}','${s.creatorId}')`:'void(0)'}">
+            ${s.videoUrl
+              ?`<video src="${s.videoUrl}" muted playsinline loop preload="metadata"
+                  poster="${s.thumbnailUrl||''}"
+                  style="width:100%;height:100%;object-fit:cover;display:block"
+                  oncanplay="this.play()"
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                </video>
+                <div style="display:none;width:100%;height:100%;background:linear-gradient(135deg,#1e1b4b,#312e81);align-items:center;justify-content:center">
+                  <i class="fas fa-video" style="font-size:2.5rem;color:rgba(255,255,255,.25)"></i>
+                </div>`
+              :`<div style="width:100%;height:100%;background:linear-gradient(135deg,#1e1b4b,#312e81);display:flex;align-items:center;justify-content:center">
+                  <i class="fas fa-user-circle" style="font-size:3rem;color:rgba(255,255,255,.25)"></i>
+                </div>`}
+            <div class="mh3-spot-grad"></div>
+            ${s.plan?`<div class="mh3-spot-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg> ${escHtml(s.plan)}</div>`:''}
+            <div class="mh3-spot-info">
+              <div class="mh3-spot-name">${escHtml(s.creatorName||'Creator')}</div>
+              <div class="mh3-spot-niche">${escHtml((s.niches||[]).slice(0,2).join(' & ')||'')}</div>
+            </div>
           </div>
-        </div>
-        <button class="mh3-spot-btn" onclick="openChatForRequest('${_me.uid}','${id}')">Watch Sample</button>
-      </div>`;
-    }).join('');
-  }catch(e){}
-  if(!spotlightHTML) spotlightHTML=`<div class="mh3-empty-inline">No creators yet — check back soon.</div>`;
+          <button class="mh3-spot-btn"
+            onclick="${s.creatorId?`openChatForRequest('${_me.uid}','${s.creatorId}')`:'void(0)'}"
+            style="${!s.creatorId?'cursor:default;opacity:.5':''}">
+            Watch Sample
+          </button>
+        </div>`).join('');
+    }
+  }catch(e){ console.warn('Spotlight load failed:',e); }
+  if(!spotlightHTML) spotlightHTML=`<div class="mh3-empty-inline">No spotlight creators yet.</div>`;
 
   el.innerHTML=`
   <div class="mh3-root">
