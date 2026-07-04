@@ -780,6 +780,8 @@ button:active{
 .ph-hero-carousel{position:relative;border-radius:var(--ph-radius);overflow:hidden;margin-bottom:1.25rem;}
 .ph-hero-track{display:flex;will-change:transform;transition:transform .55s cubic-bezier(.65,0,.35,1);}
 .ph-hero-slide{flex:0 0 100%;width:100%;min-height:180px;padding:1.35rem 1.4rem;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;box-sizing:border-box;}
+.ph-hero-slide-img{padding:0;aspect-ratio:16/9;}
+.ph-hero-slide-img img{width:100%;height:100%;object-fit:cover;display:block;border:none;outline:none;box-shadow:none;}
 .ph-hero-slide::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 88% 12%,rgba(255,255,255,.16),transparent 55%);pointer-events:none;}
 .ph-hero-eyebrow{font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.75);margin-bottom:.35rem;position:relative;z-index:1;}
 .ph-hero-heading{font-size:1.18rem;font-weight:800;color:#fff;line-height:1.28;letter-spacing:-.02em;max-width:78%;position:relative;z-index:1;}
@@ -2037,34 +2039,18 @@ async function renderMobileHomeNew(el){
 
       <div class="ph-hero-carousel" id="phHeroCarousel">
         <div class="ph-hero-track" id="phHeroTrack">
-          <div class="ph-hero-slide" style="background:linear-gradient(135deg,#231F1C 0%,#4A2C1F 45%,${'var(--ph-accent)'} 115%)">
-            <div class="ph-hero-eyebrow">PostHire</div>
-            <div class="ph-hero-heading">Build Powerful Collaborations That Grow Brands</div>
-            <div class="ph-hero-sub">Connect with verified creators and grow together.</div>
-            <button class="ph-hero-cta" onclick="showSection('${isC?'campaigns':'creators'}')">${isC?'Find Campaigns':'Find Creators'} →</button>
+          <div class="ph-hero-slide ph-hero-slide-img">
+            <img src="assets/banner-collab.png" alt="Build Powerful Collaborations">
           </div>
-          <div class="ph-hero-slide" style="background:linear-gradient(135deg,var(--ph-accent) 0%,var(--ph-accent2) 60%,#FFC7A8 130%)">
-            <div class="ph-hero-eyebrow">Live On PostHire</div>
-            <div class="ph-hero-flip"><b>${String(totalCreators||25).padStart(2,'0')[0]}</b><b>${String(totalCreators||25).padStart(2,'0')[1]||'0'}</b><b>K</b><b>+</b></div>
-            <div class="ph-hero-heading" style="font-size:1.02rem;max-width:85%">Verified Creators Ready To Collaborate</div>
-            <div class="ph-hero-badge-fig"><span>⚡ Growing daily</span></div>
+          <div class="ph-hero-slide ph-hero-slide-img">
+            <img src="assets/banner-creators.png" alt="26,000+ Verified Creators">
           </div>
-          <div class="ph-hero-slide" style="background:linear-gradient(150deg,#231F1C 0%,#3D2A1F 50%,var(--ph-accent) 140%)">
-            <div class="ph-hero-eyebrow">Why PostHire</div>
-            <div class="ph-hero-feats">
-              <div class="ph-hero-feat"><div class="ph-hero-feat-ic">🤖</div><span>Automate<br>Outreach</span></div>
-              <div class="ph-hero-feat"><div class="ph-hero-feat-ic">📈</div><span>Track<br>Campaign ROI</span></div>
-              <div class="ph-hero-feat"><div class="ph-hero-feat-ic">💸</div><span>Get Paid<br>Faster</span></div>
-            </div>
-          </div>
-          <div class="ph-hero-slide" style="background:linear-gradient(135deg,var(--ph-accent2) 0%,var(--ph-accent) 65%,#231F1C 145%)">
-            <div class="ph-hero-eyebrow">New</div>
-            <div class="ph-hero-heading">How Much Should You Charge For A Post?</div>
-            <button class="ph-hero-cta" onclick="showSection('${isC?'creators':'campaigns'}')">Calculate Now →</button>
+          <div class="ph-hero-slide ph-hero-slide-img">
+            <img src="assets/banner-alltypes.png" alt="All Type of Creators">
           </div>
         </div>
         <div class="ph-hero-dots" id="phHeroDots">
-          <span class="ph-hero-dot active"></span><span class="ph-hero-dot"></span><span class="ph-hero-dot"></span><span class="ph-hero-dot"></span>
+          <span class="ph-hero-dot active"></span><span class="ph-hero-dot"></span><span class="ph-hero-dot"></span>
         </div>
       </div>
 
