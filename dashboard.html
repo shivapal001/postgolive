@@ -1914,7 +1914,313 @@ async function renderMobileHomeNew(el){
   updateNotifBadge();
 }
 
-// Returns flat 30% bars when there's no real history yet — never invents growth.
+// ═══════════════════════════════════════════════════════════════════
+// MOBILE SCREENS — ph-* warm design, matching posthire-full-redesign-preview
+// Each builds a full-bleed ph-mob-root with bottom nav wired to showSection()
+// ═══════════════════════════════════════════════════════════════════
+
+function phMobileShell(activeTab, bodyHTML){
+  const tabs=[
+    {id:'home',  icon:'fa-home',     label:'Home'},
+    {id:'creators',icon:'fa-compass',label:'Discover'},
+    {id:'messages',icon:'fa-comment',label:'Messages'},
+    {id:'campaigns',icon:'fa-bullhorn',label:'Campaigns'},
+    {id:'profile',icon:'fa-user',    label:'Profile'},
+  ];
+  return `<div class="ph-mob-root">
+    <div class="ph-scroll" style="flex:1;overflow-y:auto;padding:0 1.25rem 1rem">
+      ${bodyHTML}
+    </div>
+    <div class="ph-navbar">
+      ${tabs.map(t=>`<button class="ph-nav-item${t.id===activeTab?' active':''}" onclick="showSection('${t.id}')">
+        <i class="fas ${t.icon}"></i>${t.label}
+      </button>`).join('')}
+    </div>
+  </div>`;
+}
+
+function phHeader(title, rightHTML=''){
+  return `<div class="ph-header">
+    <div class="ph-logo"><i class="fas fa-asterisk" style="color:var(--ph-accent)"></i> ${title}</div>
+    <div class="ph-header-icons">${rightHTML}</div>
+  </div>`;
+}
+
+// ── DISCOVER (Creators) ──────────────────────────────────────────
+async function renderMobileDiscover(el){
+  const isC=_me.userType==='creator';
+  let creators={}; try{creators=await DB.getCreators();}catch(e){}
+  const list=Object.entries(creators).filter(([id])=>id!==_me.uid);
+  const NICHES=['All','Tech','Lifestyle','Business','Fitness','Beauty','Finance','Fashion','UGC','Food'];
+
+  const creatorCards=list.slice(0,20).map(([id,c])=>{
+    const hue=hashColor(id);
+    const ava=c.profilePhoto
+      ?`<img src="${c.profilePhoto}">`
+      :`<div style="width:100%;height:100%;background:linear-gradient(135deg,hsl(${hue},65%,50%),hsl(${hue+40},65%,35%));display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;color:#fff">${(c.name||'C').charAt(0)}</div>`;
+    const tags=(c.niches||[]).slice(0,2).map(n=>`<span class="ph-creator-tag">${escHtml(n)}</span>`).join('');
+    const action=isC
+      ? `<button class="ph-creator-btn" onclick="showSection('campaigns')">Browse Campaigns</button>`
+      : `<button class="ph-creator-btn" onclick="openChatForRequest('${_me.uid}','${id}')">Connect</button>`;
+    return `<div class="ph-creator-card">
+      <div class="ph-creator-top">
+        <div class="ph-creator-ava">${ava}</div>
+        <div style="flex:1;min-width:0">
+          <div class="ph-creator-name">${escHtml(c.name||'Creator')} <i class="fas fa-circle-check" style="color:var(--ph-blue);font-size:.7rem"></i></div>
+          <div class="ph-creator-meta">${escHtml(c.audienceSize||c.followers||'')}${c.engagementRate?` · ${c.engagementRate}% ER`:''}</div>
+        </div>
+        ${c.featured?`<span class="ph-creator-badge">TOP</span>`:''}
+      </div>
+      <div class="ph-creator-tags">${tags||`<span class="ph-creator-tag">Creator</span>`}</div>
+      <div class="ph-creator-stats-row">
+        <div class="ph-creator-stat"><div class="ph-creator-stat-val">${c.collabsCount||'—'}</div><div class="ph-creator-stat-label">Collabs</div></div>
+        <div class="ph-creator-stat"><div class="ph-creator-stat-val">${c.rate||'—'}</div><div class="ph-creator-stat-label">Rate</div></div>
+        <div class="ph-creator-stat"><div class="ph-creator-stat-val">${c.audienceSize||'—'}</div><div class="ph-creator-stat-label">Audience</div></div>
+      </div>
+      ${action}
+    </div>`;
+  }).join('');
+
+  const body=`
+    ${phHeader('PostHire',`<div class="ph-icon-btn" onclick="showSection('notifications')"><i class="fas fa-bell"></i><span class="ph-badge" id="mob-notif-badge" style="display:none">0</span></div>`)}
+    <div class="ph-search-bar">
+      <i class="fas fa-search" style="color:var(--ph-muted)"></i>
+      <input placeholder="Search creators, niches…" id="mob-disc-search" oninput="mobDiscFilter(this.value)" style="border:none;outline:none;background:transparent;font-size:.85rem;flex:1;font-family:'Inter',sans-serif;color:var(--ph-text)">
+    </div>
+    <div class="ph-tabs">
+      ${NICHES.map((n,i)=>`<button class="ph-tab${i===0?' active':''}" onclick="mobDiscNiche(this,'${n}')">${n}</button>`).join('')}
+    </div>
+    <div id="mob-disc-list">${creatorCards||`<div class="ph-empty-inline">No creators found.</div>`}</div>
+  `;
+  el.innerHTML=phMobileShell('creators',body);
+  updateNotifBadge();
+
+  window.mobDiscFilter=function(q){
+    document.querySelectorAll('#mob-disc-list .ph-creator-card').forEach(card=>{
+      const text=card.textContent.toLowerCase();
+      card.style.display=text.includes(q.toLowerCase())?'':'none';
+    });
+  };
+  window.mobDiscNiche=function(btn,niche){
+    document.querySelectorAll('.ph-tabs .ph-tab').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('#mob-disc-list .ph-creator-card').forEach((card,i)=>{
+      card.style.display=(niche==='All'||card.textContent.includes(niche))?'':'none';
+    });
+  };
+}
+
+// ── CAMPAIGNS ──────────────────────────────────────────────────────
+async function renderMobileCampaigns(el){
+  const isC=_me.userType==='creator';
+  let campaigns={}; try{campaigns=await DB.getCampaigns();}catch(e){}
+  const allCamps=Object.entries(campaigns);
+  const myCamps=isC
+    ? allCamps.filter(([,c])=>c.status==='open')
+    : allCamps.filter(([,c])=>c.founderId===_me.uid);
+
+  const open=myCamps.filter(([,c])=>c.status==='open').length;
+  const draft=myCamps.filter(([,c])=>c.status==='draft').length;
+  const total=myCamps.length;
+  let myApps={}; if(isC) try{myApps=await DB.getMyApplications(_me.uid);}catch(e){}
+  const appIds=new Set(Object.values(myApps).map(a=>a.campaignId));
+
+  const campCards=myCamps.map(([id,c])=>{
+    const hue=hashColor(id);
+    const status=c.status||'draft';
+    const statusClass=status==='open'?'active':status==='closed'?'closed':'draft';
+    const icon=c.brandLogo
+      ?`<img src="${c.brandLogo}" style="width:100%;height:100%;object-fit:cover;border-radius:12px">`
+      :`<div style="width:100%;height:100%;background:linear-gradient(135deg,hsl(${hue},65%,50%),hsl(${hue+40},65%,35%));border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;font-weight:800">${(c.startupName||c.title||'C').charAt(0)}</div>`;
+    const applied=appIds.has(id);
+    const actionBtn=isC
+      ?`<button class="ph-rec-btn" style="margin-left:auto" ${applied?'disabled style="opacity:.5"':''} onclick="showSection('campaigns')">${applied?'Applied':'Apply'}</button>`
+      :`<div style="display:flex;gap:.4rem;margin-left:auto">
+          <button class="ph-rec-btn" style="background:var(--ph-card);color:var(--ph-text);border:1px solid var(--ph-border)" onclick="toggleCampaignStatus('${id}','${status==='open'?'closed':'open'}')">${status==='open'?'Pause':'Activate'}</button>
+        </div>`;
+    return `<div class="ph-camp-card">
+      <div class="ph-camp-card-icon" style="background:hsl(${hue},65%,90%);width:2.6rem;height:2.6rem;border-radius:12px;flex-shrink:0">${icon}</div>
+      <div class="ph-camp-card-body">
+        <div class="ph-camp-card-title">${escHtml(c.title||'Campaign')} <span class="ph-camp-status ${statusClass}">${status.toUpperCase()}</span></div>
+        <div class="ph-camp-card-sub">${escHtml(c.niche||c.collabType||'—')}</div>
+        <div class="ph-camp-card-meta">${escHtml(c.budget||'')}${c.applicantsCount?` · ${c.applicantsCount} applicants`:''}</div>
+      </div>
+      ${actionBtn}
+    </div>`;
+  }).join('');
+
+  const heroAction=isC
+    ?`<button class="ph-camp-btn" onclick="">Browse Open Campaigns</button>`
+    :`<button class="ph-camp-btn" onclick="openLaunchModal()">+ Launch Campaign</button>`;
+
+  const body=`
+    ${phHeader('PostHire',`<div class="ph-icon-btn" onclick="showSection('notifications')"><i class="fas fa-bell"></i><span class="ph-badge" id="mob-notif-badge" style="display:none">0</span></div>`)}
+    <div class="ph-camp-hero">
+      <div style="flex:1">
+        <div class="ph-camp-hero-title">${isC?'Open Campaigns':'Your Campaigns'}</div>
+        <div class="ph-camp-desc ph-desc">${isC?'Apply to brands looking for creators like you.':'Manage and track all your active campaigns.'}</div>
+        ${heroAction}
+      </div>
+      <div class="ph-camp-icon"><i class="fas fa-bullhorn"></i></div>
+    </div>
+    <div class="ph-camp-stats">
+      <div class="ph-camp-stat"><div class="ph-camp-stat-icon" style="background:#DFF3E7"><svg viewBox="0 0 24 24" fill="none" stroke="#2FBF71" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div class="ph-camp-stat-val">${open}</div><div class="ph-camp-stat-label">Active</div></div>
+      <div class="ph-camp-stat"><div class="ph-camp-stat-icon" style="background:#F3F0EC"><svg viewBox="0 0 24 24" fill="none" stroke="#9B948C" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="ph-camp-stat-val">${draft}</div><div class="ph-camp-stat-label">Draft</div></div>
+      <div class="ph-camp-stat"><div class="ph-camp-stat-icon" style="background:#ECE8FC"><svg viewBox="0 0 24 24" fill="none" stroke="#8B7CF6" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="ph-camp-stat-val">${isC?Object.values(myApps).length:myCamps.reduce((s,[,c])=>s+(c.applicantsCount||0),0)}</div><div class="ph-camp-stat-label">${isC?'Applied':'Applicants'}</div></div>
+      <div class="ph-camp-stat"><div class="ph-camp-stat-icon" style="background:#DCEEFC"><svg viewBox="0 0 24 24" fill="none" stroke="#3B9EFF" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="ph-camp-stat-val">${total}</div><div class="ph-camp-stat-label">Total</div></div>
+    </div>
+    <div class="ph-section-head"><div class="ph-section-title">${isC?'Open Campaigns':'My Campaigns'}</div></div>
+    ${campCards||`<div style="text-align:center;padding:2rem;color:var(--ph-muted);font-size:.88rem">${isC?'No open campaigns right now.':isC?'':'No campaigns yet. <span style="color:var(--ph-accent);cursor:pointer;font-weight:700" onclick="openLaunchModal()">Launch one →</span>'}</div>`}
+  `;
+  el.innerHTML=phMobileShell('campaigns',body);
+  updateNotifBadge();
+}
+
+// ── MESSAGES ──────────────────────────────────────────────────────
+async function renderMobileMessages(el){
+  let convs={}; try{convs=await DB.getConversations(_me.uid);}catch(e){}
+  const convArr=Object.entries(convs).sort(([,a],[,b])=>new Date(b.lastAt||0)-new Date(a.lastAt||0));
+
+  const convItems=convArr.map(([cid,cv])=>{
+    const otherId=cv.participants?.find(p=>p!==_me.uid)||'';
+    const name=cv.otherName||otherId.slice(0,6)||'User';
+    const hue=hashColor(otherId);
+    const ava=cv.otherPhoto
+      ?`<img src="${cv.otherPhoto}" style="width:100%;height:100%;object-fit:cover">`
+      :`<div style="width:100%;height:100%;background:linear-gradient(135deg,hsl(${hue},65%,50%),hsl(${hue+40},65%,35%));display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;color:#fff">${name.charAt(0).toUpperCase()}</div>`;
+    const unread=cv.unreadCount?.[_me.uid]||0;
+    const time=cv.lastAt?new Date(cv.lastAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
+    return `<div class="ph-msg-item" onclick="openConversation('${cid}')">
+      <div class="ph-msg-ava">${ava}</div>
+      <div class="ph-msg-body">
+        <div class="ph-msg-row">
+          <div class="ph-msg-name">${escHtml(name)} <i class="fas fa-circle-check" style="color:var(--ph-blue);font-size:.6rem"></i></div>
+          <div class="ph-msg-time">${time}</div>
+        </div>
+        <div class="ph-msg-role ph-desc">${escHtml(cv.otherRole||'')}</div>
+        <div class="ph-msg-preview ph-desc">${escHtml((cv.lastMessage||'').slice(0,55))}${(cv.lastMessage||'').length>55?'…':''}</div>
+      </div>
+      ${unread?`<div class="ph-msg-unread">${unread}</div>`:''}
+    </div>`;
+  }).join('');
+
+  const body=`
+    ${phHeader('Messages',`<div class="ph-icon-btn" onclick="showSection('notifications')"><i class="fas fa-bell"></i><span class="ph-badge" id="mob-notif-badge" style="display:none">0</span></div>`)}
+    <div class="ph-search-bar">
+      <i class="fas fa-search" style="color:var(--ph-muted)"></i>
+      <input placeholder="Search messages…" id="mob-msg-search" oninput="mobMsgFilter(this.value)" style="border:none;outline:none;background:transparent;font-size:.85rem;flex:1;font-family:'Inter',sans-serif;color:var(--ph-text)">
+    </div>
+    <div class="ph-tabs">
+      <button class="ph-tab active" onclick="mobMsgTab(this,'all')">All</button>
+      <button class="ph-tab" onclick="mobMsgTab(this,'unread')">Unread</button>
+    </div>
+    <div id="mob-msg-list">
+      ${convItems||`<div style="text-align:center;padding:2rem;color:var(--ph-muted);font-size:.88rem">No messages yet — start a conversation!</div>`}
+    </div>
+  `;
+  el.innerHTML=phMobileShell('messages',body);
+  updateNotifBadge();
+
+  window.mobMsgFilter=function(q){
+    document.querySelectorAll('#mob-msg-list .ph-msg-item').forEach(item=>{
+      item.style.display=item.textContent.toLowerCase().includes(q.toLowerCase())?'':'none';
+    });
+  };
+  window.mobMsgTab=function(btn,tab){
+    document.querySelectorAll('.ph-tabs .ph-tab').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    if(tab==='unread'){
+      document.querySelectorAll('#mob-msg-list .ph-msg-item').forEach(item=>{
+        item.style.display=item.querySelector('.ph-msg-unread')?'':'none';
+      });
+    } else {
+      document.querySelectorAll('#mob-msg-list .ph-msg-item').forEach(item=>item.style.display='');
+    }
+  };
+}
+
+// ── PROFILE ──────────────────────────────────────────────────────
+async function renderMobileProfile(el){
+  const isC=_me.userType==='creator';
+  const plan=_me.plan||'free';
+  const allR=Object.entries(await DB.getRequests());
+  const sent=allR.filter(([,r])=>r.founderId===_me.uid).length;
+  const recv=allR.filter(([,r])=>r.creatorId===_me.uid).length;
+  const accepted=allR.filter(([,r])=>(r.founderId===_me.uid||r.creatorId===_me.uid)&&r.status==='accepted').length;
+  const pending=allR.filter(([,r])=>(r.founderId===_me.uid||r.creatorId===_me.uid)&&r.status==='pending').length;
+  const name=_me.name||'User';
+  const bio=_me.bio||_me.description||'';
+  const role=isC?'Creator':'Founder';
+  const ava=_me.profilePhoto
+    ?`<img src="${_me.profilePhoto}" style="width:100%;height:100%;object-fit:cover">`
+    :`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--ph-accent),var(--ph-accent2))">${name.charAt(0).toUpperCase()}</div>`;
+
+  // Recent collaborations
+  const recentCollabs=allR.filter(([,r])=>(r.founderId===_me.uid||r.creatorId===_me.uid)&&r.status==='accepted').slice(-3).reverse();
+  const collabRows=recentCollabs.map(([,r])=>{
+    const otherName=isC?(r.founderName||'Brand'):(r.creatorName||'Creator');
+    return `<div class="ph-collab-row">
+      <div class="ph-collab-ava">${otherName.slice(0,2).toUpperCase()}</div>
+      <div style="flex:1">
+        <div class="ph-collab-name">${escHtml(otherName)}</div>
+        <div class="ph-collab-sub ph-desc">${escHtml(r.collabType||r.startupName||'Collaboration')}</div>
+      </div>
+      <div class="ph-collab-done">DONE</div>
+    </div>`;
+  }).join('') || `<div style="padding:.75rem 0;font-size:.8rem;color:var(--ph-muted)">No collaborations yet.</div>`;
+
+  const body=`
+    ${phHeader('PostHire',`<div class="ph-icon-btn" onclick="openSetup()"><i class="fas fa-cog"></i></div>`)}
+    <div class="ph-cover" style="background:linear-gradient(135deg,#F4552F,#FF7A50)">
+      <div class="ph-profile-ava">${ava}</div>
+      <button class="ph-profile-edit" onclick="openSetup()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg> Edit Profile
+      </button>
+    </div>
+    <div class="ph-profile-name">${escHtml(name)} <span class="ph-profile-badge">${plan.toUpperCase()}</span></div>
+    <div class="ph-profile-role">${role}${_me.startupName?' · '+escHtml(_me.startupName):''}${_me.niche?' · '+escHtml(_me.niche):''}</div>
+    ${bio?`<div class="ph-profile-bio">${escHtml(bio)}</div>`:''}
+    <div class="ph-profile-stats">
+      <div class="ph-profile-stat-card">
+        <svg class="ph-profile-stat-icon" viewBox="0 0 24 24" fill="none" stroke="#2FBF71" stroke-width="1.8"><path d="M8.5 14.5l-4 4a2.1 2.1 0 0 0 3 3l4-4"/><path d="M15.5 9.5l4-4a2.1 2.1 0 0 0-3-3l-4 4"/></svg>
+        <div class="ph-profile-stat-val">${accepted}</div><div class="ph-profile-stat-label">Collabs</div>
+      </div>
+      <div class="ph-profile-stat-card">
+        <svg class="ph-profile-stat-icon" viewBox="0 0 24 24" fill="none" stroke="#8B7CF6" stroke-width="1.8"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg>
+        <div class="ph-profile-stat-val">${sent}</div><div class="ph-profile-stat-label">Sent</div>
+      </div>
+      <div class="ph-profile-stat-card">
+        <svg class="ph-profile-stat-icon" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="1.8"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+        <div class="ph-profile-stat-val">${recv}</div><div class="ph-profile-stat-label">Received</div>
+      </div>
+      <div class="ph-profile-stat-card">
+        <svg class="ph-profile-stat-icon" viewBox="0 0 24 24" fill="none" stroke="#F45C93" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        <div class="ph-profile-stat-val">${pending}</div><div class="ph-profile-stat-label">Pending</div>
+      </div>
+    </div>
+    <div class="ph-profile-panel">
+      <div class="ph-profile-panel-title">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F4552F" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        Recent Collaborations
+      </div>
+      ${collabRows}
+    </div>
+    <div class="ph-plan-card">
+      <div>
+        <div class="ph-plan-label">Current Plan</div>
+        <div class="ph-plan-name">${plan.toUpperCase()}</div>
+        <div class="ph-plan-sub ph-desc">${plan==='free'?'Limited access':'Full access unlocked'}</div>
+      </div>
+      <button class="ph-plan-btn" onclick="showSection('pricing')">${plan==='free'?'Upgrade':'Manage'}</button>
+    </div>
+    <button class="ph-signout-btn" onclick="doSignOut()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+      Sign Out
+    </button>
+    <div style="height:5rem"></div>
+  `;
+  el.innerHTML=phMobileShell('profile',body);
+}
 function weeklyCounts(records){
   const buckets=new Array(8).fill(0);
   if(!records.length) return buckets.map(()=>30);
@@ -1974,6 +2280,7 @@ async function updReq(id,status){
 
 // ── CREATORS ──────────────────────────────────────────
 async function renderCreators(el){
+  if(window.innerWidth<=768) return renderMobileDiscover(el);
   if(_me.userType==='creator'){el.innerHTML=`<div class="empty-state"><i class="fas fa-lock"></i><p>Creator discovery is for founders only.</p></div>`;return;}
   const plan=_me.plan||'free';
   el.innerHTML=`
@@ -2043,6 +2350,7 @@ async function sendCollab(creatorId){
 
 // ── PROFILE ───────────────────────────────────────────
 async function renderProfile(el){
+  if(window.innerWidth<=768) return renderMobileProfile(el);
   const isC=_me.userType==='creator';
   const cr=isC?await DB.getCreator(_me.uid):null;
   const fo=!isC?await DB.getFounder(_me.uid):null;
@@ -2332,6 +2640,7 @@ function toggleCampDetails(uid){
 }
 
 async function renderCampaigns(el){
+  if(window.innerWidth<=768) return renderMobileCampaigns(el);
   const isC=_me.userType==='creator';
   let campaigns={};try{campaigns=await DB.getCampaigns();}catch(e){}
   const campArr=Object.values(campaigns);
@@ -2686,6 +2995,7 @@ function closeSidebar(){document.getElementById('sidebar').classList.remove('ope
 // MESSAGES (embedded SPA section — merged from messages.html)
 // ══════════════════════════════════════════════════════════════════
 async function renderMessagesSection(el){
+  if(window.innerWidth<=768) return renderMobileMessages(el);
   el.innerHTML = `
     <div class="msgs-wrap" id="msgs-wrap">
       <div class="conv-list">
@@ -3353,11 +3663,14 @@ window.addEventListener('resize', () => {
   clearTimeout(_resizeTid);
   _resizeTid = setTimeout(() => {
     const isMobileNow = window.innerWidth<=768;
-    if (isMobileNow !== _wasMobileHome && document.getElementById('nav-home')?.classList.contains('active')) {
+    if (isMobileNow !== _wasMobileHome) {
       _wasMobileHome = isMobileNow;
-      showSection('home');
-    } else {
-      _wasMobileHome = isMobileNow;
+      // Re-render whichever section is currently active
+      const activeNav = document.querySelector('.nav-item.active');
+      if (activeNav) {
+        const sec = activeNav.getAttribute('data-section') || activeNav.id?.replace('nav-','');
+        if (sec) showSection(sec);
+      }
     }
   }, 200);
 });
