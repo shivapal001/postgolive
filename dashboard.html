@@ -862,10 +862,7 @@ body.ph-mobile-active .content{
 .ph-signout-btn{width:100%;background:#FCE5E5;color:#E5484D;border:none;border-radius:14px;padding:.75rem;font-size:.82rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:.5rem;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;}
 
 /* ── Bottom nav ── */
-.ph-navbar{background:var(--ph-card);display:flex;align-items:center;justify-content:space-around;padding:.7rem 0 calc(.85rem + env(safe-area-inset-bottom));border-top:1px solid var(--ph-border);flex-shrink:0;}
-.ph-nav-item{display:flex;flex-direction:column;align-items:center;gap:.25rem;font-size:.65rem;font-weight:700;color:var(--ph-muted);cursor:pointer;background:none;border:none;font-family:'Plus Jakarta Sans',sans-serif;padding:.35rem .6rem;border-radius:12px;transition:color .15s;}
 .ph-nav-item svg{width:1.25rem;height:1.25rem;stroke-width:1.8;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;}
-.ph-nav-item.active{color:var(--ph-accent);}
 
 /* ── Empty + shared utils ── */
 .ph-empty{text-align:center;padding:2.5rem 1rem;color:var(--ph-muted);}
@@ -873,14 +870,57 @@ body.ph-mobile-active .content{
 .ph-empty p{font-size:.85rem;}
 .ph-bottom-pad{height:5rem;}
 
-/* ph-mob-root — full bleed mobile wrapper for renderMobileHomeNew */
-.ph-mob-root{font-family:'Plus Jakarta Sans',sans-serif;background:var(--ph-bg);color:var(--ph-text);margin:-1rem -1rem 0;min-height:100vh;display:flex;flex-direction:column;}
-.ph-scroll-inner{flex:1;overflow-y:auto;padding:0 1.25rem 1rem;-webkit-overflow-scrolling:touch;}
-.ph-scroll-inner::-webkit-scrollbar{display:none;}
-.ph-upgrade-banner{display:flex;align-items:center;justify-content:space-between;gap:1rem;background:var(--ph-card);border-radius:16px;padding:1rem 1.1rem;margin-bottom:1rem;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.04);}
-.ph-empty-inline{width:100%;text-align:center;padding:1.5rem 1rem;color:var(--ph-muted);font-size:.85rem;}
+/* ph-mob-root — full bleed, fixed header + fixed nav, only content scrolls */
+.ph-mob-root{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  background:var(--ph-bg);
+  color:var(--ph-text);
+  margin:-1rem -1rem 0;
+  min-height:100vh;
+  position:relative;
+}
+.ph-mob-root .ph-fixed-header{
+  position:fixed;
+  top:0; left:0; right:0;
+  z-index:300;
+  background:var(--ph-bg);
+  padding:.75rem 1.25rem .5rem;
+}
+.ph-mob-root .ph-scroll-body{
+  position:fixed;
+  top:0; bottom:0; left:0; right:0;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  padding: 72px 1.25rem calc(72px + env(safe-area-inset-bottom)) 1.25rem;
+}
+.ph-mob-root .ph-scroll-body::-webkit-scrollbar{display:none;}
 
-</style>
+/* Fixed bottom nav — dark background, same style as original */
+.ph-navbar{
+  position:fixed;
+  bottom:0; left:0; right:0;
+  z-index:300;
+  background:rgba(18,18,22,0.97);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  display:flex;
+  align-items:center;
+  justify-content:space-around;
+  padding:.65rem 0 calc(.75rem + env(safe-area-inset-bottom));
+  border-top:1px solid rgba(255,255,255,0.08);
+}
+.ph-nav-item{
+  display:flex;flex-direction:column;align-items:center;gap:.28rem;
+  font-size:.62rem;font-weight:600;color:rgba(255,255,255,0.45);
+  cursor:pointer;background:none;border:none;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  padding:.25rem .5rem;
+  transition:color .18s;
+  -webkit-tap-highlight-color:transparent;
+}
+.ph-nav-item i{font-size:1.15rem;}
+.ph-nav-item.active{color:var(--ph-accent);}
+.ph-nav-item:active{opacity:.7;}</style>
 </head>
 
 <body>
