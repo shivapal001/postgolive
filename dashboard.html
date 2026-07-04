@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
 <title>Posthire — Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -478,7 +478,7 @@ input,select,textarea,button{font-family:'Plus Jakarta Sans',sans-serif;}
   .sidebar.open{transform:translateX(0);}
   .sidebar-overlay.show{display:block;}
   .main{margin-left:0;}
-  .mobile-topbar{display:flex;}
+  .mobile-topbar{display:none;}
   .topbar{display:none;}
   .mobile-menu-btn{display:flex;}
   .stats-grid{grid-template-columns:1fr 1fr;}
@@ -578,7 +578,7 @@ button:active{
 .bn-item.active{color:var(--accent);}
 .bn-item .bn-badge{position:absolute;top:0;right:18%;background:var(--accent2);color:var(--text);font-size:.55rem;font-weight:700;min-width:14px;height:14px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 3px;}
 @media(max-width:768px){
-  .bottom-nav{display:block;}
+  .bottom-nav{display:none;}
   .main{padding-bottom:calc(56px + env(safe-area-inset-bottom));}
 }
 
@@ -775,8 +775,8 @@ button:active{
 .ph-greet-title span{color:var(--ph-accent);}
 
 /* ── Hero banner ── */
-.ph-hero{border-radius:var(--ph-radius);overflow:hidden;margin-bottom:1.25rem;}
-.ph-hero img{width:100%;display:block;object-fit:cover;}
+.ph-hero{border-radius:var(--ph-radius);overflow:hidden;margin-bottom:1.25rem;border:none;outline:none;box-shadow:none;}
+.ph-hero img{width:100%;display:block;object-fit:cover;border:none;outline:none;box-shadow:none;}
 
 /* ── Stats ── */
 .ph-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-bottom:1.5rem;}
