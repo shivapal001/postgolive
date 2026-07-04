@@ -497,7 +497,22 @@ input,select,textarea,button{font-family:'Plus Jakarta Sans',sans-serif;}
   .info-grid{grid-template-columns:1fr;}
 }
 
-/* ═══ BOTTOM NAV (mobile only) ═══ */
+/* ── ph-mobile-active: hide ALL old chrome when new ph-* screens are shown ── */
+body.ph-mobile-active .mobile-topbar,
+body.ph-mobile-active .bottom-nav,
+body.ph-mobile-active .sidebar,
+body.ph-mobile-active .sidebar-overlay{
+  display:none !important;
+}
+body.ph-mobile-active .main{
+  margin-left:0 !important;
+  padding-bottom:0 !important;
+}
+body.ph-mobile-active .content{
+  padding:0 !important;
+}
+
+/* ── BOTTOM NAV (mobile only) ── */
 .bottom-nav{display:none;position:fixed;left:0;right:0;bottom:0;z-index:180;background:rgba(8,9,17,0.92);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border-top:1px solid var(--border);padding:.4rem .25rem calc(.4rem + env(safe-area-inset-bottom)) .25rem;}
 .bn-items{display:flex;align-items:center;justify-content:space-around;}
 .bn-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2rem;flex:1;padding:.35rem 0;border-radius:.75rem;color:var(--muted);font-size:.62rem;font-weight:600;letter-spacing:.01em;position:relative;transition:color var(--trans);-webkit-tap-highlight-color:transparent;}
@@ -1374,6 +1389,9 @@ async function saveEditProfile(){
 
 // ── NAVIGATION ────────────────────────────────────────
 async function showSection(sec){
+  // On desktop, remove mobile class so old chrome (topbar/sidebar/bottom-nav) comes back
+  if(window.innerWidth>768) document.body.classList.remove('ph-mobile-active');
+
   ['home','requests','creators','profile','pricing','campaigns','messages','notifications'].forEach(s=>document.getElementById(`nav-${s}`)?.classList.toggle('active',s===sec));
   ['home','requests','creators','profile','messages'].forEach(s=>document.getElementById(`bn-${s}`)?.classList.toggle('active',s===sec));
   const titles={home:'Dashboard',requests:'My Requests',creators:'Find Creators',profile:'My Profile',pricing:'Plans & Pricing',campaigns:'Campaigns',messages:'Messages',notifications:'Notifications'};
@@ -1705,6 +1723,7 @@ async function renderMobileHome(el){
 
 // ── UNIFIED MOBILE HOME — new ph-* warm design (both Founder & Creator) ──
 async function renderMobileHomeNew(el){
+  document.body.classList.add('ph-mobile-active');
   const isC=_me.userType==='creator';
   const plan=_me.plan||'free';
   const firstName=(_me.name||'there').split(' ')[0];
@@ -1920,12 +1939,15 @@ async function renderMobileHomeNew(el){
 // ═══════════════════════════════════════════════════════════════════
 
 function phMobileShell(activeTab, bodyHTML){
+  // Hide all old desktop/Capacitor chrome
+  document.body.classList.add('ph-mobile-active');
+
   const tabs=[
-    {id:'home',  icon:'fa-home',     label:'Home'},
-    {id:'creators',icon:'fa-compass',label:'Discover'},
-    {id:'messages',icon:'fa-comment',label:'Messages'},
+    {id:'home',    icon:'fa-home',     label:'Home'},
+    {id:'creators',icon:'fa-compass',  label:'Discover'},
+    {id:'messages',icon:'fa-comment',  label:'Messages'},
     {id:'campaigns',icon:'fa-bullhorn',label:'Campaigns'},
-    {id:'profile',icon:'fa-user',    label:'Profile'},
+    {id:'profile', icon:'fa-user',     label:'Profile'},
   ];
   return `<div class="ph-mob-root">
     <div class="ph-scroll" style="flex:1;overflow-y:auto;padding:0 1.25rem 1rem">
