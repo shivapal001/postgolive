@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
@@ -803,7 +804,7 @@ button:active{
 .ph-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-bottom:1.5rem;}
 .ph-stat-card{background:var(--ph-card);border-radius:16px;padding:.9rem .6rem;display:flex;flex-direction:column;align-items:center;text-align:center;gap:.45rem;box-shadow:0 2px 8px rgba(0,0,0,.04);}
 .ph-stat-icon{width:2.3rem;height:2.3rem;border-radius:50%;display:flex;align-items:center;justify-content:center;}
-.ph-stat-icon svg{width:1.05rem;height:1.05rem;}
+.ph-stat-icon svg,.ph-stat-icon dotlottie-player{width:1.7rem;height:1.7rem;}
 .ph-stat-val{font-size:.95rem;font-weight:800;color:var(--ph-text);letter-spacing:-.025em;}
 .ph-stat-label{font-size:.65rem;color:var(--ph-muted);font-weight:600;line-height:1.3;}
 
@@ -2056,17 +2057,17 @@ async function renderMobileHomeNew(el){
 
       <div class="ph-stats">
         <div class="ph-stat-card">
-          <div class="ph-stat-icon" style="background:#E0F3E7"><svg viewBox="0 0 24 24" fill="none" stroke="#2FBF71" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l2-6h14l2 6"/><path d="M3 9a2 2 0 0 0 4 0M7 9a2 2 0 0 0 4 0M11 9a2 2 0 0 0 4 0M15 9a2 2 0 0 0 4 0"/><path d="M4 11v9h16v-9"/></svg></div>
+          <div class="ph-stat-icon" style="background:#E0F3E7"><dotlottie-player src="https://lottie.host/35b99012-7aee-40f2-ae7d-fead072e7828/eejoyr5gFh.lottie" autoplay loop background="transparent" style="width:1.7rem;height:1.7rem"></dotlottie-player></div>
           <div class="ph-stat-val">${totalCamps||'0'}+</div>
           <div class="ph-stat-label">Active Campaigns</div>
         </div>
         <div class="ph-stat-card">
-          <div class="ph-stat-icon" style="background:#ECE8FC"><svg viewBox="0 0 24 24" fill="none" stroke="#7C5CFC" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="3.5"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M15.5 3.6a3.5 3.5 0 0 1 0 6.8"/></svg></div>
+          <div class="ph-stat-icon" style="background:#ECE8FC"><dotlottie-player src="https://lottie.host/bb00edea-449a-4cfc-bded-fb1b3aee5817/J4PTI8paxu.lottie" autoplay loop background="transparent" style="width:1.7rem;height:1.7rem"></dotlottie-player></div>
           <div class="ph-stat-val">${totalCreators||'0'}+</div>
           <div class="ph-stat-label">Creators</div>
         </div>
         <div class="ph-stat-card">
-          <div class="ph-stat-icon" style="background:#DCEEFC"><svg viewBox="0 0 24 24" fill="none" stroke="#3B9EFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5l-4 4a2.1 2.1 0 0 0 3 3l4-4"/><path d="M15.5 9.5l4-4a2.1 2.1 0 0 0-3-3l-4 4"/><rect x="7" y="7" width="10" height="10" rx="2" transform="rotate(-45 12 12)"/></svg></div>
+          <div class="ph-stat-icon" style="background:#DCEEFC"><dotlottie-player src="https://lottie.host/ec2a86ea-1314-4f0e-8276-85bb52361b90/6yS2BJVRgN.lottie" autoplay loop background="transparent" style="width:1.7rem;height:1.7rem"></dotlottie-player></div>
           <div class="ph-stat-val">${active}</div>
           <div class="ph-stat-label">My Active</div>
         </div>
