@@ -891,6 +891,59 @@ button:active{
 .ph-rec-body{flex:1;min-width:0;}
 .ph-rec-name{font-size:.88rem;font-weight:700;color:var(--ph-text);display:flex;align-items:center;gap:.3rem;letter-spacing:-.01em;}
 .ph-rec-role{font-size:.75rem;color:var(--ph-muted);margin-top:.1rem;}
+
+/* ── Creator Home: profile completion banner ── */
+.ph-cprog-card{background:var(--ph-card);border-radius:20px;padding:1.1rem;display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;box-shadow:0 2px 10px rgba(0,0,0,.05);}
+.ph-cprog-ring{position:relative;width:3.6rem;height:3.6rem;flex-shrink:0;}
+.ph-cprog-ring svg{width:100%;height:100%;transform:rotate(-90deg);}
+.ph-cprog-ring-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800;color:var(--ph-text);}
+.ph-cprog-body{flex:1;min-width:0;}
+.ph-cprog-title{font-size:.88rem;font-weight:800;color:var(--ph-text);}
+.ph-cprog-sub{font-size:.74rem;color:var(--ph-muted);margin-top:.15rem;line-height:1.35;font-family:'Inter',sans-serif;}
+.ph-cprog-btn{margin-top:.55rem;background:var(--ph-accent);color:#fff;border:none;font-size:.74rem;font-weight:800;padding:.45rem .9rem;border-radius:99px;font-family:'Plus Jakarta Sans',sans-serif;}
+
+/* ── Creator Home: recommended campaign cards ── */
+.ph-camp-reco-scroll{display:flex;gap:.85rem;overflow-x:auto;padding-bottom:.3rem;margin:0 -1.25rem 1.4rem;padding-left:1.25rem;padding-right:1.25rem;}
+.ph-camp-reco-scroll::-webkit-scrollbar{display:none;}
+.ph-camp-reco-card{flex-shrink:0;width:13.5rem;background:var(--ph-card);border-radius:18px;padding:.95rem;box-shadow:0 2px 10px rgba(0,0,0,.05);position:relative;}
+.ph-camp-reco-top{display:flex;align-items:center;gap:.55rem;margin-bottom:.6rem;}
+.ph-camp-reco-logo{width:2.3rem;height:2.3rem;border-radius:10px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:.85rem;}
+.ph-camp-reco-logo img{width:100%;height:100%;object-fit:cover;}
+.ph-camp-reco-brand{font-size:.82rem;font-weight:800;color:var(--ph-text);line-height:1.2;}
+.ph-camp-reco-type{font-size:.68rem;color:var(--ph-muted);}
+.ph-camp-reco-budget{font-size:1rem;font-weight:800;color:var(--ph-text);}
+.ph-camp-reco-meta{font-size:.68rem;color:var(--ph-muted);margin:.2rem 0 .75rem;display:flex;flex-wrap:wrap;gap:.3rem .5rem;}
+.ph-camp-reco-btn{width:100%;background:var(--ph-accent);color:#fff;border:none;font-size:.78rem;font-weight:800;padding:.55rem;border-radius:99px;font-family:'Plus Jakarta Sans',sans-serif;}
+.ph-camp-reco-bookmark{position:absolute;top:.85rem;right:.85rem;color:var(--ph-muted);font-size:.85rem;}
+
+/* ── Creator Home: brand invitations ── */
+.ph-invite-card{display:flex;align-items:center;gap:.7rem;background:var(--ph-card);border-radius:16px;padding:.85rem;margin-bottom:.7rem;box-shadow:0 2px 8px rgba(0,0,0,.04);}
+.ph-invite-logo{width:2.4rem;height:2.4rem;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;overflow:hidden;}
+.ph-invite-logo img{width:100%;height:100%;object-fit:cover;}
+.ph-invite-body{flex:1;min-width:0;}
+.ph-invite-name{font-size:.85rem;font-weight:800;color:var(--ph-text);}
+.ph-invite-sub{font-size:.72rem;color:var(--ph-muted);}
+.ph-invite-actions{display:flex;gap:.4rem;flex-shrink:0;}
+.ph-invite-btn{border:none;font-size:.7rem;font-weight:800;padding:.4rem .7rem;border-radius:99px;font-family:'Plus Jakarta Sans',sans-serif;}
+.ph-invite-accept{background:var(--ph-accent);color:#fff;}
+.ph-invite-decline{background:#F1EDE8;color:var(--ph-muted);}
+
+/* ── Creator Home: insight stat cards ── */
+.ph-insight-card{background:var(--ph-card);border-radius:16px;padding:.9rem .5rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.04);}
+.ph-insight-icon{width:1.9rem;height:1.9rem;border-radius:9px;display:flex;align-items:center;justify-content:center;margin:0 auto .5rem;}
+.ph-insight-val{font-size:1.15rem;font-weight:800;color:var(--ph-text);}
+.ph-insight-label{font-size:.68rem;color:var(--ph-muted);margin:.15rem 0 .3rem;}
+.ph-insight-trend{font-size:.66rem;font-weight:700;}
+.ph-insight-trend.up{color:#2FBF71;}
+.ph-insight-trend.down{color:#E5484D;}
+
+/* ── Creator Home: recent activity ── */
+.ph-activity-item{display:flex;align-items:center;gap:.65rem;padding:.7rem 0;border-bottom:1px solid var(--ph-border,rgba(0,0,0,.05));}
+.ph-activity-item:last-child{border-bottom:none;}
+.ph-activity-ic{width:2.1rem;height:2.1rem;border-radius:50%;background:#F1EDE8;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.8rem;color:var(--ph-muted);}
+.ph-activity-text{flex:1;font-size:.8rem;color:var(--ph-text);font-family:'Inter',sans-serif;}
+.ph-activity-text b{font-weight:700;}
+.ph-activity-time{font-size:.68rem;color:var(--ph-muted);white-space:nowrap;}
 .ph-rec-btn{background:var(--ph-accent);color:#fff;border:none;border-radius:99px;padding:.45rem 1rem;font-size:.75rem;font-weight:700;cursor:pointer;flex-shrink:0;font-family:'Plus Jakarta Sans',sans-serif;box-shadow:0 4px 10px rgba(244,85,47,.28);}
 
 /* ── Messages screen ── */
@@ -2092,6 +2145,12 @@ async function renderMobileHomeNew(el){
   }
   if(!recHTML) recHTML=`<div class="ph-empty-inline">Nothing recommended yet.</div>`;
 
+  // ── Creator gets a completely different home layout ──
+  if(isC){
+    renderCreatorHomeMobile(el,{firstName,greetWord,requestsObj,campaignsObj,myAppsObj,recv,plan,catHTML});
+    return;
+  }
+
   // ── Hero banner: theme carousel (no external image, no white edge) ──
 
   el.innerHTML=`
@@ -2164,6 +2223,167 @@ async function renderMobileHomeNew(el){
 
   updateNotifBadge();
   initPhHeroCarousel();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CREATOR HOME — dedicated layout (profile completion, recommended
+// campaigns, brand invitations, insights, trending, recent activity)
+// ═══════════════════════════════════════════════════════════════════
+async function renderCreatorHomeMobile(el,ctx){
+  const {firstName,greetWord,requestsObj,campaignsObj,myAppsObj,recv,plan,catHTML}=ctx;
+
+  // ── Profile completion % ──
+  const fields=[_me.name,_me.profilePhoto,_me.bio,(_me.niches&&_me.niches.length),_me.audienceSize,(_me.socialLinks&&Object.keys(_me.socialLinks).length)];
+  const filled=fields.filter(Boolean).length;
+  const pct=Math.round((filled/fields.length)*100)||0;
+  const ringR=26,ringC=2*Math.PI*ringR;
+  const ringOffset=ringC-(pct/100)*ringC;
+
+  // ── Recommended campaigns (open, not already applied) ──
+  const appliedIds=new Set(Object.values(myAppsObj||{}).map(a=>a.campaignId));
+  const openCamps=Object.entries(campaignsObj).filter(([id,c])=>c.status==='open'&&!appliedIds.has(id)).slice(0,6);
+  let campHTML=openCamps.map(([id,c])=>{
+    const hue=hashColor(id);
+    const logo=c.brandLogo
+      ?`<img src="${c.brandLogo}">`
+      :`<div style="width:100%;height:100%;background:linear-gradient(135deg,hsl(${hue},60%,45%),hsl(${hue+35},60%,30%));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800">${(c.startupName||'B').charAt(0)}</div>`;
+    return `<div class="ph-camp-reco-card">
+      <i class="fa-regular fa-bookmark ph-camp-reco-bookmark"></i>
+      <div class="ph-camp-reco-top">
+        <div class="ph-camp-reco-logo">${logo}</div>
+        <div>
+          <div class="ph-camp-reco-brand">${escHtml(c.startupName||'Brand')}</div>
+          <div class="ph-camp-reco-type">${escHtml(c.title||c.collabType||'Campaign')}</div>
+        </div>
+      </div>
+      <div class="ph-camp-reco-budget">${c.budget?'₹'+escHtml(String(c.budget)):'Budget TBD'}</div>
+      <div class="ph-camp-reco-meta">
+        ${c.deadline?`<span><i class="fas fa-clock"></i> ${escHtml(String(c.deadline))}</span>`:''}
+        ${c.collabType?`<span>· ${escHtml(c.collabType)}</span>`:''}
+      </div>
+      <button class="ph-camp-reco-btn" onclick="openApplyModal('${id}')">Apply Now</button>
+    </div>`;
+  }).join('');
+  if(!campHTML)campHTML=`<div class="ph-empty-inline">No open campaigns right now — check back soon.</div>`;
+
+  // ── Brand invitations (direct pending requests) ──
+  const invites=recv.filter(([,r])=>r.status==='pending').slice(0,4);
+  let inviteHTML=invites.map(([id,r])=>{
+    const hue=hashColor(id);
+    return `<div class="ph-invite-card">
+      <div class="ph-invite-logo" style="background:hsl(${hue},60%,42%)">${(r.founderName||'B').charAt(0).toUpperCase()}</div>
+      <div class="ph-invite-body">
+        <div class="ph-invite-name">${escHtml(r.founderName||'Brand')}</div>
+        <div class="ph-invite-sub">${escHtml(r.campaignTitle||'Collaboration invite')}</div>
+      </div>
+      <div class="ph-invite-actions">
+        <button class="ph-invite-btn ph-invite-accept" onclick="updReq('${id}','accepted')">Accept</button>
+        <button class="ph-invite-btn ph-invite-decline" onclick="updReq('${id}','declined')">Decline</button>
+      </div>
+    </div>`;
+  }).join('');
+  const inviteSection=invites.length?`
+      <div class="ph-section-head">
+        <div class="ph-section-title">Brand Invitations</div>
+        <div class="ph-section-link" onclick="showSection('requests')">See all</div>
+      </div>
+      ${inviteHTML}`:'';
+
+  // ── Creator insights ──
+  const profileViews=_me.profileViews||0;
+  const invitesCount=recv.length;
+  const earnings=_me.totalEarnings||0;
+
+  // ── Recent activity from requests ──
+  const activityItems=recv.concat(requestsObj?Object.entries(requestsObj).filter(([,r])=>r.founderId===_me.uid):[])
+    .sort((a,b)=>new Date(b[1].updatedAt||b[1].createdAt||0)-new Date(a[1].updatedAt||a[1].createdAt||0)).slice(0,4);
+  let activityHTML=activityItems.map(([id,r])=>{
+    const isRecv=r.creatorId===_me.uid;
+    const who=isRecv?(r.founderName||'A brand'):(r.creatorName||'A creator');
+    const verb=r.status==='accepted'?'accepted your collaboration':r.status==='declined'?'declined the request':isRecv?'sent you an invitation':'viewed your response';
+    const t=new Date(r.updatedAt||r.createdAt||Date.now());
+    const mins=Math.round((Date.now()-t.getTime())/60000);
+    const timeStr=mins<1?'now':mins<60?`${mins}m ago`:mins<1440?`${Math.round(mins/60)}h ago`:`${Math.round(mins/1440)}d ago`;
+    return `<div class="ph-activity-item">
+      <div class="ph-activity-ic"><i class="fas fa-bell"></i></div>
+      <div class="ph-activity-text"><b>${escHtml(who)}</b> ${verb}</div>
+      <div class="ph-activity-time">${timeStr}</div>
+    </div>`;
+  }).join('');
+  if(!activityHTML)activityHTML=`<div class="ph-empty-inline">No recent activity yet.</div>`;
+
+  el.innerHTML=`
+      <div class="ph-greet">
+        <div class="ph-greet-sub">Good ${greetWord}, ${escHtml(firstName)} 👋</div>
+        <div class="ph-greet-title">Find Your Next <span>Brand Deal</span>!</div>
+      </div>
+
+      <div class="ph-cprog-card">
+        <div class="ph-cprog-ring">
+          <svg viewBox="0 0 60 60">
+            <circle cx="30" cy="30" r="${ringR}" fill="none" stroke="#F1EDE8" stroke-width="5"></circle>
+            <circle cx="30" cy="30" r="${ringR}" fill="none" stroke="var(--ph-accent)" stroke-width="5" stroke-linecap="round" stroke-dasharray="${ringC}" stroke-dashoffset="${ringOffset}"></circle>
+          </svg>
+          <div class="ph-cprog-ring-pct">${pct}%</div>
+        </div>
+        <div class="ph-cprog-body">
+          <div class="ph-cprog-title">Get noticed by top brands</div>
+          <div class="ph-cprog-sub">Complete your profile and increase your chances.</div>
+          <button class="ph-cprog-btn" onclick="showSection('profile')">Complete Now</button>
+        </div>
+      </div>
+
+      <div class="ph-section-head">
+        <div class="ph-section-title">Recommended Campaigns</div>
+        <div class="ph-section-link" onclick="showSection('campaigns')">See all</div>
+      </div>
+      <div class="ph-camp-reco-scroll">${campHTML}</div>
+
+      ${inviteSection}
+
+      <div class="ph-section-head">
+        <div class="ph-section-title">Creator Insights</div>
+      </div>
+      <div class="ph-stats">
+        <div class="ph-insight-card">
+          <div class="ph-insight-icon" style="background:#FCE5DC"><i class="fas fa-eye" style="color:var(--ph-accent)"></i></div>
+          <div class="ph-insight-val">${profileViews}</div>
+          <div class="ph-insight-label">Profile Views</div>
+        </div>
+        <div class="ph-insight-card">
+          <div class="ph-insight-icon" style="background:#D8CFFB"><i class="fas fa-envelope-open-text" style="color:#7C5CFC"></i></div>
+          <div class="ph-insight-val">${invitesCount}</div>
+          <div class="ph-insight-label">Invitations</div>
+        </div>
+        <div class="ph-insight-card">
+          <div class="ph-insight-icon" style="background:#BEE8CE"><i class="fas fa-indian-rupee-sign" style="color:#2FBF71"></i></div>
+          <div class="ph-insight-val">₹${earnings}</div>
+          <div class="ph-insight-label">Earnings</div>
+        </div>
+      </div>
+
+      <div class="ph-section-head">
+        <div class="ph-section-title">Trending Categories</div>
+        <div class="ph-section-link" onclick="showSection('campaigns')">See all</div>
+      </div>
+      <div class="ph-cat-scroll">${catHTML}</div>
+
+      <div class="ph-section-head">
+        <div class="ph-section-title">Recent Activity</div>
+      </div>
+      ${activityHTML}
+
+      ${plan==='free'?`
+      <div class="ph-upgrade-banner" onclick="showSection('pricing')">
+        <div>
+          <div style="font-size:.88rem;font-weight:800;color:var(--ph-text)">Unlock Pro Features</div>
+          <div style="font-size:.74rem;color:var(--ph-muted);margin-top:.2rem;font-family:'Inter',sans-serif">Priority applications · Advanced insights · Verified badge</div>
+        </div>
+        <i class="fas fa-chevron-right" style="color:var(--ph-accent)"></i>
+      </div>`:''}
+      <div style="height:.5rem"></div>`;
+
+  updateNotifBadge();
 }
 
 // ── Hero carousel: auto-advance every 2s, restarts cleanly on re-render ──
