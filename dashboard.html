@@ -803,9 +803,9 @@ button:active{
 /* ── Stats ── */
 .ph-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-bottom:1.5rem;}
 .ph-stat-card{background:var(--ph-card);border-radius:16px;padding:.9rem .6rem;display:flex;flex-direction:column;align-items:center;text-align:center;gap:.45rem;box-shadow:0 2px 8px rgba(0,0,0,.04);}
-.ph-stat-icon{width:2.7rem;height:2.7rem;border-radius:50%;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;}
-.ph-stat-icon dotlottie-player{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
-.ph-stat-icon svg,.ph-stat-icon dotlottie-player{width:2.9rem;height:2.9rem;}
+.ph-stat-icon{width:3.2rem;height:3.2rem;border-radius:50%;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;}
+.ph-stat-icon dotlottie-player{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);mix-blend-mode:multiply;}
+.ph-stat-icon svg,.ph-stat-icon dotlottie-player{width:4.6rem;height:4.6rem;}
 .ph-stat-val{font-size:.95rem;font-weight:800;color:var(--ph-text);letter-spacing:-.025em;}
 .ph-stat-label{font-size:.65rem;color:var(--ph-muted);font-weight:600;line-height:1.3;}
 
@@ -2058,17 +2058,17 @@ async function renderMobileHomeNew(el){
 
       <div class="ph-stats">
         <div class="ph-stat-card">
-          <div class="ph-stat-icon" style="background:#E0F3E7"><dotlottie-player src="https://lottie.host/35b99012-7aee-40f2-ae7d-fead072e7828/eejoyr5gFh.lottie" autoplay loop background="transparent" style="width:2.9rem;height:2.9rem"></dotlottie-player></div>
+          <div class="ph-stat-icon" style="background:#BEE8CE"><dotlottie-player src="https://lottie.host/35b99012-7aee-40f2-ae7d-fead072e7828/eejoyr5gFh.lottie" autoplay loop background="transparent" style="width:4.6rem;height:4.6rem"></dotlottie-player></div>
           <div class="ph-stat-val">${totalCamps||'0'}+</div>
           <div class="ph-stat-label">Active Campaigns</div>
         </div>
         <div class="ph-stat-card">
-          <div class="ph-stat-icon" style="background:#ECE8FC"><dotlottie-player src="https://lottie.host/bb00edea-449a-4cfc-bded-fb1b3aee5817/J4PTI8paxu.lottie" autoplay loop background="transparent" style="width:2.9rem;height:2.9rem"></dotlottie-player></div>
+          <div class="ph-stat-icon" style="background:#D8CFFB"><dotlottie-player src="https://lottie.host/bb00edea-449a-4cfc-bded-fb1b3aee5817/J4PTI8paxu.lottie" autoplay loop background="transparent" style="width:4.6rem;height:4.6rem"></dotlottie-player></div>
           <div class="ph-stat-val">${totalCreators||'0'}+</div>
           <div class="ph-stat-label">Creators</div>
         </div>
         <div class="ph-stat-card">
-          <div class="ph-stat-icon" style="background:#DCEEFC"><dotlottie-player src="https://lottie.host/ec2a86ea-1314-4f0e-8276-85bb52361b90/6yS2BJVRgN.lottie" autoplay loop background="transparent" style="width:2.9rem;height:2.9rem"></dotlottie-player></div>
+          <div class="ph-stat-icon" style="background:#BFE0FA"><dotlottie-player src="https://lottie.host/ec2a86ea-1314-4f0e-8276-85bb52361b90/6yS2BJVRgN.lottie" autoplay loop background="transparent" style="width:4.6rem;height:4.6rem"></dotlottie-player></div>
           <div class="ph-stat-val">${active}</div>
           <div class="ph-stat-label">My Active</div>
         </div>
@@ -2313,8 +2313,8 @@ async function renderMobileCampaigns(el){
     <div class="ph-camp-stats">
       <div class="ph-camp-stat"><div class="ph-camp-stat-icon" style="background:#DFF3E7"><svg viewBox="0 0 24 24" fill="none" stroke="#2FBF71" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div class="ph-camp-stat-val">${open}</div><div class="ph-camp-stat-label">Active</div></div>
       <div class="ph-camp-stat"><div class="ph-camp-stat-icon" style="background:#F3F0EC"><svg viewBox="0 0 24 24" fill="none" stroke="#9B948C" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="ph-camp-stat-val">${draft}</div><div class="ph-camp-stat-label">Draft</div></div>
-      <div class="ph-camp-stat"><div class="ph-camp-stat-icon" style="background:#ECE8FC"><svg viewBox="0 0 24 24" fill="none" stroke="#8B7CF6" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="ph-camp-stat-val">${isC?Object.values(myApps).length:myCamps.reduce((s,[,c])=>s+(c.applicantsCount||0),0)}</div><div class="ph-camp-stat-label">${isC?'Applied':'Applicants'}</div></div>
-      <div class="ph-camp-stat"><div class="ph-camp-stat-icon" style="background:#DCEEFC"><svg viewBox="0 0 24 24" fill="none" stroke="#3B9EFF" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="ph-camp-stat-val">${total}</div><div class="ph-camp-stat-label">Total</div></div>
+      <div class="ph-camp-stat"><div class="ph-camp-stat-icon" style="background:#D8CFFB"><svg viewBox="0 0 24 24" fill="none" stroke="#8B7CF6" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="ph-camp-stat-val">${isC?Object.values(myApps).length:myCamps.reduce((s,[,c])=>s+(c.applicantsCount||0),0)}</div><div class="ph-camp-stat-label">${isC?'Applied':'Applicants'}</div></div>
+      <div class="ph-camp-stat"><div class="ph-camp-stat-icon" style="background:#BFE0FA"><svg viewBox="0 0 24 24" fill="none" stroke="#3B9EFF" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="ph-camp-stat-val">${total}</div><div class="ph-camp-stat-label">Total</div></div>
     </div>
     <div class="ph-section-head"><div class="ph-section-title">${isC?'Open Campaigns':'My Campaigns'}</div></div>
     ${campCards||`<div style="text-align:center;padding:2rem;color:var(--ph-muted);font-size:.88rem">No campaigns yet.</div>`}
