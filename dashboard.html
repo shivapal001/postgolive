@@ -828,6 +828,54 @@ button:active{
 .ph-spot-followers{font-size:.62rem;opacity:.8;margin-top:.1rem;}
 .ph-spot-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:800;color:#fff;}
 
+/* ── Reel Viewer (full-screen, Instagram-reels style) ── */
+.ph-reel-overlay{position:fixed;inset:0;z-index:900;background:#000;display:none;}
+.ph-reel-overlay.open{display:block;}
+.ph-reel-stage{position:relative;width:100%;height:100%;overflow:hidden;}
+.ph-reel-slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000;transition:transform .38s cubic-bezier(.4,0,.2,1),opacity .3s;}
+.ph-reel-media-wrap{position:absolute;inset:0;overflow:hidden;}
+.ph-reel-media-wrap img,.ph-reel-media-wrap video{width:100%;height:100%;object-fit:cover;display:block;}
+.ph-reel-media-wrap.ph-reel-kenburns img{animation:phReelKenBurns 9s ease-in-out infinite alternate;}
+@keyframes phReelKenBurns{from{transform:scale(1)}to{transform:scale(1.14)}}
+.ph-reel-scrim-top{position:absolute;top:0;left:0;right:0;height:7rem;background:linear-gradient(180deg,rgba(0,0,0,.55),transparent);z-index:2;}
+.ph-reel-scrim-bottom{position:absolute;bottom:0;left:0;right:0;height:42%;background:linear-gradient(0deg,rgba(0,0,0,.85) 15%,transparent);z-index:2;}
+.ph-reel-close{position:absolute;top:1rem;right:1rem;width:2.4rem;height:2.4rem;border-radius:50%;background:rgba(255,255,255,.16);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;z-index:5;border:none;}
+.ph-reel-counter{position:absolute;top:1.15rem;left:1.1rem;color:#fff;font-size:.72rem;font-weight:700;background:rgba(255,255,255,.16);padding:.25rem .65rem;border-radius:99px;z-index:5;}
+.ph-reel-noclip-badge{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3;background:rgba(0,0,0,.45);color:#fff;font-size:.72rem;font-weight:600;padding:.5rem 1rem;border-radius:99px;display:flex;align-items:center;gap:.4rem;}
+.ph-reel-playpause{position:absolute;inset:0;z-index:3;background:transparent;border:none;}
+.ph-reel-playpause .ph-reel-pi{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);width:3.6rem;height:3.6rem;border-radius:50%;background:rgba(0,0,0,.4);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.4rem;opacity:0;transition:all .25s;}
+.ph-reel-playpause.show-icon .ph-reel-pi{transform:translate(-50%,-50%) scale(1);opacity:1;}
+.ph-reel-bottom{position:absolute;left:0;right:0;bottom:0;padding:1.1rem 1.1rem 1.4rem;z-index:4;color:#fff;}
+.ph-reel-creator-row{display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem;}
+.ph-reel-ava{width:2.4rem;height:2.4rem;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid rgba(255,255,255,.85);background:#555;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;}
+.ph-reel-ava img{width:100%;height:100%;object-fit:cover;}
+.ph-reel-name{font-size:.98rem;font-weight:800;}
+.ph-reel-meta{font-size:.74rem;opacity:.85;margin-top:.05rem;}
+.ph-reel-bio{font-size:.78rem;line-height:1.4;opacity:.92;margin-bottom:.9rem;max-width:88%;}
+.ph-reel-actions{display:flex;gap:.6rem;}
+.ph-reel-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.72rem 1rem;border-radius:99px;font-size:.82rem;font-weight:800;border:none;font-family:'Plus Jakarta Sans',sans-serif;}
+.ph-reel-btn-primary{background:var(--ph-accent);color:#fff;}
+.ph-reel-btn-secondary{background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.4);}
+.ph-reel-swipe-hint{position:absolute;right:.9rem;top:50%;transform:translateY(-50%);z-index:4;display:flex;flex-direction:column;gap:.9rem;align-items:center;color:rgba(255,255,255,.7);}
+.ph-reel-swipe-hint i{font-size:1rem;}
+
+/* Profile panel that slides up over the reel */
+.ph-reel-profile{position:absolute;inset:0;z-index:6;background:var(--ph-bg);transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);overflow-y:auto;}
+.ph-reel-profile.open{transform:translateY(0);}
+.ph-reel-profile-head{padding:1.1rem 1.1rem .5rem;display:flex;align-items:center;gap:.8rem;}
+.ph-reel-profile-back{width:2.2rem;height:2.2rem;border-radius:50%;background:var(--ph-card);display:flex;align-items:center;justify-content:center;border:none;color:var(--ph-text);flex-shrink:0;}
+.ph-reel-profile-title{font-size:1rem;font-weight:800;color:var(--ph-text);}
+.ph-reel-profile-body{padding:.4rem 1.25rem 2rem;text-align:center;}
+.ph-reel-profile-ava{width:5.2rem;height:5.2rem;border-radius:50%;overflow:hidden;margin:0 auto .8rem;background:#ddd;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.6rem;color:#fff;}
+.ph-reel-profile-ava img{width:100%;height:100%;object-fit:cover;}
+.ph-reel-profile-name{font-size:1.15rem;font-weight:800;color:var(--ph-text);}
+.ph-reel-profile-niche{font-size:.82rem;color:var(--ph-muted);margin-top:.2rem;}
+.ph-reel-profile-stats{display:flex;justify-content:center;gap:1.4rem;margin:1.1rem 0;}
+.ph-reel-profile-stat b{display:block;font-size:1rem;font-weight:800;color:var(--ph-text);}
+.ph-reel-profile-stat span{font-size:.7rem;color:var(--ph-muted);}
+.ph-reel-profile-bio{font-size:.85rem;color:var(--ph-text);line-height:1.5;text-align:left;background:var(--ph-card);border-radius:16px;padding:1rem;margin-top:.6rem;}
+
+
 /* ── Category pills ── */
 .ph-cat-scroll{display:flex;gap:.7rem;overflow-x:auto;padding-bottom:1.4rem;margin:0 -1.25rem;padding-left:1.25rem;padding-right:1.25rem;}
 .ph-cat-scroll::-webkit-scrollbar{display:none;}
@@ -1191,6 +1239,11 @@ body.ph-mobile-active #ph-app-nav{ display:flex; }
     <div class="pricing-grid" id="plan-select-grid"></div>
     <div style="text-align:center;margin-top:1.5rem;font-size:.8rem;color:var(--muted)"><i class="fas fa-shield-alt"></i> Secure payments · Cancel anytime · 7-day refund policy</div>
   </div>
+</div>
+
+<!-- REEL VIEWER OVERLAY -->
+<div class="ph-reel-overlay" id="ph-reel-overlay">
+  <div class="ph-reel-stage" id="ph-reel-stage"></div>
 </div>
 
 <!-- TOAST -->
@@ -1950,20 +2003,28 @@ async function renderMobileHomeNew(el){
   {
     const list=Object.entries(creatorsObj).filter(([id])=>id!==_me.uid);
     const top=list.filter(([,c])=>c.featured).concat(list.filter(([,c])=>!c.featured)).slice(0,6);
-    spotHTML=top.map(([id,c])=>{
-      const hue=hashColor(id);
-      const img=c.profilePhoto
-        ?`<img src="${c.profilePhoto}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`
-        :`<div style="position:absolute;inset:0;background:linear-gradient(160deg,hsl(${hue},65%,38%),hsl(${hue+45},65%,22%))"></div>`;
-      const followers=c.audienceSize||c.followers||'';
-      return `<div class="ph-spot-card" onclick="${isC?`showSection('campaigns')`:`openChatForRequest('${_me.uid}','${id}')`}">
+    window._phSpotlightCreators=top.map(([id,c])=>({
+      id,
+      name:c.name||'Creator',
+      niches:c.niches||[],
+      followers:c.audienceSize||c.followers||'',
+      photo:c.profilePhoto||'',
+      bio:c.bio||c.about||'',
+      reelVideo:c.reelVideo||c.portfolioVideo||'',
+      hue:hashColor(id)
+    }));
+    spotHTML=window._phSpotlightCreators.map((c,i)=>{
+      const img=c.photo
+        ?`<img src="${c.photo}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`
+        :`<div style="position:absolute;inset:0;background:linear-gradient(160deg,hsl(${c.hue},65%,38%),hsl(${c.hue+45},65%,22%))"></div>`;
+      return `<div class="ph-spot-card" onclick="openReelViewer(${i})">
         ${img}
         <div class="ph-spot-grad"></div>
         <div class="ph-spot-play"><i class="fas fa-play"></i></div>
         <div class="ph-spot-info">
-          <div class="ph-spot-name">${escHtml(c.name||'Creator')}</div>
-          <div class="ph-spot-role">${escHtml((c.niches||[]).slice(0,2).join(' · ')||'Creator')}</div>
-          ${followers?`<div class="ph-spot-followers">▶ ${escHtml(String(followers))}</div>`:''}
+          <div class="ph-spot-name">${escHtml(c.name)}</div>
+          <div class="ph-spot-role">${escHtml(c.niches.slice(0,2).join(' · ')||'Creator')}</div>
+          ${c.followers?`<div class="ph-spot-followers">▶ ${escHtml(String(c.followers))}</div>`:''}
         </div>
       </div>`;
     }).join('');
@@ -2147,6 +2208,136 @@ function initPhHeroCarousel(){
     if(dx<-40)go(1); else if(dx>40)go(-1);
     window._phHeroInterval=setInterval(()=>go(1),2000);
   },{passive:true});
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CREATOR SPOTLIGHT REEL VIEWER — Instagram-reels style full screen
+// ═══════════════════════════════════════════════════════════════════
+window._phReelIndex=0;
+
+function reelSlideHTML(c,i){
+  const hasVideo=!!c.reelVideo;
+  const media=hasVideo
+    ?`<div class="ph-reel-media-wrap"><video src="${c.reelVideo}" autoplay loop muted playsinline></video></div>`
+    :(c.photo
+      ?`<div class="ph-reel-media-wrap ph-reel-kenburns"><img src="${c.photo}"></div>`
+      :`<div class="ph-reel-media-wrap" style="background:linear-gradient(160deg,hsl(${c.hue},65%,32%),hsl(${c.hue+45},65%,16%))"></div>`);
+  const ava=c.photo?`<img src="${c.photo}">`:initials(c.name);
+  return `<div class="ph-reel-slide" data-idx="${i}">
+    ${media}
+    <div class="ph-reel-scrim-top"></div>
+    <div class="ph-reel-scrim-bottom"></div>
+    ${!hasVideo?`<div class="ph-reel-noclip-badge"><i class="fas fa-video-slash"></i> Reel coming soon</div>`:''}
+    <button class="ph-reel-playpause" onclick="togglePhReelPause(event)"><span class="ph-reel-pi"><i class="fas fa-play"></i></span></button>
+    <div class="ph-reel-bottom">
+      <div class="ph-reel-creator-row">
+        <div class="ph-reel-ava">${ava}</div>
+        <div>
+          <div class="ph-reel-name">${escHtml(c.name)}</div>
+          <div class="ph-reel-meta">${escHtml((c.niches||[]).slice(0,2).join(' · ')||'Creator')}${c.followers?' · '+escHtml(String(c.followers))+' followers':''}</div>
+        </div>
+      </div>
+      ${c.bio?`<div class="ph-reel-bio">${escHtml(c.bio)}</div>`:''}
+      <div class="ph-reel-actions">
+        <button class="ph-reel-btn ph-reel-btn-secondary" onclick="openReelProfile(${i})"><i class="fas fa-user"></i> View Profile</button>
+        <button class="ph-reel-btn ph-reel-btn-primary" onclick="messageReelCreator(${i})"><i class="fas fa-paper-plane"></i> Message</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function openReelViewer(i){
+  const list=window._phSpotlightCreators||[];
+  if(!list.length)return;
+  window._phReelIndex=i;
+  const overlay=document.getElementById('ph-reel-overlay');
+  const stage=document.getElementById('ph-reel-stage');
+  stage.innerHTML=`
+    <button class="ph-reel-close" onclick="closeReelViewer()"><i class="fas fa-times"></i></button>
+    <div class="ph-reel-counter" id="ph-reel-counter"></div>
+    ${list.map((c,idx)=>reelSlideHTML(c,idx)).join('')}
+    <div class="ph-reel-swipe-hint"><i class="fas fa-chevron-up"></i><i class="fas fa-chevron-down"></i></div>
+    <div class="ph-reel-profile" id="ph-reel-profile"></div>
+  `;
+  positionReelSlides(false);
+  overlay.classList.add('open');
+  document.body.style.overflow='hidden';
+  let sy=0;
+  stage.ontouchstart=e=>{sy=e.touches[0].clientY;};
+  stage.ontouchend=e=>{
+    const dy=e.changedTouches[0].clientY-sy;
+    if(dy<-50)reelGo(1); else if(dy>50)reelGo(-1);
+  };
+}
+function positionReelSlides(animate){
+  const slides=document.querySelectorAll('#ph-reel-stage .ph-reel-slide');
+  const list=window._phSpotlightCreators||[];
+  slides.forEach((s,idx)=>{
+    s.style.transition=animate?'transform .38s cubic-bezier(.4,0,.2,1)':'none';
+    s.style.transform=`translateY(${(idx-window._phReelIndex)*100}%)`;
+  });
+  const counter=document.getElementById('ph-reel-counter');
+  if(counter)counter.textContent=`${window._phReelIndex+1} / ${list.length}`;
+}
+function reelGo(dir){
+  const list=window._phSpotlightCreators||[];
+  const next=window._phReelIndex+dir;
+  if(next<0||next>=list.length)return;
+  window._phReelIndex=next;
+  positionReelSlides(true);
+  closeReelProfile();
+}
+function closeReelViewer(){
+  document.getElementById('ph-reel-overlay').classList.remove('open');
+  document.getElementById('ph-reel-stage').innerHTML='';
+  document.body.style.overflow='';
+}
+function togglePhReelPause(e){
+  const btn=e.currentTarget;
+  const slide=btn.closest('.ph-reel-slide');
+  const video=slide.querySelector('video');
+  btn.classList.add('show-icon');
+  const icon=btn.querySelector('.ph-reel-pi i');
+  if(video){
+    if(video.paused){video.play();icon.className='fas fa-play';}
+    else{video.pause();icon.className='fas fa-pause';}
+  }
+  clearTimeout(window._phReelIconTimer);
+  window._phReelIconTimer=setTimeout(()=>btn.classList.remove('show-icon'),500);
+}
+function openReelProfile(i){
+  const c=(window._phSpotlightCreators||[])[i];
+  if(!c)return;
+  const panel=document.getElementById('ph-reel-profile');
+  const ava=c.photo?`<img src="${c.photo}">`:initials(c.name);
+  panel.innerHTML=`
+    <div class="ph-reel-profile-head">
+      <button class="ph-reel-profile-back" onclick="closeReelProfile()"><i class="fas fa-arrow-left"></i></button>
+      <div class="ph-reel-profile-title">Creator Profile</div>
+    </div>
+    <div class="ph-reel-profile-body">
+      <div class="ph-reel-profile-ava" style="background:linear-gradient(160deg,hsl(${c.hue},65%,45%),hsl(${c.hue+45},65%,30%))">${ava}</div>
+      <div class="ph-reel-profile-name">${escHtml(c.name)}</div>
+      <div class="ph-reel-profile-niche">${escHtml((c.niches||[]).join(' · ')||'Creator')}</div>
+      <div class="ph-reel-profile-stats">
+        <div class="ph-reel-profile-stat"><b>${escHtml(String(c.followers||'—'))}</b><span>Followers</span></div>
+        <div class="ph-reel-profile-stat"><b>${(c.niches||[]).length}</b><span>Niches</span></div>
+      </div>
+      ${c.bio?`<div class="ph-reel-profile-bio">${escHtml(c.bio)}</div>`:''}
+      <div style="margin-top:1.4rem"><button class="ph-reel-btn ph-reel-btn-primary" style="width:100%" onclick="messageReelCreator(${i})"><i class="fas fa-paper-plane"></i> Message ${escHtml(c.name.split(' ')[0])}</button></div>
+    </div>
+  `;
+  panel.classList.add('open');
+}
+function closeReelProfile(){
+  const panel=document.getElementById('ph-reel-profile');
+  if(panel)panel.classList.remove('open');
+}
+function messageReelCreator(i){
+  const c=(window._phSpotlightCreators||[])[i];
+  if(!c)return;
+  closeReelViewer();
+  openChatForRequest(_me.uid,c.id);
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -3932,7 +4123,7 @@ window.markAllNotifsRead=async function(){
   }catch(e){toast('Could not mark all as read','error');}
 };
 
-Object.assign(window,{showSection,reqSwitchTab,selectRole,confirmRole,openSetup,openEditProfileModal,closeEditProfileModal,saveEditProfile,epHandleDp,epRemoveDp,updReq,sendCollab,filterCreators,selectPlan,openPlanOverlay,closePlanOverlay,doSignOut,goToLanding,goToAdmin,openSidebar,closeSidebar,choosePlanAndContinue,goToMessages,goToNotifications,openChatForRequest,openLaunchModal,closeLaunchModal,closeApplicantsModal,launchCampaign,toggleCampaignStatus,viewApplications,respondApp,openApplyModal,closeApplyModal,submitApplication,toggleCollabChip,toggleCampDetails,handleCampImg,removeCampImg,handleBrandLogo,showFormErr,filterConversations,openConversation,messagesBackToList,triggerFileInput,handleFileSelect,cancelUpload,sendMessage,handleMsgKey,autoResizeInput,openLightbox,closeLightbox,renderNotificationsSection});
+Object.assign(window,{showSection,reqSwitchTab,selectRole,confirmRole,openSetup,openEditProfileModal,closeEditProfileModal,saveEditProfile,epHandleDp,epRemoveDp,updReq,sendCollab,filterCreators,selectPlan,openPlanOverlay,closePlanOverlay,doSignOut,goToLanding,goToAdmin,openSidebar,closeSidebar,choosePlanAndContinue,goToMessages,goToNotifications,openChatForRequest,openLaunchModal,closeLaunchModal,closeApplicantsModal,launchCampaign,toggleCampaignStatus,viewApplications,respondApp,openApplyModal,closeApplyModal,submitApplication,toggleCollabChip,toggleCampDetails,handleCampImg,removeCampImg,handleBrandLogo,showFormErr,filterConversations,openConversation,messagesBackToList,triggerFileInput,handleFileSelect,cancelUpload,sendMessage,handleMsgKey,autoResizeInput,openLightbox,closeLightbox,renderNotificationsSection,openReelViewer,closeReelViewer,togglePhReelPause,openReelProfile,closeReelProfile,messageReelCreator});
 
 // Android hardware back button: close open modal/sidebar, else double-press to exit
 if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) {
