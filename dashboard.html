@@ -1449,6 +1449,7 @@ onAuthStateChanged(auth, async (fbUser) => {
   }
   _authResolved = true;
   try{_me=await DB.getUser(fbUser.uid);}catch(e){return;}
+  if(_me)_me.userType='creator'; // this file is locked to the CREATOR dashboard
   if(!_me){
     const fb={uid:fbUser.uid,email:fbUser.email,name:fbUser.displayName||fbUser.email.split('@')[0],whatsapp:'',plan:'free',profileComplete:false,createdAt:new Date().toISOString()};
     try{await DB.setUser(fbUser.uid,fb);_me=fb;}catch(e){return;}
