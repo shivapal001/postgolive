@@ -2602,7 +2602,8 @@ function phHeader(title, actionsHTML=''){
   return ''; // no inline header HTML needed anymore
 }
 
-// ── DISCOVER (Creators) ──────────────────────────────────────────
+// ── DISCOVER ──────────────────────────────────────────────────────
+// Creators see "Discover Brands" (mockup-exact). Founders see creator discovery.
 async function renderMobileDiscover(el){
   document.body.classList.add('ph-mobile-active');
   phSetMobileNav('creators');
@@ -2610,6 +2611,10 @@ async function renderMobileDiscover(el){
   el.innerHTML=phSkeleton();
 
   const isC=_me.userType==='creator';
+
+  if(isC){ await renderMobileDiscoverBrands(el); return; }
+
+  // ── Founder view: browse creators ──
   let creators={}; try{creators=await DB.getCreators();}catch(e){}
   const list=Object.entries(creators).filter(([id])=>id!==_me.uid);
   const NICHES=['All','Tech','Lifestyle','Business','Fitness','Beauty','Finance','Fashion','UGC','Food'];
@@ -2620,9 +2625,7 @@ async function renderMobileDiscover(el){
       ?`<img src="${c.profilePhoto}">`
       :`<div style="width:100%;height:100%;background:linear-gradient(135deg,hsl(${hue},65%,50%),hsl(${hue+40},65%,35%));display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;color:#fff">${(c.name||'C').charAt(0)}</div>`;
     const tags=(c.niches||[]).slice(0,2).map(n=>`<span class="ph-creator-tag">${escHtml(n)}</span>`).join('');
-    const action=isC
-      ? `<button class="ph-creator-btn" onclick="showSection('campaigns')">Browse Campaigns</button>`
-      : `<button class="ph-creator-btn" onclick="openChatForRequest('${_me.uid}','${id}')">Connect</button>`;
+    const action=`<button class="ph-creator-btn" onclick="openChatForRequest('${_me.uid}','${id}')">Connect</button>`;
     return `<div class="ph-creator-card">
       <div class="ph-creator-top">
         <div class="ph-creator-ava">${ava}</div>
@@ -2665,6 +2668,90 @@ async function renderMobileDiscover(el){
     document.querySelectorAll('.ph-tabs .ph-tab').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     document.querySelectorAll('#mob-disc-list .ph-creator-card').forEach((card,i)=>{
+      card.style.display=(niche==='All'||card.textContent.includes(niche))?'':'none';
+    });
+  };
+}
+
+// ── DISCOVER BRANDS (Creator view — mockup-exact) ──────────────────
+function _discDaysLeft(deadline){
+  if(!deadline) return '';
+  const diff=Math.ceil((new Date(deadline)-Date.now())/(1000*60*60*24));
+  if(isNaN(diff)) return '';
+  if(diff<0) return 'Closed';
+  if(diff===0) return 'Last day';
+  return `${diff} day${diff===1?'':'s'} left`;
+}
+
+async function renderMobileDiscoverBrands(el){
+  let campaigns={}; try{campaigns=await DB.getCampaigns();}catch(e){}
+  const openCamps=Object.entries(campaigns).filter(([,c])=>c.status==='open');
+  const NICHES=['All','Tech','Lifestyle','Fitness','Beauty','Travel','Food','Finance'];
+
+  // Featured Brands strip — unique brands from open campaigns
+  const brandMap=new Map();
+  openCamps.forEach(([,c])=>{
+    const key=c.founderId||c.startupName;
+    if(key && !brandMap.has(key)) brandMap.set(key,c);
+  });
+  const brandChips=[...brandMap.values()].slice(0,8).map(c=>{
+    const hue=hashColor(c.startupName||c.founderId||'B');
+    const initials=(c.startupName||'B').slice(0,2);
+    const badge=c.brandLogo?`<img src="${c.brandLogo}">`:initials;
+    return `<div style="text-align:center;flex:0 0 auto"><div class="logo-badge" style="background:hsl(${hue},65%,45%);margin:0 auto">${badge}</div></div>`;
+  }).join('');
+
+  // Trending Campaigns cards
+  const campCards=openCamps.slice(0,20).map(([id,c])=>{
+    const hue=hashColor(id);
+    const icon=c.brandLogo?`<img src="${c.brandLogo}">`:(c.startupName||'B').slice(0,2);
+    const days=_discDaysLeft(c.deadline);
+    return `<div class="card" style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem;cursor:pointer" onclick="showSection('campaigns')">
+      <div class="logo-badge" style="background:hsl(${hue},65%,45%)">${icon}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.72rem;font-weight:800">${escHtml(c.startupName||'Brand')}</div>
+        <div style="font-size:.62rem;color:var(--muted)">${escHtml(c.title||c.collabType||'Campaign')}</div>
+        <div style="font-size:.7rem;font-weight:800;color:var(--accent)">${c.budget?'₹'+escHtml(String(c.budget)):'Budget TBD'}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <i class="fa-regular fa-bookmark" style="color:var(--muted2)"></i>
+        <div style="font-size:.58rem;color:var(--muted2);margin-top:.3rem">${days||'&nbsp;'}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const discBody=`
+    <div style="font-size:1.05rem;font-weight:800;margin:.5rem 0 .7rem;">Discover Brands</div>
+    <div style="display:flex;gap:.5rem;margin-bottom:.5rem;">
+      <div style="flex:1;background:var(--surface);border-radius:.8rem;padding:.55rem .8rem;display:flex;align-items:center;gap:.5rem;font-size:.68rem;color:var(--muted);">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input id="mob-disc-search" oninput="mobDiscFilter(this.value)" placeholder="Search brands, campaigns…" style="border:none;outline:none;background:transparent;font-size:.68rem;flex:1;font-family:'Inter',sans-serif;color:var(--text)">
+      </div>
+      <div class="ph-icon-btn"><i class="fa-solid fa-sliders"></i></div>
+    </div>
+    <div class="pill-row">
+      ${NICHES.map((n,i)=>`<div class="pill${i===0?' active':''}" onclick="mobDiscNiche(this,'${n}')">${n}</div>`).join('')}
+    </div>
+
+    <div class="section-head"><span class="section-title">Featured Brands</span><span class="see-all" onclick="showSection('campaigns')">See all</span></div>
+    <div style="display:flex;gap:.6rem;overflow-x:auto;scrollbar-width:none;">${brandChips||`<div class="ph-empty-inline">No brands yet.</div>`}</div>
+
+    <div class="section-head"><span class="section-title">Trending Campaigns</span><span class="see-all" onclick="showSection('campaigns')">See all</span></div>
+    <div id="mob-disc-list">${campCards||`<div class="ph-empty-inline">No open campaigns right now.</div>`}</div>
+  `;
+  el.innerHTML=discBody;
+  updateNotifBadge();
+
+  window.mobDiscFilter=function(q){
+    document.querySelectorAll('#mob-disc-list .card').forEach(card=>{
+      const text=card.textContent.toLowerCase();
+      card.style.display=text.includes(q.toLowerCase())?'':'none';
+    });
+  };
+  window.mobDiscNiche=function(btn,niche){
+    document.querySelectorAll('.pill-row .pill').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('#mob-disc-list .card').forEach(card=>{
       card.style.display=(niche==='All'||card.textContent.includes(niche))?'':'none';
     });
   };
