@@ -1094,14 +1094,13 @@ body.ph-mobile-active #ph-app-header{ display:flex; }
   position:fixed;
   bottom:0; left:0; right:0;
   height:62px;
-  background:rgba(18,18,22,0.98);
-  backdrop-filter:blur(24px);
-  -webkit-backdrop-filter:blur(24px);
+  background:var(--ph-card);
   z-index:400;
   display:none;                        /* shown only when ph-mobile-active */
   align-items:center;
   justify-content:space-around;
-  border-top:1px solid rgba(255,255,255,.07);
+  border-top:1px solid var(--ph-border);
+  box-shadow:0 -2px 12px rgba(0,0,0,.04);
   padding-bottom:env(safe-area-inset-bottom);
 }
 body.ph-mobile-active #ph-app-nav{ display:flex; }
@@ -1115,7 +1114,7 @@ body.ph-mobile-active #ph-app-nav{ display:flex; }
 .ph-nav-item{
   display:flex;flex-direction:column;align-items:center;gap:.22rem;
   font-size:.6rem;font-weight:600;
-  color:rgba(255,255,255,0.38);
+  color:var(--ph-muted2);
   cursor:pointer;background:none;border:none;
   font-family:'Plus Jakarta Sans',sans-serif;
   padding:.3rem .75rem;
