@@ -31,6 +31,7 @@
   --accent2:     #FF7A50;
   --accent3:     #2FBF71;
   --gold:        #F5A623;
+  --blue:        #3B9EFF;
 
   --free:    #8B7CF6;
   --starter: #3B9EFF;
@@ -1125,7 +1126,29 @@ body.ph-mobile-active #ph-app-nav{ display:flex; }
 .ph-nav-item i{font-size:1.05rem;}
 .ph-nav-item span{letter-spacing:.01em;}
 .ph-nav-item.active{color:var(--ph-accent);}
-.ph-nav-item:active{opacity:.6;}</style>
+.ph-nav-item:active{opacity:.6;}
+
+/* ══════════════════════════════════════════════════════
+   MOCKUP-EXACT COMPONENTS — used inside .ph-mob-root screens
+   (Home / Messages / Campaigns / Discover / Profile)
+   ══════════════════════════════════════════════════════ */
+.card{background:var(--surface);border-radius:1.1rem;padding:.85rem;box-shadow:0 3px 12px rgba(35,31,28,0.05);}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin:1.1rem 0 .6rem;}
+.section-title{font-size:.9rem;font-weight:800;letter-spacing:-.01em;color:var(--text);}
+.see-all{font-size:.68rem;font-weight:700;color:var(--accent);cursor:pointer;background:none;border:none;font-family:'Plus Jakarta Sans',sans-serif;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#ff7048);color:#fff;border:none;font-weight:700;font-size:.68rem;padding:.5rem 0;border-radius:.65rem;width:100%;text-align:center;box-shadow:0 6px 14px -4px rgba(244,85,47,.45);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;}
+.btn-outline{background:var(--surface);border:1px solid var(--border);color:var(--text);font-weight:700;font-size:.66rem;padding:.42rem .9rem;border-radius:.6rem;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;}
+.pill{padding:.35rem .8rem;border-radius:1.4rem;font-size:.68rem;font-weight:700;background:var(--surface);color:var(--muted);white-space:nowrap;cursor:pointer;border:none;font-family:'Plus Jakarta Sans',sans-serif;}
+.pill.active{background:var(--accent);color:#fff;}
+.pill-row{display:flex;gap:.45rem;overflow-x:auto;padding:.2rem 0 .3rem;scrollbar-width:none;}
+.pill-row::-webkit-scrollbar{display:none;}
+.logo-badge{width:2.1rem;height:2.1rem;border-radius:.6rem;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.62rem;color:#fff;overflow:hidden;}
+.logo-badge img{width:100%;height:100%;object-fit:cover;}
+.cat-tile{display:flex;flex-direction:column;align-items:center;gap:.35rem;flex:0 0 auto;width:3.6rem;cursor:pointer;}
+.cat-circle{width:2.6rem;height:2.6rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.95rem;box-shadow:0 2px 8px rgba(35,31,28,0.06);}
+.cat-tile span{font-size:.6rem;font-weight:700;color:var(--muted);text-align:center;}
+.avatar-circ{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;flex-shrink:0;}
+</style>
 </head>
 
 <body>
@@ -2230,69 +2253,66 @@ async function renderMobileHomeNew(el){
 // campaigns, brand invitations, insights, trending, recent activity)
 // ═══════════════════════════════════════════════════════════════════
 async function renderCreatorHomeMobile(el,ctx){
-  const {firstName,greetWord,requestsObj,campaignsObj,myAppsObj,recv,plan,catHTML}=ctx;
+  const {firstName,greetWord,requestsObj,campaignsObj,myAppsObj,recv,plan}=ctx;
 
   // ── Profile completion % ──
   const fields=[_me.name,_me.profilePhoto,_me.bio,(_me.niches&&_me.niches.length),_me.audienceSize,(_me.socialLinks&&Object.keys(_me.socialLinks).length)];
   const filled=fields.filter(Boolean).length;
   const pct=Math.round((filled/fields.length)*100)||0;
-  const ringR=26,ringC=2*Math.PI*ringR;
-  const ringOffset=ringC-(pct/100)*ringC;
 
-  // ── Recommended campaigns (open, not already applied) ──
+  // ── Recommended campaigns (open, not already applied) — mockup "card" style ──
   const appliedIds=new Set(Object.values(myAppsObj||{}).map(a=>a.campaignId));
   const openCamps=Object.entries(campaignsObj).filter(([id,c])=>c.status==='open'&&!appliedIds.has(id)).slice(0,6);
   let campHTML=openCamps.map(([id,c])=>{
     const hue=hashColor(id);
-    const logo=c.brandLogo
+    const badge=c.brandLogo
       ?`<img src="${c.brandLogo}">`
-      :`<div style="width:100%;height:100%;background:linear-gradient(135deg,hsl(${hue},60%,45%),hsl(${hue+35},60%,30%));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800">${(c.startupName||'B').charAt(0)}</div>`;
-    return `<div class="ph-camp-reco-card">
-      <i class="fa-regular fa-bookmark ph-camp-reco-bookmark"></i>
-      <div class="ph-camp-reco-top">
-        <div class="ph-camp-reco-logo">${logo}</div>
-        <div>
-          <div class="ph-camp-reco-brand">${escHtml(c.startupName||'Brand')}</div>
-          <div class="ph-camp-reco-type">${escHtml(c.title||c.collabType||'Campaign')}</div>
-        </div>
-      </div>
-      <div class="ph-camp-reco-budget">${c.budget?'₹'+escHtml(String(c.budget)):'Budget TBD'}</div>
-      <div class="ph-camp-reco-meta">
-        ${c.deadline?`<span><i class="fas fa-clock"></i> ${escHtml(String(c.deadline))}</span>`:''}
-        ${c.collabType?`<span>· ${escHtml(c.collabType)}</span>`:''}
-      </div>
-      <button class="ph-camp-reco-btn" onclick="openApplyModal('${id}')">Apply Now</button>
+      :`${(c.startupName||'B').slice(0,2)}`;
+    const badgeBg=c.brandLogo?'transparent':`hsl(${hue},60%,40%)`;
+    return `<div class="card" style="flex:0 0 128px;">
+      <div class="logo-badge" style="background:${badgeBg}">${badge}</div>
+      <div style="font-size:.7rem;font-weight:800;margin-top:.5rem;">${escHtml(c.startupName||'Brand')}</div>
+      <div style="font-size:.62rem;color:var(--muted);">${escHtml(c.title||c.collabType||'Campaign')}</div>
+      <div style="font-size:.72rem;font-weight:800;color:var(--accent);margin-top:.3rem;">${c.budget?'₹'+escHtml(String(c.budget)):'Budget TBD'}</div>
+      <div style="font-size:.58rem;color:var(--muted2);margin-bottom:.5rem;">${c.deadline?`<i class="fa-regular fa-clock"></i> ${escHtml(String(c.deadline))}`:'&nbsp;'}</div>
+      <button class="btn-primary" onclick="openApplyModal('${id}')">Apply Now</button>
     </div>`;
   }).join('');
   if(!campHTML)campHTML=`<div class="ph-empty-inline">No open campaigns right now — check back soon.</div>`;
 
-  // ── Brand invitations (direct pending requests) ──
+  // ── Brand invitations (direct pending requests) — mockup "card" row style ──
   const invites=recv.filter(([,r])=>r.status==='pending').slice(0,4);
   let inviteHTML=invites.map(([id,r])=>{
     const hue=hashColor(id);
-    return `<div class="ph-invite-card">
-      <div class="ph-invite-logo" style="background:hsl(${hue},60%,42%)">${(r.founderName||'B').charAt(0).toUpperCase()}</div>
-      <div class="ph-invite-body">
-        <div class="ph-invite-name">${escHtml(r.founderName||'Brand')}</div>
-        <div class="ph-invite-sub">${escHtml(r.campaignTitle||'Collaboration invite')}</div>
+    return `<div class="card" style="display:flex;align-items:center;gap:.6rem;margin-bottom:.55rem;">
+      <div class="logo-badge" style="background:hsl(${hue},60%,42%)">${(r.founderName||'B').charAt(0).toUpperCase()}</div>
+      <div style="flex:1;">
+        <div style="font-size:.72rem;font-weight:800;">${escHtml(r.founderName||'Brand')}</div>
+        <div style="font-size:.62rem;color:var(--muted);">${escHtml(r.campaignTitle||'Collaboration invite')}</div>
       </div>
-      <div class="ph-invite-actions">
-        <button class="ph-invite-btn ph-invite-accept" onclick="updReq('${id}','accepted')">Accept</button>
-        <button class="ph-invite-btn ph-invite-decline" onclick="updReq('${id}','declined')">Decline</button>
-      </div>
+      <button class="btn-outline" style="background:var(--accent);color:#fff;border:none;" onclick="updReq('${id}','accepted')">Accept</button>
+      <button class="btn-outline" onclick="updReq('${id}','declined')">Decline</button>
     </div>`;
   }).join('');
   const inviteSection=invites.length?`
-      <div class="ph-section-head">
-        <div class="ph-section-title">Brand Invitations</div>
-        <div class="ph-section-link" onclick="showSection('requests')">See all</div>
-      </div>
+      <div class="section-head"><span class="section-title">Brand Invitations</span><span class="see-all" onclick="showSection('requests')">See all</span></div>
       ${inviteHTML}`:'';
 
   // ── Creator insights ──
   const profileViews=_me.profileViews||0;
   const invitesCount=recv.length;
   const earnings=_me.totalEarnings||0;
+
+  // ── Trending categories — fixed set, exact mockup style ──
+  const CATS=[
+    {label:'Tech',emoji:'💻',bg:'#EAF1FF'},
+    {label:'Lifestyle',emoji:'👗',bg:'#FFF0E9'},
+    {label:'Fitness',emoji:'🏋️',bg:'#EAFBF1'},
+    {label:'Beauty',emoji:'💄',bg:'#FFEAF1'},
+    {label:'Travel',emoji:'✈️',bg:'#FFF8E5'},
+    {label:'Food',emoji:'🍔',bg:'#FFEEE5'},
+  ];
+  const catHTML=CATS.map(c=>`<div class="cat-tile" onclick="showSection('campaigns')"><div class="cat-circle" style="background:${c.bg};">${c.emoji}</div><span>${c.label}</span></div>`).join('');
 
   // ── Recent activity from requests ──
   const activityItems=recv.concat(requestsObj?Object.entries(requestsObj).filter(([,r])=>r.founderId===_me.uid):[])
@@ -2304,74 +2324,60 @@ async function renderCreatorHomeMobile(el,ctx){
     const t=new Date(r.updatedAt||r.createdAt||Date.now());
     const mins=Math.round((Date.now()-t.getTime())/60000);
     const timeStr=mins<1?'now':mins<60?`${mins}m ago`:mins<1440?`${Math.round(mins/60)}h ago`:`${Math.round(mins/1440)}d ago`;
-    return `<div class="ph-activity-item">
-      <div class="ph-activity-ic"><i class="fas fa-bell"></i></div>
-      <div class="ph-activity-text"><b>${escHtml(who)}</b> ${verb}</div>
-      <div class="ph-activity-time">${timeStr}</div>
+    const initial=(who||'?').charAt(0).toUpperCase();
+    return `<div style="display:flex;align-items:center;gap:.55rem;padding:.4rem 0;">
+      <div class="logo-badge" style="background:#111;width:1.7rem;height:1.7rem;">${initial}</div>
+      <div style="font-size:.68rem;color:var(--muted);">${escHtml(who)} ${verb}</div>
+      <div style="font-size:.6rem;color:var(--muted2);margin-left:auto;">${timeStr}</div>
     </div>`;
   }).join('');
   if(!activityHTML)activityHTML=`<div class="ph-empty-inline">No recent activity yet.</div>`;
 
   el.innerHTML=`
-      <div class="ph-greet">
-        <div class="ph-greet-sub">Good ${greetWord}, ${escHtml(firstName)} 👋</div>
-        <div class="ph-greet-title">Find Your Next <span>Brand Deal</span>!</div>
-      </div>
+      <div style="font-size:.72rem;color:var(--muted);font-weight:600;margin-top:.3rem;">Good ${greetWord}, ${escHtml(firstName)} 👋</div>
+      <div style="font-size:1.28rem;font-weight:800;line-height:1.2;letter-spacing:-.02em;margin-top:.2rem;">Find Your Next<br><span style="color:var(--accent);">Brand Deal!</span></div>
+      <div style="font-size:.7rem;color:var(--muted);margin-top:.3rem;">Top brands are looking for amazing creators like you.</div>
 
-      <div class="ph-cprog-card">
-        <div class="ph-cprog-ring">
-          <svg viewBox="0 0 60 60">
-            <circle cx="30" cy="30" r="${ringR}" fill="none" stroke="#F1EDE8" stroke-width="5"></circle>
-            <circle cx="30" cy="30" r="${ringR}" fill="none" stroke="var(--ph-accent)" stroke-width="5" stroke-linecap="round" stroke-dasharray="${ringC}" stroke-dashoffset="${ringOffset}"></circle>
-          </svg>
-          <div class="ph-cprog-ring-pct">${pct}%</div>
+      <div class="card" style="margin-top:.9rem;background:linear-gradient(135deg,#FFF0E6,#FCE3D4);display:flex;align-items:center;gap:.75rem;">
+        <div>
+          <div style="font-size:.78rem;font-weight:800;">Get noticed by top brands</div>
+          <div style="font-size:.66rem;color:var(--muted);margin:.2rem 0 .55rem;">Complete your profile and increase your chances.</div>
+          <button class="btn-primary" style="width:auto;padding:.42rem 1rem;" onclick="showSection('profile')">Complete Now</button>
         </div>
-        <div class="ph-cprog-body">
-          <div class="ph-cprog-title">Get noticed by top brands</div>
-          <div class="ph-cprog-sub">Complete your profile and increase your chances.</div>
-          <button class="ph-cprog-btn" onclick="showSection('profile')">Complete Now</button>
+        <div style="flex-shrink:0;width:2.9rem;height:2.9rem;border-radius:50%;background:conic-gradient(var(--accent) ${pct}%, #F1DCCB 0);display:flex;align-items:center;justify-content:center;">
+          <div style="width:2.1rem;height:2.1rem;border-radius:50%;background:#FFF6EF;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:800;">${pct}%</div>
         </div>
       </div>
 
-      <div class="ph-section-head">
-        <div class="ph-section-title">Recommended Campaigns</div>
-        <div class="ph-section-link" onclick="showSection('campaigns')">See all</div>
-      </div>
-      <div class="ph-camp-reco-scroll">${campHTML}</div>
+      <div class="section-head"><span class="section-title">Recommended Campaigns</span><span class="see-all" onclick="showSection('campaigns')">See all</span></div>
+      <div style="display:flex;gap:.6rem;overflow-x:auto;scrollbar-width:none;padding-bottom:.2rem;">${campHTML}</div>
 
       ${inviteSection}
 
-      <div class="ph-section-head">
-        <div class="ph-section-title">Creator Insights</div>
-      </div>
-      <div class="ph-stats">
-        <div class="ph-insight-card">
-          <div class="ph-insight-icon" style="background:#FCE5DC"><i class="fas fa-eye" style="color:var(--ph-accent)"></i></div>
-          <div class="ph-insight-val">${profileViews}</div>
-          <div class="ph-insight-label">Profile Views</div>
+      <div class="section-head"><span class="section-title">Creator Insights</span><span class="see-all">This Month <i class="fa-solid fa-chevron-down" style="font-size:.55rem;"></i></span></div>
+      <div style="display:flex;gap:.55rem;">
+        <div class="card" style="flex:1;">
+          <i class="fa-regular fa-eye" style="color:var(--blue);"></i>
+          <div style="font-size:.88rem;font-weight:800;margin-top:.35rem;">${profileViews}</div>
+          <div style="font-size:.58rem;color:var(--muted);">Profile Views</div>
         </div>
-        <div class="ph-insight-card">
-          <div class="ph-insight-icon" style="background:#D8CFFB"><i class="fas fa-envelope-open-text" style="color:#7C5CFC"></i></div>
-          <div class="ph-insight-val">${invitesCount}</div>
-          <div class="ph-insight-label">Invitations</div>
+        <div class="card" style="flex:1;">
+          <i class="fa-regular fa-envelope-open" style="color:var(--gold);"></i>
+          <div style="font-size:.88rem;font-weight:800;margin-top:.35rem;">${invitesCount}</div>
+          <div style="font-size:.58rem;color:var(--muted);">Invitations</div>
         </div>
-        <div class="ph-insight-card">
-          <div class="ph-insight-icon" style="background:#BEE8CE"><i class="fas fa-indian-rupee-sign" style="color:#2FBF71"></i></div>
-          <div class="ph-insight-val">₹${earnings}</div>
-          <div class="ph-insight-label">Earnings</div>
+        <div class="card" style="flex:1;">
+          <i class="fa-solid fa-indian-rupee-sign" style="color:var(--accent3);"></i>
+          <div style="font-size:.88rem;font-weight:800;margin-top:.35rem;">₹${earnings}</div>
+          <div style="font-size:.58rem;color:var(--muted);">Earnings</div>
         </div>
       </div>
 
-      <div class="ph-section-head">
-        <div class="ph-section-title">Trending Categories</div>
-        <div class="ph-section-link" onclick="showSection('campaigns')">See all</div>
-      </div>
-      <div class="ph-cat-scroll">${catHTML}</div>
+      <div class="section-head"><span class="section-title">Trending Categories</span><span class="see-all" onclick="showSection('campaigns')">See all</span></div>
+      <div style="display:flex;gap:.7rem;overflow-x:auto;scrollbar-width:none;">${catHTML}</div>
 
-      <div class="ph-section-head">
-        <div class="ph-section-title">Recent Activity</div>
-      </div>
-      ${activityHTML}
+      <div class="section-head"><span class="section-title">Recent Activity</span></div>
+      <div style="display:flex;flex-direction:column;padding-bottom:1rem;">${activityHTML}</div>
 
       ${plan==='free'?`
       <div class="ph-upgrade-banner" onclick="showSection('pricing')">
@@ -2749,35 +2755,35 @@ async function renderMobileMessages(el){
     const name=cv.otherName||otherId.slice(0,6)||'User';
     const hue=hashColor(otherId);
     const ava=cv.otherPhoto
-      ?`<img src="${cv.otherPhoto}" style="width:100%;height:100%;object-fit:cover">`
-      :`<div style="width:100%;height:100%;background:linear-gradient(135deg,hsl(${hue},65%,50%),hsl(${hue+40},65%,35%));display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;color:#fff">${name.charAt(0).toUpperCase()}</div>`;
+      ?`<img src="${cv.otherPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
+      :`${name.charAt(0).toUpperCase()}${(name.split(' ')[1]||'').charAt(0).toUpperCase()}`;
+    const avaBg=cv.otherPhoto?'transparent':`linear-gradient(135deg,hsl(${hue},65%,50%),hsl(${hue+40},65%,35%))`;
     const unread=cv.unreadCount?.[_me.uid]||0;
-    const time=cv.lastAt?new Date(cv.lastAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
-    return `<div class="ph-msg-item" onclick="openConversation('${cid}')">
-      <div class="ph-msg-ava">${ava}</div>
-      <div class="ph-msg-body">
-        <div class="ph-msg-row">
-          <div class="ph-msg-name">${escHtml(name)} <i class="fas fa-circle-check" style="color:var(--ph-blue);font-size:.6rem"></i></div>
-          <div class="ph-msg-time">${time}</div>
-        </div>
-        <div class="ph-msg-role ph-desc">${escHtml(cv.otherRole||'')}</div>
-        <div class="ph-msg-preview ph-desc">${escHtml((cv.lastMessage||'').slice(0,55))}${(cv.lastMessage||'').length>55?'…':''}</div>
+    const mins=cv.lastAt?Math.round((Date.now()-new Date(cv.lastAt).getTime())/60000):null;
+    const time=mins==null?'':mins<1?'now':mins<60?`${mins}m`:mins<1440?`${Math.round(mins/60)}h`:`${Math.round(mins/1440)}d`;
+    return `<div class="ph-msg-item" onclick="openConversation('${cid}')" style="display:flex;gap:.6rem;padding:.7rem 0;border-bottom:1px solid var(--border);cursor:pointer;">
+      <div class="avatar-circ" style="width:2.5rem;height:2.5rem;background:${avaBg};font-size:.7rem;">${ava}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;justify-content:space-between;"><span style="font-size:.74rem;font-weight:800;">${escHtml(name)}</span><span style="font-size:.6rem;color:var(--muted2);">${time}</span></div>
+        <div style="font-size:.62rem;color:var(--accent);font-weight:700;">${escHtml(cv.otherRole||'')}</div>
+        <div style="font-size:.66rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml((cv.lastMessage||'').slice(0,55))}${(cv.lastMessage||'').length>55?'…':''}</div>
       </div>
-      ${unread?`<div class="ph-msg-unread">${unread}</div>`:''}
+      ${unread?`<div style="width:1rem;height:1rem;border-radius:50%;background:var(--accent);color:#fff;font-size:.55rem;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;align-self:center;">${unread}</div>`:''}
     </div>`;
   }).join('');
 
   const msgBody=`
-    <div class="ph-search-bar">
-      <i class="fas fa-search" style="color:var(--ph-muted)"></i>
-      <input placeholder="Search messages…" id="mob-msg-search" oninput="mobMsgFilter(this.value)" style="border:none;outline:none;background:transparent;font-size:.85rem;flex:1;font-family:'Inter',sans-serif;color:var(--ph-text)">
+    <div style="font-size:1.05rem;font-weight:800;margin:.5rem 0 .7rem;">Messages</div>
+    <div style="background:var(--surface);border-radius:.8rem;padding:.55rem .8rem;display:flex;align-items:center;gap:.5rem;font-size:.7rem;color:var(--muted);margin-bottom:.6rem;">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input placeholder="Search messages..." id="mob-msg-search" oninput="mobMsgFilter(this.value)" style="border:none;outline:none;background:transparent;font-size:.7rem;flex:1;font-family:'Inter',sans-serif;color:var(--text)">
     </div>
-    <div class="ph-tabs">
-      <button class="ph-tab active" onclick="mobMsgTab(this,'all')">All</button>
-      <button class="ph-tab" onclick="mobMsgTab(this,'unread')">Unread</button>
+    <div class="pill-row">
+      <div class="pill active" onclick="mobMsgTab(this,'all')">All</div>
+      <div class="pill" onclick="mobMsgTab(this,'unread')">Unread</div>
     </div>
-    <div id="mob-msg-list">
-      ${convItems||`<div style="text-align:center;padding:2rem;color:var(--ph-muted);font-size:.88rem">No messages yet — start a conversation!</div>`}
+    <div id="mob-msg-list" style="display:flex;flex-direction:column;">
+      ${convItems||`<div style="text-align:center;padding:2rem;color:var(--muted);font-size:.88rem">No messages yet — start a conversation!</div>`}
     </div>
   `;
   el.innerHTML=msgBody;
@@ -2789,11 +2795,11 @@ async function renderMobileMessages(el){
     });
   };
   window.mobMsgTab=function(btn,tab){
-    document.querySelectorAll('.ph-tabs .ph-tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.pill-row .pill').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     if(tab==='unread'){
       document.querySelectorAll('#mob-msg-list .ph-msg-item').forEach(item=>{
-        item.style.display=item.querySelector('.ph-msg-unread')?'':'none';
+        item.style.display=item.querySelector('div[style*="border-radius:50%"][style*="background:var(--accent)"]')?'':'none';
       });
     } else {
       document.querySelectorAll('#mob-msg-list .ph-msg-item').forEach(item=>item.style.display='');
