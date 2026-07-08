@@ -947,6 +947,16 @@ button:active{
 .ph-activity-time{font-size:.68rem;color:var(--ph-muted);white-space:nowrap;}
 .ph-rec-btn{background:var(--ph-accent);color:#fff;border:none;border-radius:99px;padding:.45rem 1rem;font-size:.75rem;font-weight:700;cursor:pointer;flex-shrink:0;font-family:'Plus Jakarta Sans',sans-serif;box-shadow:0 4px 10px rgba(244,85,47,.28);}
 
+/* ── PCM: premium mini "Recommended Campaigns" card (matches design mock) ── */
+.pcm-card{background:var(--surface);border-radius:18px;padding:.9rem .7rem;box-shadow:0 3px 10px rgba(35,31,28,0.06);text-align:center;flex:0 0 132px;}
+.pcm-logo{width:2.6rem;height:2.6rem;border-radius:50%;margin:0 auto .55rem;overflow:hidden;background:#F3EFE9;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.82rem;color:var(--text);flex-shrink:0;}
+.pcm-logo img{width:100%;height:100%;object-fit:contain;padding:.3rem;}
+.pcm-name{font-size:.76rem;font-weight:800;color:var(--text);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pcm-sub{font-size:.64rem;color:var(--muted);margin:.15rem 0 .45rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pcm-budget{font-size:.82rem;font-weight:800;color:var(--accent);margin-bottom:.3rem;}
+.pcm-deadline{font-size:.62rem;color:var(--muted2);margin-bottom:.65rem;display:flex;align-items:center;justify-content:center;gap:.25rem;}
+.pcm-btn{background:linear-gradient(135deg,var(--accent),hsl(14,90%,58%));color:#fff;border:none;border-radius:10px;padding:.5rem 0;font-size:.68rem;font-weight:800;width:100%;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;box-shadow:0 5px 12px rgba(244,85,47,.3);}
+
 /* ── Messages screen ── */
 .ph-search-bar{background:var(--ph-card);border-radius:16px;padding:.8rem 1rem;display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;box-shadow:0 2px 8px rgba(0,0,0,.04);}
 .ph-search-bar input{border:none;outline:none;background:transparent;font-size:.85rem;flex:1;font-family:'Inter',sans-serif;color:var(--ph-text);}
@@ -2289,16 +2299,21 @@ async function renderCreatorHomeMobile(el,ctx){
   let campHTML=openCamps.map(([id,c])=>{
     const hue=hashColor(id);
     const badge=c.brandLogo
-      ?`<img src="${c.brandLogo}">`
-      :`${(c.startupName||'B').slice(0,2)}`;
-    const badgeBg=c.brandLogo?'transparent':`hsl(${hue},60%,40%)`;
-    return `<div class="card" style="flex:0 0 128px;">
-      <div class="logo-badge" style="background:${badgeBg}">${badge}</div>
-      <div style="font-size:.7rem;font-weight:800;margin-top:.5rem;">${escHtml(c.startupName||'Brand')}</div>
-      <div style="font-size:.62rem;color:var(--muted);">${escHtml(c.title||c.collabType||'Campaign')}</div>
-      <div style="font-size:.72rem;font-weight:800;color:var(--accent);margin-top:.3rem;">${c.budget?'₹'+escHtml(String(c.budget)):'Budget TBD'}</div>
-      <div style="font-size:.58rem;color:var(--muted2);margin-bottom:.5rem;">${c.deadline?`<i class="fa-regular fa-clock"></i> ${escHtml(String(c.deadline))}`:'&nbsp;'}</div>
-      <button class="btn-primary" onclick="openApplyModal('${id}')">Apply Now</button>
+      ?`<img src="${c.brandLogo}" alt="${escHtml(c.startupName||'')}">`
+      :`${(c.startupName||'B').charAt(0).toUpperCase()}`;
+    let deadlineTxt='';
+    if(c.deadline){
+      const diffMs=new Date(c.deadline)-new Date();
+      const days=Math.ceil(diffMs/86400000);
+      deadlineTxt=days>1?`${days} days left`:days===1?'1 day left':days===0?'Last day':'Deadline passed';
+    }
+    return `<div class="pcm-card">
+      <div class="pcm-logo">${badge}</div>
+      <div class="pcm-name">${escHtml(c.startupName||'Brand')}</div>
+      <div class="pcm-sub">${escHtml(c.title||c.collabType||'Campaign')}</div>
+      <div class="pcm-budget">${c.budget?'₹'+escHtml(String(c.budget)):'TBD'}</div>
+      <div class="pcm-deadline">${deadlineTxt?`<i class="fa-regular fa-clock"></i> ${escHtml(deadlineTxt)}`:'&nbsp;'}</div>
+      <button class="pcm-btn" onclick="openApplyModal('${id}')">Apply Now</button>
     </div>`;
   }).join('');
   if(!campHTML)campHTML=`<div class="ph-empty-inline">No open campaigns right now — check back soon.</div>`;
