@@ -1175,6 +1175,13 @@ body.ph-mobile-active #ph-app-nav{ display:flex; }
 .pill.active{background:var(--accent);color:#fff;}
 .pill-row{display:flex;gap:.45rem;overflow-x:auto;padding:.2rem 0 .3rem;scrollbar-width:none;}
 .pill-row::-webkit-scrollbar{display:none;}
+.pick-row{display:flex;gap:.85rem;overflow-x:auto;scrollbar-width:none;padding:.1rem 0 .3rem;}
+.pick-row::-webkit-scrollbar{display:none;}
+.pick-item{display:flex;flex-direction:column;align-items:center;gap:.4rem;flex:0 0 74px;text-align:center;cursor:pointer;}
+.pick-ava{width:3.6rem;height:3.6rem;border-radius:50%;overflow:hidden;background:var(--surface);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:1rem;flex-shrink:0;}
+.pick-ava img{width:100%;height:100%;object-fit:cover;}
+.pick-name{font-size:.68rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:74px;}
+.pick-role{font-size:.6rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:74px;}
 .logo-badge{width:2.1rem;height:2.1rem;border-radius:.6rem;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.62rem;color:#fff;overflow:hidden;}
 .logo-badge img{width:100%;height:100%;object-fit:cover;}
 .cat-tile{display:flex;flex-direction:column;align-items:center;gap:.35rem;flex:0 0 auto;width:3.6rem;cursor:pointer;}
@@ -2343,14 +2350,14 @@ async function renderCreatorHomeMobile(el,ctx){
 
   // ── Trending categories — fixed set, exact mockup style ──
   const CATS=[
-    {label:'Tech',emoji:'💻',bg:'#EAF1FF'},
-    {label:'Lifestyle',emoji:'👗',bg:'#FFF0E9'},
-    {label:'Fitness',emoji:'🏋️',bg:'#EAFBF1'},
-    {label:'Beauty',emoji:'💄',bg:'#FFEAF1'},
-    {label:'Travel',emoji:'✈️',bg:'#FFF8E5'},
-    {label:'Food',emoji:'🍔',bg:'#FFEEE5'},
+    {label:'Tech',icon:'fas fa-laptop',bg:'#EAF1FF',fg:'#3B82F6'},
+    {label:'Lifestyle',icon:'fas fa-heart',bg:'#FFF0E9',fg:'#F4552F'},
+    {label:'Fitness',icon:'fas fa-dumbbell',bg:'#EAFBF1',fg:'#22C55E'},
+    {label:'Beauty',icon:'fas fa-wand-magic-sparkles',bg:'#FFEAF1',fg:'#EC4899'},
+    {label:'Travel',icon:'fas fa-plane',bg:'#FFF8E5',fg:'#D97706'},
+    {label:'Food',icon:'fas fa-utensils',bg:'#FFEEE5',fg:'#EA580C'},
   ];
-  const catHTML=CATS.map(c=>`<div class="cat-tile" onclick="showSection('campaigns')"><div class="cat-circle" style="background:${c.bg};">${c.emoji}</div><span>${c.label}</span></div>`).join('');
+  const catHTML=CATS.map(c=>`<div class="cat-tile" onclick="showSection('campaigns')"><div class="cat-circle" style="background:${c.bg};"><i class="${c.icon}" style="color:${c.fg};font-size:.95rem;"></i></div><span>${c.label}</span></div>`).join('');
 
   // ── Recent activity from requests ──
   const activityItems=recv.concat(requestsObj?Object.entries(requestsObj).filter(([,r])=>r.founderId===_me.uid):[])
@@ -2727,6 +2734,11 @@ async function renderMobileDiscoverBrands(el){
   const openCamps=Object.entries(campaigns).filter(([,c])=>c.status==='open');
   const NICHES=['All','Tech','Lifestyle','Fitness','Beauty','Travel','Food','Finance'];
 
+  phSetHeader('PostHire',`
+    <div class="ph-icon-btn" onclick="document.getElementById('mob-disc-search')?.focus()"><i class="fas fa-search"></i></div>
+    <div class="ph-icon-btn" onclick="showSection('notifications')"><i class="fas fa-bell"></i><span class="ph-badge" id="mob-notif-badge" style="display:none">0</span></div>
+  `);
+
   // Featured Brands strip — unique brands from open campaigns
   const brandMap=new Map();
   openCamps.forEach(([,c])=>{
@@ -2737,7 +2749,7 @@ async function renderMobileDiscoverBrands(el){
     const hue=hashColor(c.startupName||c.founderId||'B');
     const initials=(c.startupName||'B').slice(0,2);
     const badge=c.brandLogo?`<img src="${c.brandLogo}">`:initials;
-    return `<div style="text-align:center;flex:0 0 auto"><div class="logo-badge" style="background:hsl(${hue},65%,45%);margin:0 auto">${badge}</div></div>`;
+    return `<div style="text-align:center;flex:0 0 auto"><div class="logo-badge" style="background:hsl(${hue},65%,45%);border-radius:50%;width:2.7rem;height:2.7rem;margin:0 auto">${badge}</div></div>`;
   }).join('');
 
   // Trending Campaigns cards
@@ -2746,7 +2758,7 @@ async function renderMobileDiscoverBrands(el){
     const icon=c.brandLogo?`<img src="${c.brandLogo}">`:(c.startupName||'B').slice(0,2);
     const days=_discDaysLeft(c.deadline);
     return `<div class="card" style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem;cursor:pointer" onclick="showSection('campaigns')">
-      <div class="logo-badge" style="background:hsl(${hue},65%,45%)">${icon}</div>
+      <div class="logo-badge" style="background:hsl(${hue},65%,45%);border-radius:50%">${icon}</div>
       <div style="flex:1;min-width:0">
         <div style="font-size:.72rem;font-weight:800">${escHtml(c.startupName||'Brand')}</div>
         <div style="font-size:.62rem;color:var(--muted)">${escHtml(c.title||c.collabType||'Campaign')}</div>
@@ -2756,6 +2768,35 @@ async function renderMobileDiscoverBrands(el){
         <i class="fa-regular fa-bookmark" style="color:var(--muted2)"></i>
         <div style="font-size:.58rem;color:var(--muted2);margin-top:.3rem">${days||'&nbsp;'}</div>
       </div>
+    </div>`;
+  }).join('');
+
+  // Popular Categories — fixed set, exact mockup style
+  const CATS=[
+    {label:'Tech',icon:'fas fa-laptop',bg:'#EAF1FF',fg:'#3B82F6'},
+    {label:'Lifestyle',icon:'fas fa-heart',bg:'#FFF0E9',fg:'#F4552F'},
+    {label:'Fitness',icon:'fas fa-dumbbell',bg:'#EAFBF1',fg:'#22C55E'},
+    {label:'Beauty',icon:'fas fa-wand-magic-sparkles',bg:'#FFEAF1',fg:'#EC4899'},
+    {label:'Travel',icon:'fas fa-plane',bg:'#FFF8E5',fg:'#D97706'},
+    {label:'Food',icon:'fas fa-utensils',bg:'#FFEEE5',fg:'#EA580C'},
+  ];
+  const catHTML=CATS.map(c=>`<div class="cat-tile" onclick="mobDiscNiche(document.querySelector('.pill-row .pill'),'${c.label}')"><div class="cat-circle" style="background:${c.bg};"><i class="${c.icon}" style="color:${c.fg};font-size:.95rem;"></i></div><span>${c.label}</span></div>`).join('');
+
+  // Top Creator Picks — real creators, featured/top first
+  let creatorsObj={}; try{creatorsObj=await DB.getCreators();}catch(e){}
+  const pickList=Object.entries(creatorsObj).filter(([id])=>id!==_me.uid)
+    .sort((a,b)=>(b[1].featured?1:0)-(a[1].featured?1:0)).slice(0,6);
+  const pickHTML=pickList.map(([id,c])=>{
+    const hue=hashColor(id);
+    const ava=c.profilePhoto
+      ?`<img src="${c.profilePhoto}">`
+      :(c.name||'C').charAt(0).toUpperCase();
+    const avaBg=c.profilePhoto?'transparent':`linear-gradient(135deg,hsl(${hue},65%,50%),hsl(${hue+40},65%,35%))`;
+    const role=(c.niches||[])[0]||c.role||'Creator';
+    return `<div class="pick-item" onclick="showSection('creators')">
+      <div class="pick-ava" style="background:${avaBg}">${ava}</div>
+      <div class="pick-name">${escHtml(c.name||'Creator')}</div>
+      <div class="pick-role">${escHtml(role)}</div>
     </div>`;
   }).join('');
 
@@ -2777,6 +2818,12 @@ async function renderMobileDiscoverBrands(el){
 
     <div class="section-head"><span class="section-title">Trending Campaigns</span><span class="see-all" onclick="showSection('campaigns')">See all</span></div>
     <div id="mob-disc-list">${campCards||`<div class="ph-empty-inline">No open campaigns right now.</div>`}</div>
+
+    <div class="section-head"><span class="section-title">Popular Categories</span><span class="see-all" onclick="showSection('campaigns')">See all</span></div>
+    <div style="display:flex;gap:.7rem;overflow-x:auto;scrollbar-width:none;">${catHTML}</div>
+
+    <div class="section-head"><span class="section-title">Top Creator Picks</span><span class="see-all" onclick="showSection('creators')">See all</span></div>
+    <div class="pick-row">${pickHTML||`<div class="ph-empty-inline">No creators yet.</div>`}</div>
   `;
   el.innerHTML=discBody;
   updateNotifBadge();
@@ -2789,7 +2836,7 @@ async function renderMobileDiscoverBrands(el){
   };
   window.mobDiscNiche=function(btn,niche){
     document.querySelectorAll('.pill-row .pill').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
+    if(btn) btn.classList.add('active');
     document.querySelectorAll('#mob-disc-list .card').forEach(card=>{
       card.style.display=(niche==='All'||card.textContent.includes(niche))?'':'none';
     });
