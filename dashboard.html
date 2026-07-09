@@ -1242,6 +1242,88 @@ body.ph-mobile-active #ph-app-nav{ display:flex; }
   <button class="ph-nav-item"        id="phn-profile"   onclick="showSection('profile')">    <i class="fas fa-user"></i><span>Profile</span></button>
 </nav>
 <!-- ══ END MOBILE CHROME ══ -->
+
+<!-- ══ PERSISTENT MODALS (apply / launch campaign / applicants) — always in DOM ══ -->
+<div class="overlay" id="apply-modal" style="display:none">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeApplyModal()"><i class="fas fa-times"></i></button>
+    <div class="modal-title">📝 Apply for Campaign</div>
+    <div id="apply-modal-body"></div>
+  </div>
+</div>
+
+<div class="overlay" id="launch-modal" style="display:none">
+  <div class="modal-box wide">
+    <button class="modal-close" onclick="closeLaunchModal()"><i class="fas fa-times"></i></button>
+    <div class="modal-title">🚀 Launch a Campaign</div>
+    <div class="form-err" id="launch-err"></div>
+
+    <!-- Campaign Cover Image Upload -->
+    <div class="form-group">
+      <label>Campaign Cover Image <span style="font-size:.7rem;color:var(--muted)">(uploads to Cloudinary)</span></label>
+      <div id="camp-img-preview-wrap" style="margin-bottom:.5rem;display:none">
+        <img id="camp-img-preview" style="width:100%;height:140px;object-fit:cover;border-radius:1rem;border:1px solid var(--border)">
+        <button onclick="removeCampImg()" style="font-size:.72rem;color:#ff6b6b;background:none;border:none;cursor:pointer;margin-top:.3rem">Remove image</button>
+      </div>
+      <div id="camp-img-upload-area" style="border:2px dashed var(--border);border-radius:1rem;padding:1.5rem;text-align:center;cursor:pointer;transition:border-color .2s;" onclick="document.getElementById('camp-img-file').click()" onmouseover="this.style.borderColor='rgba(244,85,47,0.5)'" onmouseout="this.style.borderColor='var(--border)'">
+        <i class="fas fa-cloud-upload-alt" style="font-size:1.5rem;color:var(--muted);display:block;margin-bottom:.5rem"></i>
+        <div style="font-size:.8rem;color:var(--muted)">Click to upload cover image</div>
+        <div style="font-size:.7rem;color:var(--muted2);margin-top:.2rem">JPG, PNG · Max 5MB</div>
+        <input type="file" id="camp-img-file" accept="image/*" style="display:none" onchange="handleCampImg(event)">
+      </div>
+    </div>
+
+    <!-- Brand Logo Upload -->
+    <div class="form-group">
+      <label>Brand Logo <span style="font-size:.7rem;color:var(--muted)">(white background recommended)</span></label>
+      <div style="display:flex;align-items:center;gap:1rem">
+        <div id="brand-logo-preview" style="width:52px;height:52px;border-radius:10px;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#555;flex-shrink:0;overflow:hidden;cursor:pointer;" onclick="document.getElementById('brand-logo-file').click()">LOGO</div>
+        <div style="flex:1">
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('brand-logo-file').click()"><i class="fas fa-upload"></i> Upload Logo</button>
+          <input type="file" id="brand-logo-file" accept="image/*" style="display:none" onchange="handleBrandLogo(event)">
+          <div style="font-size:.7rem;color:var(--muted2);margin-top:.3rem">Square image · Max 2MB</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group"><label>Campaign Title *</label><input id="lc-title" placeholder="e.g. Diwali Product Launch"></div>
+    <div class="form-group"><label>Description *</label><textarea id="lc-desc" placeholder="What should creators do? What is the campaign about?"></textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label>Product Name</label><input id="lc-product-name" placeholder="e.g. HydraGlow Serum"></div>
+      <div class="form-group"><label>Product Category</label><input id="lc-product-cat" placeholder="e.g. Skincare"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Campaign Goal</label><input id="lc-goal" placeholder="e.g. 50 UGC videos in 30 days"></div>
+      <div class="form-group"><label>Demo Video URL</label><input id="lc-demo" placeholder="https://youtube.com/…"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Website</label><input id="lc-website" placeholder="https://yourbrand.com"></div>
+      <div class="form-group"><label>Instagram Handle</label><input id="lc-instagram" placeholder="@yourbrand"></div>
+    </div>
+    <div class="form-group">
+      <label>Collab Type(s) *</label>
+      <div id="lc-collab-chips" style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Niche *</label><select id="lc-niche"><option value="">Select…</option></select></div>
+      <div class="form-group"><label>Min. Audience</label><select id="lc-aud"><option value="">Any</option></select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Budget / Compensation</label><input id="lc-budget" placeholder="e.g. ₹5,000 or Barter"></div>
+      <div class="form-group"><label>Application Deadline</label><input id="lc-deadline" type="date"></div>
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem" id="launch-btn" onclick="launchCampaign()"><i class="fas fa-bullhorn"></i> Launch Campaign</button>
+  </div>
+</div>
+
+<div class="overlay" id="applicants-modal" style="display:none">
+  <div class="modal-box wide">
+    <button class="modal-close" onclick="closeApplicantsModal()"><i class="fas fa-times"></i></button>
+    <div class="modal-title" id="applicants-title">Applicants</div>
+    <div id="applicants-body"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i></div></div>
+  </div>
+</div>
+<!-- ══ END PERSISTENT MODALS ══ -->
 <template id="logo-tmpl">data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBmaWxsPSIHN2MzYWVkIj4KICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1MCw1MCkiPgogICAgPGcgdHJhbnNmb3JtPSJyb3RhdGUoMCkiPgogICAgICA8cG9seWdvbiBwb2ludHM9Ii04LC00NCAwLC00NCA4LC0zNCAwLC0zNCIvPgogICAgICA8cG9seWdvbiBwb2ludHM9IjAsLTM0IDgsLTM0IDAsLTI0IC04LC0yNCIvPgogICAgICA8cG9seWdvbiBwb2ludHM9IjQsLTM0IDEyLC0zNCAyMCwtMjQgMTIsLTI0Ii8+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iMTIsLTI0IDIwLC0yNCAxMiwtMTQgNCwtMTQiLz4KICAgIDwvZz4KICAgIDxnIHRyYW5zZm9ybT0icm90YXRlKDYwKSI+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iLTgsLTQ0IDAsLTQ0IDgsLTM0IDAsLTM0Ii8+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iMCwtMzQgOCwtMzQgMCwtMjQgLTgsLTI0Ii8+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iNCwtMzQgMTIsLTM0IDIwLC0yNCAxMiwtMjQiLz4KICAgICAgPHBvbHlnb24gcG9pbnRzPSIxMiwtMjQgMjAsLTI0IDEyLC0xNCA0LC0xNCIvPgogICAgPC9nPgog   PGcgdHJhbnNmb3JtPSJyb3RhdGUoMTIwKSI+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iLTgsLTQ0IDAsLTQ0IDgsLTM0IDAsLTM0Ii8+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iMCwtMzQgOCwtMzQgMCwtMjQgLTgsLTI0Ii8+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iNCwtMzQgMTIsLTM0IDIwLC0yNCAxMiwtMjQiLz4KICAgICAgPHBvbHlnb24gcG9pbnRzPSIxMiwtMjQgMjAsLTI0IDEyLC0xNCA0LC0xNCIvPgogICAgPC9nPgog   PGcgdHJhbnNmb3JtPSJyb3RhdGUoMTgwKSI+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iLTgsLTQ0IDAsLTQ0IDgsLTM0IDAsLTM0Ii8+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iMCwtMzQgOCwtMzQgMCwtMjQgLTgsLTI0Ii8+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iNCwtMzQgMTIsLTM0IDIwLC0yNCAxMiwtMjQiLz4KICAgICAgPHBvbHlnb24gcG9pbnRzPSIxMiwtMjQgMjAsLTI0IDEyLC0xNCA0LC0xNCIvPgogICAgPC9nPgog   PGcgdHJhbnNmb3JtPSJyb3RhdGUoMjQwKSI+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iLTgsLTQ0IDAsLTQ0IDgsLTM0IDAsLTM0Ii8+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iMCwtMzQgOCwtMzQgMCwtMjQgLTgsLTI0Ii8+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iNCwtMzQgMTIsLTM0IDIwLC0yNCAxMiwtMjQiLz4KICAgICAgPHBvbHlnb24gcG9pbnRzPSIxMiwtMjQgMjAsLTI0IDEyLC0xNCA0LC0xNCIvPgogICAgPC9nPgog   PGcgdHJhbnNmb3JtPSJyb3RhdGUoMzAwKSI+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iLTgsLTQ0IDAsLTQ0IDgsLTM0IDAsLTM0Ii8+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iMCwtMzQgOCwtMzQgMCwtMjQgLTgsLTI0Ii8+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iNCwtMzQgMTIsLTM0IDIwLC0yNCAxMiwtMjQiLz4KICAgICAgPHBvbHlnb24gcG9pbnRzPSIxMiwtMjQgMjAsLTI0IDEyLC0xNCA0LC0xNCIvPgogICAgPC9nPgogIDwvZz4KPC9zdmc+</template>
 
 <!-- SIDEBAR -->
@@ -3885,8 +3967,34 @@ function toggleCollabChip(el){
   else{el.setAttribute('data-active','0');el.style.borderColor='var(--border)';el.style.background='transparent';el.style.color='var(--muted)';}
 }
 
-function openLaunchModal(){window._campImgFile=null;window._brandLogoFile=null;document.getElementById('launch-modal').style.display='flex';}
-function closeLaunchModal(){document.getElementById('launch-modal').style.display='none';}
+function openLaunchModal(){
+  window._campImgFile=null;window._brandLogoFile=null;
+  const chipsEl=document.getElementById('lc-collab-chips');
+  if(chipsEl && !chipsEl.dataset.filled){
+    chipsEl.innerHTML=COLLAB_TYPES.map(ct=>`<div class="collab-type-chip" data-id="${ct.id}" onclick="toggleCollabChip(this)" style="background:transparent">${ct.label}</div>`).join('');
+    chipsEl.dataset.filled='1';
+  }
+  const nicheEl=document.getElementById('lc-niche');
+  if(nicheEl && nicheEl.options.length<=1){
+    ['AI','Finance','Startup','Tech','Lifestyle','Business','Marketing','SaaS','Education','Health'].forEach(n=>{const o=document.createElement('option');o.textContent=n;nicheEl.appendChild(o);});
+  }
+  const audEl=document.getElementById('lc-aud');
+  if(audEl && audEl.options.length<=1){
+    ['1K-10K','10K-50K','50K-100K','100K-500K','500K+'].forEach(v=>{const o=document.createElement('option');o.textContent=v;audEl.appendChild(o);});
+  }
+  document.getElementById('launch-modal').style.display='flex';
+}
+function closeLaunchModal(){
+  document.getElementById('launch-modal').style.display='none';
+  ['lc-title','lc-desc','lc-product-name','lc-product-cat','lc-goal','lc-demo','lc-website','lc-instagram','lc-budget','lc-deadline'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const nicheEl=document.getElementById('lc-niche');if(nicheEl)nicheEl.selectedIndex=0;
+  const audEl=document.getElementById('lc-aud');if(audEl)audEl.selectedIndex=0;
+  document.querySelectorAll('.collab-type-chip[data-active="1"]').forEach(el=>{el.setAttribute('data-active','0');el.style.borderColor='var(--border)';el.style.background='transparent';el.style.color='var(--muted)';});
+  window._campImgFile=null;window._brandLogoFile=null;
+  const imgPreviewWrap=document.getElementById('camp-img-preview-wrap');if(imgPreviewWrap)imgPreviewWrap.style.display='none';
+  const logoPreview=document.getElementById('brand-logo-preview');if(logoPreview)logoPreview.innerHTML='LOGO';
+  const uploadArea=document.getElementById('camp-img-upload-area');if(uploadArea)uploadArea.style.display='';
+}
 function closeApplicantsModal(){document.getElementById('applicants-modal').style.display='none';}
 
 async function launchCampaign(){
