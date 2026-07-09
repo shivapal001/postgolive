@@ -999,8 +999,40 @@ button:active{
 .ph-camp-status.active{background:#DFF3E7;color:var(--ph-green);}
 .ph-camp-status.draft{background:#F3F0EC;color:var(--ph-muted);}
 .ph-camp-status.closed{background:#FCE5E5;color:#E5484D;}
-.ph-camp-card-sub{font-size:.72rem;color:var(--ph-muted);margin-top:.2rem;}
-.ph-camp-card-meta{font-size:.68rem;color:#544d47;margin-top:.25rem;}
+.pfl-cover{position:relative;height:150px;border-radius:0 0 20px 20px;margin:-1rem -1rem 0;background-size:cover;background-position:center;overflow:visible;}
+.pfl-edit-btn{position:absolute;top:.8rem;right:.8rem;background:#fff;color:var(--ph-text);border:none;border-radius:99px;padding:.4rem .9rem;font-size:.7rem;font-weight:700;display:flex;align-items:center;gap:.35rem;box-shadow:0 3px 10px rgba(0,0,0,.15);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;}
+.pfl-ava-wrap{position:absolute;left:1rem;bottom:-2.2rem;width:5.2rem;height:5.2rem;}
+.pfl-ava{width:100%;height:100%;border-radius:50%;border:3px solid #fff;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.15);background:var(--ph-card);}
+.pfl-ava img{width:100%;height:100%;object-fit:cover;}
+.pfl-verified{position:absolute;right:-.1rem;bottom:-.1rem;width:1.5rem;height:1.5rem;border-radius:50%;background:var(--ph-accent);border:2px solid #fff;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.62rem;}
+.pfl-name-block{margin:2.6rem 0 0 .2rem;}
+.pfl-name{font-size:1.15rem;font-weight:800;color:var(--ph-text);letter-spacing:-.01em;}
+.pfl-role{font-size:.78rem;color:var(--ph-muted);font-weight:600;margin-top:.15rem;}
+.pfl-location{font-size:.74rem;color:var(--ph-muted);margin-top:.2rem;display:flex;align-items:center;gap:.3rem;}
+.pfl-stats-row{display:flex;justify-content:space-between;margin:1.1rem 0;padding:0 .1rem;}
+.pfl-stat{text-align:center;flex:1;}
+.pfl-stat-val{font-size:.92rem;font-weight:800;color:var(--ph-text);}
+.pfl-stat-label{font-size:.62rem;color:var(--ph-muted);margin-top:.15rem;font-weight:600;}
+.pfl-actions-row{display:flex;justify-content:space-between;gap:.5rem;margin-bottom:1.2rem;}
+.pfl-action{flex:1;display:flex;flex-direction:column;align-items:center;gap:.4rem;cursor:pointer;}
+.pfl-action-icon{width:2.7rem;height:2.7rem;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1rem;}
+.pfl-action span{font-size:.64rem;font-weight:700;color:var(--ph-text);}
+.pfl-port-item{position:relative;flex:0 0 108px;height:130px;border-radius:14px;overflow:hidden;background:var(--ph-card);cursor:pointer;}
+.pfl-port-item img{width:100%;height:100%;object-fit:cover;}
+.pfl-port-play{position:absolute;top:.5rem;right:.5rem;width:1.5rem;height:1.5rem;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;color:var(--ph-text);font-size:.6rem;}
+.pfl-port-cap{position:absolute;left:0;right:0;bottom:0;padding:.4rem .5rem;background:linear-gradient(0deg,rgba(0,0,0,.65),transparent);color:#fff;font-size:.65rem;font-weight:700;}
+.pfl-about-card{background:var(--ph-card);border-radius:16px;padding:.2rem 1rem;border:1px solid var(--ph-border);}
+.pfl-about-row{display:flex;justify-content:space-between;align-items:center;padding:.7rem 0;border-bottom:1px solid var(--ph-border);font-size:.78rem;}
+.pfl-about-row:last-child{border-bottom:none;}
+.pfl-about-label{color:var(--ph-muted);font-weight:600;}
+.pfl-about-val{color:var(--ph-text);font-weight:700;text-align:right;max-width:60%;}
+.pfl-review-card{background:var(--ph-card);border-radius:16px;padding:.85rem;border:1px solid var(--ph-border);margin-bottom:.6rem;}
+.pfl-review-top{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;}
+.pfl-review-logo{width:1.9rem;height:1.9rem;border-radius:50%;background:#F3EFE9;display:flex;align-items:center;justify-content:center;overflow:hidden;font-weight:800;font-size:.7rem;flex-shrink:0;}
+.pfl-review-logo img{width:100%;height:100%;object-fit:contain;padding:.25rem;}
+.pfl-review-name{font-size:.78rem;font-weight:800;color:var(--ph-text);}
+.pfl-review-stars{margin-left:auto;font-size:.7rem;color:#F5A623;font-weight:700;}
+.pfl-review-text{font-size:.76rem;color:var(--ph-muted);line-height:1.5;}
 
 /* ── PCC: Premium campaign discovery card (matches design mock) ── */
 .pcc-card{background:var(--ph-card);border-radius:22px;padding:.9rem;margin-bottom:1rem;box-shadow:0 4px 16px rgba(0,0,0,.06);border:1px solid var(--ph-border);}
@@ -3044,6 +3076,102 @@ async function renderMobileProfile(el){
       <div class="ph-collab-done">DONE</div>
     </div>`;
   }).join('') || `<div style="padding:.75rem 0;font-size:.8rem;color:var(--ph-muted)">No collaborations yet.</div>`;
+
+  // ── Creator gets the premium mockup-exact profile ──
+  if(isC){
+    const creatorRole=(_me.niches&&_me.niches[0])?`${_me.niches[0]} Creator`:'Creator';
+    const location=_me.location||_me.city||'';
+    const followers=_me.audienceSize||_me.followers||'—';
+    const earningsVal=_me.totalEarnings?'₹'+Number(_me.totalEarnings).toLocaleString('en-IN'):'—';
+    const ratingVal=_me.avgRating||_me.rating||'—';
+
+    const portfolio=Array.isArray(_me.portfolio)?_me.portfolio:[];
+    const portHTML=portfolio.map(p=>`<div class="pfl-port-item" onclick="${p.videoUrl?`window.open('${p.videoUrl}','_blank')`:''}">
+        <img src="${p.thumbnail||p.image||''}" alt="${escHtml(p.caption||p.title||'')}">
+        ${p.videoUrl?`<div class="pfl-port-play"><i class="fas fa-play"></i></div>`:''}
+        <div class="pfl-port-cap">${escHtml(p.caption||p.title||'')}</div>
+      </div>`).join('');
+
+    const aboutRows=[
+      ['Categories',(_me.niches||[]).join(', ')],
+      ['Languages',Array.isArray(_me.languages)?_me.languages.join(', '):(_me.languages||'')],
+      ['Audience',_me.audienceSize||''],
+      ['Avg. Views',_me.avgViews||''],
+      ['Engagement Rate',_me.engagementRate?`${_me.engagementRate}%`:''],
+    ].filter(([,v])=>v).map(([l,v])=>`<div class="pfl-about-row"><span class="pfl-about-label">${l}</span><span class="pfl-about-val">${escHtml(String(v))}</span></div>`).join('');
+
+    const reviews=Array.isArray(_me.reviews)?_me.reviews:[];
+    const reviewHTML=reviews.map(r=>`<div class="pfl-review-card">
+        <div class="pfl-review-top">
+          <div class="pfl-review-logo">${r.brandLogo?`<img src="${r.brandLogo}">`:(r.brandName||'B').charAt(0)}</div>
+          <div class="pfl-review-name">${escHtml(r.brandName||'Brand')}${r.verified?` <i class="fas fa-circle-check" style="color:var(--ph-blue);font-size:.65rem"></i>`:''}</div>
+          <div class="pfl-review-stars"><i class="fas fa-star"></i> ${r.rating||'5.0'}</div>
+        </div>
+        <div class="pfl-review-text">${escHtml(r.text||'')}</div>
+      </div>`).join('');
+
+    const body=`
+      <div class="pfl-cover" style="background-image:${_me.coverPhoto?`url('${_me.coverPhoto}')`:`linear-gradient(135deg,#F4552F,#FF7A50)`}">
+        <div class="pfl-ava-wrap">
+          <div class="pfl-ava">${ava}</div>
+          ${(_me.verified||_me.featured)?`<div class="pfl-verified"><i class="fas fa-check"></i></div>`:''}
+        </div>
+        <button class="pfl-edit-btn" onclick="openSetup()"><i class="fas fa-pen"></i> Edit Profile</button>
+      </div>
+      <div class="pfl-name-block">
+        <div class="pfl-name">${escHtml(name)}</div>
+        <div class="pfl-role">${escHtml(creatorRole)}</div>
+        ${location?`<div class="pfl-location"><i class="fas fa-map-marker-alt"></i> ${escHtml(location)}</div>`:''}
+      </div>
+      <div class="pfl-stats-row">
+        <div class="pfl-stat"><div class="pfl-stat-val">${escHtml(String(followers))}</div><div class="pfl-stat-label">Followers</div></div>
+        <div class="pfl-stat"><div class="pfl-stat-val">${accepted}</div><div class="pfl-stat-label">Collabs</div></div>
+        <div class="pfl-stat"><div class="pfl-stat-val">${earningsVal}</div><div class="pfl-stat-label">Total Earnings</div></div>
+        <div class="pfl-stat"><div class="pfl-stat-val">${escHtml(String(ratingVal))}</div><div class="pfl-stat-label">Avg. Rating</div></div>
+      </div>
+      <div class="pfl-actions-row">
+        <div class="pfl-action" onclick="document.getElementById('pfl-portfolio')?.scrollIntoView({behavior:'smooth'})">
+          <div class="pfl-action-icon" style="background:#FDE7EC"><i class="fas fa-briefcase" style="color:#F4552F"></i></div>
+          <span>Portfolio</span>
+        </div>
+        <div class="pfl-action" onclick="toast('Media Kit — coming soon!','info')">
+          <div class="pfl-action-icon" style="background:#EFEAFB"><i class="fas fa-id-card" style="color:#8B7CF6"></i></div>
+          <span>Media Kit</span>
+        </div>
+        <div class="pfl-action" onclick="toast('Insights — coming soon!','info')">
+          <div class="pfl-action-icon" style="background:#E8F1FE"><i class="fas fa-chart-line" style="color:#3B9EFF"></i></div>
+          <span>Insights</span>
+        </div>
+        <div class="pfl-action" onclick="toast('Earnings — coming soon!','info')">
+          <div class="pfl-action-icon" style="background:#FFF3D9"><i class="fas fa-wallet" style="color:#F5A623"></i></div>
+          <span>Earnings</span>
+        </div>
+      </div>
+      <div class="section-head" id="pfl-portfolio"><span class="section-title">My Portfolio</span><span class="see-all">See all</span></div>
+      <div style="display:flex;gap:.6rem;overflow-x:auto;scrollbar-width:none;margin-bottom:.3rem;">
+        ${portHTML||`<div class="ph-empty-inline">No portfolio items yet.</div>`}
+      </div>
+      <div class="section-head"><span class="section-title">About Me</span></div>
+      ${aboutRows?`<div class="pfl-about-card">${aboutRows}</div>`:`<div class="ph-empty-inline">Complete your profile to show details here.</div>`}
+      <div class="section-head"><span class="section-title">Reviews from Brands</span><span class="see-all">See all</span></div>
+      ${reviewHTML||`<div class="ph-empty-inline">No reviews yet.</div>`}
+      <div class="ph-plan-card" style="margin-top:1.2rem">
+        <div>
+          <div class="ph-plan-label">Current Plan</div>
+          <div class="ph-plan-name">${plan.toUpperCase()}</div>
+          <div class="ph-plan-sub ph-desc">${plan==='free'?'Limited access':'Full access unlocked'}</div>
+        </div>
+        <button class="ph-plan-btn" onclick="showSection('pricing')">${plan==='free'?'Upgrade':'Manage'}</button>
+      </div>
+      <button class="ph-signout-btn" onclick="doSignOut()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+        Sign Out
+      </button>
+      <div style="height:5rem"></div>
+    `;
+    el.innerHTML=body;
+    return;
+  }
 
   const body=`
     <div class="ph-cover" style="background:linear-gradient(135deg,#F4552F,#FF7A50)">
