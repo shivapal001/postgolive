@@ -3950,7 +3950,7 @@ async function viewApplications(campaignId,title){
   let apps={};try{apps=await DB.getCampaignApplications(campaignId);}catch(e){}
   const appArr=Object.values(apps);
   if(appArr.length===0){body.innerHTML='<div class="empty-state"><i class="fas fa-users"></i><p>No applications yet.</p></div>';return;}
-  body.innerHTML=appArr.map(a=>`<div class="panel" style="margin-bottom:.75rem"><div class="panel-body"><div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap"><div class="avatar-lg" style="border-radius:.875rem">${a.creatorPhoto?`<img src="${a.creatorPhoto}" style="width:100%;height:100%;object-fit:cover">`:(a.creatorName||'C').charAt(0)}</div><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:.95rem">${a.creatorName}</div><div style="font-size:.75rem;color:var(--muted);margin:.2rem 0 .5rem">${a.audienceSize||''} ${a.niches?'· '+a.niches.join(', '):''}</div><div style="font-size:.82rem;line-height:1.6;color:var(--muted);margin-bottom:.5rem">${a.pitch}</div></div><div style="display:flex;flex-direction:column;gap:.5rem;flex-shrink:0">${a.status==='pending'?`<button class="btn btn-primary btn-sm" onclick="respondApp('${a.id}','accepted','${a.creatorId||''}')"><i class="fas fa-check"></i> Accept</button><button class="btn btn-danger btn-sm" onclick="respondApp('${a.id}','rejected','${a.creatorId||''}')"><i class="fas fa-times"></i> Reject</button>`:`<span style="font-size:.72rem;font-weight:700;padding:.3em .8em;border-radius:99px;${a.status==='accepted'?'background:rgba(0,212,170,.15);color:var(--accent3)':'background:rgba(255,107,107,.15);color:var(--accent2)'}">${a.status.toUpperCase()}</span>${a.status==='accepted'&&a.creatorId?`<button class="btn btn-ghost btn-sm" onclick="openChatForRequest('${_me.uid}','${a.creatorId}')"><i class="fas fa-comment-dots"></i> Chat</button>`:''}`}</div></div></div></div>`).join('');
+  body.innerHTML=appArr.map(a=>`<div class="panel" style="margin-bottom:.75rem"><div class="panel-body"><div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap"><div class="avatar-lg" style="border-radius:.875rem">${a.creatorPhoto?`<img src="${a.creatorPhoto}" style="width:100%;height:100%;object-fit:cover">`:(a.creatorName||'C').charAt(0)}</div><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:.95rem">${a.creatorName}</div><div style="font-size:.75rem;color:var(--muted);margin:.2rem 0 .5rem">${a.audienceSize||''} ${a.niches?'· '+a.niches.join(', '):''}</div><div style="font-size:.82rem;line-height:1.6;color:var(--muted);margin-bottom:.5rem">${a.pitch}</div></div><div style="display:flex;flex-direction:column;gap:.5rem;flex-shrink:0">${a.status==='pending'?`<button class="btn btn-primary btn-sm" onclick="respondApp('${a.id}','accepted','${a.creatorId||''}')"><i class="fas fa-check"></i> Accept</button><button class="btn btn-danger btn-sm" onclick="respondApp('${a.id}','rejected','${a.creatorId||''}')"><i class="fas fa-times"></i> Reject</button>${a.creatorId?`<button class="btn btn-ghost btn-sm" onclick="openChatForRequest('${_me.uid}','${a.creatorId}')"><i class="fas fa-comment-dots"></i> Message</button>`:''}`:`<span style="font-size:.72rem;font-weight:700;padding:.3em .8em;border-radius:99px;${a.status==='accepted'?'background:rgba(0,212,170,.15);color:var(--accent3)':'background:rgba(255,107,107,.15);color:var(--accent2)'}">${a.status.toUpperCase()}</span>${a.creatorId?`<button class="btn btn-ghost btn-sm" onclick="openChatForRequest('${_me.uid}','${a.creatorId}')"><i class="fas fa-comment-dots"></i> Chat</button>`:''}`}</div></div></div></div>`).join('');
 }
 
 async function respondApp(appId,status,creatorId){
@@ -3999,6 +3999,8 @@ async function submitApplication(campaignId){
         body:`${cr?.name||_me.name} applied to your campaign${pitch?': "'+(pitch.length>80?pitch.slice(0,77)+'…':pitch)+'"':'.'}`,
         icon:'fa-file-signature',
         campaignId,
+        campaignTitle:camp.title||'Campaign',
+        creatorId:_me.uid,
         fromUid:_me.uid,
         fromName:cr?.name||_me.name||'Creator'
       });
@@ -4665,7 +4667,11 @@ window.openNotif=async function(id){
   if(!n.read){try{await updateDoc(doc(db,'notifications',id),{read:true});}catch(e){}}
   if(n.type==='message'){showSection('messages');if(n.conversationId){_pendingOpenConv=n.conversationId;}}
   else if(n.type==='request'||n.type==='request_accepted'||n.type==='request_declined'){showSection('requests');}
-  else if(n.type==='campaign'||n.type==='application'||n.type==='application_response'){showSection('campaigns');}
+  else if(n.type==='application'||n.type==='application_response'){
+    await showSection('campaigns');
+    if(n.type==='application'&&n.campaignId){ setTimeout(()=>viewApplications(n.campaignId,n.campaignTitle||'Campaign'),300); }
+  }
+  else if(n.type==='campaign'){showSection('campaigns');}
   else{showSection('home');}
 };
 
