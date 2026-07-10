@@ -2896,24 +2896,6 @@ async function renderMobileDiscoverBrands(el){
   ];
   const catHTML=CATS.map(c=>`<div class="cat-tile" onclick="mobDiscNiche(document.querySelector('.pill-row .pill'),'${c.label}')"><div class="cat-circle" style="background:${c.bg};"><i class="${c.icon}" style="color:${c.fg};font-size:.95rem;"></i></div><span>${c.label}</span></div>`).join('');
 
-  // Top Creator Picks — real creators, featured/top first
-  let creatorsObj={}; try{creatorsObj=await DB.getCreators();}catch(e){}
-  const pickList=Object.entries(creatorsObj).filter(([id])=>id!==_me.uid)
-    .sort((a,b)=>(b[1].featured?1:0)-(a[1].featured?1:0)).slice(0,6);
-  const pickHTML=pickList.map(([id,c])=>{
-    const hue=hashColor(id);
-    const ava=c.profilePhoto
-      ?`<img src="${c.profilePhoto}">`
-      :(c.name||'C').charAt(0).toUpperCase();
-    const avaBg=c.profilePhoto?'transparent':`linear-gradient(135deg,hsl(${hue},65%,50%),hsl(${hue+40},65%,35%))`;
-    const role=(c.niches||[])[0]||c.role||'Creator';
-    return `<div class="pick-item" onclick="showSection('creators')">
-      <div class="pick-ava" style="background:${avaBg}">${ava}</div>
-      <div class="pick-name">${escHtml(c.name||'Creator')}</div>
-      <div class="pick-role">${escHtml(role)}</div>
-    </div>`;
-  }).join('');
-
   const discBody=`
     <div style="font-size:1.05rem;font-weight:800;margin:.5rem 0 .7rem;">Discover Brands</div>
     <div style="display:flex;gap:.5rem;margin-bottom:.5rem;">
@@ -2935,9 +2917,6 @@ async function renderMobileDiscoverBrands(el){
 
     <div class="section-head"><span class="section-title">Popular Categories</span><span class="see-all" onclick="showSection('campaigns')">See all</span></div>
     <div style="display:flex;gap:.7rem;overflow-x:auto;scrollbar-width:none;">${catHTML}</div>
-
-    <div class="section-head"><span class="section-title">Top Creator Picks</span><span class="see-all" onclick="showSection('creators')">See all</span></div>
-    <div class="pick-row">${pickHTML||`<div class="ph-empty-inline">No creators yet.</div>`}</div>
   `;
   el.innerHTML=discBody;
   updateNotifBadge();
