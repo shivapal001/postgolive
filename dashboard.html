@@ -3177,7 +3177,7 @@ async function renderMobileProfile(el){
           <div class="pfl-ava">${ava}</div>
           ${(_me.verified||_me.featured)?`<div class="pfl-verified"><i class="fas fa-check"></i></div>`:''}
         </div>
-        <button class="pfl-edit-btn" onclick="openSetup()"><i class="fas fa-pen"></i> Edit Profile</button>
+        <button class="pfl-edit-btn" onclick="openEditProfileModal()"><i class="fas fa-pen"></i> Edit Profile</button>
       </div>
       <div class="pfl-name-block">
         <div class="pfl-name">${escHtml(name)}</div>
@@ -3237,7 +3237,7 @@ async function renderMobileProfile(el){
   const body=`
     <div class="ph-cover" style="background:linear-gradient(135deg,#F4552F,#FF7A50)">
       <div class="ph-profile-ava">${ava}</div>
-      <button class="ph-profile-edit" onclick="openSetup()">
+      <button class="ph-profile-edit" onclick="openEditProfileModal()">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg> Edit Profile
       </button>
     </div>
