@@ -1316,6 +1316,14 @@ body.ph-mobile-active #ph-app-nav{ display:flex; }
   </div>
 </div>
 
+<div class="overlay" id="hub-modal" style="display:none">
+  <div class="modal-box wide">
+    <button class="modal-close" onclick="closeHubModal()"><i class="fas fa-times"></i></button>
+    <div class="modal-title" id="hub-modal-title">Details</div>
+    <div id="hub-modal-body"></div>
+  </div>
+</div>
+
 <div class="overlay" id="applicants-modal" style="display:none">
   <div class="modal-box wide">
     <button class="modal-close" onclick="closeApplicantsModal()"><i class="fas fa-times"></i></button>
@@ -3195,15 +3203,15 @@ async function renderMobileProfile(el){
           <div class="pfl-action-icon" style="background:#FDE7EC"><i class="fas fa-briefcase" style="color:#F4552F"></i></div>
           <span>Portfolio</span>
         </div>
-        <div class="pfl-action" onclick="toast('Media Kit — coming soon!','info')">
+        <div class="pfl-action" onclick="openMediaKitModal()">
           <div class="pfl-action-icon" style="background:#EFEAFB"><i class="fas fa-id-card" style="color:#8B7CF6"></i></div>
           <span>Media Kit</span>
         </div>
-        <div class="pfl-action" onclick="toast('Insights — coming soon!','info')">
+        <div class="pfl-action" onclick="openInsightsModal()">
           <div class="pfl-action-icon" style="background:#E8F1FE"><i class="fas fa-chart-line" style="color:#3B9EFF"></i></div>
           <span>Insights</span>
         </div>
-        <div class="pfl-action" onclick="toast('Earnings — coming soon!','info')">
+        <div class="pfl-action" onclick="openEarningsModal()">
           <div class="pfl-action-icon" style="background:#FFF3D9"><i class="fas fa-wallet" style="color:#F5A623"></i></div>
           <span>Earnings</span>
         </div>
@@ -3285,6 +3293,218 @@ async function renderMobileProfile(el){
   `;
   el.innerHTML=body;
 }
+
+// ── HUB MODAL (Media Kit / Insights / Earnings) ──────────────────
+function closeHubModal(){const o=document.getElementById('hub-modal');if(o){o.style.display='none';o.classList.remove('open');}}
+function openHubModal(title,bodyHtml){
+  document.getElementById('hub-modal-title').textContent=title;
+  document.getElementById('hub-modal-body').innerHTML=bodyHtml;
+  const o=document.getElementById('hub-modal');
+  o.style.display='flex';
+  requestAnimationFrame(()=>o.classList.add('open'));
+}
+
+async function openMediaKitModal(){
+  openHubModal('📇 Media Kit','<div style="padding:2rem;text-align:center;color:var(--ph-muted)">Loading…</div>');
+  const name=_me.name||'Creator';
+  const niches=(_me.niches||[]).join(', ')||'—';
+  const followers=_me.audienceSize||_me.followers||'—';
+  const avgViews=_me.avgViews||'—';
+  const engagement=_me.engagementRate?`${_me.engagementRate}%`:'—';
+  const languages=Array.isArray(_me.languages)?_me.languages.join(', '):(_me.languages||'—');
+  const bio=_me.bio||_me.description||'';
+  const email=_me.email||'';
+  const whatsapp=_me.whatsapp||'';
+  const portfolioCount=Array.isArray(_me.portfolio)?_me.portfolio.length:0;
+
+  const summaryText=`${name} — ${niches}\nFollowers: ${followers} | Avg. Views: ${avgViews} | Engagement: ${engagement}\nLanguages: ${languages}\nPortfolio items: ${portfolioCount}\n${bio?'Bio: '+bio+'\\n':''}${email?'Email: '+email+'\\n':''}${whatsapp?'WhatsApp: '+whatsapp:''}`;
+
+  const html=`
+    <div style="border:1px solid var(--ph-border);border-radius:16px;padding:1.25rem;background:linear-gradient(135deg,#FDF6F0,#fff);">
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;">
+        <div style="width:3rem;height:3rem;border-radius:50%;overflow:hidden;background:linear-gradient(135deg,var(--ph-accent),var(--ph-accent2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;flex-shrink:0;">
+          ${_me.profilePhoto?`<img src="${_me.profilePhoto}" style="width:100%;height:100%;object-fit:cover">`:name.charAt(0).toUpperCase()}
+        </div>
+        <div>
+          <div style="font-weight:800;font-size:1.05rem;">${escHtml(name)}</div>
+          <div style="font-size:.8rem;color:var(--ph-muted)">${escHtml(niches)}</div>
+        </div>
+      </div>
+      ${bio?`<div style="font-size:.85rem;color:var(--ph-text);margin-bottom:1rem;">${escHtml(bio)}</div>`:''}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1rem;">
+        <div style="background:#fff;border:1px solid var(--ph-border);border-radius:12px;padding:.6rem .8rem;"><div style="font-weight:800">${escHtml(String(followers))}</div><div style="font-size:.7rem;color:var(--ph-muted)">Followers</div></div>
+        <div style="background:#fff;border:1px solid var(--ph-border);border-radius:12px;padding:.6rem .8rem;"><div style="font-weight:800">${escHtml(String(avgViews))}</div><div style="font-size:.7rem;color:var(--ph-muted)">Avg. Views</div></div>
+        <div style="background:#fff;border:1px solid var(--ph-border);border-radius:12px;padding:.6rem .8rem;"><div style="font-weight:800">${escHtml(String(engagement))}</div><div style="font-size:.7rem;color:var(--ph-muted)">Engagement</div></div>
+        <div style="background:#fff;border:1px solid var(--ph-border);border-radius:12px;padding:.6rem .8rem;"><div style="font-weight:800">${portfolioCount}</div><div style="font-size:.7rem;color:var(--ph-muted)">Portfolio Items</div></div>
+      </div>
+      <div style="font-size:.75rem;color:var(--ph-muted);line-height:1.6;">
+        <div><i class="fas fa-language" style="width:1rem"></i> ${escHtml(languages)}</div>
+        ${email?`<div><i class="fas fa-envelope" style="width:1rem"></i> ${escHtml(email)}</div>`:''}
+        ${whatsapp?`<div><i class="fas fa-phone" style="width:1rem"></i> ${escHtml(whatsapp)}</div>`:''}
+      </div>
+    </div>
+    ${!bio||portfolioCount===0?`<div style="margin-top:.75rem;font-size:.8rem;color:var(--ph-yellow);"><i class="fas fa-triangle-exclamation"></i> Add ${!bio?'a bio':''}${!bio&&portfolioCount===0?' and ':''}${portfolioCount===0?'portfolio items':''} to make your media kit stronger.</div>`:''}
+    <div style="display:flex;gap:.6rem;margin-top:1.25rem;">
+      <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick='mediaKitAction("copy")'><i class="fas fa-copy"></i> Copy Summary</button>
+      <button class="btn" style="flex:1;justify-content:center;background:var(--ph-bg);border:1px solid var(--ph-border);" onclick='mediaKitAction("share")'><i class="fas fa-share-nodes"></i> Share</button>
+    </div>
+  `;
+  window._mediaKitText=summaryText;
+  openHubModal('📇 Media Kit',html);
+}
+async function mediaKitAction(type){
+  const text=window._mediaKitText||'';
+  if(type==='copy'){
+    try{await navigator.clipboard.writeText(text);toast('Media kit copied!','success');}catch(e){toast('Could not copy','error');}
+  }else if(type==='share'){
+    if(navigator.share){
+      try{await navigator.share({title:'My PostHire Media Kit',text});}catch(e){}
+    }else{
+      try{await navigator.clipboard.writeText(text);toast('Sharing not supported — copied instead','info');}catch(e){toast('Could not share','error');}
+    }
+  }
+}
+
+async function openInsightsModal(){
+  openHubModal('📊 Insights','<div style="padding:2rem;text-align:center;color:var(--ph-muted)">Loading…</div>');
+  let allR=[];
+  try{allR=Object.entries(await DB.getRequests());}catch(e){}
+  const mine=allR.filter(([,r])=>r.creatorId===_me.uid);
+  const accepted=mine.filter(([,r])=>r.status==='accepted');
+  const pending=mine.filter(([,r])=>r.status==='pending');
+  const declined=mine.filter(([,r])=>r.status==='declined');
+  const total=mine.length;
+  const acceptRate=total?Math.round((accepted.length/(accepted.length+declined.length||1))*100):0;
+
+  const byType={};
+  accepted.forEach(([,r])=>{const t=r.collabType||'Other';byType[t]=(byType[t]||0)+1;});
+  const typeRows=Object.entries(byType).sort((a,b)=>b[1]-a[1]).map(([t,c])=>`
+    <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem 0;border-bottom:1px solid var(--ph-border);">
+      <span>${escHtml(t)}</span><span style="font-weight:700">${c}</span>
+    </div>`).join('')||`<div class="ph-empty-inline">No completed collabs yet.</div>`;
+
+  const profileFields=[_me.bio||_me.description,_me.niches&&_me.niches.length,_me.audienceSize,_me.avgViews,_me.engagementRate,Array.isArray(_me.portfolio)&&_me.portfolio.length,_me.profilePhoto];
+  const filled=profileFields.filter(Boolean).length;
+  const completeness=Math.round((filled/profileFields.length)*100);
+
+  const html=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1.25rem;">
+      <div style="background:#E8F1FE;border-radius:12px;padding:.75rem .9rem;"><div style="font-weight:800;font-size:1.2rem;color:#3B9EFF">${accepted.length}</div><div style="font-size:.7rem;color:var(--ph-muted)">Collabs Done</div></div>
+      <div style="background:#FFF3D9;border-radius:12px;padding:.75rem .9rem;"><div style="font-weight:800;font-size:1.2rem;color:#F5A623">${pending.length}</div><div style="font-size:.7rem;color:var(--ph-muted)">Pending Requests</div></div>
+      <div style="background:#EAFBF2;border-radius:12px;padding:.75rem .9rem;"><div style="font-weight:800;font-size:1.2rem;color:#2FBF71">${acceptRate}%</div><div style="font-size:.7rem;color:var(--ph-muted)">Acceptance Rate</div></div>
+      <div style="background:#FDE7EC;border-radius:12px;padding:.75rem .9rem;"><div style="font-weight:800;font-size:1.2rem;color:#F4552F">${completeness}%</div><div style="font-size:.7rem;color:var(--ph-muted)">Profile Complete</div></div>
+    </div>
+    <div class="section-head" style="margin-bottom:.4rem;"><span class="section-title" style="font-size:.9rem;">Collabs by Type</span></div>
+    ${typeRows}
+    ${completeness<100?`<div style="margin-top:1rem;font-size:.8rem;color:var(--ph-muted);"><i class="fas fa-circle-info"></i> Complete your profile (bio, niches, audience size, avg. views, engagement rate, portfolio) to unlock better matches.</div>`:''}
+  `;
+  openHubModal('📊 Insights',html);
+}
+
+async function openEarningsModal(){
+  openHubModal('💰 Earnings','<div style="padding:2rem;text-align:center;color:var(--ph-muted)">Loading…</div>');
+  let allR=[];
+  try{allR=Object.entries(await DB.getRequests());}catch(e){}
+  const accepted=allR.filter(([,r])=>r.creatorId===_me.uid&&r.status==='accepted');
+  const totalEarnings=_me.totalEarnings?'₹'+Number(_me.totalEarnings).toLocaleString('en-IN'):'₹0';
+
+  const rows=accepted.slice().reverse().map(([,r])=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:.55rem 0;border-bottom:1px solid var(--ph-border);">
+      <div>
+        <div style="font-weight:700;font-size:.85rem;">${escHtml(r.founderName||r.startupName||'Brand')}</div>
+        <div style="font-size:.72rem;color:var(--ph-muted)">${escHtml(r.collabType||'Collaboration')}</div>
+      </div>
+      <div style="font-weight:700;font-size:.85rem;color:var(--ph-green,#2FBF71)">${escHtml(r.budget||'—')}</div>
+    </div>`).join('')||`<div class="ph-empty-inline">No completed collabs yet.</div>`;
+
+  const pd=_me.payoutDetails;
+  const payoutBlock=pd
+    ?`<div style="background:#EAFBF2;border-radius:12px;padding:.8rem;margin-top:1rem;font-size:.82rem;">
+        <div style="font-weight:700;margin-bottom:.25rem;"><i class="fas fa-circle-check" style="color:#2FBF71"></i> Payout details saved</div>
+        <div style="color:var(--ph-muted)">${pd.method==='upi'?'UPI: '+escHtml(pd.upi):'Bank: '+escHtml(pd.bank)+' •••• '+escHtml((pd.account||'').slice(-4))}</div>
+        <button class="btn" style="margin-top:.6rem;width:100%;justify-content:center;background:#fff;border:1px solid var(--ph-border);" onclick="requestPayout()"><i class="fas fa-money-bill-transfer"></i> Request Payout</button>
+      </div>`
+    :`<div style="background:#FFF3D9;border-radius:12px;padding:.8rem;margin-top:1rem;font-size:.82rem;">
+        <div style="font-weight:700;margin-bottom:.4rem;"><i class="fas fa-triangle-exclamation" style="color:#F5A623"></i> Add payout details to withdraw earnings</div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="openPayoutForm()"><i class="fas fa-plus"></i> Add Payout Details</button>
+      </div>`;
+
+  const html=`
+    <div style="text-align:center;background:linear-gradient(135deg,#FFF3D9,#fff);border-radius:16px;padding:1.25rem;margin-bottom:1rem;">
+      <div style="font-size:1.7rem;font-weight:800;color:#F5A623">${totalEarnings}</div>
+      <div style="font-size:.75rem;color:var(--ph-muted)">Total Earnings</div>
+    </div>
+    <div class="section-head" style="margin-bottom:.2rem;"><span class="section-title" style="font-size:.9rem;">Collab Payments</span></div>
+    ${rows}
+    ${payoutBlock}
+  `;
+  openHubModal('💰 Earnings',html);
+}
+
+function openPayoutForm(){
+  const html=`
+    <div style="display:flex;gap:.5rem;margin-bottom:1rem;">
+      <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="payoutMethodTab('upi')" id="pm-upi-tab">UPI</button>
+      <button class="btn" style="flex:1;justify-content:center;background:var(--ph-bg);border:1px solid var(--ph-border);" onclick="payoutMethodTab('bank')" id="pm-bank-tab">Bank Account</button>
+    </div>
+    <div id="pm-upi-fields">
+      <label style="font-size:.75rem;color:var(--ph-muted);font-weight:700;">UPI ID</label>
+      <input id="pm-upi" type="text" placeholder="yourname@upi" style="width:100%;padding:.7rem;border:1px solid var(--ph-border);border-radius:10px;margin:.35rem 0 1rem;font-size:.9rem;">
+    </div>
+    <div id="pm-bank-fields" style="display:none;">
+      <label style="font-size:.75rem;color:var(--ph-muted);font-weight:700;">Account Holder Name</label>
+      <input id="pm-holder" type="text" style="width:100%;padding:.7rem;border:1px solid var(--ph-border);border-radius:10px;margin:.35rem 0 .8rem;font-size:.9rem;">
+      <label style="font-size:.75rem;color:var(--ph-muted);font-weight:700;">Account Number</label>
+      <input id="pm-account" type="text" style="width:100%;padding:.7rem;border:1px solid var(--ph-border);border-radius:10px;margin:.35rem 0 .8rem;font-size:.9rem;">
+      <label style="font-size:.75rem;color:var(--ph-muted);font-weight:700;">IFSC Code</label>
+      <input id="pm-ifsc" type="text" style="width:100%;padding:.7rem;border:1px solid var(--ph-border);border-radius:10px;margin:.35rem 0 1rem;font-size:.9rem;text-transform:uppercase;">
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="savePayoutDetails()"><i class="fas fa-check"></i> Save Details</button>
+  `;
+  window._payoutMethod='upi';
+  openHubModal('🏦 Payout Details',html);
+}
+function payoutMethodTab(m){
+  window._payoutMethod=m;
+  document.getElementById('pm-upi-fields').style.display=m==='upi'?'':'none';
+  document.getElementById('pm-bank-fields').style.display=m==='bank'?'':'none';
+  document.getElementById('pm-upi-tab').className=m==='upi'?'btn btn-primary':'btn';
+  document.getElementById('pm-bank-tab').className=m==='bank'?'btn btn-primary':'btn';
+  if(m==='bank'){document.getElementById('pm-bank-tab').style.cssText='flex:1;justify-content:center;';}
+  else{document.getElementById('pm-upi-tab').style.cssText='flex:1;justify-content:center;';}
+}
+async function savePayoutDetails(){
+  const m=window._payoutMethod||'upi';
+  let payoutDetails;
+  if(m==='upi'){
+    const upi=document.getElementById('pm-upi').value.trim();
+    if(!upi||!upi.includes('@')){toast('Enter a valid UPI ID','error');return;}
+    payoutDetails={method:'upi',upi};
+  }else{
+    const holder=document.getElementById('pm-holder').value.trim();
+    const account=document.getElementById('pm-account').value.trim();
+    const ifsc=document.getElementById('pm-ifsc').value.trim();
+    if(!holder||!account||!ifsc){toast('Fill all bank details','error');return;}
+    payoutDetails={method:'bank',holder,account,ifsc};
+  }
+  try{
+    _me={..._me,payoutDetails};
+    await DB.setUser(_me.uid,_me);
+    toast('Payout details saved!','success');
+    openEarningsModal();
+  }catch(e){toast('Could not save details','error');}
+}
+async function requestPayout(){
+  const amount=_me.totalEarnings||0;
+  if(!amount){toast('No earnings available to withdraw yet','info');return;}
+  try{
+    const ref=await addDoc(collection(db,'payoutRequests'),{creatorId:_me.uid,creatorName:_me.name,amount,payoutDetails:_me.payoutDetails,status:'pending',createdAt:new Date().toISOString()});
+    await updateDoc(ref,{id:ref.id});
+    toast('Payout request submitted! We\'ll process it within 3-5 business days.','success');
+    closeHubModal();
+  }catch(e){toast('Could not submit payout request','error');}
+}
+
 function weeklyCounts(records){
   const buckets=new Array(8).fill(0);
   if(!records.length) return buckets.map(()=>30);
@@ -4826,7 +5046,7 @@ window.markAllNotifsRead=async function(){
   }catch(e){toast('Could not mark all as read','error');}
 };
 
-Object.assign(window,{showSection,reqSwitchTab,selectRole,confirmRole,openSetup,openEditProfileModal,closeEditProfileModal,saveEditProfile,epHandleDp,epRemoveDp,updReq,sendCollab,filterCreators,selectPlan,openPlanOverlay,closePlanOverlay,doSignOut,goToLanding,goToAdmin,openSidebar,closeSidebar,choosePlanAndContinue,goToMessages,goToNotifications,openChatForRequest,openLaunchModal,closeLaunchModal,closeApplicantsModal,launchCampaign,toggleCampaignStatus,viewApplications,respondApp,openApplyModal,openCampaignDetails,closeApplyModal,submitApplication,toggleCollabChip,toggleCampDetails,handleCampImg,removeCampImg,handleBrandLogo,showFormErr,filterConversations,openConversation,messagesBackToList,triggerFileInput,handleFileSelect,cancelUpload,sendMessage,handleMsgKey,autoResizeInput,openLightbox,closeLightbox,renderNotificationsSection,openReelViewer,closeReelViewer,togglePhReelPause,openReelProfile,closeReelProfile,messageReelCreator});
+Object.assign(window,{showSection,reqSwitchTab,selectRole,confirmRole,openSetup,openEditProfileModal,closeEditProfileModal,saveEditProfile,epHandleDp,epRemoveDp,updReq,sendCollab,filterCreators,selectPlan,openPlanOverlay,closePlanOverlay,doSignOut,goToLanding,goToAdmin,openSidebar,closeSidebar,choosePlanAndContinue,goToMessages,goToNotifications,openChatForRequest,openLaunchModal,closeLaunchModal,closeApplicantsModal,launchCampaign,toggleCampaignStatus,viewApplications,respondApp,openApplyModal,openCampaignDetails,closeApplyModal,submitApplication,toggleCollabChip,toggleCampDetails,handleCampImg,removeCampImg,handleBrandLogo,showFormErr,filterConversations,openConversation,messagesBackToList,triggerFileInput,handleFileSelect,cancelUpload,sendMessage,handleMsgKey,autoResizeInput,openLightbox,closeLightbox,renderNotificationsSection,openReelViewer,closeReelViewer,togglePhReelPause,openReelProfile,closeReelProfile,messageReelCreator,openMediaKitModal,mediaKitAction,openInsightsModal,openEarningsModal,openPayoutForm,payoutMethodTab,savePayoutDetails,requestPayout,closeHubModal});
 
 // Android hardware back button: close open modal/sidebar, else double-press to exit
 if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) {
