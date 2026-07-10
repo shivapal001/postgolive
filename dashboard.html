@@ -2428,13 +2428,13 @@ async function renderCreatorHomeMobile(el,ctx){
       const days=Math.ceil(diffMs/86400000);
       deadlineTxt=days>1?`${days} days left`:days===1?'1 day left':days===0?'Last day':'Deadline passed';
     }
-    return `<div class="pcm-card">
+    return `<div class="pcm-card" onclick="openCampaignDetails('${id}')" style="cursor:pointer">
       <div class="pcm-logo">${badge}</div>
       <div class="pcm-name">${escHtml(c.startupName||'Brand')}</div>
       <div class="pcm-sub">${escHtml(c.title||c.collabType||'Campaign')}</div>
       <div class="pcm-budget">${c.budget?'₹'+escHtml(String(c.budget)):'TBD'}</div>
       <div class="pcm-deadline">${deadlineTxt?`<i class="fa-regular fa-clock"></i> ${escHtml(deadlineTxt)}`:'&nbsp;'}</div>
-      <button class="pcm-btn" onclick="openApplyModal('${id}')">Apply Now</button>
+      <button class="pcm-btn" onclick="event.stopPropagation();openCampaignDetails('${id}')">Apply Now</button>
     </div>`;
   }).join('');
   if(!campHTML)campHTML=`<div class="ph-empty-inline">No open campaigns right now — check back soon.</div>`;
@@ -4058,6 +4058,59 @@ async function respondApp(appId,status,creatorId){
   viewApplications(appId,'');
 }
 
+async function openCampaignDetails(campaignId){
+  const overlay=document.getElementById('apply-modal');
+  const body=document.getElementById('apply-modal-body');
+  if(!overlay||!body)return;
+  overlay.style.display='flex';
+  body.innerHTML='<div style="text-align:center;padding:2rem"><i class="fas fa-spinner fa-spin"></i></div>';
+
+  let campaigns={}; try{campaigns=await DB.getCampaigns();}catch(e){}
+  const c=campaigns[campaignId];
+  if(!c){body.innerHTML='<div class="empty-state"><i class="fas fa-triangle-exclamation"></i><p>Campaign not found.</p></div>';return;}
+
+  let applied=false;
+  try{const myApps=await DB.getMyApplications(_me.uid);applied=Object.values(myApps).some(a=>a.campaignId===campaignId);}catch(e){}
+
+  const brandName=c.startupName||c.founderName||'Brand';
+  const handle='@'+brandName.toLowerCase().replace(/[^a-z0-9]+/g,'');
+  const avatar=c.brandLogo?`<img src="${c.brandLogo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:brandName.charAt(0).toUpperCase();
+  const bannerImg=c.productImage?`<img src="${c.productImage}" style="width:100%;height:160px;object-fit:cover;border-radius:16px;display:block" onerror="this.parentElement.style.display='none'">`:'';
+
+  const types=(c.collabTypes||[]).map(t=>COLLAB_TYPES.find(x=>x.id===t)||{label:t,icon:'fas fa-handshake'});
+  const typesLine=types.map(t=>t.label).join(' + ')||'Collaboration';
+
+  let deadlineTxt='';
+  if(c.deadline){
+    const diffMs=new Date(c.deadline)-new Date();
+    const days=Math.ceil(diffMs/86400000);
+    deadlineTxt=days>1?`Apply by ${c.deadline} (${days} days left)`:days===1?`Apply by ${c.deadline} (1 day left)`:days===0?`Apply by ${c.deadline} (last day)`:`Deadline passed (${c.deadline})`;
+  }
+
+  body.innerHTML=`
+    <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:1rem">
+      <div style="width:2.6rem;height:2.6rem;border-radius:50%;overflow:hidden;background:linear-gradient(135deg,var(--accent),hsl(14,90%,58%));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;flex-shrink:0">${avatar}</div>
+      <div style="min-width:0">
+        <div style="font-weight:800;font-size:.95rem">${escHtml(brandName)}</div>
+        <div style="font-size:.75rem;color:var(--muted)">${escHtml(handle)}</div>
+      </div>
+    </div>
+    ${bannerImg?`<div style="margin-bottom:1rem">${bannerImg}</div>`:''}
+    <div style="font-weight:800;font-size:1.05rem;margin-bottom:.4rem">${escHtml(c.title||'Campaign')}</div>
+    <div style="font-size:.85rem;color:var(--muted);line-height:1.6;margin-bottom:1.1rem">${escHtml(c.description||'No description provided.')}</div>
+    <div style="display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.3rem;font-size:.83rem;font-weight:600">
+      <div><i class="fas fa-layer-group" style="color:var(--muted);width:1.2rem;text-align:center;margin-right:.5rem"></i>${escHtml(typesLine)}</div>
+      ${c.budget?`<div><i class="fas fa-rupee-sign" style="color:var(--muted);width:1.2rem;text-align:center;margin-right:.5rem"></i>${escHtml(String(c.budget))}</div>`:''}
+      ${deadlineTxt?`<div><i class="fas fa-calendar-alt" style="color:var(--muted);width:1.2rem;text-align:center;margin-right:.5rem"></i>${escHtml(deadlineTxt)}</div>`:''}
+      ${c.niche?`<div><i class="fas fa-tag" style="color:var(--muted);width:1.2rem;text-align:center;margin-right:.5rem"></i>${escHtml(c.niche)}</div>`:''}
+      ${c.audienceRequired?`<div><i class="fas fa-users" style="color:var(--muted);width:1.2rem;text-align:center;margin-right:.5rem"></i>Min. audience: ${escHtml(c.audienceRequired)}</div>`:''}
+    </div>
+    ${applied
+      ?`<button class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem;opacity:.6" disabled><i class="fas fa-check"></i> Already Applied</button>`
+      :`<button class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem" onclick="openApplyModal('${campaignId}')"><i class="fas fa-paper-plane"></i> Apply Now</button>`}
+  `;
+}
+
 function openApplyModal(campaignId){
   const overlay=document.getElementById('apply-modal');
   const body=document.getElementById('apply-modal-body');
@@ -4773,7 +4826,7 @@ window.markAllNotifsRead=async function(){
   }catch(e){toast('Could not mark all as read','error');}
 };
 
-Object.assign(window,{showSection,reqSwitchTab,selectRole,confirmRole,openSetup,openEditProfileModal,closeEditProfileModal,saveEditProfile,epHandleDp,epRemoveDp,updReq,sendCollab,filterCreators,selectPlan,openPlanOverlay,closePlanOverlay,doSignOut,goToLanding,goToAdmin,openSidebar,closeSidebar,choosePlanAndContinue,goToMessages,goToNotifications,openChatForRequest,openLaunchModal,closeLaunchModal,closeApplicantsModal,launchCampaign,toggleCampaignStatus,viewApplications,respondApp,openApplyModal,closeApplyModal,submitApplication,toggleCollabChip,toggleCampDetails,handleCampImg,removeCampImg,handleBrandLogo,showFormErr,filterConversations,openConversation,messagesBackToList,triggerFileInput,handleFileSelect,cancelUpload,sendMessage,handleMsgKey,autoResizeInput,openLightbox,closeLightbox,renderNotificationsSection,openReelViewer,closeReelViewer,togglePhReelPause,openReelProfile,closeReelProfile,messageReelCreator});
+Object.assign(window,{showSection,reqSwitchTab,selectRole,confirmRole,openSetup,openEditProfileModal,closeEditProfileModal,saveEditProfile,epHandleDp,epRemoveDp,updReq,sendCollab,filterCreators,selectPlan,openPlanOverlay,closePlanOverlay,doSignOut,goToLanding,goToAdmin,openSidebar,closeSidebar,choosePlanAndContinue,goToMessages,goToNotifications,openChatForRequest,openLaunchModal,closeLaunchModal,closeApplicantsModal,launchCampaign,toggleCampaignStatus,viewApplications,respondApp,openApplyModal,openCampaignDetails,closeApplyModal,submitApplication,toggleCollabChip,toggleCampDetails,handleCampImg,removeCampImg,handleBrandLogo,showFormErr,filterConversations,openConversation,messagesBackToList,triggerFileInput,handleFileSelect,cancelUpload,sendMessage,handleMsgKey,autoResizeInput,openLightbox,closeLightbox,renderNotificationsSection,openReelViewer,closeReelViewer,togglePhReelPause,openReelProfile,closeReelProfile,messageReelCreator});
 
 // Android hardware back button: close open modal/sidebar, else double-press to exit
 if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) {
