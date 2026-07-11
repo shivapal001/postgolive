@@ -1827,7 +1827,7 @@ async function saveEditProfile(){
     if(wa)await DB.updateUser(_me.uid,{whatsapp:wa});
     const ex=await DB.getCreator(_me.uid)||{};
     await DB.setCreator(_me.uid,{userId:_me.uid,name,bio,niches,profilePhoto:photoURL,instagram:g('ep-insta'),youtube:g('ep-yt'),linkedin:g('ep-li'),audienceSize:aud,engagementRate:g('ep-eng'),pricing:g('ep-price'),whatsapp:wa||_me.whatsapp||'',featured:ex.featured||false,topSearch:ex.topSearch||false,createdAt:ex.createdAt||new Date().toISOString()});
-    _me={..._me,name,profileComplete:true,profilePhoto:photoURL,whatsapp:wa||_me.whatsapp||''};
+    _me={..._me,name,profileComplete:true,profilePhoto:photoURL,whatsapp:wa||_me.whatsapp||'',bio,niches,instagram:g('ep-insta'),youtube:g('ep-yt'),linkedin:g('ep-li'),audienceSize:aud,engagementRate:g('ep-eng'),pricing:g('ep-price')};
     await DB.setUser(_me.uid,_me);
   } else {
     const name=g('ep-name'),sname=g('ep-sname'),desc=g('ep-desc'),ind=g('ep-ind'),bud=g('ep-bud'),ct=g('ep-ctype');
