@@ -1018,10 +1018,12 @@ button:active{
 .pfl-action{flex:1;display:flex;flex-direction:column;align-items:center;gap:.4rem;cursor:pointer;}
 .pfl-action-icon{width:2.7rem;height:2.7rem;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1rem;}
 .pfl-action span{font-size:.64rem;font-weight:700;color:var(--ph-text);}
-.pfl-port-item{position:relative;flex:0 0 108px;height:130px;border-radius:14px;overflow:hidden;background:var(--ph-card);cursor:pointer;}
-.pfl-port-item img{width:100%;height:100%;object-fit:cover;}
-.pfl-port-play{position:absolute;top:.5rem;right:.5rem;width:1.5rem;height:1.5rem;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;color:var(--ph-text);font-size:.6rem;}
-.pfl-port-cap{position:absolute;left:0;right:0;bottom:0;padding:.4rem .5rem;background:linear-gradient(0deg,rgba(0,0,0,.65),transparent);color:#fff;font-size:.65rem;font-weight:700;}
+.pfl-port-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem;}
+.pfl-port-item{position:relative;width:100%;aspect-ratio:9/16;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,#2A2622,#1A1714);cursor:pointer;}
+.pfl-port-item img{width:100%;height:100%;object-fit:cover;display:block;}
+.pfl-port-play{position:absolute;top:.4rem;right:.4rem;width:1.3rem;height:1.3rem;border-radius:50%;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.55rem;}
+.pfl-port-cap{position:absolute;left:0;right:0;bottom:0;padding:.4rem .5rem .35rem;background:linear-gradient(0deg,rgba(0,0,0,.75),transparent);color:#fff;font-size:.65rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pfl-port-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.35);font-size:1.4rem;}
 .pfl-about-card{background:var(--ph-card);border-radius:16px;padding:.2rem 1rem;border:1px solid var(--ph-border);}
 .pfl-about-row{display:flex;justify-content:space-between;align-items:center;padding:.7rem 0;border-bottom:1px solid var(--ph-border);font-size:.78rem;}
 .pfl-about-row:last-child{border-bottom:none;}
@@ -3166,7 +3168,8 @@ async function renderMobileProfile(el){
     const portfolio=Array.isArray(_me.portfolio)?_me.portfolio:[];
     window._pflPortfolio=portfolio;
     const portHTML=portfolio.map((p,idx)=>`<div class="pfl-port-item" onclick="${p.videoUrl?`openPortfolioVideo(${idx})`:''}">
-        <img src="${p.thumbnail||p.image||''}" alt="${escHtml(p.caption||p.title||'')}">
+        ${(p.thumbnail||p.image)?`<img src="${p.thumbnail||p.image}" alt="${escHtml(p.caption||p.title||'')}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">`:''}
+        <div class="pfl-port-placeholder" style="display:${(p.thumbnail||p.image)?'none':'flex'};"><i class="fas fa-film"></i></div>
         ${p.videoUrl?`<div class="pfl-port-play"><i class="fas fa-play"></i></div>`:''}
         <div class="pfl-port-cap">${escHtml(p.caption||p.title||'')}</div>
       </div>`).join('');
@@ -3174,8 +3177,8 @@ async function renderMobileProfile(el){
     let pendingPortHTML='';
     try{
       const pSnap=await getDocs(query(collection(db,'portfolioRequests'),where('creatorId','==',_me.uid),where('status','==','pending')));
-      pendingPortHTML=pSnap.docs.map(d=>`<div class="pfl-port-item" style="opacity:.6;cursor:default;position:relative;">
-          <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--ph-bg);"><i class="fas fa-clock" style="color:var(--ph-muted);font-size:1.2rem"></i></div>
+      pendingPortHTML=pSnap.docs.map(d=>`<div class="pfl-port-item" style="opacity:.55;cursor:default;">
+          <div class="pfl-port-placeholder"><i class="fas fa-clock"></i></div>
           <div class="pfl-port-cap">Pending review</div>
         </div>`).join('');
     }catch(e){}
@@ -3219,8 +3222,8 @@ async function renderMobileProfile(el){
       </div>
 
       <div class="section-head" id="pfl-portfolio"><span class="section-title">My Portfolio</span><button class="pfl-add-port-btn" onclick="openSubmitPortfolioModal()"><i class="fas fa-plus"></i> Add Item</button></div>
-      <div style="display:flex;gap:.6rem;overflow-x:auto;scrollbar-width:none;margin-bottom:.3rem;">
-        ${portHTML}${pendingPortHTML}${(!portHTML&&!pendingPortHTML)?`<div class="ph-empty-inline">No portfolio items yet — tap "Add Item" above to submit your first reel or post.</div>`:''}
+      <div class="pfl-port-grid" style="margin-bottom:.3rem;">
+        ${portHTML}${pendingPortHTML}${(!portHTML&&!pendingPortHTML)?`<div class="ph-empty-inline" style="grid-column:1/-1;">No portfolio items yet — tap "Add Item" above to submit your first reel or post.</div>`:''}
       </div>
       <div class="section-head"><span class="section-title">About Me</span></div>
       ${aboutRows?`<div class="pfl-about-card">${aboutRows}</div>`:`<div class="ph-empty-inline">Complete your profile to show details here.</div>`}
