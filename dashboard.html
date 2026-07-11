@@ -3161,6 +3161,15 @@ async function renderMobileProfile(el){
         <div class="pfl-port-cap">${escHtml(p.caption||p.title||'')}</div>
       </div>`).join('');
 
+    let pendingPortHTML='';
+    try{
+      const pSnap=await getDocs(query(collection(db,'portfolioRequests'),where('creatorId','==',_me.uid),where('status','==','pending')));
+      pendingPortHTML=pSnap.docs.map(d=>`<div class="pfl-port-item" style="opacity:.6;cursor:default;position:relative;">
+          <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--ph-bg);"><i class="fas fa-clock" style="color:var(--ph-muted);font-size:1.2rem"></i></div>
+          <div class="pfl-port-cap">Pending review</div>
+        </div>`).join('');
+    }catch(e){}
+
     const aboutRows=[
       ['Categories',(_me.niches||[]).join(', ')],
       ['Languages',Array.isArray(_me.languages)?_me.languages.join(', '):(_me.languages||'')],
@@ -3199,9 +3208,9 @@ async function renderMobileProfile(el){
         <div class="pfl-stat"><div class="pfl-stat-val">${escHtml(String(ratingVal))}</div><div class="pfl-stat-label">Avg. Rating</div></div>
       </div>
 
-      <div class="section-head" id="pfl-portfolio"><span class="section-title">My Portfolio</span><span class="see-all">See all</span></div>
+      <div class="section-head" id="pfl-portfolio"><span class="section-title">My Portfolio</span><span class="see-all" onclick="openSubmitPortfolioModal()" style="cursor:pointer"><i class="fas fa-plus"></i> Submit</span></div>
       <div style="display:flex;gap:.6rem;overflow-x:auto;scrollbar-width:none;margin-bottom:.3rem;">
-        ${portHTML||`<div class="ph-empty-inline">No portfolio items yet.</div>`}
+        ${portHTML}${pendingPortHTML}${(!portHTML&&!pendingPortHTML)?`<div class="ph-empty-inline">No portfolio items yet.</div>`:''}
       </div>
       <div class="section-head"><span class="section-title">About Me</span></div>
       ${aboutRows?`<div class="pfl-about-card">${aboutRows}</div>`:`<div class="ph-empty-inline">Complete your profile to show details here.</div>`}
@@ -3382,6 +3391,31 @@ async function openInsightsModal(){
     ${completeness<100?`<div style="margin-top:1rem;font-size:.8rem;color:var(--ph-muted);"><i class="fas fa-circle-info"></i> Complete your profile (bio, niches, audience size, avg. views, engagement rate, portfolio) to unlock better matches.</div>`:''}
   `;
   openHubModal('📊 Insights',html);
+}
+
+function openSubmitPortfolioModal(){
+  const html=`
+    <div style="font-size:.8rem;color:var(--ph-muted);margin-bottom:1rem;line-height:1.5;">
+      Paste the link to your Reel or Post. We'll review it, host it, and add it to your portfolio within <strong style="color:var(--ph-text)">24 hours</strong> — you'll get a notification once it's live.
+    </div>
+    <label style="font-size:.75rem;color:var(--ph-muted);font-weight:700;">Reel / Post URL</label>
+    <input id="spf-url" type="url" placeholder="https://instagram.com/reel/…" style="width:100%;padding:.7rem;border:1px solid var(--ph-border);border-radius:10px;margin:.35rem 0 .8rem;font-size:.9rem;">
+    <label style="font-size:.75rem;color:var(--ph-muted);font-weight:700;">Caption (optional)</label>
+    <input id="spf-caption" type="text" placeholder="e.g. Skincare routine collab with GlowCo" style="width:100%;padding:.7rem;border:1px solid var(--ph-border);border-radius:10px;margin:.35rem 0 1rem;font-size:.9rem;">
+    <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="submitPortfolioRequest()"><i class="fas fa-paper-plane"></i> Submit for Review</button>
+  `;
+  openHubModal('📎 Submit Portfolio Item',html);
+}
+async function submitPortfolioRequest(){
+  const url=document.getElementById('spf-url')?.value.trim();
+  const caption=document.getElementById('spf-caption')?.value.trim();
+  if(!url||!/^https?:\/\//i.test(url)){toast('Enter a valid link (starting with http/https)','error');return;}
+  try{
+    await addDoc(collection(db,'portfolioRequests'),{creatorId:_me.uid,creatorName:_me.name||'',url,caption:caption||'',status:'pending',createdAt:new Date().toISOString()});
+    toast("Submitted! We'll add it to your portfolio within 24 hours.",'success');
+    closeHubModal();
+    renderMobileProfile(document.getElementById('main-content'));
+  }catch(e){toast('Could not submit — try again','error');}
 }
 
 async function openEarningsModal(){
@@ -5029,7 +5063,7 @@ window.markAllNotifsRead=async function(){
   }catch(e){toast('Could not mark all as read','error');}
 };
 
-Object.assign(window,{showSection,reqSwitchTab,selectRole,confirmRole,openSetup,openEditProfileModal,closeEditProfileModal,saveEditProfile,epHandleDp,epRemoveDp,updReq,sendCollab,filterCreators,selectPlan,openPlanOverlay,closePlanOverlay,doSignOut,goToLanding,goToAdmin,openSidebar,closeSidebar,choosePlanAndContinue,goToMessages,goToNotifications,openChatForRequest,openLaunchModal,closeLaunchModal,closeApplicantsModal,launchCampaign,toggleCampaignStatus,viewApplications,respondApp,openApplyModal,openCampaignDetails,closeApplyModal,submitApplication,toggleCollabChip,toggleCampDetails,handleCampImg,removeCampImg,handleBrandLogo,showFormErr,filterConversations,openConversation,messagesBackToList,triggerFileInput,handleFileSelect,cancelUpload,sendMessage,handleMsgKey,autoResizeInput,openLightbox,closeLightbox,renderNotificationsSection,openReelViewer,closeReelViewer,togglePhReelPause,openReelProfile,closeReelProfile,messageReelCreator,openMediaKitModal,mediaKitAction,openInsightsModal,openEarningsModal,openPayoutForm,payoutMethodTab,savePayoutDetails,requestPayout,closeHubModal});
+Object.assign(window,{showSection,reqSwitchTab,selectRole,confirmRole,openSetup,openEditProfileModal,closeEditProfileModal,saveEditProfile,epHandleDp,epRemoveDp,updReq,sendCollab,filterCreators,selectPlan,openPlanOverlay,closePlanOverlay,doSignOut,goToLanding,goToAdmin,openSidebar,closeSidebar,choosePlanAndContinue,goToMessages,goToNotifications,openChatForRequest,openLaunchModal,closeLaunchModal,closeApplicantsModal,launchCampaign,toggleCampaignStatus,viewApplications,respondApp,openApplyModal,openCampaignDetails,closeApplyModal,submitApplication,toggleCollabChip,toggleCampDetails,handleCampImg,removeCampImg,handleBrandLogo,showFormErr,filterConversations,openConversation,messagesBackToList,triggerFileInput,handleFileSelect,cancelUpload,sendMessage,handleMsgKey,autoResizeInput,openLightbox,closeLightbox,renderNotificationsSection,openReelViewer,closeReelViewer,togglePhReelPause,openReelProfile,closeReelProfile,messageReelCreator,openMediaKitModal,mediaKitAction,openInsightsModal,openEarningsModal,openPayoutForm,payoutMethodTab,savePayoutDetails,requestPayout,closeHubModal,openSubmitPortfolioModal,submitPortfolioRequest});
 
 // Android hardware back button: close open modal/sidebar, else double-press to exit
 if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) {
