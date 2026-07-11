@@ -1317,6 +1317,14 @@ body.ph-mobile-active #ph-app-nav{ display:flex; }
   </div>
 </div>
 
+<div class="overlay" id="port-video-modal" style="display:none" onclick="if(event.target===this)closePortfolioVideo()">
+  <div class="modal-box" style="max-width:420px;padding:0;overflow:hidden;background:#000;border:none;">
+    <button class="modal-close" onclick="closePortfolioVideo()" style="background:rgba(255,255,255,.15);color:#fff;top:.75rem;right:.75rem;"><i class="fas fa-times"></i></button>
+    <video id="port-video-el" controls autoplay playsinline style="width:100%;max-height:80vh;display:block;background:#000;"></video>
+    <div id="port-video-caption" style="padding:.85rem 1.1rem;color:#fff;font-size:.85rem;background:#111;"></div>
+  </div>
+</div>
+
 <div class="overlay" id="hub-modal" style="display:none">
   <div class="modal-box wide">
     <button class="modal-close" onclick="closeHubModal()"><i class="fas fa-times"></i></button>
@@ -3156,7 +3164,8 @@ async function renderMobileProfile(el){
     const ratingVal=_me.avgRating||_me.rating||'—';
 
     const portfolio=Array.isArray(_me.portfolio)?_me.portfolio:[];
-    const portHTML=portfolio.map(p=>`<div class="pfl-port-item" onclick="${p.videoUrl?`window.open('${p.videoUrl}','_blank')`:''}">
+    window._pflPortfolio=portfolio;
+    const portHTML=portfolio.map((p,idx)=>`<div class="pfl-port-item" onclick="${p.videoUrl?`openPortfolioVideo(${idx})`:''}">
         <img src="${p.thumbnail||p.image||''}" alt="${escHtml(p.caption||p.title||'')}">
         ${p.videoUrl?`<div class="pfl-port-play"><i class="fas fa-play"></i></div>`:''}
         <div class="pfl-port-cap">${escHtml(p.caption||p.title||'')}</div>
@@ -3392,6 +3401,22 @@ async function openInsightsModal(){
     ${completeness<100?`<div style="margin-top:1rem;font-size:.8rem;color:var(--ph-muted);"><i class="fas fa-circle-info"></i> Complete your profile (bio, niches, audience size, avg. views, engagement rate, portfolio) to unlock better matches.</div>`:''}
   `;
   openHubModal('📊 Insights',html);
+}
+
+function openPortfolioVideo(idx){
+  const p=(window._pflPortfolio||[])[idx];if(!p||!p.videoUrl)return;
+  const v=document.getElementById('port-video-el');
+  v.src=p.videoUrl;
+  document.getElementById('port-video-caption').textContent=p.caption||p.title||'';
+  const o=document.getElementById('port-video-modal');
+  o.style.display='flex';
+  requestAnimationFrame(()=>o.classList.add('open'));
+}
+function closePortfolioVideo(){
+  const o=document.getElementById('port-video-modal');
+  o.classList.remove('open');o.style.display='none';
+  const v=document.getElementById('port-video-el');
+  if(v){v.pause();v.src='';}
 }
 
 function openSubmitPortfolioModal(){
@@ -5071,7 +5096,7 @@ window.markAllNotifsRead=async function(){
   }catch(e){toast('Could not mark all as read','error');}
 };
 
-Object.assign(window,{showSection,reqSwitchTab,selectRole,confirmRole,openSetup,openEditProfileModal,closeEditProfileModal,saveEditProfile,epHandleDp,epRemoveDp,updReq,sendCollab,filterCreators,selectPlan,openPlanOverlay,closePlanOverlay,doSignOut,goToLanding,goToAdmin,openSidebar,closeSidebar,choosePlanAndContinue,goToMessages,goToNotifications,openChatForRequest,openLaunchModal,closeLaunchModal,closeApplicantsModal,launchCampaign,toggleCampaignStatus,viewApplications,respondApp,openApplyModal,openCampaignDetails,closeApplyModal,submitApplication,toggleCollabChip,toggleCampDetails,handleCampImg,removeCampImg,handleBrandLogo,showFormErr,filterConversations,openConversation,messagesBackToList,triggerFileInput,handleFileSelect,cancelUpload,sendMessage,handleMsgKey,autoResizeInput,openLightbox,closeLightbox,renderNotificationsSection,openReelViewer,closeReelViewer,togglePhReelPause,openReelProfile,closeReelProfile,messageReelCreator,openMediaKitModal,mediaKitAction,openInsightsModal,openEarningsModal,openPayoutForm,payoutMethodTab,savePayoutDetails,requestPayout,closeHubModal,openSubmitPortfolioModal,submitPortfolioRequest});
+Object.assign(window,{showSection,reqSwitchTab,selectRole,confirmRole,openSetup,openEditProfileModal,closeEditProfileModal,saveEditProfile,epHandleDp,epRemoveDp,updReq,sendCollab,filterCreators,selectPlan,openPlanOverlay,closePlanOverlay,doSignOut,goToLanding,goToAdmin,openSidebar,closeSidebar,choosePlanAndContinue,goToMessages,goToNotifications,openChatForRequest,openLaunchModal,closeLaunchModal,closeApplicantsModal,launchCampaign,toggleCampaignStatus,viewApplications,respondApp,openApplyModal,openCampaignDetails,closeApplyModal,submitApplication,toggleCollabChip,toggleCampDetails,handleCampImg,removeCampImg,handleBrandLogo,showFormErr,filterConversations,openConversation,messagesBackToList,triggerFileInput,handleFileSelect,cancelUpload,sendMessage,handleMsgKey,autoResizeInput,openLightbox,closeLightbox,renderNotificationsSection,openReelViewer,closeReelViewer,togglePhReelPause,openReelProfile,closeReelProfile,messageReelCreator,openMediaKitModal,mediaKitAction,openInsightsModal,openEarningsModal,openPayoutForm,payoutMethodTab,savePayoutDetails,requestPayout,closeHubModal,openSubmitPortfolioModal,submitPortfolioRequest,openPortfolioVideo,closePortfolioVideo});
 
 // Android hardware back button: close open modal/sidebar, else double-press to exit
 if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) {
