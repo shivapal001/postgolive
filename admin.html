@@ -454,16 +454,32 @@ function buildPortfolioRows(entries){
 }
 function markPortfolioHosted(id){
   const r=_data.portfolioReqs[id];if(!r)return;
-  document.getElementById('portfolio-modal-title').textContent='Mark as Hosted';
+  document.getElementById('portfolio-modal-title').textContent='Add to Portfolio';
   document.getElementById('portfolio-modal-err').className='form-err';
   document.getElementById('portfolio-modal-form').innerHTML=`
-    <div style="font-size:.78rem;color:var(--muted);margin-bottom:.875rem">Original link submitted by <strong style="color:var(--text)">${r.creatorName||'creator'}</strong>: <a href="${r.url}" target="_blank" style="color:var(--blue)">${r.url}</a></div>
-    <div class="form-group"><label>Hosted Video URL</label><input id="pm-hosted-url" placeholder="https://…"></div>
-    <div class="form-group"><label>Thumbnail URL (optional)</label><input id="pm-thumb-url" placeholder="https://…"></div>
-    <div class="form-group"><label>Caption (optional)</label><input id="pm-caption" value="${r.caption||''}"></div>
-    <div style="display:flex;gap:.5rem;margin-top:1rem"><button class="btn btn-primary" style="flex:1;justify-content:center" onclick="savePortfolioHosted('${id}')">Save &amp; Notify Creator</button><button class="btn btn-ghost" onclick="closeModal('portfolio-modal')">Cancel</button></div>
+    <div style="font-size:.78rem;color:var(--muted);margin-bottom:1rem">Submitted by <strong style="color:var(--text)">${r.creatorName||'creator'}</strong> — original link: <a href="${r.url}" target="_blank" style="color:var(--blue)">${r.url}</a>${r.caption?`<div style="margin-top:.2rem">"${r.caption}"</div>`:''}</div>
+
+    <div class="form-group">
+      <label>Hosted Video URL <span style="color:var(--red)">*</span></label>
+      <input id="pm-hosted-url" placeholder="https://… direct .mp4 or streamable URL" oninput="previewPortfolioVideo(this.value)">
+      <div class="form-hint">Upload the downloaded reel to your hosting of choice, then paste the direct link here.</div>
+    </div>
+    <div id="pm-video-preview" style="margin-top:.5rem;display:none">
+      <div style="font-size:.72rem;color:var(--muted);margin-bottom:.35rem">Preview:</div>
+      <video id="pm-preview-vid" controls muted style="width:100%;max-height:180px;border-radius:.5rem;background:#000;object-fit:contain"></video>
+    </div>
+
+    <div class="form-group" style="margin-top:.875rem"><label>Thumbnail URL (optional)</label><input id="pm-thumb-url" placeholder="https://…"></div>
+    <div class="form-group"><label>Caption (optional)</label><input id="pm-caption" value="${(r.caption||'').replace(/"/g,'&quot;')}"></div>
+    <div style="display:flex;gap:.5rem;margin-top:1rem"><button class="btn btn-primary" style="flex:1;justify-content:center" onclick="savePortfolioHosted('${id}')"><i class="fas fa-check"></i> Save &amp; Notify Creator</button><button class="btn btn-ghost" onclick="closeModal('portfolio-modal')">Cancel</button></div>
   `;
   openModal('portfolio-modal');
+}
+function previewPortfolioVideo(url){
+  const wrap=document.getElementById('pm-video-preview');
+  const vid=document.getElementById('pm-preview-vid');
+  if(url&&url.startsWith('http')){vid.src=url;wrap.style.display='block';}
+  else{wrap.style.display='none';}
 }
 async function savePortfolioHosted(id){
   const r=_data.portfolioReqs[id];if(!r)return;
@@ -876,7 +892,7 @@ function toast(msg,type='info'){
 }
 function addLog(type,msg){_logs.push({type,msg,ts:Date.now()});}
 
-Object.assign(window,{adminLogin,adminLogout,showPage,refreshAll,renderSpotlight,openSpotlightModal,previewSpotlightVideo,saveSpotlight,toggleSpotlightActive,updateSpotlightOrder,deleteSpotlight,hideAllSpotlights,activateAllSpotlights,editUser,saveEditUser,changePlan,adminChangePlanDirect,deleteUser,editCreator,saveEditCreator,deleteCreator,toggleCreatorField,updateReqStatus,deleteRequest,filterUsersTable,sendBroadcast,updateBroadcastCount,dangerDeleteAll,exportData,openModal,closeModal,renderPortfolioReqs,markPortfolioHosted,savePortfolioHosted,rejectPortfolioReq,deletePortfolioReq});
+Object.assign(window,{adminLogin,adminLogout,showPage,refreshAll,renderSpotlight,openSpotlightModal,previewSpotlightVideo,saveSpotlight,toggleSpotlightActive,updateSpotlightOrder,deleteSpotlight,hideAllSpotlights,activateAllSpotlights,editUser,saveEditUser,changePlan,adminChangePlanDirect,deleteUser,editCreator,saveEditCreator,deleteCreator,toggleCreatorField,updateReqStatus,deleteRequest,filterUsersTable,sendBroadcast,updateBroadcastCount,dangerDeleteAll,exportData,openModal,closeModal,renderPortfolioReqs,markPortfolioHosted,previewPortfolioVideo,savePortfolioHosted,rejectPortfolioReq,deletePortfolioReq});
 
 </script>
 </body>
