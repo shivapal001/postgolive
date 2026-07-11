@@ -3198,12 +3198,7 @@ async function renderMobileProfile(el){
         <div class="pfl-stat"><div class="pfl-stat-val">${earningsVal}</div><div class="pfl-stat-label">Total Earnings</div></div>
         <div class="pfl-stat"><div class="pfl-stat-val">${escHtml(String(ratingVal))}</div><div class="pfl-stat-label">Avg. Rating</div></div>
       </div>
-      <div class="pfl-actions-row">
-        <div class="pfl-action" onclick="document.getElementById('pfl-portfolio')?.scrollIntoView({behavior:'smooth'})">
-          <div class="pfl-action-icon" style="background:#FDE7EC"><i class="fas fa-briefcase" style="color:#F4552F"></i></div>
-          <span>Portfolio</span>
-        </div>
-      </div>
+
       <div class="section-head" id="pfl-portfolio"><span class="section-title">My Portfolio</span><span class="see-all">See all</span></div>
       <div style="display:flex;gap:.6rem;overflow-x:auto;scrollbar-width:none;margin-bottom:.3rem;">
         ${portHTML||`<div class="ph-empty-inline">No portfolio items yet.</div>`}
