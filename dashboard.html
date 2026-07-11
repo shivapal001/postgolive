@@ -1766,11 +1766,15 @@ async function openEditProfileModal(){
       </div>
       <div class="ep-form-row">
         <div class="ep-field-group"><div class="ep-field-label">Audience Size *</div><select class="ep-select" id="ep-aud"><option value="">Select…</option>${['1K-10K','10K-50K','50K-100K','100K-500K','500K+'].map(v=>`<option${ex?.audienceSize===v?' selected':''}>${v}</option>`).join('')}</select></div>
-        <div class="ep-field-group"><div class="ep-field-label">Engagement Rate</div><input class="ep-input" id="ep-eng" value="${ex?.engagementRate||''}" placeholder="e.g. 5.2%"></div>
+        <div class="ep-field-group"><div class="ep-field-label">Avg. Views</div><input class="ep-input" id="ep-views" value="${ex?.avgViews||_me.avgViews||''}" placeholder="e.g. 25K"></div>
       </div>
       <div class="ep-form-row">
+        <div class="ep-field-group"><div class="ep-field-label">Engagement Rate</div><input class="ep-input" id="ep-eng" value="${ex?.engagementRate||''}" placeholder="e.g. 5.2%"></div>
         <div class="ep-field-group"><div class="ep-field-label">Pricing</div><input class="ep-input" id="ep-price" value="${ex?.pricing||''}" placeholder="From ₹5,000"></div>
+      </div>
+      <div class="ep-form-row">
         <div class="ep-field-group"><div class="ep-field-label">LinkedIn</div><input class="ep-input" id="ep-li" value="${ex?.linkedin||''}" placeholder="linkedin.com/in/you"></div>
+        <div class="ep-field-group"></div>
       </div>
       <div class="ep-field-group"><div class="ep-field-label">WhatsApp</div><input class="ep-input" id="ep-wa" value="${_me.whatsapp||''}" placeholder="+91 XXXXX XXXXX"></div>`;
   } else {
@@ -1826,8 +1830,8 @@ async function saveEditProfile(){
     const wa=g('ep-wa');
     if(wa)await DB.updateUser(_me.uid,{whatsapp:wa});
     const ex=await DB.getCreator(_me.uid)||{};
-    await DB.setCreator(_me.uid,{userId:_me.uid,name,bio,niches,profilePhoto:photoURL,instagram:g('ep-insta'),youtube:g('ep-yt'),linkedin:g('ep-li'),audienceSize:aud,engagementRate:g('ep-eng'),pricing:g('ep-price'),whatsapp:wa||_me.whatsapp||'',featured:ex.featured||false,topSearch:ex.topSearch||false,createdAt:ex.createdAt||new Date().toISOString()});
-    _me={..._me,name,profileComplete:true,profilePhoto:photoURL,whatsapp:wa||_me.whatsapp||'',bio,niches,instagram:g('ep-insta'),youtube:g('ep-yt'),linkedin:g('ep-li'),audienceSize:aud,engagementRate:g('ep-eng'),pricing:g('ep-price')};
+    await DB.setCreator(_me.uid,{userId:_me.uid,name,bio,niches,profilePhoto:photoURL,instagram:g('ep-insta'),youtube:g('ep-yt'),linkedin:g('ep-li'),audienceSize:aud,avgViews:g('ep-views'),engagementRate:g('ep-eng'),pricing:g('ep-price'),whatsapp:wa||_me.whatsapp||'',featured:ex.featured||false,topSearch:ex.topSearch||false,createdAt:ex.createdAt||new Date().toISOString()});
+    _me={..._me,name,profileComplete:true,profilePhoto:photoURL,whatsapp:wa||_me.whatsapp||'',bio,niches,instagram:g('ep-insta'),youtube:g('ep-yt'),linkedin:g('ep-li'),audienceSize:aud,avgViews:g('ep-views'),engagementRate:g('ep-eng'),pricing:g('ep-price')};
     await DB.setUser(_me.uid,_me);
   } else {
     const name=g('ep-name'),sname=g('ep-sname'),desc=g('ep-desc'),ind=g('ep-ind'),bud=g('ep-bud'),ct=g('ep-ctype');
@@ -3162,8 +3166,6 @@ async function renderMobileProfile(el){
     const creatorRole=(_me.niches&&_me.niches[0])?`${_me.niches[0]} Creator`:'Creator';
     const location=_me.location||_me.city||'';
     const followers=_me.audienceSize||_me.followers||'—';
-    const earningsVal=_me.totalEarnings?'₹'+Number(_me.totalEarnings).toLocaleString('en-IN'):'—';
-    const ratingVal=_me.avgRating||_me.rating||'—';
 
     const portfolio=Array.isArray(_me.portfolio)?_me.portfolio:[];
     window._pflPortfolio=portfolio;
@@ -3217,8 +3219,8 @@ async function renderMobileProfile(el){
       <div class="pfl-stats-row">
         <div class="pfl-stat"><div class="pfl-stat-val">${escHtml(String(followers))}</div><div class="pfl-stat-label">Followers</div></div>
         <div class="pfl-stat"><div class="pfl-stat-val">${accepted}</div><div class="pfl-stat-label">Collabs</div></div>
-        <div class="pfl-stat"><div class="pfl-stat-val">${earningsVal}</div><div class="pfl-stat-label">Total Earnings</div></div>
-        <div class="pfl-stat"><div class="pfl-stat-val">${escHtml(String(ratingVal))}</div><div class="pfl-stat-label">Avg. Rating</div></div>
+        <div class="pfl-stat"><div class="pfl-stat-val">${escHtml(String(_me.avgViews||'—'))}</div><div class="pfl-stat-label">Avg. Views</div></div>
+        <div class="pfl-stat"><div class="pfl-stat-val">${escHtml(String(_me.engagementRate||'—'))}</div><div class="pfl-stat-label">Eng. Rate</div></div>
       </div>
 
       <div class="section-head" id="pfl-portfolio"><span class="section-title">My Portfolio</span><button class="pfl-add-port-btn" onclick="openSubmitPortfolioModal()"><i class="fas fa-plus"></i> Add Item</button></div>
