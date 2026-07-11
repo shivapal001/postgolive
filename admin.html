@@ -84,6 +84,8 @@ tr:last-child td{border-bottom:none;}
 .badge-pending{background:rgba(245,166,35,.12);color:var(--gold);}
 .badge-accepted{background:rgba(46,213,115,.12);color:var(--green);}
 .badge-declined{background:rgba(255,71,87,.12);color:var(--red);}
+.badge-completed{background:rgba(46,213,115,.12);color:var(--green);}
+.badge-rejected{background:rgba(255,71,87,.12);color:var(--red);}
 .filter-input{background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;padding:.45rem .875rem;color:var(--text);font:.8rem/1 "Plus Jakarta Sans",sans-serif;outline:none;transition:.15s ease;min-width:180px;}
 .filter-input:focus{border-color:var(--accent);}
 .filter-select{background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;padding:.45rem .875rem;color:var(--text);font:.8rem/1 "Plus Jakarta Sans",sans-serif;outline:none;cursor:pointer;}
@@ -185,6 +187,7 @@ tr:last-child td{border-bottom:none;}
     <div class="nav-item" id="nav-creators" onclick="showPage('creators')"><i class="fas fa-paint-brush"></i> Creators <span class="nav-count" id="cnt-creators">0</span></div>
     <div class="nav-section">Content</div>
     <div class="nav-item" id="nav-requests" onclick="showPage('requests')"><i class="fas fa-inbox"></i> Requests <span class="nav-count" id="cnt-requests">0</span></div>
+    <div class="nav-item" id="nav-portfolio" onclick="showPage('portfolio')"><i class="fas fa-film"></i> Portfolio Requests <span class="nav-count" id="cnt-portfolio">0</span></div>
     <div class="nav-item" id="nav-spotlight" onclick="showPage('spotlight')"><i class="fas fa-video"></i> Creator Spotlight <span class="nav-count" id="cnt-spotlight">0</span></div>
     <div class="nav-item" id="nav-plans" onclick="showPage('plans')"><i class="fas fa-crown"></i> Plans &amp; Revenue</div>
     <div class="nav-section">Control</div>
@@ -245,6 +248,14 @@ tr:last-child td{border-bottom:none;}
     <div id="edit-spotlight-form"></div>
   </div>
 </div>
+<div class="modal-overlay" id="portfolio-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('portfolio-modal')"><i class="fas fa-times"></i></button>
+    <div class="modal-title" id="portfolio-modal-title">Mark as Hosted</div>
+    <div class="form-err" id="portfolio-modal-err"></div>
+    <div id="portfolio-modal-form"></div>
+  </div>
+</div>
 <div class="modal-overlay" id="confirm-modal">
   <div class="modal-box" style="max-width:400px;text-align:center;">
     <div style="font-size:2.5rem;margin-bottom:.75rem" id="confirm-icon">&#9888;&#65039;</div>
@@ -262,7 +273,7 @@ tr:last-child td{border-bottom:none;}
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut as fbSignOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, getDocs, addDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, getDocs, addDoc, writeBatch, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const fbApp = initializeApp({
   apiKey:"AIzaSyD1ElccdzrwPwKDmGimitEkQEwNMrUeHyE",
@@ -277,7 +288,7 @@ const auth = getAuth(fbApp);
 const db = getFirestore(fbApp);
 const ADMIN_EMAILS = ['admin@posthire.in','shiva@posthire.in'];
 
-let _admin=null, _data={users:{},creators:{},founders:{},requests:{},spotlights:{}}, _logs=[];
+let _admin=null, _data={users:{},creators:{},founders:{},requests:{},spotlights:{},portfolioReqs:{}}, _logs=[];
 
 onAuthStateChanged(auth, async fbUser=>{
   if(!fbUser){showAuthScreen();return;}
@@ -308,14 +319,14 @@ async function refreshAll(){
   document.getElementById('refresh-spin').style.display='';
   try{
     const toObj=snap=>{const r={};snap.forEach(d=>{r[d.id]=d.data();});return r;};
-    const [usersSnap,creatorsSnap,foundersSnap,requestsSnap,spotSnap]=await Promise.all([
+    const [usersSnap,creatorsSnap,foundersSnap,requestsSnap,spotSnap,portfolioReqSnap]=await Promise.all([
       getDocs(collection(db,'users')),getDocs(collection(db,'creators')),
       getDocs(collection(db,'founders')),getDocs(collection(db,'requests')),
-      getDocs(collection(db,'spotlight_creators'))
+      getDocs(collection(db,'spotlight_creators')),getDocs(collection(db,'portfolioRequests'))
     ]);
     _data.users=toObj(usersSnap);_data.creators=toObj(creatorsSnap);
     _data.founders=toObj(foundersSnap);_data.requests=toObj(requestsSnap);
-    _data.spotlights=toObj(spotSnap);
+    _data.spotlights=toObj(spotSnap);_data.portfolioReqs=toObj(portfolioReqSnap);
     updateCounts();
     document.getElementById('refresh-time').textContent='Updated '+new Date().toLocaleTimeString();
   }catch(e){toast('Failed to load: '+e.message,'error');}
@@ -328,16 +339,17 @@ function updateCounts(){
   document.getElementById('cnt-creators').textContent=u.filter(x=>x.userType==='creator').length;
   document.getElementById('cnt-requests').textContent=Object.keys(_data.requests).length;
   document.getElementById('cnt-spotlight').textContent=Object.keys(_data.spotlights).length;
+  document.getElementById('cnt-portfolio').textContent=Object.values(_data.portfolioReqs).filter(p=>p.status==='pending').length;
 }
 
-const pageTitles={overview:'Dashboard',analytics:'Analytics',users:'All Users',founders:'Founders',creators:'Creators',requests:'Collaboration Requests',spotlight:'Creator Spotlight',plans:'Plans & Revenue',featured:'Featured Control',broadcast:'Broadcast',settings:'Settings'};
+const pageTitles={overview:'Dashboard',analytics:'Analytics',users:'All Users',founders:'Founders',creators:'Creators',requests:'Collaboration Requests',portfolio:'Portfolio Requests',spotlight:'Creator Spotlight',plans:'Plans & Revenue',featured:'Featured Control',broadcast:'Broadcast',settings:'Settings'};
 function showPage(page){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   const nav=document.getElementById('nav-'+page);if(nav)nav.classList.add('active');
   document.getElementById('topbar-title').innerHTML=`${pageTitles[page]||page} <span class="badge">ADMIN</span>`;
   const content=document.getElementById('main-content');
   content.innerHTML='<div class="empty"><i class="fas fa-spinner fa-spin"></i></div>';
-  const pages={overview:renderOverview,analytics:renderAnalytics,users:renderUsers,founders:renderFounders,creators:renderCreators,requests:renderRequests,spotlight:renderSpotlight,plans:renderPlans,featured:renderFeatured,broadcast:renderBroadcast,settings:renderSettings};
+  const pages={overview:renderOverview,analytics:renderAnalytics,users:renderUsers,founders:renderFounders,creators:renderCreators,requests:renderRequests,portfolio:renderPortfolioReqs,spotlight:renderSpotlight,plans:renderPlans,featured:renderFeatured,broadcast:renderBroadcast,settings:renderSettings};
   if(pages[page])pages[page](content);
 }
 
@@ -415,6 +427,73 @@ async function deleteRequest(id){
   showConfirm('Delete this request?','This will permanently remove it.',async()=>{
     await deleteDoc(doc(db,'requests',id));delete _data.requests[id];
     toast('Request deleted','success');renderRequests(document.getElementById('main-content'));
+  },'trash','btn-danger');
+}
+
+function renderPortfolioReqs(el){
+  const entries=Object.entries(_data.portfolioReqs);
+  const pending=entries.filter(([,r])=>r.status==='pending').length;
+  el.innerHTML=`<div class="panel"><div class="panel-head"><div class="panel-title"><i class="fas fa-film"></i> Portfolio Submissions (${entries.length})</div><div style="font-size:.75rem;color:var(--muted)">${pending} pending &middot; target: add within 24h</div></div><div class="table-wrap"><table><thead><tr><th>Creator</th><th>Submitted Link</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead><tbody>${buildPortfolioRows(entries)}</tbody></table></div></div>`;
+}
+function buildPortfolioRows(entries){
+  if(!entries.length)return`<tr><td colspan="5"><div class="empty" style="padding:1.5rem"><p>No portfolio submissions yet</p></div></td></tr>`;
+  return entries.sort((a,b)=>new Date(b[1].createdAt||0)-new Date(a[1].createdAt||0)).map(([id,r])=>{
+    const created=r.createdAt?new Date(r.createdAt):null;
+    const hoursElapsed=created?(Date.now()-created.getTime())/36e5:0;
+    const overdue=r.status==='pending'&&hoursElapsed>24;
+    const slaHtml=r.status==='pending'?`<span style="font-size:.7rem;color:${overdue?'var(--red)':'var(--muted)'}">${overdue?'Overdue':Math.round(hoursElapsed)+'h ago'}</span>`:'';
+    const statusBadge=`<span class="badge badge-${r.status||'pending'}">${r.status||'pending'}</span>`;
+    let actions='';
+    if(r.status==='pending'){
+      actions=`<button class="btn btn-success btn-xs" onclick="markPortfolioHosted('${id}')"><i class="fas fa-check"></i> Mark Hosted</button><button class="btn btn-danger btn-xs" onclick="rejectPortfolioReq('${id}')"><i class="fas fa-times"></i></button>`;
+    }else{
+      actions=`<button class="btn btn-danger btn-xs" onclick="deletePortfolioReq('${id}')"><i class="fas fa-trash"></i></button>`;
+    }
+    return `<tr><td style="font-weight:600;font-size:.82rem">${r.creatorName||'—'}</td><td style="font-size:.78rem;max-width:220px;overflow:hidden;text-overflow:ellipsis"><a href="${r.url}" target="_blank" rel="noopener" style="color:var(--blue)">${r.url||'—'}</a>${r.caption?`<div style="font-size:.7rem;color:var(--muted)">${r.caption}</div>`:''}</td><td style="font-size:.75rem;color:var(--muted)">${created?created.toLocaleDateString('en-IN',{day:'numeric',month:'short'}):'—'}<br>${slaHtml}</td><td>${statusBadge}</td><td><div style="display:flex;gap:.3rem;flex-wrap:wrap">${actions}</div></td></tr>`;
+  }).join('');
+}
+function markPortfolioHosted(id){
+  const r=_data.portfolioReqs[id];if(!r)return;
+  document.getElementById('portfolio-modal-title').textContent='Mark as Hosted';
+  document.getElementById('portfolio-modal-err').className='form-err';
+  document.getElementById('portfolio-modal-form').innerHTML=`
+    <div style="font-size:.78rem;color:var(--muted);margin-bottom:.875rem">Original link submitted by <strong style="color:var(--text)">${r.creatorName||'creator'}</strong>: <a href="${r.url}" target="_blank" style="color:var(--blue)">${r.url}</a></div>
+    <div class="form-group"><label>Hosted Video URL</label><input id="pm-hosted-url" placeholder="https://…"></div>
+    <div class="form-group"><label>Thumbnail URL (optional)</label><input id="pm-thumb-url" placeholder="https://…"></div>
+    <div class="form-group"><label>Caption (optional)</label><input id="pm-caption" value="${r.caption||''}"></div>
+    <div style="display:flex;gap:.5rem;margin-top:1rem"><button class="btn btn-primary" style="flex:1;justify-content:center" onclick="savePortfolioHosted('${id}')">Save &amp; Notify Creator</button><button class="btn btn-ghost" onclick="closeModal('portfolio-modal')">Cancel</button></div>
+  `;
+  openModal('portfolio-modal');
+}
+async function savePortfolioHosted(id){
+  const r=_data.portfolioReqs[id];if(!r)return;
+  const hostedUrl=document.getElementById('pm-hosted-url')?.value.trim();
+  const thumbnail=document.getElementById('pm-thumb-url')?.value.trim();
+  const caption=document.getElementById('pm-caption')?.value.trim();
+  const errEl=document.getElementById('portfolio-modal-err');
+  if(!hostedUrl){errEl.textContent='Please add the hosted video URL';errEl.className='form-err show';return;}
+  try{
+    await updateDoc(doc(db,'portfolioRequests',id),{status:'completed',hostedUrl,thumbnail,caption,completedAt:new Date().toISOString()});
+    await updateDoc(doc(db,'users',r.creatorId),{portfolio:arrayUnion({videoUrl:hostedUrl,thumbnail:thumbnail||'',caption:caption||'',addedAt:new Date().toISOString()})});
+    await addDoc(collection(db,'notifications'),{toUid:r.creatorId,title:'Portfolio added! 🎉',body:'Your reel is now live on your PostHire portfolio.',type:'portfolio',read:false,createdAt:new Date().toISOString()});
+    _data.portfolioReqs[id]={..._data.portfolioReqs[id],status:'completed',hostedUrl,thumbnail,caption};
+    closeModal('portfolio-modal');toast('Portfolio added & creator notified!','success');
+    updateCounts();renderPortfolioReqs(document.getElementById('main-content'));
+  }catch(e){errEl.textContent=e.message;errEl.className='form-err show';}
+}
+function rejectPortfolioReq(id){
+  const r=_data.portfolioReqs[id];if(!r)return;
+  showConfirm('Reject this submission?','The creator will be notified that it was not added.',async()=>{
+    await updateDoc(doc(db,'portfolioRequests',id),{status:'rejected',rejectedAt:new Date().toISOString()});
+    await addDoc(collection(db,'notifications'),{toUid:r.creatorId,title:'Portfolio submission not added',body:'We could not add your submitted link to your portfolio. Please try submitting a different link.',type:'portfolio',read:false,createdAt:new Date().toISOString()});
+    _data.portfolioReqs[id]={..._data.portfolioReqs[id],status:'rejected'};
+    toast('Submission rejected','success');updateCounts();renderPortfolioReqs(document.getElementById('main-content'));
+  },'trash','btn-warning');
+}
+function deletePortfolioReq(id){
+  showConfirm('Delete this record?','This will permanently remove it.',async()=>{
+    await deleteDoc(doc(db,'portfolioRequests',id));delete _data.portfolioReqs[id];
+    toast('Deleted','success');renderPortfolioReqs(document.getElementById('main-content'));
   },'trash','btn-danger');
 }
 
@@ -797,7 +876,7 @@ function toast(msg,type='info'){
 }
 function addLog(type,msg){_logs.push({type,msg,ts:Date.now()});}
 
-Object.assign(window,{adminLogin,adminLogout,showPage,refreshAll,renderSpotlight,openSpotlightModal,previewSpotlightVideo,saveSpotlight,toggleSpotlightActive,updateSpotlightOrder,deleteSpotlight,hideAllSpotlights,activateAllSpotlights,editUser,saveEditUser,changePlan,adminChangePlanDirect,deleteUser,editCreator,saveEditCreator,deleteCreator,toggleCreatorField,updateReqStatus,deleteRequest,filterUsersTable,sendBroadcast,updateBroadcastCount,dangerDeleteAll,exportData,openModal,closeModal});
+Object.assign(window,{adminLogin,adminLogout,showPage,refreshAll,renderSpotlight,openSpotlightModal,previewSpotlightVideo,saveSpotlight,toggleSpotlightActive,updateSpotlightOrder,deleteSpotlight,hideAllSpotlights,activateAllSpotlights,editUser,saveEditUser,changePlan,adminChangePlanDirect,deleteUser,editCreator,saveEditCreator,deleteCreator,toggleCreatorField,updateReqStatus,deleteRequest,filterUsersTable,sendBroadcast,updateBroadcastCount,dangerDeleteAll,exportData,openModal,closeModal,renderPortfolioReqs,markPortfolioHosted,savePortfolioHosted,rejectPortfolioReq,deletePortfolioReq});
 
 </script>
 </body>
