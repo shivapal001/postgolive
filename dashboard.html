@@ -1039,27 +1039,29 @@ button:active{
 .pfl-review-text{font-size:.76rem;color:var(--ph-muted);line-height:1.5;}
 
 /* ── PCC: Premium campaign discovery card (matches design mock) ── */
-.pcc-card{background:var(--ph-card);border-radius:22px;padding:.9rem;margin-bottom:1rem;box-shadow:0 4px 16px rgba(0,0,0,.06);border:1px solid var(--ph-border);}
-.pcc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;}
-.pcc-badge{background:var(--ph-text);color:#fff;font-size:.66rem;font-weight:800;padding:.35rem .85rem;border-radius:99px;letter-spacing:.02em;text-transform:uppercase;}
-.pcc-heart{width:2.2rem;height:2.2rem;border-radius:50%;background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.14);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;border:none;}
-.pcc-heart i{color:var(--ph-green);font-size:1rem;}
-.pcc-heart.active i{color:#E5484D;}
-.pcc-brand{display:flex;align-items:center;gap:.6rem;margin-bottom:.85rem;}
-.pcc-avatar{width:2.5rem;height:2.5rem;border-radius:50%;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,var(--ph-accent),var(--ph-accent2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.85rem;}
+.pcc-card{background:var(--pcc-bg,#F4F0FF);border-radius:22px;padding:1.1rem;margin-bottom:1rem;box-shadow:0 4px 16px rgba(0,0,0,.06);border:none;position:relative;overflow:hidden;}
+.pcc-card.dark{--pcc-text:#FFFFFF;--pcc-sub:rgba(255,255,255,.68);}
+.pcc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;}
+.pcc-badge{background:var(--pcc-text,var(--ph-text));color:var(--pcc-bg,#fff);font-size:.66rem;font-weight:800;padding:.35rem .85rem;border-radius:99px;letter-spacing:.02em;text-transform:uppercase;}
+.pcc-heart{width:2.1rem;height:2.1rem;border-radius:50%;background:rgba(255,255,255,.65);box-shadow:0 3px 10px rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;border:none;}
+.pcc-heart i{color:var(--pcc-text,var(--ph-text));font-size:.9rem;opacity:.7;}
+.pcc-heart.active i{color:#E5484D;opacity:1;}
+.pcc-brand{display:flex;align-items:center;gap:.6rem;margin-bottom:.7rem;}
+.pcc-avatar{width:2.1rem;height:2.1rem;border-radius:50%;overflow:hidden;flex-shrink:0;background:rgba(255,255,255,.75);display:flex;align-items:center;justify-content:center;color:var(--ph-text);font-weight:800;font-size:.8rem;}
 .pcc-avatar img{width:100%;height:100%;object-fit:cover;}
-.pcc-brand-name{font-size:.9rem;font-weight:800;color:var(--ph-text);letter-spacing:-.01em;line-height:1.25;}
-.pcc-brand-handle{font-size:.75rem;color:var(--ph-muted);font-weight:500;}
-.pcc-banner{position:relative;width:100%;height:150px;border-radius:16px;overflow:hidden;margin-bottom:.85rem;background:linear-gradient(135deg,#20222c,#14151c);}
-.pcc-banner img{width:100%;height:100%;object-fit:cover;display:block;}
-.pcc-banner-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:1rem;color:#fff;font-weight:800;font-size:1.05rem;line-height:1.3;}
-.pcc-desc{font-size:.82rem;color:var(--ph-text);line-height:1.55;margin-bottom:.9rem;font-weight:500;}
-.pcc-meta{display:flex;flex-direction:column;gap:.55rem;margin-bottom:1rem;}
-.pcc-meta-row{display:flex;align-items:center;gap:.6rem;font-size:.8rem;color:var(--ph-text);font-weight:600;}
-.pcc-meta-row i{width:1.1rem;text-align:center;color:var(--ph-muted);font-size:.85rem;flex-shrink:0;}
-.pcc-apply-btn{width:100%;background:var(--ph-accent);color:#111111;border:none;border-radius:14px;padding:.85rem;font-size:.88rem;font-weight:800;font-family:'General Sans','Plus Jakarta Sans',sans-serif;cursor:pointer;box-shadow:0 6px 16px rgba(233,255,57,.28);}
-.pcc-apply-btn:disabled{background:#DFF3E7;color:var(--ph-green);box-shadow:none;}
-.pcc-apply-btn.pause{background:var(--ph-card);color:var(--ph-text);border:1px solid var(--ph-border);box-shadow:none;}
+.pcc-brand-name{font-size:1rem;font-weight:800;color:var(--pcc-text,var(--ph-text));letter-spacing:-.01em;line-height:1.25;}
+.pcc-brand-handle{font-size:.76rem;color:var(--pcc-sub,var(--ph-muted));font-weight:600;}
+.pcc-desc{font-size:.82rem;color:var(--pcc-text,var(--ph-text));opacity:.85;line-height:1.55;margin-bottom:1rem;font-weight:500;}
+.pcc-meta{display:flex;align-items:center;gap:1.5rem;margin-bottom:1rem;}
+.pcc-meta-row{display:flex;flex-direction:column;gap:.15rem;font-size:.95rem;color:var(--pcc-text,var(--ph-text));font-weight:800;}
+.pcc-meta-row small{font-size:.7rem;color:var(--pcc-sub,var(--ph-muted));font-weight:600;text-transform:none;}
+.pcc-meta-row i{display:none;}
+.pcc-footer{display:flex;align-items:center;gap:.6rem;}
+.pcc-apply-btn{flex:1;background:var(--ph-accent);color:#111111;border:none;border-radius:14px;padding:.85rem;font-size:.86rem;font-weight:800;font-family:'General Sans','Plus Jakarta Sans',sans-serif;cursor:pointer;box-shadow:0 6px 16px rgba(233,255,57,.28);}
+.pcc-apply-btn:disabled{background:rgba(255,255,255,.5);color:var(--pcc-text,var(--ph-text));box-shadow:none;opacity:.7;}
+.pcc-apply-btn.pause{background:rgba(255,255,255,.6);color:var(--pcc-text,var(--ph-text));border:none;box-shadow:none;}
+.pcc-bookmark{width:3rem;height:3rem;flex-shrink:0;border-radius:14px;background:rgba(255,255,255,.65);display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;}
+.pcc-bookmark i{color:var(--pcc-text,var(--ph-text));font-size:1rem;}
 .ph-camp-chevron{color:var(--ph-muted);}
 .ph-camp-chevron svg{width:.9rem;height:.9rem;}
 
@@ -2982,57 +2984,57 @@ async function renderMobileCampaigns(el){
   let myApps={}; if(isC) try{myApps=await DB.getMyApplications(_me.uid);}catch(e){}
   const appIds=new Set(Object.values(myApps).map(a=>a.campaignId));
 
-  const campCards=myCamps.map(([id,c])=>{
+  const CARD_PALETTE=[
+    {bg:'#E4F0FF',dark:false},
+    {bg:'#EDEAFB',dark:false},
+    {bg:'#141414',dark:true},
+    {bg:'#EAF7E9',dark:false},
+  ];
+
+  const campCards=myCamps.map(([id,c],idx)=>{
     const status=c.status||'draft';
     const applied=appIds.has(id);
     const brandName=c.startupName||c.founderName||'Brand';
     const handle='@'+brandName.toLowerCase().replace(/[^a-z0-9]+/g,'');
+    const palette=CARD_PALETTE[idx%CARD_PALETTE.length];
 
     const avatar=c.brandLogo
       ?`<img src="${c.brandLogo}" alt="${escHtml(brandName)}">`
       :brandName.charAt(0).toUpperCase();
 
-    const bannerImg=c.productImage
-      ?`<img src="${c.productImage}" alt="${escHtml(c.title||'')}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
-      :'';
-    const bannerFallback=`<div class="pcc-banner-fallback" style="${c.productImage?'display:none':''}">${escHtml(c.title||'Campaign')}</div>`;
-
     const types=(c.collabTypes||[]).map(t=>COLLAB_TYPES.find(x=>x.id===t)||{label:t,icon:'fas fa-handshake'});
     const primaryType=types[0]||{label:'Collaboration',icon:'fas fa-handshake'};
-    const deliverablesLine=types.length>1?types.map(t=>t.label).join(' + '):'';
 
-    const metaRows=[
-      `<div class="pcc-meta-row"><i class="${primaryType.icon}"></i>${escHtml(primaryType.label)}</div>`,
-      deliverablesLine?`<div class="pcc-meta-row"><i class="fas fa-layer-group"></i>${escHtml(deliverablesLine)}</div>`:'',
-      c.budget?`<div class="pcc-meta-row"><i class="fas fa-rupee-sign"></i>${escHtml(c.budget)}</div>`:'',
-      c.deadline?`<div class="pcc-meta-row"><i class="fas fa-calendar-alt"></i>Apply by ${escHtml(c.deadline)}</div>`:'',
-    ].filter(Boolean).join('');
+    const daysLeft=c.deadline?`${escHtml(c.deadline)}`:'—';
 
     const footerBtn=isC
       ?(applied
           ?`<button class="pcc-apply-btn" disabled><i class="fas fa-check"></i> Applied</button>`
           :`<button class="pcc-apply-btn" onclick="openApplyModal('${id}')">Apply Now</button>`)
-      :`<div style="display:flex;gap:.5rem">
-          <button class="pcc-apply-btn pause" onclick="toggleCampaignStatus('${id}','${status==='open'?'closed':'open'}')">${status==='open'?'Pause':'Activate'}</button>
-          <button class="pcc-apply-btn" onclick="viewApplications('${id}','${escHtml(c.title||'Campaign').replace(/'/g,"\\'")}')">Applicants</button>
-        </div>`;
+      :`<button class="pcc-apply-btn pause" onclick="toggleCampaignStatus('${id}','${status==='open'?'closed':'open'}')">${status==='open'?'Pause':'Activate'}</button>
+        <button class="pcc-apply-btn" onclick="viewApplications('${id}','${escHtml(c.title||'Campaign').replace(/'/g,"\\'")}')">Applicants</button>`;
 
-    return `<div class="pcc-card">
+    return `<div class="pcc-card${palette.dark?' dark':''}" style="--pcc-bg:${palette.bg}">
       <div class="pcc-top">
-        <span class="pcc-badge">Brand</span>
+        ${idx===0?`<span class="pcc-badge">Featured</span>`:`<span></span>`}
         <button class="pcc-heart" onclick="this.classList.toggle('active')"><i class="fas fa-heart"></i></button>
       </div>
       <div class="pcc-brand">
         <div class="pcc-avatar">${avatar}</div>
         <div>
           <div class="pcc-brand-name">${escHtml(brandName)}</div>
-          <div class="pcc-brand-handle">${escHtml(handle)}</div>
+          <div class="pcc-brand-handle">${escHtml(primaryType.label)}</div>
         </div>
       </div>
-      <div class="pcc-banner">${bannerImg}${bannerFallback}</div>
-      <div class="pcc-desc">${escHtml((c.description||'').substring(0,120))}${(c.description?.length||0)>120?'…':''}</div>
-      <div class="pcc-meta">${metaRows}</div>
-      ${footerBtn}
+      <div class="pcc-desc">${escHtml((c.description||'').substring(0,110))}${(c.description?.length||0)>110?'…':''}</div>
+      <div class="pcc-meta">
+        <div class="pcc-meta-row">₹${escHtml(c.budget||'—')}<small>Budget</small></div>
+        <div class="pcc-meta-row">${daysLeft}<small>Deadline</small></div>
+      </div>
+      <div class="pcc-footer">
+        ${footerBtn}
+        <button class="pcc-bookmark" onclick="this.classList.toggle('active')"><i class="fas fa-bookmark"></i></button>
+      </div>
     </div>`;
   }).join('');
 
