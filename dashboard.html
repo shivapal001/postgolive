@@ -2524,8 +2524,11 @@ async function renderCreatorHomeMobile(el,ctx){
   let featuredHTML;
   if(openCamps.length){
     const [fid,fc]=openCamps[0];
-    featuredHTML=`<div class="ph-featured-card" onclick="openCampaignDetails('${fid}')" style="background-image:url('${FEATURED_POSTER}');">
-      <button class="ph-featured-btn" onclick="event.stopPropagation();openCampaignDetails('${fid}')">Apply Now <i class="fa-solid fa-arrow-right" style="font-size:.62rem;"></i></button>
+    featuredHTML=`<div class="ph-featured-card" onclick="openCampaignDetails('${fid}')">
+      <img src="${FEATURED_POSTER}" class="ph-featured-img" alt="Nike India Instagram Reel campaign">
+      <div class="ph-featured-actions">
+        <button class="ph-featured-btn" onclick="event.stopPropagation();openCampaignDetails('${fid}')">Apply Now <i class="fa-solid fa-arrow-right" style="font-size:.62rem;"></i></button>
+      </div>
     </div>
     <div class="ph-featured-dots">${openCamps.slice(0,3).map((_,i)=>`<span class="${i===0?'active':''}"></span>`).join('')}</div>`;
   } else {
