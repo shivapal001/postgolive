@@ -2471,7 +2471,8 @@ async function renderCreatorHomeMobile(el,ctx){
   // ── Recommended campaigns (open, not already applied) — mockup "card" style ──
   const appliedIds=new Set(Object.values(myAppsObj||{}).map(a=>a.campaignId));
   const openCamps=Object.entries(campaignsObj).filter(([id,c])=>c.status==='open'&&!appliedIds.has(id)).slice(0,6);
-  let campHTML=openCamps.map(([id,c])=>{
+  const PCM_BG=['#EAF1FF','#FFF7D8','#EAFBF1','#FFEAF1','#F1EAFF','#E6FBFF'];
+  let campHTML=openCamps.map(([id,c],i)=>{
     const hue=hashColor(id);
     const badge=c.brandLogo
       ?`<img src="${c.brandLogo}" alt="${escHtml(c.startupName||'')}">`
@@ -2482,7 +2483,7 @@ async function renderCreatorHomeMobile(el,ctx){
       const days=Math.ceil(diffMs/86400000);
       deadlineTxt=days>1?`${days} days left`:days===1?'1 day left':days===0?'Last day':'Deadline passed';
     }
-    return `<div class="pcm-card" onclick="openCampaignDetails('${id}')" style="cursor:pointer">
+    return `<div class="pcm-card" onclick="openCampaignDetails('${id}')" style="cursor:pointer;background:${PCM_BG[i%PCM_BG.length]};">
       <div class="pcm-logo">${badge}</div>
       <div class="pcm-name">${escHtml(c.startupName||'Brand')}</div>
       <div class="pcm-sub">${escHtml(c.title||c.collabType||'Campaign')}</div>
