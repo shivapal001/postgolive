@@ -3021,24 +3021,33 @@ async function renderMobileDiscoverBrands(el){
     return `<div style="text-align:center;flex:0 0 auto"><div class="logo-badge" style="background:hsl(${hue},65%,45%);border-radius:50%;width:2.7rem;height:2.7rem;margin:0 auto">${badge}</div></div>`;
   }).join('');
 
-  // Trending Campaigns cards
-  const campCards=openCamps.slice(0,20).map(([id,c])=>{
-    const hue=hashColor(id);
-    const icon=c.brandLogo?`<img src="${c.brandLogo}">`:(c.startupName||'B').slice(0,2);
-    const days=_discDaysLeft(c.deadline);
-    return `<div class="card" style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem;cursor:pointer" onclick="showSection('campaigns')">
-      <div class="logo-badge" style="background:hsl(${hue},65%,45%);border-radius:50%">${icon}</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:.72rem;font-weight:800">${escHtml(c.startupName||'Brand')}</div>
-        <div style="font-size:.62rem;color:var(--muted)">${escHtml(c.title||c.collabType||'Campaign')}</div>
-        <div style="font-size:.7rem;font-weight:800;color:var(--accent)">${c.budget?'₹'+escHtml(String(c.budget)):'Budget TBD'}</div>
-      </div>
-      <div style="text-align:right;flex-shrink:0">
-        <i class="fa-regular fa-bookmark" style="color:var(--muted2)"></i>
-        <div style="font-size:.58rem;color:var(--muted2);margin-top:.3rem">${days||'&nbsp;'}</div>
-      </div>
-    </div>`;
-  }).join('');
+  // Trending Campaigns cards — buildCampCards(niche) re-renders the list so it
+  // always shows either matching cards or a friendly empty state (never blank)
+  function buildCampCards(niche){
+    const list = (!niche||niche==='All') ? openCamps : openCamps.filter(([,c])=>{
+      const hay=(c.startupName+' '+(c.title||'')+' '+(c.collabType||'')+' '+(Array.isArray(c.collabTypes)?c.collabTypes.join(' '):'')+' '+(c.niche||'')).toLowerCase();
+      return hay.includes(niche.toLowerCase());
+    });
+    if(!list.length) return `<div class="ph-empty-inline">No ${niche&&niche!=='All'?escHtml(niche)+' ':''}campaigns right now — check back soon.</div>`;
+    return list.slice(0,20).map(([id,c])=>{
+      const hue=hashColor(id);
+      const icon=c.brandLogo?`<img src="${c.brandLogo}">`:(c.startupName||'B').slice(0,2);
+      const days=_discDaysLeft(c.deadline);
+      return `<div class="card" style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem;cursor:pointer" onclick="showSection('campaigns')">
+        <div class="logo-badge" style="background:hsl(${hue},65%,45%);border-radius:50%">${icon}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.72rem;font-weight:800">${escHtml(c.startupName||'Brand')}</div>
+          <div style="font-size:.62rem;color:var(--muted)">${escHtml(c.title||c.collabType||'Campaign')}</div>
+          <div style="font-size:.7rem;font-weight:800;color:var(--accent)">${c.budget?'₹'+escHtml(String(c.budget)):'Budget TBD'}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <i class="fa-regular fa-bookmark" style="color:var(--muted2)"></i>
+          <div style="font-size:.58rem;color:var(--muted2);margin-top:.3rem">${days||'&nbsp;'}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  const campCards = buildCampCards('All');
 
   // Popular Categories — fixed set, exact mockup style
   const CATS=[
@@ -3049,7 +3058,7 @@ async function renderMobileDiscoverBrands(el){
     {label:'Travel',icon:'fas fa-plane',bg:'#FFF7D8',fg:'#111111'},
     {label:'Food',icon:'fas fa-utensils',bg:'#FFF7D8',fg:'#111111'},
   ];
-  const catHTML=CATS.map(c=>`<div class="cat-tile" onclick="mobDiscNiche(document.querySelector('.pill-row .pill'),'${c.label}')"><div class="cat-circle" style="background:${c.bg};"><i class="${c.icon}" style="color:${c.fg};font-size:.95rem;"></i></div><span>${c.label}</span></div>`).join('');
+  const catHTML=CATS.map(c=>`<div class="cat-tile" onclick="mobDiscNiche(null,'${c.label}')"><div class="cat-circle" style="background:${c.bg};"><i class="${c.icon}" style="color:${c.fg};font-size:.95rem;"></i></div><span>${c.label}</span></div>`).join('');
 
   const discBody=`
     <div style="font-size:1.05rem;font-weight:800;margin:.5rem 0 .7rem;">Discover Brands</div>
@@ -3077,17 +3086,37 @@ async function renderMobileDiscoverBrands(el){
   updateNotifBadge();
 
   window.mobDiscFilter=function(q){
-    document.querySelectorAll('#mob-disc-list .card').forEach(card=>{
-      const text=card.textContent.toLowerCase();
-      card.style.display=text.includes(q.toLowerCase())?'':'none';
-    });
+    const list=document.getElementById('mob-disc-list');
+    if(!list)return;
+    const query=q.trim().toLowerCase();
+    if(!query){ list.innerHTML=buildCampCards('All'); return; }
+    const matches=openCamps.filter(([,c])=>
+      (c.startupName+' '+(c.title||'')+' '+(c.collabType||'')).toLowerCase().includes(query));
+    if(!matches.length){ list.innerHTML=`<div class="ph-empty-inline">No campaigns match "${escHtml(q)}".</div>`; return; }
+    list.innerHTML = matches.slice(0,20).map(([id,c])=>{
+      const hue=hashColor(id);
+      const icon=c.brandLogo?`<img src="${c.brandLogo}">`:(c.startupName||'B').slice(0,2);
+      const days=_discDaysLeft(c.deadline);
+      return `<div class="card" style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem;cursor:pointer" onclick="showSection('campaigns')">
+        <div class="logo-badge" style="background:hsl(${hue},65%,45%);border-radius:50%">${icon}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.72rem;font-weight:800">${escHtml(c.startupName||'Brand')}</div>
+          <div style="font-size:.62rem;color:var(--muted)">${escHtml(c.title||c.collabType||'Campaign')}</div>
+          <div style="font-size:.7rem;font-weight:800;color:var(--accent)">${c.budget?'₹'+escHtml(String(c.budget)):'Budget TBD'}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <i class="fa-regular fa-bookmark" style="color:var(--muted2)"></i>
+          <div style="font-size:.58rem;color:var(--muted2);margin-top:.3rem">${days||'&nbsp;'}</div>
+        </div>
+      </div>`;
+    }).join('');
   };
   window.mobDiscNiche=function(btn,niche){
-    document.querySelectorAll('.pill-row .pill').forEach(b=>b.classList.remove('active'));
-    if(btn) btn.classList.add('active');
-    document.querySelectorAll('#mob-disc-list .card').forEach(card=>{
-      card.style.display=(niche==='All'||card.textContent.includes(niche))?'':'none';
+    document.querySelectorAll('.pill-row .pill').forEach(b=>{
+      b.classList.toggle('active', btn ? b===btn : b.textContent.trim()===niche);
     });
+    const list=document.getElementById('mob-disc-list');
+    if(list) list.innerHTML=buildCampCards(niche);
   };
 }
 
