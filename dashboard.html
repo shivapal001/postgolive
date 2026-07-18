@@ -605,6 +605,9 @@ button:active{
 .conv-item{display:flex;gap:.75rem;padding:.75rem .625rem;border-radius:1em;cursor:pointer;transition:all var(--trans);position:relative;animation:msgSlideUp .35s cubic-bezier(.16,1,.3,1) both;}
 .conv-item:hover{background:var(--glass);}
 .conv-item.active{background:rgba(233,255,57,.10);box-shadow:inset 0 0 0 1px rgba(233,255,57,.22);}
+.conv-item.unread{background:rgba(233,255,57,.14);}
+.conv-item.unread .conv-name{font-weight:800;}
+.conv-item.unread .conv-preview{color:var(--text);font-weight:600;}
 .conv-ava{width:2.5rem;height:2.5rem;border-radius:50%;background:linear-gradient(135deg,var(--accent),#B98EFF);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.92rem;flex-shrink:0;color:#111111;overflow:hidden;position:relative;}
 .conv-ava img{width:100%;height:100%;object-fit:cover;}
 .conv-ava-online{position:absolute;bottom:0;right:0;width:.6rem;height:.6rem;border-radius:50%;background:var(--accent3);border:2px solid var(--surface);}
@@ -617,6 +620,17 @@ button:active{
 .conv-empty{padding:2.5rem 1.5rem;text-align:center;color:var(--muted2);}
 .conv-empty i{font-size:2rem;opacity:.35;display:block;margin-bottom:.875rem;}
 .conv-empty p{font-size:.82rem;line-height:1.6;}
+
+/* ── Recent-contacts story row (WhatsApp/Instagram style) ── */
+.msg-story-row{display:flex;gap:.9rem;overflow-x:auto;padding:.9rem 1.1rem 1rem;flex-shrink:0;scrollbar-width:none;border-bottom:1px solid var(--border);}
+.msg-story-row::-webkit-scrollbar{display:none;}
+.msg-story-row:empty{display:none;}
+.msg-story-item{display:flex;flex-direction:column;align-items:center;gap:.4rem;flex-shrink:0;cursor:pointer;width:3.8rem;}
+.msg-story-ava{width:3.3rem;height:3.3rem;border-radius:50%;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.95rem;color:#111111;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,.06);}
+.msg-story-ava img{width:100%;height:100%;object-fit:cover;}
+.msg-story-add{width:3.3rem;height:3.3rem;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#111111;flex-shrink:0;box-shadow:0 4px 10px rgba(233,255,57,.4);}
+.msg-story-dot{position:absolute;bottom:1px;right:1px;width:.7rem;height:.7rem;border-radius:50%;background:var(--accent3);border:2px solid var(--surface);}
+.msg-story-name{font-size:.66rem;font-weight:600;color:var(--text);max-width:3.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
 /* ── Chat area ── */
 .chat-area{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;background:var(--bg);}
@@ -3797,6 +3811,7 @@ async function renderMessagesSection(el){
             <input type="text" id="conv-search-input" placeholder="Search conversations…" oninput="filterConversations()">
           </div>
         </div>
+        <div class="msg-story-row" id="msg-story-row"></div>
         <div class="conv-items" id="conv-items">
           <div style="display:flex;align-items:center;justify-content:center;padding:3rem 1rem;color:var(--muted)"><i class="fas fa-spinner fa-spin" style="font-size:1.2rem"></i></div>
         </div>
@@ -3816,6 +3831,29 @@ async function renderMessagesSection(el){
   `;
   updateNotifBadge();
   subscribeConversations();
+}
+
+function renderStoryRow(){
+  const container=document.getElementById('msg-story-row');
+  if(!container)return;
+  const recent=_conversations.slice(0,10);
+  const addItem=`<div class="msg-story-item" onclick="showSection('creators')">
+    <div class="msg-story-add"><i class="fas fa-plus"></i></div>
+    <div class="msg-story-name">New</div>
+  </div>`;
+  const items=recent.map(c=>{
+    const name=c.otherUser?.name||'User';
+    const photo=c.otherUser?.profilePhoto||'';
+    const ava=photo
+      ?`<img src="${photo}" onerror="this.style.display='none'">`
+      :initials(name);
+    const bg=photo?'':`background:linear-gradient(135deg,hsl(${hashColor(c.otherId)},70%,55%),hsl(${hashColor(c.otherId)+60},70%,50%))`;
+    return `<div class="msg-story-item" onclick="openConversation('${c.id}')">
+      <div class="msg-story-ava" style="${bg}">${ava}${c.unread>0?'<div class="msg-story-dot"></div>':''}</div>
+      <div class="msg-story-name">${escHtml(name.split(' ')[0])}</div>
+    </div>`;
+  }).join('');
+  container.innerHTML=addItem+items;
 }
 
 function subscribeConversations(){
@@ -3842,6 +3880,7 @@ function subscribeConversations(){
     });
     _conversations = enriched;
     filterConversations();
+    renderStoryRow();
     updateMsgBadgeFromConvs(enriched);
     if(_pendingOpenConv){
       const conv = _conversations.find(c=>c.id===_pendingOpenConv);
@@ -3874,7 +3913,8 @@ function renderConvList(){
     const isActive = c.id===_activeConvId;
     const last = c.lastMessage || 'No messages yet';
     const ts = c.updatedAt;
-    return `<div class="conv-item${isActive?' active':''}" id="conv-item-${c.id}" onclick="openConversation('${c.id}')">
+    const hasUnread = c.unread>0;
+    return `<div class="conv-item${isActive?' active':''}${hasUnread?' unread':''}" id="conv-item-${c.id}" onclick="openConversation('${c.id}')">
       <div class="conv-ava" style="${!c.otherUser?.profilePhoto?`background:linear-gradient(135deg,hsl(${hashColor(c.otherId)},70%,55%),hsl(${hashColor(c.otherId)+60},70%,50%))`:''}">
         ${c.otherUser?.profilePhoto?`<img src="${c.otherUser.profilePhoto}" onerror="this.style.display='none'">`:initials(c.otherUser?.name||'U')}
         <div class="conv-ava-online"></div>
@@ -3886,7 +3926,7 @@ function renderConvList(){
         </div>
         <div class="conv-row" style="margin-top:.15rem">
           <div class="conv-preview">${escHtml(last)}</div>
-          ${c.unread>0?`<div class="conv-unread">${c.unread>99?'99+':c.unread}</div>`:''}
+          ${hasUnread?`<div class="conv-unread">${c.unread>99?'99+':c.unread}</div>`:''}
         </div>
       </div>
     </div>`;
