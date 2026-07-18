@@ -2331,17 +2331,21 @@ async function renderMobileHomeNew(el){
   // ── Recommended creators/campaigns ──
   let recHTML='';
   if(!isC){
+    const sentToIds=new Set(sent.map(([,r])=>r.creatorId));
     const list=Object.entries(creatorsObj).filter(([id])=>id!==_me.uid).slice(0,3);
     recHTML=list.map(([id,c])=>{
       const hue=hashColor(id);
       const img=c.profilePhoto?`<img src="${c.profilePhoto}">`:`<div style="width:100%;height:100%;background:linear-gradient(135deg,hsl(${hue},65%,50%),hsl(${hue+40},65%,35%));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.9rem">${(c.name||'C').charAt(0)}</div>`;
+      const btn=sentToIds.has(id)
+        ?`<button class="ph-rec-btn" disabled style="opacity:.55;cursor:default"><i class="fas fa-check"></i> Sent</button>`
+        :`<button class="ph-rec-btn" onclick="sendCollab('${id}')">Connect</button>`;
       return `<div class="ph-rec-card">
         <div class="ph-rec-ava">${img}</div>
         <div class="ph-rec-body">
           <div class="ph-rec-name">${escHtml(c.name||'Creator')} <i class="fas fa-circle-check" style="color:#2F80FF;font-size:.7rem"></i></div>
           <div class="ph-rec-role">${escHtml((c.niches||['Creator'])[0])}</div>
         </div>
-        <button class="ph-rec-btn" onclick="openChatForRequest('${_me.uid}','${id}')">Connect</button>
+        ${btn}
       </div>`;
     }).join('');
   } else {
@@ -2849,7 +2853,7 @@ function messageReelCreator(i){
   const c=(window._phSpotlightCreators||[])[i];
   if(!c)return;
   closeReelViewer();
-  openChatForRequest(_me.uid,c.id);
+  sendCollab(c.id);
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -2902,6 +2906,8 @@ async function renderMobileDiscover(el){
 
   // ── Founder view: browse creators ──
   let creators={}; try{creators=await DB.getCreators();}catch(e){}
+  let allR={}; try{allR=await DB.getRequests();}catch(e){}
+  const sentToIds=new Set(Object.values(allR).filter(r=>r.founderId===_me.uid).map(r=>r.creatorId));
   const list=Object.entries(creators).filter(([id])=>id!==_me.uid);
   const NICHES=['All','Tech','Lifestyle','Business','Fitness','Beauty','Finance','Fashion','UGC','Food'];
 
@@ -2911,7 +2917,9 @@ async function renderMobileDiscover(el){
       ?`<img src="${c.profilePhoto}">`
       :`<div style="width:100%;height:100%;background:linear-gradient(135deg,hsl(${hue},65%,50%),hsl(${hue+40},65%,35%));display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;color:#fff">${(c.name||'C').charAt(0)}</div>`;
     const tags=(c.niches||[]).slice(0,2).map(n=>`<span class="ph-creator-tag">${escHtml(n)}</span>`).join('');
-    const action=`<button class="ph-creator-btn" onclick="openChatForRequest('${_me.uid}','${id}')">Connect</button>`;
+    const action=sentToIds.has(id)
+      ?`<button class="ph-creator-btn" disabled style="opacity:.55;cursor:default"><i class="fas fa-check"></i> Request Sent</button>`
+      :`<button class="ph-creator-btn" onclick="sendCollab('${id}')">Connect</button>`;
     return `<div class="ph-creator-card">
       <div class="ph-creator-top">
         <div class="ph-creator-ava">${ava}</div>
@@ -3825,7 +3833,10 @@ async function sendCollab(creatorId){
     fromUid:_me.uid,
     fromName:_me.name||'Founder'
   });
-  toast(`Request sent to ${cr.name}! 🚀`,'success');_allCreators={};await filterCreators();
+  toast(`Request sent to ${cr.name}! 🚀`,'success');
+  _allCreators={};
+  const activeTab=document.querySelector('.ph-nav-item.active')?.id?.replace('phn-','');
+  if(activeTab==='home'||activeTab==='creators')await showSection(activeTab);
 }
 
 // ── PROFILE ───────────────────────────────────────────
@@ -4558,7 +4569,9 @@ function closeSidebar(){document.getElementById('sidebar').classList.remove('ope
 // MESSAGES (embedded SPA section — merged from messages.html)
 // ══════════════════════════════════════════════════════════════════
 async function renderMessagesSection(el){
-  return renderMobileMessages(el); // app is mobile-only
+  document.body.classList.add('ph-mobile-active');
+  phSetMobileNav('messages');
+  phSetHeader('Messages',`<div class="ph-icon-btn" onclick="showSection('notifications')"><i class="fas fa-bell"></i><span class="ph-badge" id="mob-notif-badge" style="display:none">0</span></div>`);
   el.innerHTML = `
     <div class="msgs-wrap" id="msgs-wrap">
       <div class="conv-list">
@@ -4570,7 +4583,7 @@ async function renderMessagesSection(el){
           </div>
         </div>
         <div class="conv-items" id="conv-items">
-          <div class="loading-center"><div class="spinner"></div></div>
+          <div style="display:flex;align-items:center;justify-content:center;padding:3rem 1rem;color:var(--muted)"><i class="fas fa-spinner fa-spin" style="font-size:1.2rem"></i></div>
         </div>
       </div>
       <div class="chat-area" id="chat-area">
@@ -4586,6 +4599,7 @@ async function renderMessagesSection(el){
       <img id="lightbox-img" onclick="event.stopPropagation()">
     </div>
   `;
+  updateNotifBadge();
   subscribeConversations();
 }
 
