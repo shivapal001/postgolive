@@ -32,6 +32,7 @@
   --accent2:     #F0FF6E;
   --accent3:     #34C759;
   --gold:        #FFB547;
+  --blue:        #2F80FF;
 
   --free:    #B98EFF;
   --starter: #2F80FF;
@@ -518,7 +519,7 @@ body.ph-mobile-active .content{
 body.ph-mobile-active .content.ph-mob-root{
   position:fixed;
   top:56px;
-  bottom:62px;
+  bottom:92px;
   left:0; right:0;
   overflow-y:auto;
   -webkit-overflow-scrolling:touch;
@@ -605,9 +606,6 @@ button:active{
 .conv-item{display:flex;gap:.75rem;padding:.75rem .625rem;border-radius:1em;cursor:pointer;transition:all var(--trans);position:relative;animation:msgSlideUp .35s cubic-bezier(.16,1,.3,1) both;}
 .conv-item:hover{background:var(--glass);}
 .conv-item.active{background:rgba(233,255,57,.10);box-shadow:inset 0 0 0 1px rgba(233,255,57,.22);}
-.conv-item.unread{background:rgba(233,255,57,.14);}
-.conv-item.unread .conv-name{font-weight:800;}
-.conv-item.unread .conv-preview{color:var(--text);font-weight:600;}
 .conv-ava{width:2.5rem;height:2.5rem;border-radius:50%;background:linear-gradient(135deg,var(--accent),#B98EFF);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.92rem;flex-shrink:0;color:#111111;overflow:hidden;position:relative;}
 .conv-ava img{width:100%;height:100%;object-fit:cover;}
 .conv-ava-online{position:absolute;bottom:0;right:0;width:.6rem;height:.6rem;border-radius:50%;background:var(--accent3);border:2px solid var(--surface);}
@@ -620,17 +618,6 @@ button:active{
 .conv-empty{padding:2.5rem 1.5rem;text-align:center;color:var(--muted2);}
 .conv-empty i{font-size:2rem;opacity:.35;display:block;margin-bottom:.875rem;}
 .conv-empty p{font-size:.82rem;line-height:1.6;}
-
-/* ── Recent-contacts story row (WhatsApp/Instagram style) ── */
-.msg-story-row{display:flex;gap:.9rem;overflow-x:auto;padding:.9rem 1.1rem 1rem;flex-shrink:0;scrollbar-width:none;border-bottom:1px solid var(--border);}
-.msg-story-row::-webkit-scrollbar{display:none;}
-.msg-story-row:empty{display:none;}
-.msg-story-item{display:flex;flex-direction:column;align-items:center;gap:.4rem;flex-shrink:0;cursor:pointer;width:3.8rem;}
-.msg-story-ava{width:3.3rem;height:3.3rem;border-radius:50%;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.95rem;color:#111111;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,.06);}
-.msg-story-ava img{width:100%;height:100%;object-fit:cover;}
-.msg-story-add{width:3.3rem;height:3.3rem;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#111111;flex-shrink:0;box-shadow:0 4px 10px rgba(233,255,57,.4);}
-.msg-story-dot{position:absolute;bottom:1px;right:1px;width:.7rem;height:.7rem;border-radius:50%;background:var(--accent3);border:2px solid var(--surface);}
-.msg-story-name{font-size:.66rem;font-weight:600;color:var(--text);max-width:3.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
 /* ── Chat area ── */
 .chat-area{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;background:var(--bg);}
@@ -961,6 +948,16 @@ button:active{
 .ph-activity-time{font-size:.68rem;color:var(--ph-muted);white-space:nowrap;}
 .ph-rec-btn{background:var(--ph-accent);color:#111111;border:none;border-radius:99px;padding:.45rem 1rem;font-size:.75rem;font-weight:700;cursor:pointer;flex-shrink:0;font-family:'General Sans','Plus Jakarta Sans',sans-serif;box-shadow:0 4px 10px rgba(233,255,57,.28);}
 
+/* ── PCM: premium mini "Recommended Campaigns" card (matches design mock) ── */
+.pcm-card{background:var(--surface);border-radius:18px;padding:.9rem .7rem;box-shadow:0 3px 10px rgba(35,31,28,0.06);text-align:center;flex:0 0 132px;}
+.pcm-logo{width:2.6rem;height:2.6rem;border-radius:50%;margin:0 auto .55rem;overflow:hidden;background:#F3EFE9;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.82rem;color:var(--text);flex-shrink:0;}
+.pcm-logo img{width:100%;height:100%;object-fit:contain;padding:.3rem;}
+.pcm-name{font-size:.76rem;font-weight:800;color:var(--text);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pcm-sub{font-size:.64rem;color:var(--muted);margin:.15rem 0 .45rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pcm-budget{font-size:.82rem;font-weight:800;color:#111111;margin-bottom:.3rem;}
+.pcm-deadline{font-size:.62rem;color:var(--muted2);margin-bottom:.65rem;display:flex;align-items:center;justify-content:center;gap:.25rem;}
+.pcm-btn{background:linear-gradient(135deg,var(--accent),#F0FF6E);color:#111111;border:none;border-radius:10px;padding:.5rem 0;font-size:.68rem;font-weight:800;width:100%;cursor:pointer;font-family:'General Sans','Plus Jakarta Sans',sans-serif;box-shadow:0 5px 12px rgba(233,255,57,.3);}
+
 /* ── Messages screen ── */
 .ph-search-bar{background:var(--ph-card);border-radius:16px;padding:.8rem 1rem;display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;box-shadow:0 2px 8px rgba(0,0,0,.04);}
 .ph-search-bar input{border:none;outline:none;background:transparent;font-size:.85rem;flex:1;font-family:'Inter',sans-serif;color:var(--ph-text);}
@@ -1003,8 +1000,66 @@ button:active{
 .ph-camp-status.active{background:#DFF3E7;color:var(--ph-green);}
 .ph-camp-status.draft{background:#F3F0EC;color:var(--ph-muted);}
 .ph-camp-status.closed{background:#FCE5E5;color:#E5484D;}
-.ph-camp-card-sub{font-size:.72rem;color:var(--ph-muted);margin-top:.2rem;}
-.ph-camp-card-meta{font-size:.68rem;color:#544d47;margin-top:.25rem;}
+.pfl-cover{position:relative;height:150px;border-radius:0 0 20px 20px;margin:-1rem -1rem 0;background-size:cover;background-position:center;overflow:visible;}
+.pfl-edit-btn{position:absolute;top:.8rem;right:.8rem;background:#fff;color:var(--ph-text);border:none;border-radius:99px;padding:.4rem .9rem;font-size:.7rem;font-weight:700;display:flex;align-items:center;gap:.35rem;box-shadow:0 3px 10px rgba(0,0,0,.15);cursor:pointer;font-family:'General Sans','Plus Jakarta Sans',sans-serif;}
+.pfl-add-port-btn{background:var(--ph-accent);color:#111111;border:none;border-radius:99px;padding:.4rem .85rem;font-size:.72rem;font-weight:700;display:flex;align-items:center;gap:.3rem;cursor:pointer;font-family:'General Sans','Plus Jakarta Sans',sans-serif;box-shadow:0 4px 10px -2px rgba(233,255,57,.4);}
+.pfl-ava-wrap{position:absolute;left:1rem;bottom:-2.2rem;width:5.2rem;height:5.2rem;}
+.pfl-ava{width:100%;height:100%;border-radius:50%;border:3px solid #fff;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.15);background:var(--ph-card);}
+.pfl-ava img{width:100%;height:100%;object-fit:cover;}
+.pfl-verified{position:absolute;right:-.1rem;bottom:-.1rem;width:1.5rem;height:1.5rem;border-radius:50%;background:var(--ph-accent);border:2px solid #fff;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.62rem;}
+.pfl-name-block{margin:2.6rem 0 0 .2rem;}
+.pfl-name{font-size:1.15rem;font-weight:800;color:var(--ph-text);letter-spacing:-.01em;}
+.pfl-role{font-size:.78rem;color:var(--ph-muted);font-weight:600;margin-top:.15rem;}
+.pfl-location{font-size:.74rem;color:var(--ph-muted);margin-top:.2rem;display:flex;align-items:center;gap:.3rem;}
+.pfl-stats-row{display:flex;justify-content:space-between;margin:1.1rem 0;padding:0 .1rem;}
+.pfl-stat{text-align:center;flex:1;}
+.pfl-stat-val{font-size:.92rem;font-weight:800;color:var(--ph-text);}
+.pfl-stat-label{font-size:.62rem;color:var(--ph-muted);margin-top:.15rem;font-weight:600;}
+.pfl-actions-row{display:flex;justify-content:space-between;gap:.5rem;margin-bottom:1.2rem;}
+.pfl-action{flex:1;display:flex;flex-direction:column;align-items:center;gap:.4rem;cursor:pointer;}
+.pfl-action-icon{width:2.7rem;height:2.7rem;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1rem;}
+.pfl-action span{font-size:.64rem;font-weight:700;color:var(--ph-text);}
+.pfl-port-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem;}
+.pfl-port-item{position:relative;width:100%;aspect-ratio:9/16;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,#2A2622,#1A1714);cursor:pointer;}
+.pfl-port-item img{width:100%;height:100%;object-fit:cover;display:block;}
+.pfl-port-play{position:absolute;top:.4rem;right:.4rem;width:1.3rem;height:1.3rem;border-radius:50%;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.55rem;}
+.pfl-port-cap{position:absolute;left:0;right:0;bottom:0;padding:.4rem .5rem .35rem;background:linear-gradient(0deg,rgba(0,0,0,.75),transparent);color:#fff;font-size:.65rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pfl-port-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.35);font-size:1.4rem;}
+.pfl-about-card{background:var(--ph-card);border-radius:16px;padding:.2rem 1rem;border:1px solid var(--ph-border);}
+.pfl-about-row{display:flex;justify-content:space-between;align-items:center;padding:.7rem 0;border-bottom:1px solid var(--ph-border);font-size:.78rem;}
+.pfl-about-row:last-child{border-bottom:none;}
+.pfl-about-label{color:var(--ph-muted);font-weight:600;}
+.pfl-about-val{color:var(--ph-text);font-weight:700;text-align:right;max-width:60%;}
+.pfl-review-card{background:var(--ph-card);border-radius:16px;padding:.85rem;border:1px solid var(--ph-border);margin-bottom:.6rem;}
+.pfl-review-top{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;}
+.pfl-review-logo{width:1.9rem;height:1.9rem;border-radius:50%;background:#F3EFE9;display:flex;align-items:center;justify-content:center;overflow:hidden;font-weight:800;font-size:.7rem;flex-shrink:0;}
+.pfl-review-logo img{width:100%;height:100%;object-fit:contain;padding:.25rem;}
+.pfl-review-name{font-size:.78rem;font-weight:800;color:var(--ph-text);}
+.pfl-review-stars{margin-left:auto;font-size:.7rem;color:#FFB547;font-weight:700;}
+.pfl-review-text{font-size:.76rem;color:var(--ph-muted);line-height:1.5;}
+
+/* ── PCC: Premium campaign discovery card (matches design mock) ── */
+.pcc-card{background:var(--ph-card);border-radius:22px;padding:.9rem;margin-bottom:1rem;box-shadow:0 4px 16px rgba(0,0,0,.06);border:1px solid var(--ph-border);}
+.pcc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;}
+.pcc-badge{background:var(--ph-text);color:#fff;font-size:.66rem;font-weight:800;padding:.35rem .85rem;border-radius:99px;letter-spacing:.02em;text-transform:uppercase;}
+.pcc-heart{width:2.2rem;height:2.2rem;border-radius:50%;background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.14);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;border:none;}
+.pcc-heart i{color:var(--ph-green);font-size:1rem;}
+.pcc-heart.active i{color:#E5484D;}
+.pcc-brand{display:flex;align-items:center;gap:.6rem;margin-bottom:.85rem;}
+.pcc-avatar{width:2.5rem;height:2.5rem;border-radius:50%;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,var(--ph-accent),var(--ph-accent2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.85rem;}
+.pcc-avatar img{width:100%;height:100%;object-fit:cover;}
+.pcc-brand-name{font-size:.9rem;font-weight:800;color:var(--ph-text);letter-spacing:-.01em;line-height:1.25;}
+.pcc-brand-handle{font-size:.75rem;color:var(--ph-muted);font-weight:500;}
+.pcc-banner{position:relative;width:100%;height:150px;border-radius:16px;overflow:hidden;margin-bottom:.85rem;background:linear-gradient(135deg,#20222c,#14151c);}
+.pcc-banner img{width:100%;height:100%;object-fit:cover;display:block;}
+.pcc-banner-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:1rem;color:#fff;font-weight:800;font-size:1.05rem;line-height:1.3;}
+.pcc-desc{font-size:.82rem;color:var(--ph-text);line-height:1.55;margin-bottom:.9rem;font-weight:500;}
+.pcc-meta{display:flex;flex-direction:column;gap:.55rem;margin-bottom:1rem;}
+.pcc-meta-row{display:flex;align-items:center;gap:.6rem;font-size:.8rem;color:var(--ph-text);font-weight:600;}
+.pcc-meta-row i{width:1.1rem;text-align:center;color:var(--ph-muted);font-size:.85rem;flex-shrink:0;}
+.pcc-apply-btn{width:100%;background:var(--ph-accent);color:#111111;border:none;border-radius:14px;padding:.85rem;font-size:.88rem;font-weight:800;font-family:'General Sans','Plus Jakarta Sans',sans-serif;cursor:pointer;box-shadow:0 6px 16px rgba(233,255,57,.28);}
+.pcc-apply-btn:disabled{background:#DFF3E7;color:var(--ph-green);box-shadow:none;}
+.pcc-apply-btn.pause{background:var(--ph-card);color:var(--ph-text);border:1px solid var(--ph-border);box-shadow:none;}
 .ph-camp-chevron{color:var(--ph-muted);}
 .ph-camp-chevron svg{width:.9rem;height:.9rem;}
 
@@ -1080,7 +1135,7 @@ button:active{
   color:var(--ph-text);
   position:fixed;
   top:56px;         /* header height */
-  bottom:62px;      /* navbar height */
+  bottom:92px;      /* floating pill navbar height + gap */
   left:0; right:0;
   overflow-y:auto;
   -webkit-overflow-scrolling:touch;
@@ -1104,23 +1159,20 @@ button:active{
 }
 body.ph-mobile-active #ph-app-header{ display:flex; }
 
-/* Body-level fixed navbar — always visible, never scrolls */
+/* Body-level fixed navbar — always visible, never scrolls — mockup-exact: full-width docked white bar */
 #ph-app-nav{
   position:fixed;
-  bottom:14px; left:14px; right:14px;
-  height:60px;
-  background:rgba(255,255,255,0.55);
-  backdrop-filter:blur(18px) saturate(160%);
-  -webkit-backdrop-filter:blur(18px) saturate(160%);
-  border-radius:30px;
+  bottom:1.1rem; left:1.1rem; right:1.1rem;
+  height:auto;
+  background:#FFFFFF;
   z-index:400;
   display:none;                        /* shown only when ph-mobile-active */
   align-items:center;
   justify-content:space-around;
-  border:1px solid rgba(255,255,255,.6);
-  box-shadow:0 8px 24px rgba(0,0,0,.10);
-  padding:0 6px;
-  margin-bottom:env(safe-area-inset-bottom);
+  border:none;
+  border-radius:999px;
+  box-shadow:0 10px 30px rgba(0,0,0,.14);
+  padding:.55rem .6rem;
 }
 body.ph-mobile-active #ph-app-nav{ display:flex; }
 
@@ -1129,22 +1181,79 @@ body.ph-mobile-active #ph-app-nav{ display:flex; }
 /* ph-fixed-header inside content — hidden, header is #ph-app-header */
 .ph-fixed-header{ display:none !important; }
 
-/* Nav items */
+/* Nav items — floating pill style: icon-only circles, no text labels */
 .ph-nav-item{
-  display:flex;align-items:center;justify-content:center;
-  width:44px;height:44px;border-radius:50%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0;
+  width:auto;flex:1 1 0;
   color:#A6A6A0;
   cursor:pointer;background:none;border:none;
   font-family:'General Sans','Plus Jakarta Sans',sans-serif;
-  padding:0;margin:0 2px;
+  padding:.15rem 0;margin:0;
   -webkit-tap-highlight-color:transparent;
-  transition:background .15s,color .15s;
-  flex:0 0 auto;
+  transition:color .15s;
 }
-.ph-nav-item i{font-size:1.15rem;}
-.ph-nav-item span{display:none;}
-.ph-nav-item.active{background:var(--ph-accent);color:#111111;box-shadow:0 4px 12px rgba(233,255,57,.5);}
-.ph-nav-item:active{opacity:.6;}</style>
+.ph-nav-icon{
+  display:flex;align-items:center;justify-content:center;
+  width:2.5rem;height:2.5rem;border-radius:50%;
+  transition:background .15s,box-shadow .15s;
+}
+.ph-nav-item i{font-size:1.05rem;color:inherit;}
+.ph-nav-label{display:none;} /* icon-only, no labels, to match the floating pill nav */
+.ph-nav-item.active{color:#111111;}
+.ph-nav-item.active .ph-nav-icon{background:var(--ph-accent);box-shadow:0 4px 12px rgba(233,255,57,.5);}
+.ph-nav-item:active{opacity:.6;}
+
+/* ══════════════════════════════════════════════════════
+   MOCKUP-EXACT COMPONENTS — used inside .ph-mob-root screens
+   (Home / Messages / Campaigns / Discover / Profile)
+   ══════════════════════════════════════════════════════ */
+.card{background:var(--surface);border-radius:1.1rem;padding:.85rem;box-shadow:0 3px 12px rgba(35,31,28,0.05);}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin:1.1rem 0 .6rem;}
+.section-title{font-size:.9rem;font-weight:800;letter-spacing:-.01em;color:var(--text);}
+.see-all{font-size:.68rem;font-weight:700;color:var(--accent);cursor:pointer;background:none;border:none;font-family:'General Sans','Plus Jakarta Sans',sans-serif;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#DDF92B);color:#111111;border:none;font-weight:700;font-size:.68rem;padding:.5rem 0;border-radius:.65rem;width:100%;text-align:center;box-shadow:0 6px 14px -4px rgba(233,255,57,.45);cursor:pointer;font-family:'General Sans','Plus Jakarta Sans',sans-serif;}
+.btn-outline{background:var(--surface);border:1px solid var(--border);color:var(--text);font-weight:700;font-size:.66rem;padding:.42rem .9rem;border-radius:.6rem;cursor:pointer;font-family:'General Sans','Plus Jakarta Sans',sans-serif;}
+.pill{padding:.35rem .8rem;border-radius:1.4rem;font-size:.68rem;font-weight:700;background:var(--surface);color:var(--muted);white-space:nowrap;cursor:pointer;border:none;font-family:'General Sans','Plus Jakarta Sans',sans-serif;}
+.pill.active{background:var(--accent);color:#111111;}
+.pill-row{display:flex;gap:.45rem;overflow-x:auto;padding:.2rem 0 .3rem;scrollbar-width:none;}
+.pill-row::-webkit-scrollbar{display:none;}
+.pick-row{display:flex;gap:.85rem;overflow-x:auto;scrollbar-width:none;padding:.1rem 0 .3rem;}
+.pick-row::-webkit-scrollbar{display:none;}
+.pick-item{display:flex;flex-direction:column;align-items:center;gap:.4rem;flex:0 0 74px;text-align:center;cursor:pointer;}
+.pick-ava{width:3.6rem;height:3.6rem;border-radius:50%;overflow:hidden;background:var(--surface);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:1rem;flex-shrink:0;}
+.pick-ava img{width:100%;height:100%;object-fit:cover;}
+.pick-name{font-size:.68rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:74px;}
+.pick-role{font-size:.6rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:74px;}
+.logo-badge{width:2.1rem;height:2.1rem;border-radius:.6rem;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.62rem;color:#fff;overflow:hidden;}
+.logo-badge img{width:100%;height:100%;object-fit:cover;}
+.cat-tile{display:flex;flex-direction:column;align-items:center;gap:.35rem;flex:0 0 auto;width:3.6rem;cursor:pointer;}
+.cat-circle{width:2.7rem;height:2.7rem;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:.95rem;box-shadow:0 2px 8px rgba(35,31,28,0.06);}
+.cat-tile span{font-size:.6rem;font-weight:700;color:var(--muted);text-align:center;}
+
+/* Featured Campaign hero card — cover poster + brand logo, with Apply Now
+   pinned bottom-right on a dark scrim (always legible over any image).
+   Auto-rotates every 2s via JS transform (see initFeaturedCarousel). */
+.ph-featured-viewport{position:relative;overflow:hidden;border-radius:22px;}
+.ph-featured-scroll{display:flex;will-change:transform;transition:transform .5s cubic-bezier(.65,0,.35,1);}
+.ph-featured-card{box-sizing:border-box;width:100%;background-color:#D3E2FD;background-size:cover;background-position:center;border-radius:22px;position:relative;overflow:hidden;cursor:pointer;min-height:12.5rem;flex:0 0 100%;flex-shrink:0;}
+.ph-featured-card.ph-featured-noimg{background-image:linear-gradient(135deg,#B9CDF9,#D3E2FD);}
+.ph-featured-logo-badge{position:absolute;top:.9rem;left:.9rem;width:2.3rem;height:2.3rem;border-radius:50%;background:#fff;color:#111111;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.22);z-index:2;}
+.ph-featured-logo-badge img{width:100%;height:100%;object-fit:cover;}
+.ph-featured-scrim{position:absolute;left:0;right:0;bottom:0;height:48%;background:linear-gradient(to top,rgba(0,0,0,.5),rgba(0,0,0,0));pointer-events:none;z-index:1;}
+.ph-featured-btn{position:absolute;right:.9rem;bottom:.9rem;z-index:3;background:var(--accent);color:#111111;border:none;border-radius:999px;padding:.55rem 1.05rem;font-size:.72rem;font-weight:800;font-family:'General Sans','Plus Jakarta Sans',sans-serif;display:inline-flex;align-items:center;gap:.4rem;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.28);}
+.ph-featured-dots{display:flex;justify-content:center;gap:.3rem;margin-top:.7rem;}
+.ph-featured-dots span{width:.4rem;height:.4rem;border-radius:50%;background:#D8D8D0;}
+.ph-featured-dots span.active{background:var(--accent);width:1rem;border-radius:999px;}
+
+
+
+
+
+/* Popular Brands row — mockup-exact white rounded-square tiles */
+.ph-brand-tile{flex:0 0 3.4rem;height:3.4rem;background:#FFFFFF;border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(35,31,28,0.06);font-weight:800;font-size:1rem;color:#111111;cursor:pointer;}
+.avatar-circ{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;flex-shrink:0;}
+</style>
 </head>
 
 <body>
@@ -1159,13 +1268,111 @@ body.ph-mobile-active #ph-app-nav{ display:flex; }
 </div>
 
 <nav id="ph-app-nav">
-  <button class="ph-nav-item active" id="phn-home"      onclick="showSection('home')">      <i class="fas fa-home"></i><span>Home</span></button>
-  <button class="ph-nav-item"        id="phn-creators"  onclick="showSection('creators')">   <i class="fas fa-compass"></i><span>Discover</span></button>
-  <button class="ph-nav-item"        id="phn-messages"  onclick="showSection('messages')">   <i class="fas fa-comment"></i><span>Messages</span></button>
-  <button class="ph-nav-item"        id="phn-campaigns" onclick="showSection('campaigns')">  <i class="fas fa-bullhorn"></i><span>Campaigns</span></button>
-  <button class="ph-nav-item"        id="phn-profile"   onclick="showSection('profile')">    <i class="fas fa-user"></i><span>Profile</span></button>
+  <button class="ph-nav-item active" id="phn-home"      onclick="showSection('home')">      <span class="ph-nav-icon"><i class="fas fa-house"></i></span><span class="ph-nav-label">Home</span></button>
+  <button class="ph-nav-item"        id="phn-creators"  onclick="showSection('creators')">   <span class="ph-nav-icon"><i class="fas fa-magnifying-glass"></i></span><span class="ph-nav-label">Discover</span></button>
+  <button class="ph-nav-item"        id="phn-messages"  onclick="showSection('messages')">   <span class="ph-nav-icon"><i class="fas fa-comment"></i></span><span class="ph-nav-label">Messages</span></button>
+  <button class="ph-nav-item"        id="phn-campaigns" onclick="showSection('campaigns')">  <span class="ph-nav-icon"><i class="fas fa-bullhorn"></i></span><span class="ph-nav-label">Campaigns</span></button>
+  <button class="ph-nav-item"        id="phn-profile"   onclick="showSection('profile')">    <span class="ph-nav-icon"><i class="fas fa-user"></i></span><span class="ph-nav-label">Profile</span></button>
 </nav>
 <!-- ══ END MOBILE CHROME ══ -->
+
+<!-- ══ PERSISTENT MODALS (apply / launch campaign / applicants) — always in DOM ══ -->
+<div class="overlay" id="apply-modal" style="display:none">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeApplyModal()"><i class="fas fa-times"></i></button>
+    <div class="modal-title">📝 Apply for Campaign</div>
+    <div id="apply-modal-body"></div>
+  </div>
+</div>
+
+<div class="overlay" id="launch-modal" style="display:none">
+  <div class="modal-box wide">
+    <button class="modal-close" onclick="closeLaunchModal()"><i class="fas fa-times"></i></button>
+    <div class="modal-title">🚀 Launch a Campaign</div>
+    <div class="form-err" id="launch-err"></div>
+
+    <!-- Campaign Cover Image Upload -->
+    <div class="form-group">
+      <label>Campaign Cover Image <span style="font-size:.7rem;color:var(--muted)">(uploads to Cloudinary)</span></label>
+      <div id="camp-img-preview-wrap" style="margin-bottom:.5rem;display:none">
+        <img id="camp-img-preview" style="width:100%;height:140px;object-fit:cover;border-radius:1rem;border:1px solid var(--border)">
+        <button onclick="removeCampImg()" style="font-size:.72rem;color:#ff6b6b;background:none;border:none;cursor:pointer;margin-top:.3rem">Remove image</button>
+      </div>
+      <div id="camp-img-upload-area" style="border:2px dashed var(--border);border-radius:1rem;padding:1.5rem;text-align:center;cursor:pointer;transition:border-color .2s;" onclick="document.getElementById('camp-img-file').click()" onmouseover="this.style.borderColor='rgba(233,255,57,0.5)'" onmouseout="this.style.borderColor='var(--border)'">
+        <i class="fas fa-cloud-upload-alt" style="font-size:1.5rem;color:var(--muted);display:block;margin-bottom:.5rem"></i>
+        <div style="font-size:.8rem;color:var(--muted)">Click to upload cover image</div>
+        <div style="font-size:.7rem;color:var(--muted2);margin-top:.2rem">JPG, PNG · Max 5MB</div>
+        <input type="file" id="camp-img-file" accept="image/*" style="display:none" onchange="handleCampImg(event)">
+      </div>
+    </div>
+
+    <!-- Brand Logo Upload -->
+    <div class="form-group">
+      <label>Brand Logo <span style="font-size:.7rem;color:var(--muted)">(white background recommended)</span></label>
+      <div style="display:flex;align-items:center;gap:1rem">
+        <div id="brand-logo-preview" style="width:52px;height:52px;border-radius:10px;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#555;flex-shrink:0;overflow:hidden;cursor:pointer;" onclick="document.getElementById('brand-logo-file').click()">LOGO</div>
+        <div style="flex:1">
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('brand-logo-file').click()"><i class="fas fa-upload"></i> Upload Logo</button>
+          <input type="file" id="brand-logo-file" accept="image/*" style="display:none" onchange="handleBrandLogo(event)">
+          <div style="font-size:.7rem;color:var(--muted2);margin-top:.3rem">Square image · Max 2MB</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group"><label>Campaign Title *</label><input id="lc-title" placeholder="e.g. Diwali Product Launch"></div>
+    <div class="form-group"><label>Description *</label><textarea id="lc-desc" placeholder="What should creators do? What is the campaign about?"></textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label>Product Name</label><input id="lc-product-name" placeholder="e.g. HydraGlow Serum"></div>
+      <div class="form-group"><label>Product Category</label><input id="lc-product-cat" placeholder="e.g. Skincare"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Campaign Goal</label><input id="lc-goal" placeholder="e.g. 50 UGC videos in 30 days"></div>
+      <div class="form-group"><label>Demo Video URL</label><input id="lc-demo" placeholder="https://youtube.com/…"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Website</label><input id="lc-website" placeholder="https://yourbrand.com"></div>
+      <div class="form-group"><label>Instagram Handle</label><input id="lc-instagram" placeholder="@yourbrand"></div>
+    </div>
+    <div class="form-group">
+      <label>Collab Type(s) *</label>
+      <div id="lc-collab-chips" style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Niche *</label><select id="lc-niche"><option value="">Select…</option></select></div>
+      <div class="form-group"><label>Min. Audience</label><select id="lc-aud"><option value="">Any</option></select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Budget / Compensation</label><input id="lc-budget" placeholder="e.g. ₹5,000 or Barter"></div>
+      <div class="form-group"><label>Application Deadline</label><input id="lc-deadline" type="date"></div>
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem" id="launch-btn" onclick="launchCampaign()"><i class="fas fa-bullhorn"></i> Launch Campaign</button>
+  </div>
+</div>
+
+<div class="overlay" id="port-video-modal" style="display:none" onclick="if(event.target===this)closePortfolioVideo()">
+  <div class="modal-box" style="max-width:420px;padding:0;overflow:hidden;background:#000;border:none;">
+    <button class="modal-close" onclick="closePortfolioVideo()" style="background:rgba(255,255,255,.15);color:#fff;top:.75rem;right:.75rem;"><i class="fas fa-times"></i></button>
+    <video id="port-video-el" controls autoplay playsinline style="width:100%;max-height:80vh;display:block;background:#000;"></video>
+    <div id="port-video-caption" style="padding:.85rem 1.1rem;color:#fff;font-size:.85rem;background:#111;"></div>
+  </div>
+</div>
+
+<div class="overlay" id="hub-modal" style="display:none">
+  <div class="modal-box wide">
+    <button class="modal-close" onclick="closeHubModal()"><i class="fas fa-times"></i></button>
+    <div class="modal-title" id="hub-modal-title">Details</div>
+    <div id="hub-modal-body"></div>
+  </div>
+</div>
+
+<div class="overlay" id="applicants-modal" style="display:none">
+  <div class="modal-box wide">
+    <button class="modal-close" onclick="closeApplicantsModal()"><i class="fas fa-times"></i></button>
+    <div class="modal-title" id="applicants-title">Applicants</div>
+    <div id="applicants-body"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i></div></div>
+  </div>
+</div>
+<!-- ══ END PERSISTENT MODALS ══ -->
 <template id="logo-tmpl">data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBmaWxsPSIHN2MzYWVkIj4KICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1MCw1MCkiPgogICAgPGcgdHJhbnNmb3JtPSJyb3RhdGUoMCkiPgogICAgICA8cG9seWdvbiBwb2ludHM9Ii04LC00NCAwLC00NCA4LC0zNCAwLC0zNCIvPgogICAgICA8cG9seWdvbiBwb2ludHM9IjAsLTM0IDgsLTM0IDAsLTI0IC04LC0yNCIvPgogICAgICA8cG9seWdvbiBwb2ludHM9IjQsLTM0IDEyLC0zNCAyMCwtMjQgMTIsLTI0Ii8+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iMTIsLTI0IDIwLC0yNCAxMiwtMTQgNCwtMTQiLz4KICAgIDwvZz4KICAgIDxnIHRyYW5zZm9ybT0icm90YXRlKDYwKSI+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iLTgsLTQ0IDAsLTQ0IDgsLTM0IDAsLTM0Ii8+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iMCwtMzQgOCwtMzQgMCwtMjQgLTgsLTI0Ii8+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iNCwtMzQgMTIsLTM0IDIwLC0yNCAxMiwtMjQiLz4KICAgICAgPHBvbHlnb24gcG9pbnRzPSIxMiwtMjQgMjAsLTI0IDEyLC0xNCA0LC0xNCIvPgogICAgPC9nPgog   PGcgdHJhbnNmb3JtPSJyb3RhdGUoMTIwKSI+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iLTgsLTQ0IDAsLTQ0IDgsLTM0IDAsLTM0Ii8+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iMCwtMzQgOCwtMzQgMCwtMjQgLTgsLTI0Ii8+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iNCwtMzQgMTIsLTM0IDIwLC0yNCAxMiwtMjQiLz4KICAgICAgPHBvbHlnb24gcG9pbnRzPSIxMiwtMjQgMjAsLTI0IDEyLC0xNCA0LC0xNCIvPgogICAgPC9nPgog   PGcgdHJhbnNmb3JtPSJyb3RhdGUoMTgwKSI+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iLTgsLTQ0IDAsLTQ0IDgsLTM0IDAsLTM0Ii8+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iMCwtMzQgOCwtMzQgMCwtMjQgLTgsLTI0Ii8+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iNCwtMzQgMTIsLTM0IDIwLC0yNCAxMiwtMjQiLz4KICAgICAgPHBvbHlnb24gcG9pbnRzPSIxMiwtMjQgMjAsLTI0IDEyLC0xNCA0LC0xNCIvPgogICAgPC9nPgog   PGcgdHJhbnNmb3JtPSJyb3RhdGUoMjQwKSI+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iLTgsLTQ0IDAsLTQ0IDgsLTM0IDAsLTM0Ii8+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iMCwtMzQgOCwtMzQgMCwtMjQgLTgsLTI0Ii8+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iNCwtMzQgMTIsLTM0IDIwLC0yNCAxMiwtMjQiLz4KICAgICAgPHBvbHlnb24gcG9pbnRzPSIxMiwtMjQgMjAsLTI0IDEyLC0xNCA0LC0xNCIvPgogICAgPC9nPgog   PGcgdHJhbnNmb3JtPSJyb3RhdGUoMzAwKSI+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iLTgsLTQ0IDAsLTQ0IDgsLTM0IDAsLTM0Ii8+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iMCwtMzQgOCwtMzQgMCwtMjQgLTgsLTI0Ii8+CiAgICAgIDxwb2x5Z29uIHBvaW50cz0iNCwtMzQgMTIsLTM0IDIwLC0yNCAxMiwtMjQiLz4KICAgICAgPHBvbHlnb24gcG9pbnRzPSIxMiwtMjQgMjAsLTI0IDEyLC0xNCA0LC0xNCIvPgogICAgPC9nPgogIDwvZz4KPC9zdmc+</template>
 
 <!-- SIDEBAR -->
@@ -1184,7 +1391,6 @@ body.ph-mobile-active #ph-app-nav{ display:flex; }
     <div class="nav-item" id="nav-messages" onclick="goToMessages()"><i class="fas fa-comment-dots"></i> Messages <span class="nav-badge" id="msg-badge" style="display:none">0</span></div>
     <div class="nav-item" id="nav-notifications" onclick="goToNotifications()"><i class="fas fa-bell"></i> Notifications <span class="nav-badge" id="notif-badge" style="display:none">0</span></div>
     <div class="nav-item" id="nav-profile" onclick="showSection('profile')"><i class="fas fa-user"></i> My Profile</div>
-    <div class="nav-item" id="nav-pricing" onclick="showSection('pricing')"><i class="fas fa-crown"></i> Plans & Pricing</div>
     <div class="nav-item" onclick="goToLanding()"><i class="fas fa-globe"></i> Landing Page</div>
     <div class="nav-section-label" id="admin-nav-label" style="display:none">Admin</div>
     <div class="nav-item" id="nav-admin" onclick="goToAdmin()" style="display:none"><i class="fas fa-shield-alt"></i> Admin Panel</div>
@@ -1467,14 +1673,13 @@ onAuthStateChanged(auth, async (fbUser) => {
   }
   _authResolved = true;
   try{_me=await DB.getUser(fbUser.uid);}catch(e){return;}
-  if(_me)_me.userType='founder'; // this file is locked to the FOUNDER dashboard
+  if(_me)_me.userType='creator'; // this file is locked to the CREATOR dashboard
   if(!_me){
     const fb={uid:fbUser.uid,email:fbUser.email,name:fbUser.displayName||fbUser.email.split('@')[0],whatsapp:'',plan:'free',profileComplete:false,createdAt:new Date().toISOString()};
     try{await DB.setUser(fbUser.uid,fb);_me=fb;}catch(e){return;}
   }
   if(!_me.userType){showRoleScreen();return;}
-  if(!_me.planSelected&&!_me.profileComplete){showPlanSelectScreen();return;}
-  if(!_me.planSelected&&_me.profileComplete){_me={..._me,planSelected:true};DB.setUser(_me.uid,_me).catch(()=>{});}
+  if(!_me.planSelected){_me={..._me,plan:'free',planSelected:true};DB.setUser(_me.uid,_me).catch(()=>{});}
   if(!_me.profileComplete){await openSetup();return;}
   bootDashboard();
 });
@@ -1589,11 +1794,15 @@ async function openEditProfileModal(){
       </div>
       <div class="ep-form-row">
         <div class="ep-field-group"><div class="ep-field-label">Audience Size *</div><select class="ep-select" id="ep-aud"><option value="">Select…</option>${['1K-10K','10K-50K','50K-100K','100K-500K','500K+'].map(v=>`<option${ex?.audienceSize===v?' selected':''}>${v}</option>`).join('')}</select></div>
-        <div class="ep-field-group"><div class="ep-field-label">Engagement Rate</div><input class="ep-input" id="ep-eng" value="${ex?.engagementRate||''}" placeholder="e.g. 5.2%"></div>
+        <div class="ep-field-group"><div class="ep-field-label">Avg. Views</div><input class="ep-input" id="ep-views" value="${ex?.avgViews||_me.avgViews||''}" placeholder="e.g. 25K"></div>
       </div>
       <div class="ep-form-row">
+        <div class="ep-field-group"><div class="ep-field-label">Engagement Rate</div><input class="ep-input" id="ep-eng" value="${ex?.engagementRate||''}" placeholder="e.g. 5.2%"></div>
         <div class="ep-field-group"><div class="ep-field-label">Pricing</div><input class="ep-input" id="ep-price" value="${ex?.pricing||''}" placeholder="From ₹5,000"></div>
+      </div>
+      <div class="ep-form-row">
         <div class="ep-field-group"><div class="ep-field-label">LinkedIn</div><input class="ep-input" id="ep-li" value="${ex?.linkedin||''}" placeholder="linkedin.com/in/you"></div>
+        <div class="ep-field-group"></div>
       </div>
       <div class="ep-field-group"><div class="ep-field-label">WhatsApp</div><input class="ep-input" id="ep-wa" value="${_me.whatsapp||''}" placeholder="+91 XXXXX XXXXX"></div>`;
   } else {
@@ -1649,8 +1858,8 @@ async function saveEditProfile(){
     const wa=g('ep-wa');
     if(wa)await DB.updateUser(_me.uid,{whatsapp:wa});
     const ex=await DB.getCreator(_me.uid)||{};
-    await DB.setCreator(_me.uid,{userId:_me.uid,name,bio,niches,profilePhoto:photoURL,instagram:g('ep-insta'),youtube:g('ep-yt'),linkedin:g('ep-li'),audienceSize:aud,engagementRate:g('ep-eng'),pricing:g('ep-price'),whatsapp:wa||_me.whatsapp||'',featured:ex.featured||false,topSearch:ex.topSearch||false,createdAt:ex.createdAt||new Date().toISOString()});
-    _me={..._me,name,profileComplete:true,profilePhoto:photoURL,whatsapp:wa||_me.whatsapp||''};
+    await DB.setCreator(_me.uid,{userId:_me.uid,name,bio,niches,profilePhoto:photoURL,instagram:g('ep-insta'),youtube:g('ep-yt'),linkedin:g('ep-li'),audienceSize:aud,avgViews:g('ep-views'),engagementRate:g('ep-eng'),pricing:g('ep-price'),whatsapp:wa||_me.whatsapp||'',featured:ex.featured||false,topSearch:ex.topSearch||false,createdAt:ex.createdAt||new Date().toISOString()});
+    _me={..._me,name,profileComplete:true,profilePhoto:photoURL,whatsapp:wa||_me.whatsapp||'',bio,niches,instagram:g('ep-insta'),youtube:g('ep-yt'),linkedin:g('ep-li'),audienceSize:aud,avgViews:g('ep-views'),engagementRate:g('ep-eng'),pricing:g('ep-price')};
     await DB.setUser(_me.uid,_me);
   } else {
     const name=g('ep-name'),sname=g('ep-sname'),desc=g('ep-desc'),ind=g('ep-ind'),bud=g('ep-bud'),ct=g('ep-ctype');
@@ -1744,7 +1953,6 @@ async function renderHome(el){
           <div style="font-family:'General Sans','Plus Jakarta Sans',sans-serif;font-weight:800;font-size:1.5rem;letter-spacing:-.02em">Good ${greet}, ${_me.name?.split(' ')[0]} 👋</div>
           <div style="font-size:.82rem;color:var(--muted);margin-top:.2rem">${isC?'Creator':'Founder'} Dashboard · <span class="plan-badge ${plan}">${plan.toUpperCase()}</span></div>
         </div>
-        ${plan==='free'?`<button class="btn btn-primary btn-sm" style="margin-left:auto" onclick="showSection('pricing')"><i class="fas fa-crown"></i> Upgrade</button>`:''}
       </div>
     </div>
     <div class="stats-grid">
@@ -1792,8 +2000,7 @@ async function renderHome(el){
 
 function buildPlanSummary(plan){
   const p=PLANS.find(x=>x.id===plan)||PLANS[0];
-  const next=plan==='free'?PLANS[1]:plan==='starter'?PLANS[2]:null;
-  return `<div style="background:linear-gradient(135deg,rgba(108,99,255,.1),rgba(255,107,107,.05));border:1px solid rgba(108,99,255,.2);border-radius:.75rem;padding:1rem;margin-bottom:.875rem"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem"><span style="font-weight:700;font-size:.95rem;color:${p.color}">${p.name}</span><span class="plan-badge ${plan}">${plan.toUpperCase()}</span></div><div style="font-size:.78rem;color:var(--muted)">${p.desc}</div></div>${next?`<div style="font-size:.78rem;color:var(--muted);margin-bottom:.625rem">Unlock with ${next.name}:</div><div style="display:flex;flex-direction:column;gap:.3rem;margin-bottom:.875rem">${next.features.filter(f=>f.ok).slice(0,3).map(f=>`<div style="font-size:.75rem;display:flex;gap:.4rem;color:var(--muted2)"><i class="fas fa-lock" style="color:var(--accent);font-size:.65rem"></i>${f.text}</div>`).join('')}</div><button class="btn btn-primary btn-sm" style="width:100%;justify-content:center" onclick="showSection('pricing')"><i class="fas fa-crown"></i> Upgrade to ${next.name} — ${next.price}/mo</button>`:`<div style="text-align:center;font-size:.8rem;color:var(--accent3)"><i class="fas fa-check-circle"></i> You're on our best plan!</div>`}`;
+  return `<div style="background:linear-gradient(135deg,rgba(108,99,255,.1),rgba(255,107,107,.05));border:1px solid rgba(108,99,255,.2);border-radius:.75rem;padding:1rem;margin-bottom:.875rem"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem"><span style="font-weight:700;font-size:.95rem;color:${p.color}">Free Access</span><span class="plan-badge free">FREE</span></div><div style="font-size:.78rem;color:var(--muted)">All features are free while PostHire is in early access.</div></div><div style="text-align:center;font-size:.8rem;color:var(--accent3)"><i class="fas fa-check-circle"></i> Everything unlocked — no limits!</div>`;
 }
 
 // ── MOBILE HOME (Premium Minimalist — Earnings/Opportunities template) ──
@@ -2005,15 +2212,6 @@ async function renderMobileHome(el){
       <h3 class="mh2-section-title" style="margin-bottom:.85rem">Tailored for You</h3>
       <div class="mh2-bento-grid">${bentoHTML}</div>
     </section>
-
-    ${plan==='free'?`
-    <div class="mh2-upgrade" onclick="showSection('pricing')">
-      <div>
-        <div class="mh2-upgrade-title">Unlock more with Pro</div>
-        <div class="mh2-upgrade-sub">Unlimited requests, advanced filters & priority support.</div>
-      </div>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    </div>`:''}
 
     <div class="mh2-bottom-pad"></div>
   </div>`;
@@ -2234,14 +2432,6 @@ async function renderMobileHomeNew(el){
       </div>
       ${recHTML}
 
-      ${plan==='free'?`
-      <div class="ph-upgrade-banner" onclick="showSection('pricing')">
-        <div>
-          <div style="font-size:.88rem;font-weight:800;color:#111111">Unlock Pro Features</div>
-          <div style="font-size:.74rem;color:var(--ph-muted);margin-top:.2rem;font-family:'Inter',sans-serif">Unlimited requests · Advanced filters · Priority support</div>
-        </div>
-        <i class="fas fa-chevron-right" style="color:var(--ph-accent)"></i>
-      </div>`:''}
       <div style="height:.5rem"></div>`;
 
   updateNotifBadge();
@@ -2253,69 +2443,106 @@ async function renderMobileHomeNew(el){
 // campaigns, brand invitations, insights, trending, recent activity)
 // ═══════════════════════════════════════════════════════════════════
 async function renderCreatorHomeMobile(el,ctx){
-  const {firstName,greetWord,requestsObj,campaignsObj,myAppsObj,recv,plan,catHTML}=ctx;
+  const {firstName,greetWord,requestsObj,campaignsObj,myAppsObj,recv,plan}=ctx;
 
   // ── Profile completion % ──
   const fields=[_me.name,_me.profilePhoto,_me.bio,(_me.niches&&_me.niches.length),_me.audienceSize,(_me.socialLinks&&Object.keys(_me.socialLinks).length)];
   const filled=fields.filter(Boolean).length;
   const pct=Math.round((filled/fields.length)*100)||0;
-  const ringR=26,ringC=2*Math.PI*ringR;
-  const ringOffset=ringC-(pct/100)*ringC;
 
-  // ── Recommended campaigns (open, not already applied) ──
+  // ── Recommended campaigns (open, not already applied) — mockup "card" style ──
   const appliedIds=new Set(Object.values(myAppsObj||{}).map(a=>a.campaignId));
   const openCamps=Object.entries(campaignsObj).filter(([id,c])=>c.status==='open'&&!appliedIds.has(id)).slice(0,6);
-  let campHTML=openCamps.map(([id,c])=>{
+  const PCM_BG=['#EAF1FF','#FFF7D8','#EAFBF1','#FFEAF1','#F1EAFF','#E6FBFF'];
+  let campHTML=openCamps.map(([id,c],i)=>{
     const hue=hashColor(id);
-    const logo=c.brandLogo
-      ?`<img src="${c.brandLogo}">`
-      :`<div style="width:100%;height:100%;background:linear-gradient(135deg,hsl(${hue},60%,45%),hsl(${hue+35},60%,30%));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800">${(c.startupName||'B').charAt(0)}</div>`;
-    return `<div class="ph-camp-reco-card">
-      <i class="fa-regular fa-bookmark ph-camp-reco-bookmark"></i>
-      <div class="ph-camp-reco-top">
-        <div class="ph-camp-reco-logo">${logo}</div>
-        <div>
-          <div class="ph-camp-reco-brand">${escHtml(c.startupName||'Brand')}</div>
-          <div class="ph-camp-reco-type">${escHtml(c.title||c.collabType||'Campaign')}</div>
-        </div>
-      </div>
-      <div class="ph-camp-reco-budget">${c.budget?'₹'+escHtml(String(c.budget)):'Budget TBD'}</div>
-      <div class="ph-camp-reco-meta">
-        ${c.deadline?`<span><i class="fas fa-clock"></i> ${escHtml(String(c.deadline))}</span>`:''}
-        ${c.collabType?`<span>· ${escHtml(c.collabType)}</span>`:''}
-      </div>
-      <button class="ph-camp-reco-btn" onclick="openApplyModal('${id}')">Apply Now</button>
+    const badge=c.brandLogo
+      ?`<img src="${c.brandLogo}" alt="${escHtml(c.startupName||'')}">`
+      :`${(c.startupName||'B').charAt(0).toUpperCase()}`;
+    let deadlineTxt='';
+    if(c.deadline){
+      const diffMs=new Date(c.deadline)-new Date();
+      const days=Math.ceil(diffMs/86400000);
+      deadlineTxt=days>1?`${days} days left`:days===1?'1 day left':days===0?'Last day':'Deadline passed';
+    }
+    return `<div class="pcm-card" onclick="openCampaignDetails('${id}')" style="cursor:pointer;background:${PCM_BG[i%PCM_BG.length]};">
+      <div class="pcm-logo">${badge}</div>
+      <div class="pcm-name">${escHtml(c.startupName||'Brand')}</div>
+      <div class="pcm-sub">${escHtml(c.title||c.collabType||'Campaign')}</div>
+      <div class="pcm-budget">${c.budget?'₹'+escHtml(String(c.budget)):'TBD'}</div>
+      <div class="pcm-deadline">${deadlineTxt?`<i class="fa-regular fa-clock"></i> ${escHtml(deadlineTxt)}`:'&nbsp;'}</div>
+      <button class="pcm-btn" onclick="event.stopPropagation();openCampaignDetails('${id}')">Apply Now</button>
     </div>`;
   }).join('');
   if(!campHTML)campHTML=`<div class="ph-empty-inline">No open campaigns right now — check back soon.</div>`;
 
-  // ── Brand invitations (direct pending requests) ──
+  // ── Brand invitations (direct pending requests) — mockup "card" row style ──
   const invites=recv.filter(([,r])=>r.status==='pending').slice(0,4);
   let inviteHTML=invites.map(([id,r])=>{
     const hue=hashColor(id);
-    return `<div class="ph-invite-card">
-      <div class="ph-invite-logo" style="background:hsl(${hue},60%,42%)">${(r.founderName||'B').charAt(0).toUpperCase()}</div>
-      <div class="ph-invite-body">
-        <div class="ph-invite-name">${escHtml(r.founderName||'Brand')}</div>
-        <div class="ph-invite-sub">${escHtml(r.campaignTitle||'Collaboration invite')}</div>
+    return `<div class="card" style="display:flex;align-items:center;gap:.6rem;margin-bottom:.55rem;">
+      <div class="logo-badge" style="background:hsl(${hue},60%,42%)">${(r.founderName||'B').charAt(0).toUpperCase()}</div>
+      <div style="flex:1;">
+        <div style="font-size:.72rem;font-weight:800;">${escHtml(r.founderName||'Brand')}</div>
+        <div style="font-size:.62rem;color:var(--muted);">${escHtml(r.campaignTitle||'Collaboration invite')}</div>
       </div>
-      <div class="ph-invite-actions">
-        <button class="ph-invite-btn ph-invite-accept" onclick="updReq('${id}','accepted')">Accept</button>
-        <button class="ph-invite-btn ph-invite-decline" onclick="updReq('${id}','declined')">Decline</button>
-      </div>
+      <button class="btn-outline" style="background:var(--accent);color:#111111;border:none;" onclick="updReq('${id}','accepted')">Accept</button>
+      <button class="btn-outline" onclick="updReq('${id}','declined')">Decline</button>
     </div>`;
   }).join('');
   const inviteSection=invites.length?`
-      <div class="ph-section-head">
-        <div class="ph-section-title">Brand Invitations</div>
-        <div class="ph-section-link" onclick="showSection('requests')">See all</div>
-      </div>
+      <div class="section-head"><span class="section-title">Brand Invitations</span><span class="see-all" onclick="showSection('requests')">See all</span></div>
       ${inviteHTML}`:'';
 
   // ── Creator insights ──
   const profileViews=_me.profileViews||0;
   const invitesCount=recv.length;
-  const earnings=_me.totalEarnings||0;
+
+  // ── Trending categories — fixed set, exact mockup style ──
+  const CATS=[
+    {label:'Tech',icon:'fas fa-laptop',bg:'#EAF1FF',fg:'#3B82F6'},
+    {label:'Lifestyle',icon:'fas fa-heart',bg:'#FFF7D8',fg:'#111111'},
+    {label:'Fitness',icon:'fas fa-dumbbell',bg:'#EAFBF1',fg:'#22C55E'},
+    {label:'Beauty',icon:'fas fa-wand-magic-sparkles',bg:'#FFEAF1',fg:'#EC4899'},
+    {label:'Travel',icon:'fas fa-plane',bg:'#FFF7D8',fg:'#111111'},
+    {label:'Food',icon:'fas fa-utensils',bg:'#FFF7D8',fg:'#111111'},
+  ];
+  const catHTML=CATS.map(c=>`<div class="cat-tile" onclick="showSection('campaigns')"><div class="cat-circle" style="background:${c.bg};"><i class="${c.icon}" style="color:${c.fg};font-size:.95rem;"></i></div><span>${c.label}</span></div>`).join('');
+
+  // ── Featured Campaign hero card — pulls the REAL poster/logo/name/budget
+  // from each open campaign (set by the founder/admin when creating the
+  // campaign). Campaigns marked `featured:true` by the admin panel are
+  // shown first; if there aren't enough, we fill the rest with other open
+  // campaigns. Apply Now sits bottom-right on a dark scrim so it's always
+  // legible over any poster, and never overlaps the logo badge up top. ──
+  const allOpenCamps = Object.entries(campaignsObj).filter(([id,c])=>c.status==='open'&&!appliedIds.has(id));
+  const adminFeatured = allOpenCamps.filter(([,c])=>c.featured);
+  const restCamps = allOpenCamps.filter(([,c])=>!c.featured);
+  const featuredList = [...adminFeatured,...restCamps].slice(0,5);
+  let featuredHTML;
+  if(featuredList.length){
+    const slidesHTML = featuredList.map(([fid,fc])=>{
+      const poster = fc.productImage || '';
+      const logoBadge = fc.brandLogo
+        ? `<img src="${fc.brandLogo}" alt="${escHtml(fc.startupName||'')}">`
+        : `${(fc.startupName||'B').charAt(0).toUpperCase()}`;
+      return `<div class="ph-featured-card${poster?'':' ph-featured-noimg'}" onclick="openCampaignDetails('${fid}')" ${poster?`style="background-image:url('${poster}');"`:''}>
+        <div class="ph-featured-logo-badge">${logoBadge}</div>
+        <div class="ph-featured-scrim"></div>
+        <button class="ph-featured-btn" onclick="event.stopPropagation();openCampaignDetails('${fid}')">Apply Now <i class="fa-solid fa-arrow-right" style="font-size:.62rem;"></i></button>
+      </div>`;
+    }).join('');
+    const dotsHTML = featuredList.length>1
+      ? `<div class="ph-featured-dots" id="ph-featured-dots">${featuredList.map((_,i)=>`<span class="${i===0?'active':''}"></span>`).join('')}</div>`
+      : '';
+    featuredHTML = `<div class="ph-featured-viewport"><div class="ph-featured-scroll" id="ph-featured-scroll">${slidesHTML}</div></div>${dotsHTML}`;
+  } else {
+    featuredHTML=`<div class="ph-empty-inline">No open campaigns right now — check back soon.</div>`;
+  }
+
+  // ── Popular Brands — unique brand tiles from open campaigns ──
+  const brandNames=[...new Set(Object.values(campaignsObj).map(c=>c.startupName).filter(Boolean))].slice(0,6);
+  const brandsHTML=brandNames.length?brandNames.map(n=>`<div class="ph-brand-tile" onclick="showSection('creators')"><span>${escHtml(n.charAt(0).toUpperCase())}</span></div>`).join(''):`<div class="ph-empty-inline">No brands yet.</div>`;
 
   // ── Recent activity from requests ──
   const activityItems=recv.concat(requestsObj?Object.entries(requestsObj).filter(([,r])=>r.founderId===_me.uid):[])
@@ -2327,86 +2554,132 @@ async function renderCreatorHomeMobile(el,ctx){
     const t=new Date(r.updatedAt||r.createdAt||Date.now());
     const mins=Math.round((Date.now()-t.getTime())/60000);
     const timeStr=mins<1?'now':mins<60?`${mins}m ago`:mins<1440?`${Math.round(mins/60)}h ago`:`${Math.round(mins/1440)}d ago`;
-    return `<div class="ph-activity-item">
-      <div class="ph-activity-ic"><i class="fas fa-bell"></i></div>
-      <div class="ph-activity-text"><b>${escHtml(who)}</b> ${verb}</div>
-      <div class="ph-activity-time">${timeStr}</div>
+    const initial=(who||'?').charAt(0).toUpperCase();
+    return `<div style="display:flex;align-items:center;gap:.55rem;padding:.4rem 0;">
+      <div class="logo-badge" style="background:#111;width:1.7rem;height:1.7rem;">${initial}</div>
+      <div style="font-size:.68rem;color:var(--muted);">${escHtml(who)} ${verb}</div>
+      <div style="font-size:.6rem;color:var(--muted2);margin-left:auto;">${timeStr}</div>
     </div>`;
   }).join('');
   if(!activityHTML)activityHTML=`<div class="ph-empty-inline">No recent activity yet.</div>`;
 
   el.innerHTML=`
-      <div class="ph-greet">
-        <div class="ph-greet-sub">Good ${greetWord}, ${escHtml(firstName)} 👋</div>
-        <div class="ph-greet-title">Find Your Next <span>Brand Deal</span>!</div>
-      </div>
-
-      <div class="ph-cprog-card">
-        <div class="ph-cprog-ring">
-          <svg viewBox="0 0 60 60">
-            <circle cx="30" cy="30" r="${ringR}" fill="none" stroke="#F1EDE8" stroke-width="5"></circle>
-            <circle cx="30" cy="30" r="${ringR}" fill="none" stroke="var(--ph-accent)" stroke-width="5" stroke-linecap="round" stroke-dasharray="${ringC}" stroke-dashoffset="${ringOffset}"></circle>
-          </svg>
-          <div class="ph-cprog-ring-pct">${pct}%</div>
+      <div style="display:flex;align-items:center;gap:.6rem;margin-top:.2rem;margin-bottom:1.1rem;">
+        <div style="width:2.6rem;height:2.6rem;border-radius:50%;overflow:hidden;flex-shrink:0;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;color:#111111;">
+          ${_me.profilePhoto?`<img src="${_me.profilePhoto}" style="width:100%;height:100%;object-fit:cover;" alt="">`:escHtml((firstName||'?').charAt(0).toUpperCase())}
         </div>
-        <div class="ph-cprog-body">
-          <div class="ph-cprog-title">Get noticed by top brands</div>
-          <div class="ph-cprog-sub">Complete your profile and increase your chances.</div>
-          <button class="ph-cprog-btn" onclick="showSection('profile')">Complete Now</button>
+        <div style="flex:1;">
+          <div style="font-size:.98rem;font-weight:800;color:var(--text);line-height:1.2;">Hello ${escHtml(firstName)}</div>
+          <div style="font-size:.7rem;color:var(--muted);">Welcome back</div>
         </div>
       </div>
 
-      <div class="ph-section-head">
-        <div class="ph-section-title">Recommended Campaigns</div>
-        <div class="ph-section-link" onclick="showSection('campaigns')">See all</div>
+      <div style="font-size:1.55rem;font-weight:800;line-height:1.18;letter-spacing:-.01em;margin-bottom:1rem;color:var(--text);">Find Your Next<br><span style="color:var(--accent);">Brand Deal.</span></div>
+
+      <div style="display:flex;gap:.5rem;margin-bottom:1.15rem;">
+        <div onclick="showSection('creators')" style="flex:1;background:#FFFFFF;border-radius:999px;padding:.7rem 1rem;display:flex;align-items:center;gap:.5rem;color:var(--muted);font-size:.74rem;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.04);">
+          <i class="fa-solid fa-magnifying-glass" style="font-size:.8rem;"></i> Search campaigns, brands...
+        </div>
+        <div onclick="showSection('creators')" style="width:2.7rem;height:2.7rem;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;">
+          <i class="fa-solid fa-sliders" style="color:#111111;font-size:.85rem;"></i>
+        </div>
       </div>
-      <div class="ph-camp-reco-scroll">${campHTML}</div>
+
+      <div class="section-head"><span class="section-title">Featured Campaign</span><span class="see-all" onclick="showSection('campaigns')">View all</span></div>
+      ${featuredHTML}
+
+      <div class="section-head"><span class="section-title">Popular Brands</span><span class="see-all" onclick="showSection('creators')">View all</span></div>
+      <div style="display:flex;gap:.6rem;overflow-x:auto;scrollbar-width:none;margin-bottom:.3rem;">${brandsHTML}</div>
+
+      <div class="section-head"><span class="section-title">Top Categories</span><span class="see-all" onclick="showSection('campaigns')">View all</span></div>
+      <div style="display:flex;gap:.7rem;overflow-x:auto;scrollbar-width:none;">${catHTML}</div>
+
+      <div class="card" style="margin-top:.9rem;background:linear-gradient(135deg,#FFF0E6,#FCE3D4);display:flex;align-items:center;gap:.75rem;">
+        <div>
+          <div style="font-size:.78rem;font-weight:800;">Get noticed by top brands</div>
+          <div style="font-size:.66rem;color:var(--muted);margin:.2rem 0 .55rem;">Complete your profile and increase your chances.</div>
+          <button class="btn-primary" style="width:auto;padding:.42rem 1rem;" onclick="showSection('profile')">Complete Now</button>
+        </div>
+        <div style="flex-shrink:0;width:2.9rem;height:2.9rem;border-radius:50%;background:conic-gradient(var(--accent) ${pct}%, #F1DCCB 0);display:flex;align-items:center;justify-content:center;">
+          <div style="width:2.1rem;height:2.1rem;border-radius:50%;background:#FFF6EF;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:800;">${pct}%</div>
+        </div>
+      </div>
+
+      <div class="section-head"><span class="section-title">Recommended Campaigns</span><span class="see-all" onclick="showSection('campaigns')">See all</span></div>
+      <div style="display:flex;gap:.6rem;overflow-x:auto;scrollbar-width:none;padding-bottom:.2rem;">${campHTML}</div>
 
       ${inviteSection}
 
-      <div class="ph-section-head">
-        <div class="ph-section-title">Creator Insights</div>
-      </div>
-      <div class="ph-stats">
-        <div class="ph-insight-card">
-          <div class="ph-insight-icon" style="background:#FCE5DC"><i class="fas fa-eye" style="color:var(--ph-accent)"></i></div>
-          <div class="ph-insight-val">${profileViews}</div>
-          <div class="ph-insight-label">Profile Views</div>
+      <div class="section-head"><span class="section-title">Creator Insights</span><span class="see-all">This Month <i class="fa-solid fa-chevron-down" style="font-size:.55rem;"></i></span></div>
+      <div style="display:flex;gap:.55rem;">
+        <div class="card" style="flex:1;">
+          <i class="fa-regular fa-eye" style="color:var(--blue);"></i>
+          <div style="font-size:.88rem;font-weight:800;margin-top:.35rem;">${profileViews}</div>
+          <div style="font-size:.58rem;color:var(--muted);">Profile Views</div>
         </div>
-        <div class="ph-insight-card">
-          <div class="ph-insight-icon" style="background:#D8CFFB"><i class="fas fa-envelope-open-text" style="color:#7C5CFC"></i></div>
-          <div class="ph-insight-val">${invitesCount}</div>
-          <div class="ph-insight-label">Invitations</div>
-        </div>
-        <div class="ph-insight-card">
-          <div class="ph-insight-icon" style="background:#BEE8CE"><i class="fas fa-indian-rupee-sign" style="color:#34C759"></i></div>
-          <div class="ph-insight-val">₹${earnings}</div>
-          <div class="ph-insight-label">Earnings</div>
+        <div class="card" style="flex:1;">
+          <i class="fa-regular fa-envelope-open" style="color:var(--gold);"></i>
+          <div style="font-size:.88rem;font-weight:800;margin-top:.35rem;">${invitesCount}</div>
+          <div style="font-size:.58rem;color:var(--muted);">Invitations</div>
         </div>
       </div>
 
-      <div class="ph-section-head">
-        <div class="ph-section-title">Trending Categories</div>
-        <div class="ph-section-link" onclick="showSection('campaigns')">See all</div>
-      </div>
-      <div class="ph-cat-scroll">${catHTML}</div>
+      <div class="section-head"><span class="section-title">Trending Categories</span><span class="see-all" onclick="showSection('campaigns')">See all</span></div>
+      <div style="display:flex;gap:.7rem;overflow-x:auto;scrollbar-width:none;">${catHTML}</div>
 
-      <div class="ph-section-head">
-        <div class="ph-section-title">Recent Activity</div>
-      </div>
-      ${activityHTML}
+      <div class="section-head"><span class="section-title">Recent Activity</span></div>
+      <div style="display:flex;flex-direction:column;padding-bottom:1rem;">${activityHTML}</div>
 
-      ${plan==='free'?`
-      <div class="ph-upgrade-banner" onclick="showSection('pricing')">
-        <div>
-          <div style="font-size:.88rem;font-weight:800;color:#111111">Unlock Pro Features</div>
-          <div style="font-size:.74rem;color:var(--ph-muted);margin-top:.2rem;font-family:'Inter',sans-serif">Priority applications · Advanced insights · Verified badge</div>
-        </div>
-        <i class="fas fa-chevron-right" style="color:var(--ph-accent)"></i>
-      </div>`:''}
       <div style="height:.5rem"></div>`;
 
   updateNotifBadge();
+  initFeaturedScrollDots();
+}
+
+// ── Featured Campaign carousel: updates the active dot as the user swipes ──
+// ── Featured Campaign carousel: auto-advances every 2s, loops infinitely,
+// swipeable, restarts cleanly on every re-render (mirrors initPhHeroCarousel) ──
+function initFeaturedScrollDots(){
+  const track=document.getElementById('ph-featured-scroll');
+  const dotsWrap=document.getElementById('ph-featured-dots');
+  if(!track)return;
+  if(window._phFeaturedInterval)clearInterval(window._phFeaturedInterval);
+  const realSlides=Array.from(track.children);
+  const total=realSlides.length;
+  if(total<2){ track.style.transform='translateX(0)'; return; }
+  const dots=dotsWrap?Array.from(dotsWrap.children):[];
+  const firstClone=realSlides[0].cloneNode(true);
+  const lastClone=realSlides[total-1].cloneNode(true);
+  track.appendChild(firstClone);
+  track.insertBefore(lastClone,track.firstChild);
+  let idx=1; // position of real slide 0
+  function setPos(i,animate){
+    track.style.transition=animate?'transform .5s cubic-bezier(.65,0,.35,1)':'none';
+    track.style.transform=`translateX(-${i*100}%)`;
+  }
+  setPos(idx,false);
+  function updateDots(){
+    const real=(idx-1+total)%total;
+    dots.forEach((d,di)=>d.classList.toggle('active',di===real));
+  }
+  updateDots();
+  function go(dir){
+    idx+=dir;
+    setPos(idx,true);
+    updateDots();
+  }
+  track.addEventListener('transitionend',()=>{
+    if(idx===total+1){idx=1;setPos(idx,false);}
+    else if(idx===0){idx=total;setPos(idx,false);}
+  });
+  window._phFeaturedInterval=setInterval(()=>go(1),2000);
+  let sx=0;
+  track.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;clearInterval(window._phFeaturedInterval);},{passive:true});
+  track.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-sx;
+    if(dx<-40)go(1); else if(dx>40)go(-1);
+    window._phFeaturedInterval=setInterval(()=>go(1),2000);
+  },{passive:true});
 }
 
 // ── Hero carousel: auto-advance every 2s, restarts cleanly on re-render ──
@@ -2619,7 +2892,8 @@ function phHeader(title, actionsHTML=''){
   return ''; // no inline header HTML needed anymore
 }
 
-// ── DISCOVER (Creators) ──────────────────────────────────────────
+// ── DISCOVER ──────────────────────────────────────────────────────
+// Creators see "Discover Brands" (mockup-exact). Founders see creator discovery.
 async function renderMobileDiscover(el){
   document.body.classList.add('ph-mobile-active');
   phSetMobileNav('creators');
@@ -2627,6 +2901,10 @@ async function renderMobileDiscover(el){
   el.innerHTML=phSkeleton();
 
   const isC=_me.userType==='creator';
+
+  if(isC){ await renderMobileDiscoverBrands(el); return; }
+
+  // ── Founder view: browse creators ──
   let creators={}; try{creators=await DB.getCreators();}catch(e){}
   let allR={}; try{allR=await DB.getRequests();}catch(e){}
   const sentToIds=new Set(Object.values(allR).filter(r=>r.founderId===_me.uid).map(r=>r.creatorId));
@@ -2639,11 +2917,9 @@ async function renderMobileDiscover(el){
       ?`<img src="${c.profilePhoto}">`
       :`<div style="width:100%;height:100%;background:linear-gradient(135deg,hsl(${hue},65%,50%),hsl(${hue+40},65%,35%));display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;color:#fff">${(c.name||'C').charAt(0)}</div>`;
     const tags=(c.niches||[]).slice(0,2).map(n=>`<span class="ph-creator-tag">${escHtml(n)}</span>`).join('');
-    const action=isC
-      ? `<button class="ph-creator-btn" onclick="showSection('campaigns')">Browse Campaigns</button>`
-      : sentToIds.has(id)
-        ? `<button class="ph-creator-btn" disabled style="opacity:.55;cursor:default"><i class="fas fa-check"></i> Request Sent</button>`
-        : `<button class="ph-creator-btn" onclick="sendCollab('${id}')">Connect</button>`;
+    const action=sentToIds.has(id)
+      ?`<button class="ph-creator-btn" disabled style="opacity:.55;cursor:default"><i class="fas fa-check"></i> Request Sent</button>`
+      :`<button class="ph-creator-btn" onclick="sendCollab('${id}')">Connect</button>`;
     return `<div class="ph-creator-card">
       <div class="ph-creator-top">
         <div class="ph-creator-ava">${ava}</div>
@@ -2691,6 +2967,138 @@ async function renderMobileDiscover(el){
   };
 }
 
+// ── DISCOVER BRANDS (Creator view — mockup-exact) ──────────────────
+function _discDaysLeft(deadline){
+  if(!deadline) return '';
+  const diff=Math.ceil((new Date(deadline)-Date.now())/(1000*60*60*24));
+  if(isNaN(diff)) return '';
+  if(diff<0) return 'Closed';
+  if(diff===0) return 'Last day';
+  return `${diff} day${diff===1?'':'s'} left`;
+}
+
+async function renderMobileDiscoverBrands(el){
+  let campaigns={}; try{campaigns=await DB.getCampaigns();}catch(e){}
+  const openCamps=Object.entries(campaigns).filter(([,c])=>c.status==='open');
+  const NICHES=['All','Tech','Lifestyle','Fitness','Beauty','Travel','Food','Finance'];
+
+  phSetHeader('PostHire',`
+    <div class="ph-icon-btn" onclick="document.getElementById('mob-disc-search')?.focus()"><i class="fas fa-search"></i></div>
+    <div class="ph-icon-btn" onclick="showSection('notifications')"><i class="fas fa-bell"></i><span class="ph-badge" id="mob-notif-badge" style="display:none">0</span></div>
+  `);
+
+  // Featured Brands strip — unique brands from open campaigns
+  const brandMap=new Map();
+  openCamps.forEach(([,c])=>{
+    const key=c.founderId||c.startupName;
+    if(key && !brandMap.has(key)) brandMap.set(key,c);
+  });
+  const brandChips=[...brandMap.values()].slice(0,8).map(c=>{
+    const hue=hashColor(c.startupName||c.founderId||'B');
+    const initials=(c.startupName||'B').slice(0,2);
+    const badge=c.brandLogo?`<img src="${c.brandLogo}">`:initials;
+    return `<div style="text-align:center;flex:0 0 auto"><div class="logo-badge" style="background:hsl(${hue},65%,45%);border-radius:50%;width:2.7rem;height:2.7rem;margin:0 auto">${badge}</div></div>`;
+  }).join('');
+
+  // Trending Campaigns cards — buildCampCards(niche) re-renders the list so it
+  // always shows either matching cards or a friendly empty state (never blank)
+  function buildCampCards(niche){
+    const list = (!niche||niche==='All') ? openCamps : openCamps.filter(([,c])=>{
+      const hay=(c.startupName+' '+(c.title||'')+' '+(c.collabType||'')+' '+(Array.isArray(c.collabTypes)?c.collabTypes.join(' '):'')+' '+(c.niche||'')).toLowerCase();
+      return hay.includes(niche.toLowerCase());
+    });
+    if(!list.length) return `<div class="ph-empty-inline">No ${niche&&niche!=='All'?escHtml(niche)+' ':''}campaigns right now — check back soon.</div>`;
+    return list.slice(0,20).map(([id,c])=>{
+      const hue=hashColor(id);
+      const icon=c.brandLogo?`<img src="${c.brandLogo}">`:(c.startupName||'B').slice(0,2);
+      const days=_discDaysLeft(c.deadline);
+      return `<div class="card" style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem;cursor:pointer" onclick="showSection('campaigns')">
+        <div class="logo-badge" style="background:hsl(${hue},65%,45%);border-radius:50%">${icon}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.72rem;font-weight:800">${escHtml(c.startupName||'Brand')}</div>
+          <div style="font-size:.62rem;color:var(--muted)">${escHtml(c.title||c.collabType||'Campaign')}</div>
+          <div style="font-size:.7rem;font-weight:800;color:var(--accent)">${c.budget?'₹'+escHtml(String(c.budget)):'Budget TBD'}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <i class="fa-regular fa-bookmark" style="color:var(--muted2)"></i>
+          <div style="font-size:.58rem;color:var(--muted2);margin-top:.3rem">${days||'&nbsp;'}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  const campCards = buildCampCards('All');
+
+  // Popular Categories — fixed set, exact mockup style
+  const CATS=[
+    {label:'Tech',icon:'fas fa-laptop',bg:'#EAF1FF',fg:'#3B82F6'},
+    {label:'Lifestyle',icon:'fas fa-heart',bg:'#FFF7D8',fg:'#111111'},
+    {label:'Fitness',icon:'fas fa-dumbbell',bg:'#EAFBF1',fg:'#22C55E'},
+    {label:'Beauty',icon:'fas fa-wand-magic-sparkles',bg:'#FFEAF1',fg:'#EC4899'},
+    {label:'Travel',icon:'fas fa-plane',bg:'#FFF7D8',fg:'#111111'},
+    {label:'Food',icon:'fas fa-utensils',bg:'#FFF7D8',fg:'#111111'},
+  ];
+  const catHTML=CATS.map(c=>`<div class="cat-tile" onclick="mobDiscNiche(null,'${c.label}')"><div class="cat-circle" style="background:${c.bg};"><i class="${c.icon}" style="color:${c.fg};font-size:.95rem;"></i></div><span>${c.label}</span></div>`).join('');
+
+  const discBody=`
+    <div style="font-size:1.05rem;font-weight:800;margin:.5rem 0 .7rem;">Discover Brands</div>
+    <div style="display:flex;gap:.5rem;margin-bottom:.5rem;">
+      <div style="flex:1;background:var(--surface);border-radius:.8rem;padding:.55rem .8rem;display:flex;align-items:center;gap:.5rem;font-size:.68rem;color:var(--muted);">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input id="mob-disc-search" oninput="mobDiscFilter(this.value)" placeholder="Search brands, campaigns…" style="border:none;outline:none;background:transparent;font-size:.68rem;flex:1;font-family:'Inter',sans-serif;color:var(--text)">
+      </div>
+      <div class="ph-icon-btn"><i class="fa-solid fa-sliders"></i></div>
+    </div>
+    <div class="pill-row">
+      ${NICHES.map((n,i)=>`<div class="pill${i===0?' active':''}" onclick="mobDiscNiche(this,'${n}')">${n}</div>`).join('')}
+    </div>
+
+    <div class="section-head"><span class="section-title">Featured Brands</span><span class="see-all" onclick="showSection('campaigns')">See all</span></div>
+    <div style="display:flex;gap:.6rem;overflow-x:auto;scrollbar-width:none;">${brandChips||`<div class="ph-empty-inline">No brands yet.</div>`}</div>
+
+    <div class="section-head"><span class="section-title">Trending Campaigns</span><span class="see-all" onclick="showSection('campaigns')">See all</span></div>
+    <div id="mob-disc-list">${campCards||`<div class="ph-empty-inline">No open campaigns right now.</div>`}</div>
+
+    <div class="section-head"><span class="section-title">Popular Categories</span><span class="see-all" onclick="showSection('campaigns')">See all</span></div>
+    <div style="display:flex;gap:.7rem;overflow-x:auto;scrollbar-width:none;">${catHTML}</div>
+  `;
+  el.innerHTML=discBody;
+  updateNotifBadge();
+
+  window.mobDiscFilter=function(q){
+    const list=document.getElementById('mob-disc-list');
+    if(!list)return;
+    const query=q.trim().toLowerCase();
+    if(!query){ list.innerHTML=buildCampCards('All'); return; }
+    const matches=openCamps.filter(([,c])=>
+      (c.startupName+' '+(c.title||'')+' '+(c.collabType||'')).toLowerCase().includes(query));
+    if(!matches.length){ list.innerHTML=`<div class="ph-empty-inline">No campaigns match "${escHtml(q)}".</div>`; return; }
+    list.innerHTML = matches.slice(0,20).map(([id,c])=>{
+      const hue=hashColor(id);
+      const icon=c.brandLogo?`<img src="${c.brandLogo}">`:(c.startupName||'B').slice(0,2);
+      const days=_discDaysLeft(c.deadline);
+      return `<div class="card" style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem;cursor:pointer" onclick="showSection('campaigns')">
+        <div class="logo-badge" style="background:hsl(${hue},65%,45%);border-radius:50%">${icon}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.72rem;font-weight:800">${escHtml(c.startupName||'Brand')}</div>
+          <div style="font-size:.62rem;color:var(--muted)">${escHtml(c.title||c.collabType||'Campaign')}</div>
+          <div style="font-size:.7rem;font-weight:800;color:var(--accent)">${c.budget?'₹'+escHtml(String(c.budget)):'Budget TBD'}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <i class="fa-regular fa-bookmark" style="color:var(--muted2)"></i>
+          <div style="font-size:.58rem;color:var(--muted2);margin-top:.3rem">${days||'&nbsp;'}</div>
+        </div>
+      </div>`;
+    }).join('');
+  };
+  window.mobDiscNiche=function(btn,niche){
+    document.querySelectorAll('.pill-row .pill').forEach(b=>{
+      b.classList.toggle('active', btn ? b===btn : b.textContent.trim()===niche);
+    });
+    const list=document.getElementById('mob-disc-list');
+    if(list) list.innerHTML=buildCampCards(niche);
+  };
+}
+
 // ── CAMPAIGNS ──────────────────────────────────────────────────────
 async function renderMobileCampaigns(el){
   document.body.classList.add('ph-mobile-active');
@@ -2712,26 +3120,56 @@ async function renderMobileCampaigns(el){
   const appIds=new Set(Object.values(myApps).map(a=>a.campaignId));
 
   const campCards=myCamps.map(([id,c])=>{
-    const hue=hashColor(id);
     const status=c.status||'draft';
-    const statusClass=status==='open'?'active':status==='closed'?'closed':'draft';
-    const icon=c.brandLogo
-      ?`<img src="${c.brandLogo}" style="width:100%;height:100%;object-fit:cover;border-radius:12px">`
-      :`<div style="width:100%;height:100%;background:linear-gradient(135deg,hsl(${hue},65%,50%),hsl(${hue+40},65%,35%));border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;font-weight:800">${(c.startupName||c.title||'C').charAt(0)}</div>`;
     const applied=appIds.has(id);
-    const actionBtn=isC
-      ?`<button class="ph-rec-btn" style="margin-left:auto" ${applied?'disabled style="opacity:.5"':''} onclick="showSection('campaigns')">${applied?'Applied':'Apply'}</button>`
-      :`<div style="display:flex;gap:.4rem;margin-left:auto">
-          <button class="ph-rec-btn" style="background:var(--ph-card);color:var(--ph-text);border:1px solid var(--ph-border)" onclick="toggleCampaignStatus('${id}','${status==='open'?'closed':'open'}')">${status==='open'?'Pause':'Activate'}</button>
+    const brandName=c.startupName||c.founderName||'Brand';
+    const handle='@'+brandName.toLowerCase().replace(/[^a-z0-9]+/g,'');
+
+    const avatar=c.brandLogo
+      ?`<img src="${c.brandLogo}" alt="${escHtml(brandName)}">`
+      :brandName.charAt(0).toUpperCase();
+
+    const bannerImg=c.productImage
+      ?`<img src="${c.productImage}" alt="${escHtml(c.title||'')}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+      :'';
+    const bannerFallback=`<div class="pcc-banner-fallback" style="${c.productImage?'display:none':''}">${escHtml(c.title||'Campaign')}</div>`;
+
+    const types=(c.collabTypes||[]).map(t=>COLLAB_TYPES.find(x=>x.id===t)||{label:t,icon:'fas fa-handshake'});
+    const primaryType=types[0]||{label:'Collaboration',icon:'fas fa-handshake'};
+    const deliverablesLine=types.length>1?types.map(t=>t.label).join(' + '):'';
+
+    const metaRows=[
+      `<div class="pcc-meta-row"><i class="${primaryType.icon}"></i>${escHtml(primaryType.label)}</div>`,
+      deliverablesLine?`<div class="pcc-meta-row"><i class="fas fa-layer-group"></i>${escHtml(deliverablesLine)}</div>`:'',
+      c.budget?`<div class="pcc-meta-row"><i class="fas fa-rupee-sign"></i>${escHtml(c.budget)}</div>`:'',
+      c.deadline?`<div class="pcc-meta-row"><i class="fas fa-calendar-alt"></i>Apply by ${escHtml(c.deadline)}</div>`:'',
+    ].filter(Boolean).join('');
+
+    const footerBtn=isC
+      ?(applied
+          ?`<button class="pcc-apply-btn" disabled><i class="fas fa-check"></i> Applied</button>`
+          :`<button class="pcc-apply-btn" onclick="openApplyModal('${id}')">Apply Now</button>`)
+      :`<div style="display:flex;gap:.5rem">
+          <button class="pcc-apply-btn pause" onclick="toggleCampaignStatus('${id}','${status==='open'?'closed':'open'}')">${status==='open'?'Pause':'Activate'}</button>
+          <button class="pcc-apply-btn" onclick="viewApplications('${id}','${escHtml(c.title||'Campaign').replace(/'/g,"\\'")}')">Applicants</button>
         </div>`;
-    return `<div class="ph-camp-card">
-      <div class="ph-camp-card-icon" style="background:hsl(${hue},65%,90%);width:2.6rem;height:2.6rem;border-radius:12px;flex-shrink:0">${icon}</div>
-      <div class="ph-camp-card-body">
-        <div class="ph-camp-card-title">${escHtml(c.title||'Campaign')} <span class="ph-camp-status ${statusClass}">${status.toUpperCase()}</span></div>
-        <div class="ph-camp-card-sub">${escHtml(c.niche||c.collabType||'—')}</div>
-        <div class="ph-camp-card-meta">${escHtml(c.budget||'')}${c.applicantsCount?` · ${c.applicantsCount} applicants`:''}</div>
+
+    return `<div class="pcc-card">
+      <div class="pcc-top">
+        <span class="pcc-badge">Brand</span>
+        <button class="pcc-heart" onclick="this.classList.toggle('active')"><i class="fas fa-heart"></i></button>
       </div>
-      ${actionBtn}
+      <div class="pcc-brand">
+        <div class="pcc-avatar">${avatar}</div>
+        <div>
+          <div class="pcc-brand-name">${escHtml(brandName)}</div>
+          <div class="pcc-brand-handle">${escHtml(handle)}</div>
+        </div>
+      </div>
+      <div class="pcc-banner">${bannerImg}${bannerFallback}</div>
+      <div class="pcc-desc">${escHtml((c.description||'').substring(0,120))}${(c.description?.length||0)>120?'…':''}</div>
+      <div class="pcc-meta">${metaRows}</div>
+      ${footerBtn}
     </div>`;
   }).join('');
 
@@ -2756,91 +3194,6 @@ async function renderMobileCampaigns(el){
     </div>
     <div class="ph-section-head"><div class="ph-section-title">${isC?'Open Campaigns':'My Campaigns'}</div></div>
     ${campCards||`<div style="text-align:center;padding:2rem;color:var(--ph-muted);font-size:.88rem">No campaigns yet.</div>`}
-
-    <!-- Apply Modal -->
-    <div class="overlay" id="apply-modal" style="display:none">
-      <div class="modal-box">
-        <button class="modal-close" onclick="closeApplyModal()"><i class="fas fa-times"></i></button>
-        <div class="modal-title">📝 Apply for Campaign</div>
-        <div id="apply-modal-body"></div>
-      </div>
-    </div>
-
-    <!-- Launch Modal -->
-    <div class="overlay" id="launch-modal" style="display:none">
-      <div class="modal-box wide">
-        <button class="modal-close" onclick="closeLaunchModal()"><i class="fas fa-times"></i></button>
-        <div class="modal-title">🚀 Launch a Campaign</div>
-        <div class="form-err" id="launch-err"></div>
-
-        <!-- Campaign Cover Image Upload -->
-        <div class="form-group">
-          <label>Campaign Cover Image <span style="font-size:.7rem;color:var(--muted)">(uploads to Cloudinary)</span></label>
-          <div id="camp-img-preview-wrap" style="margin-bottom:.5rem;display:none">
-            <img id="camp-img-preview" style="width:100%;height:140px;object-fit:cover;border-radius:1rem;border:1px solid var(--border)">
-            <button onclick="removeCampImg()" style="font-size:.72rem;color:#ff6b6b;background:none;border:none;cursor:pointer;margin-top:.3rem">Remove image</button>
-          </div>
-          <div id="camp-img-upload-area" style="border:2px dashed var(--border);border-radius:1rem;padding:1.5rem;text-align:center;cursor:pointer;transition:border-color .2s;" onclick="document.getElementById('camp-img-file').click()" onmouseover="this.style.borderColor='rgba(233,255,57,0.5)'" onmouseout="this.style.borderColor='var(--border)'">
-            <i class="fas fa-cloud-upload-alt" style="font-size:1.5rem;color:var(--muted);display:block;margin-bottom:.5rem"></i>
-            <div style="font-size:.8rem;color:var(--muted)">Click to upload cover image</div>
-            <div style="font-size:.7rem;color:var(--muted2);margin-top:.2rem">JPG, PNG · Max 5MB</div>
-            <input type="file" id="camp-img-file" accept="image/*" style="display:none" onchange="handleCampImg(event)">
-          </div>
-        </div>
-
-        <!-- Brand Logo Upload -->
-        <div class="form-group">
-          <label>Brand Logo <span style="font-size:.7rem;color:var(--muted)">(white background recommended)</span></label>
-          <div style="display:flex;align-items:center;gap:1rem">
-            <div id="brand-logo-preview" style="width:52px;height:52px;border-radius:10px;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#555;flex-shrink:0;overflow:hidden;cursor:pointer;" onclick="document.getElementById('brand-logo-file').click()">LOGO</div>
-            <div style="flex:1">
-              <button class="btn btn-ghost btn-sm" onclick="document.getElementById('brand-logo-file').click()"><i class="fas fa-upload"></i> Upload Logo</button>
-              <input type="file" id="brand-logo-file" accept="image/*" style="display:none" onchange="handleBrandLogo(event)">
-              <div style="font-size:.7rem;color:var(--muted2);margin-top:.3rem">Square image · Max 2MB</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group"><label>Campaign Title *</label><input id="lc-title" placeholder="e.g. Diwali Product Launch"></div>
-        <div class="form-group"><label>Description *</label><textarea id="lc-desc" placeholder="What should creators do? What is the campaign about?"></textarea></div>
-        <div class="form-row">
-          <div class="form-group"><label>Product Name</label><input id="lc-product-name" placeholder="e.g. HydraGlow Serum"></div>
-          <div class="form-group"><label>Product Category</label><input id="lc-product-cat" placeholder="e.g. Skincare"></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Campaign Goal</label><input id="lc-goal" placeholder="e.g. 50 UGC videos in 30 days"></div>
-          <div class="form-group"><label>Demo Video URL</label><input id="lc-demo" placeholder="https://youtube.com/…"></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Website</label><input id="lc-website" placeholder="https://yourbrand.com"></div>
-          <div class="form-group"><label>Instagram Handle</label><input id="lc-instagram" placeholder="@yourbrand"></div>
-        </div>
-        <div class="form-group">
-          <label>Collab Type(s) *</label>
-          <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem">
-            ${COLLAB_TYPES.map(ct=>`<div class="collab-type-chip" data-id="${ct.id}" onclick="toggleCollabChip(this)" style="background:transparent">${ct.label}</div>`).join('')}
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Niche *</label><select id="lc-niche"><option value="">Select…</option>${['AI','Finance','Startup','Tech','Lifestyle','Business','Marketing','SaaS','Education','Health'].map(n=>`<option>${n}</option>`).join('')}</select></div>
-          <div class="form-group"><label>Min. Audience</label><select id="lc-aud"><option value="">Any</option>${['1K-10K','10K-50K','50K-100K','100K-500K','500K+'].map(v=>`<option>${v}</option>`).join('')}</select></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Budget / Compensation</label><input id="lc-budget" placeholder="e.g. ₹5,000 or Barter"></div>
-          <div class="form-group"><label>Application Deadline</label><input id="lc-deadline" type="date"></div>
-        </div>
-        <button class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem" id="launch-btn" onclick="launchCampaign()"><i class="fas fa-bullhorn"></i> Launch Campaign</button>
-      </div>
-    </div>
-
-    <!-- Applicants Modal -->
-    <div class="overlay" id="applicants-modal" style="display:none">
-      <div class="modal-box wide">
-        <button class="modal-close" onclick="closeApplicantsModal()"><i class="fas fa-times"></i></button>
-        <div class="modal-title" id="applicants-title">Applicants</div>
-        <div id="applicants-body"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i></div></div>
-      </div>
-    </div>
   `;
   el.innerHTML=campBody;
   updateNotifBadge();
@@ -2861,35 +3214,35 @@ async function renderMobileMessages(el){
     const name=cv.otherName||otherId.slice(0,6)||'User';
     const hue=hashColor(otherId);
     const ava=cv.otherPhoto
-      ?`<img src="${cv.otherPhoto}" style="width:100%;height:100%;object-fit:cover">`
-      :`<div style="width:100%;height:100%;background:linear-gradient(135deg,hsl(${hue},65%,50%),hsl(${hue+40},65%,35%));display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;color:#fff">${name.charAt(0).toUpperCase()}</div>`;
+      ?`<img src="${cv.otherPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
+      :`${name.charAt(0).toUpperCase()}${(name.split(' ')[1]||'').charAt(0).toUpperCase()}`;
+    const avaBg=cv.otherPhoto?'transparent':`linear-gradient(135deg,hsl(${hue},65%,50%),hsl(${hue+40},65%,35%))`;
     const unread=cv.unreadCount?.[_me.uid]||0;
-    const time=cv.lastAt?new Date(cv.lastAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
-    return `<div class="ph-msg-item" onclick="openConversation('${cid}')">
-      <div class="ph-msg-ava">${ava}</div>
-      <div class="ph-msg-body">
-        <div class="ph-msg-row">
-          <div class="ph-msg-name">${escHtml(name)} <i class="fas fa-circle-check" style="color:var(--ph-blue);font-size:.6rem"></i></div>
-          <div class="ph-msg-time">${time}</div>
-        </div>
-        <div class="ph-msg-role ph-desc">${escHtml(cv.otherRole||'')}</div>
-        <div class="ph-msg-preview ph-desc">${escHtml((cv.lastMessage||'').slice(0,55))}${(cv.lastMessage||'').length>55?'…':''}</div>
+    const mins=cv.lastAt?Math.round((Date.now()-new Date(cv.lastAt).getTime())/60000):null;
+    const time=mins==null?'':mins<1?'now':mins<60?`${mins}m`:mins<1440?`${Math.round(mins/60)}h`:`${Math.round(mins/1440)}d`;
+    return `<div class="ph-msg-item" onclick="openConversation('${cid}')" style="display:flex;gap:.6rem;padding:.7rem 0;border-bottom:1px solid var(--border);cursor:pointer;">
+      <div class="avatar-circ" style="width:2.5rem;height:2.5rem;background:${avaBg};font-size:.7rem;">${ava}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;justify-content:space-between;"><span style="font-size:.74rem;font-weight:800;">${escHtml(name)}</span><span style="font-size:.6rem;color:var(--muted2);">${time}</span></div>
+        <div style="font-size:.62rem;color:var(--accent);font-weight:700;">${escHtml(cv.otherRole||'')}</div>
+        <div style="font-size:.66rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml((cv.lastMessage||'').slice(0,55))}${(cv.lastMessage||'').length>55?'…':''}</div>
       </div>
-      ${unread?`<div class="ph-msg-unread">${unread}</div>`:''}
+      ${unread?`<div style="width:1rem;height:1rem;border-radius:50%;background:var(--accent);color:#111111;font-size:.55rem;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;align-self:center;">${unread}</div>`:''}
     </div>`;
   }).join('');
 
   const msgBody=`
-    <div class="ph-search-bar">
-      <i class="fas fa-search" style="color:var(--ph-muted)"></i>
-      <input placeholder="Search messages…" id="mob-msg-search" oninput="mobMsgFilter(this.value)" style="border:none;outline:none;background:transparent;font-size:.85rem;flex:1;font-family:'Inter',sans-serif;color:var(--ph-text)">
+    <div style="font-size:1.05rem;font-weight:800;margin:.5rem 0 .7rem;">Messages</div>
+    <div style="background:var(--surface);border-radius:.8rem;padding:.55rem .8rem;display:flex;align-items:center;gap:.5rem;font-size:.7rem;color:var(--muted);margin-bottom:.6rem;">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input placeholder="Search messages..." id="mob-msg-search" oninput="mobMsgFilter(this.value)" style="border:none;outline:none;background:transparent;font-size:.7rem;flex:1;font-family:'Inter',sans-serif;color:var(--text)">
     </div>
-    <div class="ph-tabs">
-      <button class="ph-tab active" onclick="mobMsgTab(this,'all')">All</button>
-      <button class="ph-tab" onclick="mobMsgTab(this,'unread')">Unread</button>
+    <div class="pill-row">
+      <div class="pill active" onclick="mobMsgTab(this,'all')">All</div>
+      <div class="pill" onclick="mobMsgTab(this,'unread')">Unread</div>
     </div>
-    <div id="mob-msg-list">
-      ${convItems||`<div style="text-align:center;padding:2rem;color:var(--ph-muted);font-size:.88rem">No messages yet — start a conversation!</div>`}
+    <div id="mob-msg-list" style="display:flex;flex-direction:column;">
+      ${convItems||`<div style="text-align:center;padding:2rem;color:var(--muted);font-size:.88rem">No messages yet — start a conversation!</div>`}
     </div>
   `;
   el.innerHTML=msgBody;
@@ -2901,11 +3254,11 @@ async function renderMobileMessages(el){
     });
   };
   window.mobMsgTab=function(btn,tab){
-    document.querySelectorAll('.ph-tabs .ph-tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.pill-row .pill').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     if(tab==='unread'){
       document.querySelectorAll('#mob-msg-list .ph-msg-item').forEach(item=>{
-        item.style.display=item.querySelector('.ph-msg-unread')?'':'none';
+        item.style.display=item.querySelector('div[style*="border-radius:50%"][style*="background:var(--accent)"]')?'':'none';
       });
     } else {
       document.querySelectorAll('#mob-msg-list .ph-msg-item').forEach(item=>item.style.display='');
@@ -2948,10 +3301,97 @@ async function renderMobileProfile(el){
     </div>`;
   }).join('') || `<div style="padding:.75rem 0;font-size:.8rem;color:var(--ph-muted)">No collaborations yet.</div>`;
 
+  // ── Creator gets the premium mockup-exact profile ──
+  if(isC){
+    const creatorRole=(_me.niches&&_me.niches[0])?`${_me.niches[0]} Creator`:'Creator';
+    const location=_me.location||_me.city||'';
+    const followers=_me.audienceSize||_me.followers||'—';
+
+    const portfolio=Array.isArray(_me.portfolio)?_me.portfolio:[];
+    window._pflPortfolio=portfolio;
+    const portHTML=portfolio.map((p,idx)=>`<div class="pfl-port-item" onclick="${p.videoUrl?`openPortfolioVideo(${idx})`:''}">
+        ${(p.thumbnail||p.image)?`<img src="${p.thumbnail||p.image}" alt="${escHtml(p.caption||p.title||'')}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">`:''}
+        <div class="pfl-port-placeholder" style="display:${(p.thumbnail||p.image)?'none':'flex'};"><i class="fas fa-film"></i></div>
+        ${p.videoUrl?`<div class="pfl-port-play"><i class="fas fa-play"></i></div>`:''}
+        <div class="pfl-port-cap">${escHtml(p.caption||p.title||'')}</div>
+      </div>`).join('');
+
+    let pendingPortHTML='';
+    try{
+      const pSnap=await getDocs(query(collection(db,'portfolioRequests'),where('creatorId','==',_me.uid),where('status','==','pending')));
+      pendingPortHTML=pSnap.docs.map(d=>`<div class="pfl-port-item" style="opacity:.55;cursor:default;">
+          <div class="pfl-port-placeholder"><i class="fas fa-clock"></i></div>
+          <div class="pfl-port-cap">Pending review</div>
+        </div>`).join('');
+    }catch(e){}
+
+    const aboutRows=[
+      ['Categories',(_me.niches||[]).join(', ')],
+      ['Languages',Array.isArray(_me.languages)?_me.languages.join(', '):(_me.languages||'')],
+      ['Audience',_me.audienceSize||''],
+      ['Avg. Views',_me.avgViews||''],
+      ['Engagement Rate',_me.engagementRate?`${_me.engagementRate}%`:''],
+    ].filter(([,v])=>v).map(([l,v])=>`<div class="pfl-about-row"><span class="pfl-about-label">${l}</span><span class="pfl-about-val">${escHtml(String(v))}</span></div>`).join('');
+
+    const reviews=Array.isArray(_me.reviews)?_me.reviews:[];
+    const reviewHTML=reviews.map(r=>`<div class="pfl-review-card">
+        <div class="pfl-review-top">
+          <div class="pfl-review-logo">${r.brandLogo?`<img src="${r.brandLogo}">`:(r.brandName||'B').charAt(0)}</div>
+          <div class="pfl-review-name">${escHtml(r.brandName||'Brand')}${r.verified?` <i class="fas fa-circle-check" style="color:var(--ph-blue);font-size:.65rem"></i>`:''}</div>
+          <div class="pfl-review-stars"><i class="fas fa-star"></i> ${r.rating||'5.0'}</div>
+        </div>
+        <div class="pfl-review-text">${escHtml(r.text||'')}</div>
+      </div>`).join('');
+
+    const body=`
+      <div class="pfl-cover" style="background-image:${_me.coverPhoto?`url('${_me.coverPhoto}')`:`linear-gradient(135deg,#E9FF39,#F0FF6E)`}">
+        <div class="pfl-ava-wrap">
+          <div class="pfl-ava">${ava}</div>
+          ${(_me.verified||_me.featured)?`<div class="pfl-verified"><i class="fas fa-check"></i></div>`:''}
+        </div>
+        <button class="pfl-edit-btn" onclick="openEditProfileModal()"><i class="fas fa-pen"></i> Edit Profile</button>
+      </div>
+      <div class="pfl-name-block">
+        <div class="pfl-name">${escHtml(name)}</div>
+        <div class="pfl-role">${escHtml(creatorRole)}</div>
+        ${location?`<div class="pfl-location"><i class="fas fa-map-marker-alt"></i> ${escHtml(location)}</div>`:''}
+      </div>
+      <div class="pfl-stats-row">
+        <div class="pfl-stat"><div class="pfl-stat-val">${escHtml(String(followers))}</div><div class="pfl-stat-label">Followers</div></div>
+        <div class="pfl-stat"><div class="pfl-stat-val">${accepted}</div><div class="pfl-stat-label">Collabs</div></div>
+        <div class="pfl-stat"><div class="pfl-stat-val">${escHtml(String(_me.avgViews||'—'))}</div><div class="pfl-stat-label">Avg. Views</div></div>
+        <div class="pfl-stat"><div class="pfl-stat-val">${escHtml(String(_me.engagementRate||'—'))}</div><div class="pfl-stat-label">Eng. Rate</div></div>
+      </div>
+
+      <div class="section-head" id="pfl-portfolio"><span class="section-title">My Portfolio</span><button class="pfl-add-port-btn" onclick="openSubmitPortfolioModal()"><i class="fas fa-plus"></i> Add Item</button></div>
+      <div class="pfl-port-grid" style="margin-bottom:.3rem;">
+        ${portHTML}${pendingPortHTML}${(!portHTML&&!pendingPortHTML)?`<div class="ph-empty-inline" style="grid-column:1/-1;">No portfolio items yet — tap "Add Item" above to submit your first reel or post.</div>`:''}
+      </div>
+      <div class="section-head"><span class="section-title">About Me</span></div>
+      ${aboutRows?`<div class="pfl-about-card">${aboutRows}</div>`:`<div class="ph-empty-inline">Complete your profile to show details here.</div>`}
+      <div class="section-head"><span class="section-title">Reviews from Brands</span><span class="see-all">See all</span></div>
+      ${reviewHTML||`<div class="ph-empty-inline">No reviews yet.</div>`}
+      <div class="ph-plan-card" style="margin-top:1.2rem">
+        <div>
+          <div class="ph-plan-label">Current Plan</div>
+          <div class="ph-plan-name">FREE</div>
+          <div class="ph-plan-sub ph-desc">Full access — everything unlocked</div>
+        </div>
+      </div>
+      <button class="ph-signout-btn" onclick="doSignOut()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+        Sign Out
+      </button>
+      <div style="height:5rem"></div>
+    `;
+    el.innerHTML=body;
+    return;
+  }
+
   const body=`
     <div class="ph-cover" style="background:linear-gradient(135deg,#E9FF39,#F0FF6E)">
       <div class="ph-profile-ava">${ava}</div>
-      <button class="ph-profile-edit" onclick="openSetup()">
+      <button class="ph-profile-edit" onclick="openEditProfileModal()">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg> Edit Profile
       </button>
     </div>
@@ -2986,10 +3426,9 @@ async function renderMobileProfile(el){
     <div class="ph-plan-card">
       <div>
         <div class="ph-plan-label">Current Plan</div>
-        <div class="ph-plan-name">${plan.toUpperCase()}</div>
-        <div class="ph-plan-sub ph-desc">${plan==='free'?'Limited access':'Full access unlocked'}</div>
+        <div class="ph-plan-name">FREE</div>
+        <div class="ph-plan-sub ph-desc">Full access — everything unlocked</div>
       </div>
-      <button class="ph-plan-btn" onclick="showSection('pricing')">${plan==='free'?'Upgrade':'Manage'}</button>
     </div>
     <button class="ph-signout-btn" onclick="doSignOut()">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
@@ -2999,6 +3438,266 @@ async function renderMobileProfile(el){
   `;
   el.innerHTML=body;
 }
+
+// ── HUB MODAL (Media Kit / Insights / Earnings) ──────────────────
+function closeHubModal(){const o=document.getElementById('hub-modal');if(o){o.style.display='none';o.classList.remove('open');}}
+function openHubModal(title,bodyHtml){
+  document.getElementById('hub-modal-title').textContent=title;
+  document.getElementById('hub-modal-body').innerHTML=bodyHtml;
+  const o=document.getElementById('hub-modal');
+  o.style.display='flex';
+  requestAnimationFrame(()=>o.classList.add('open'));
+}
+
+async function openMediaKitModal(){
+  openHubModal('📇 Media Kit','<div style="padding:2rem;text-align:center;color:var(--ph-muted)">Loading…</div>');
+  const name=_me.name||'Creator';
+  const niches=(_me.niches||[]).join(', ')||'—';
+  const followers=_me.audienceSize||_me.followers||'—';
+  const avgViews=_me.avgViews||'—';
+  const engagement=_me.engagementRate?`${_me.engagementRate}%`:'—';
+  const languages=Array.isArray(_me.languages)?_me.languages.join(', '):(_me.languages||'—');
+  const bio=_me.bio||_me.description||'';
+  const email=_me.email||'';
+  const whatsapp=_me.whatsapp||'';
+  const portfolioCount=Array.isArray(_me.portfolio)?_me.portfolio.length:0;
+
+  const summaryText=`${name} — ${niches}\nFollowers: ${followers} | Avg. Views: ${avgViews} | Engagement: ${engagement}\nLanguages: ${languages}\nPortfolio items: ${portfolioCount}\n${bio?'Bio: '+bio+'\\n':''}${email?'Email: '+email+'\\n':''}${whatsapp?'WhatsApp: '+whatsapp:''}`;
+
+  const html=`
+    <div style="border:1px solid var(--ph-border);border-radius:16px;padding:1.25rem;background:linear-gradient(135deg,#FDF6F0,#fff);">
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;">
+        <div style="width:3rem;height:3rem;border-radius:50%;overflow:hidden;background:linear-gradient(135deg,var(--ph-accent),var(--ph-accent2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;flex-shrink:0;">
+          ${_me.profilePhoto?`<img src="${_me.profilePhoto}" style="width:100%;height:100%;object-fit:cover">`:name.charAt(0).toUpperCase()}
+        </div>
+        <div>
+          <div style="font-weight:800;font-size:1.05rem;">${escHtml(name)}</div>
+          <div style="font-size:.8rem;color:var(--ph-muted)">${escHtml(niches)}</div>
+        </div>
+      </div>
+      ${bio?`<div style="font-size:.85rem;color:var(--ph-text);margin-bottom:1rem;">${escHtml(bio)}</div>`:''}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1rem;">
+        <div style="background:#fff;border:1px solid var(--ph-border);border-radius:12px;padding:.6rem .8rem;"><div style="font-weight:800">${escHtml(String(followers))}</div><div style="font-size:.7rem;color:var(--ph-muted)">Followers</div></div>
+        <div style="background:#fff;border:1px solid var(--ph-border);border-radius:12px;padding:.6rem .8rem;"><div style="font-weight:800">${escHtml(String(avgViews))}</div><div style="font-size:.7rem;color:var(--ph-muted)">Avg. Views</div></div>
+        <div style="background:#fff;border:1px solid var(--ph-border);border-radius:12px;padding:.6rem .8rem;"><div style="font-weight:800">${escHtml(String(engagement))}</div><div style="font-size:.7rem;color:var(--ph-muted)">Engagement</div></div>
+        <div style="background:#fff;border:1px solid var(--ph-border);border-radius:12px;padding:.6rem .8rem;"><div style="font-weight:800">${portfolioCount}</div><div style="font-size:.7rem;color:var(--ph-muted)">Portfolio Items</div></div>
+      </div>
+      <div style="font-size:.75rem;color:var(--ph-muted);line-height:1.6;">
+        <div><i class="fas fa-language" style="width:1rem"></i> ${escHtml(languages)}</div>
+        ${email?`<div><i class="fas fa-envelope" style="width:1rem"></i> ${escHtml(email)}</div>`:''}
+        ${whatsapp?`<div><i class="fas fa-phone" style="width:1rem"></i> ${escHtml(whatsapp)}</div>`:''}
+      </div>
+    </div>
+    ${!bio||portfolioCount===0?`<div style="margin-top:.75rem;font-size:.8rem;color:var(--ph-yellow);"><i class="fas fa-triangle-exclamation"></i> Add ${!bio?'a bio':''}${!bio&&portfolioCount===0?' and ':''}${portfolioCount===0?'portfolio items':''} to make your media kit stronger.</div>`:''}
+    <div style="display:flex;gap:.6rem;margin-top:1.25rem;">
+      <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick='mediaKitAction("copy")'><i class="fas fa-copy"></i> Copy Summary</button>
+      <button class="btn" style="flex:1;justify-content:center;background:var(--ph-bg);border:1px solid var(--ph-border);" onclick='mediaKitAction("share")'><i class="fas fa-share-nodes"></i> Share</button>
+    </div>
+  `;
+  window._mediaKitText=summaryText;
+  openHubModal('📇 Media Kit',html);
+}
+async function mediaKitAction(type){
+  const text=window._mediaKitText||'';
+  if(type==='copy'){
+    try{await navigator.clipboard.writeText(text);toast('Media kit copied!','success');}catch(e){toast('Could not copy','error');}
+  }else if(type==='share'){
+    if(navigator.share){
+      try{await navigator.share({title:'My PostHire Media Kit',text});}catch(e){}
+    }else{
+      try{await navigator.clipboard.writeText(text);toast('Sharing not supported — copied instead','info');}catch(e){toast('Could not share','error');}
+    }
+  }
+}
+
+async function openInsightsModal(){
+  openHubModal('📊 Insights','<div style="padding:2rem;text-align:center;color:var(--ph-muted)">Loading…</div>');
+  let allR=[];
+  try{allR=Object.entries(await DB.getRequests());}catch(e){}
+  const mine=allR.filter(([,r])=>r.creatorId===_me.uid);
+  const accepted=mine.filter(([,r])=>r.status==='accepted');
+  const pending=mine.filter(([,r])=>r.status==='pending');
+  const declined=mine.filter(([,r])=>r.status==='declined');
+  const total=mine.length;
+  const acceptRate=total?Math.round((accepted.length/(accepted.length+declined.length||1))*100):0;
+
+  const byType={};
+  accepted.forEach(([,r])=>{const t=r.collabType||'Other';byType[t]=(byType[t]||0)+1;});
+  const typeRows=Object.entries(byType).sort((a,b)=>b[1]-a[1]).map(([t,c])=>`
+    <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:.4rem 0;border-bottom:1px solid var(--ph-border);">
+      <span>${escHtml(t)}</span><span style="font-weight:700">${c}</span>
+    </div>`).join('')||`<div class="ph-empty-inline">No completed collabs yet.</div>`;
+
+  const profileFields=[_me.bio||_me.description,_me.niches&&_me.niches.length,_me.audienceSize,_me.avgViews,_me.engagementRate,Array.isArray(_me.portfolio)&&_me.portfolio.length,_me.profilePhoto];
+  const filled=profileFields.filter(Boolean).length;
+  const completeness=Math.round((filled/profileFields.length)*100);
+
+  const html=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1.25rem;">
+      <div style="background:#E8F1FE;border-radius:12px;padding:.75rem .9rem;"><div style="font-weight:800;font-size:1.2rem;color:#2F80FF">${accepted.length}</div><div style="font-size:.7rem;color:var(--ph-muted)">Collabs Done</div></div>
+      <div style="background:#FFF3D9;border-radius:12px;padding:.75rem .9rem;"><div style="font-weight:800;font-size:1.2rem;color:#FFB547">${pending.length}</div><div style="font-size:.7rem;color:var(--ph-muted)">Pending Requests</div></div>
+      <div style="background:#EAFBF2;border-radius:12px;padding:.75rem .9rem;"><div style="font-weight:800;font-size:1.2rem;color:#34C759">${acceptRate}%</div><div style="font-size:.7rem;color:var(--ph-muted)">Acceptance Rate</div></div>
+      <div style="background:#FFF7D8;border-radius:12px;padding:.75rem .9rem;"><div style="font-weight:800;font-size:1.2rem;color:#111111">${completeness}%</div><div style="font-size:.7rem;color:var(--ph-muted)">Profile Complete</div></div>
+    </div>
+    <div class="section-head" style="margin-bottom:.4rem;"><span class="section-title" style="font-size:.9rem;">Collabs by Type</span></div>
+    ${typeRows}
+    ${completeness<100?`<div style="margin-top:1rem;font-size:.8rem;color:var(--ph-muted);"><i class="fas fa-circle-info"></i> Complete your profile (bio, niches, audience size, avg. views, engagement rate, portfolio) to unlock better matches.</div>`:''}
+  `;
+  openHubModal('📊 Insights',html);
+}
+
+function openPortfolioVideo(idx){
+  const p=(window._pflPortfolio||[])[idx];if(!p||!p.videoUrl)return;
+  const v=document.getElementById('port-video-el');
+  v.src=p.videoUrl;
+  document.getElementById('port-video-caption').textContent=p.caption||p.title||'';
+  const o=document.getElementById('port-video-modal');
+  o.style.display='flex';
+  requestAnimationFrame(()=>o.classList.add('open'));
+}
+function closePortfolioVideo(){
+  const o=document.getElementById('port-video-modal');
+  o.classList.remove('open');o.style.display='none';
+  const v=document.getElementById('port-video-el');
+  if(v){v.pause();v.src='';}
+}
+
+function openSubmitPortfolioModal(){
+  const html=`
+    <div style="display:flex;align-items:center;gap:.75rem;background:linear-gradient(135deg,#FDF0E9,#FFF6F0);border:1px solid var(--ph-border);border-radius:14px;padding:.9rem 1rem;margin-bottom:1.25rem;">
+      <div style="width:2.5rem;height:2.5rem;flex-shrink:0;border-radius:12px;background:linear-gradient(135deg,var(--ph-accent),var(--ph-accent2));display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.05rem;box-shadow:0 4px 10px -2px rgba(233,255,57,.4);"><i class="fas fa-clapperboard"></i></div>
+      <div style="font-size:.78rem;color:#111111;line-height:1.5;">Share the link to your Reel or Post. Our team hosts it and adds it to your portfolio within <strong>24 hours</strong> — you'll get a notification the moment it's live.</div>
+    </div>
+    <label style="font-size:.75rem;color:var(--ph-muted);font-weight:700;">Reel / Post URL</label>
+    <div style="position:relative;margin:.35rem 0 .8rem;">
+      <i class="fas fa-link" style="position:absolute;left:.85rem;top:50%;transform:translateY(-50%);color:var(--ph-muted);font-size:.8rem;"></i>
+      <input id="spf-url" type="url" placeholder="https://instagram.com/reel/…" style="width:100%;padding:.7rem .7rem .7rem 2.1rem;border:1px solid var(--ph-border);border-radius:12px;font-size:.88rem;font-family:'General Sans','Plus Jakarta Sans',sans-serif;">
+    </div>
+    <label style="font-size:.75rem;color:var(--ph-muted);font-weight:700;">Caption <span style="font-weight:500;color:var(--ph-muted2)">(optional)</span></label>
+    <div style="position:relative;margin:.35rem 0 1.1rem;">
+      <i class="fas fa-pen" style="position:absolute;left:.85rem;top:50%;transform:translateY(-50%);color:var(--ph-muted);font-size:.75rem;"></i>
+      <input id="spf-caption" type="text" placeholder="e.g. Skincare routine collab with GlowCo" style="width:100%;padding:.7rem .7rem .7rem 2.1rem;border:1px solid var(--ph-border);border-radius:12px;font-size:.88rem;font-family:'General Sans','Plus Jakarta Sans',sans-serif;">
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="submitPortfolioRequest()"><i class="fas fa-paper-plane"></i> Submit for Review</button>
+  `;
+  openHubModal('Add Portfolio Item',html);
+}
+async function submitPortfolioRequest(){
+  const url=document.getElementById('spf-url')?.value.trim();
+  const caption=document.getElementById('spf-caption')?.value.trim();
+  if(!url||!/^https?:\/\//i.test(url)){toast('Enter a valid link (starting with http/https)','error');return;}
+  try{
+    await addDoc(collection(db,'portfolioRequests'),{creatorId:_me.uid,creatorName:_me.name||'',url,caption:caption||'',status:'pending',createdAt:new Date().toISOString()});
+    toast("Submitted! We'll add it to your portfolio within 24 hours.",'success');
+    closeHubModal();
+    renderMobileProfile(document.getElementById('main-content'));
+  }catch(e){toast('Could not submit — try again','error');}
+}
+
+async function openEarningsModal(){
+  openHubModal('💰 Earnings','<div style="padding:2rem;text-align:center;color:var(--ph-muted)">Loading…</div>');
+  let allR=[];
+  try{allR=Object.entries(await DB.getRequests());}catch(e){}
+  const accepted=allR.filter(([,r])=>r.creatorId===_me.uid&&r.status==='accepted');
+  const totalEarnings=_me.totalEarnings?'₹'+Number(_me.totalEarnings).toLocaleString('en-IN'):'₹0';
+
+  const rows=accepted.slice().reverse().map(([,r])=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:.55rem 0;border-bottom:1px solid var(--ph-border);">
+      <div>
+        <div style="font-weight:700;font-size:.85rem;">${escHtml(r.founderName||r.startupName||'Brand')}</div>
+        <div style="font-size:.72rem;color:var(--ph-muted)">${escHtml(r.collabType||'Collaboration')}</div>
+      </div>
+      <div style="font-weight:700;font-size:.85rem;color:var(--ph-green,#34C759)">${escHtml(r.budget||'—')}</div>
+    </div>`).join('')||`<div class="ph-empty-inline">No completed collabs yet.</div>`;
+
+  const pd=_me.payoutDetails;
+  const payoutBlock=pd
+    ?`<div style="background:#EAFBF2;border-radius:12px;padding:.8rem;margin-top:1rem;font-size:.82rem;">
+        <div style="font-weight:700;margin-bottom:.25rem;"><i class="fas fa-circle-check" style="color:#34C759"></i> Payout details saved</div>
+        <div style="color:var(--ph-muted)">${pd.method==='upi'?'UPI: '+escHtml(pd.upi):'Bank: '+escHtml(pd.bank)+' •••• '+escHtml((pd.account||'').slice(-4))}</div>
+        <button class="btn" style="margin-top:.6rem;width:100%;justify-content:center;background:#fff;border:1px solid var(--ph-border);" onclick="requestPayout()"><i class="fas fa-money-bill-transfer"></i> Request Payout</button>
+      </div>`
+    :`<div style="background:#FFF3D9;border-radius:12px;padding:.8rem;margin-top:1rem;font-size:.82rem;">
+        <div style="font-weight:700;margin-bottom:.4rem;"><i class="fas fa-triangle-exclamation" style="color:#FFB547"></i> Add payout details to withdraw earnings</div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="openPayoutForm()"><i class="fas fa-plus"></i> Add Payout Details</button>
+      </div>`;
+
+  const html=`
+    <div style="text-align:center;background:linear-gradient(135deg,#FFF3D9,#fff);border-radius:16px;padding:1.25rem;margin-bottom:1rem;">
+      <div style="font-size:1.7rem;font-weight:800;color:#FFB547">${totalEarnings}</div>
+      <div style="font-size:.75rem;color:var(--ph-muted)">Total Earnings</div>
+    </div>
+    <div class="section-head" style="margin-bottom:.2rem;"><span class="section-title" style="font-size:.9rem;">Collab Payments</span></div>
+    ${rows}
+    ${payoutBlock}
+  `;
+  openHubModal('💰 Earnings',html);
+}
+
+function openPayoutForm(){
+  const html=`
+    <div style="display:flex;gap:.5rem;margin-bottom:1rem;">
+      <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="payoutMethodTab('upi')" id="pm-upi-tab">UPI</button>
+      <button class="btn" style="flex:1;justify-content:center;background:var(--ph-bg);border:1px solid var(--ph-border);" onclick="payoutMethodTab('bank')" id="pm-bank-tab">Bank Account</button>
+    </div>
+    <div id="pm-upi-fields">
+      <label style="font-size:.75rem;color:var(--ph-muted);font-weight:700;">UPI ID</label>
+      <input id="pm-upi" type="text" placeholder="yourname@upi" style="width:100%;padding:.7rem;border:1px solid var(--ph-border);border-radius:10px;margin:.35rem 0 1rem;font-size:.9rem;">
+    </div>
+    <div id="pm-bank-fields" style="display:none;">
+      <label style="font-size:.75rem;color:var(--ph-muted);font-weight:700;">Account Holder Name</label>
+      <input id="pm-holder" type="text" style="width:100%;padding:.7rem;border:1px solid var(--ph-border);border-radius:10px;margin:.35rem 0 .8rem;font-size:.9rem;">
+      <label style="font-size:.75rem;color:var(--ph-muted);font-weight:700;">Account Number</label>
+      <input id="pm-account" type="text" style="width:100%;padding:.7rem;border:1px solid var(--ph-border);border-radius:10px;margin:.35rem 0 .8rem;font-size:.9rem;">
+      <label style="font-size:.75rem;color:var(--ph-muted);font-weight:700;">IFSC Code</label>
+      <input id="pm-ifsc" type="text" style="width:100%;padding:.7rem;border:1px solid var(--ph-border);border-radius:10px;margin:.35rem 0 1rem;font-size:.9rem;text-transform:uppercase;">
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="savePayoutDetails()"><i class="fas fa-check"></i> Save Details</button>
+  `;
+  window._payoutMethod='upi';
+  openHubModal('🏦 Payout Details',html);
+}
+function payoutMethodTab(m){
+  window._payoutMethod=m;
+  document.getElementById('pm-upi-fields').style.display=m==='upi'?'':'none';
+  document.getElementById('pm-bank-fields').style.display=m==='bank'?'':'none';
+  document.getElementById('pm-upi-tab').className=m==='upi'?'btn btn-primary':'btn';
+  document.getElementById('pm-bank-tab').className=m==='bank'?'btn btn-primary':'btn';
+  if(m==='bank'){document.getElementById('pm-bank-tab').style.cssText='flex:1;justify-content:center;';}
+  else{document.getElementById('pm-upi-tab').style.cssText='flex:1;justify-content:center;';}
+}
+async function savePayoutDetails(){
+  const m=window._payoutMethod||'upi';
+  let payoutDetails;
+  if(m==='upi'){
+    const upi=document.getElementById('pm-upi').value.trim();
+    if(!upi||!upi.includes('@')){toast('Enter a valid UPI ID','error');return;}
+    payoutDetails={method:'upi',upi};
+  }else{
+    const holder=document.getElementById('pm-holder').value.trim();
+    const account=document.getElementById('pm-account').value.trim();
+    const ifsc=document.getElementById('pm-ifsc').value.trim();
+    if(!holder||!account||!ifsc){toast('Fill all bank details','error');return;}
+    payoutDetails={method:'bank',holder,account,ifsc};
+  }
+  try{
+    _me={..._me,payoutDetails};
+    await DB.setUser(_me.uid,_me);
+    toast('Payout details saved!','success');
+    openEarningsModal();
+  }catch(e){toast('Could not save details','error');}
+}
+async function requestPayout(){
+  const amount=_me.totalEarnings||0;
+  if(!amount){toast('No earnings available to withdraw yet','info');return;}
+  try{
+    const ref=await addDoc(collection(db,'payoutRequests'),{creatorId:_me.uid,creatorName:_me.name,amount,payoutDetails:_me.payoutDetails,status:'pending',createdAt:new Date().toISOString()});
+    await updateDoc(ref,{id:ref.id});
+    toast('Payout request submitted! We\'ll process it within 3-5 business days.','success');
+    closeHubModal();
+  }catch(e){toast('Could not submit payout request','error');}
+}
+
 function weeklyCounts(records){
   const buckets=new Array(8).fill(0);
   if(!records.length) return buckets.map(()=>30);
@@ -3081,10 +3780,9 @@ async function renderCreators(el){
   if(_me.userType==='creator'){el.innerHTML=`<div class="empty-state"><i class="fas fa-lock"></i><p>Creator discovery is for founders only.</p></div>`;return;}
   const plan=_me.plan||'free';
   el.innerHTML=`
-    ${plan==='free'?`<div class="upgrade-banner"><div><h4>🔒 Limited to 10 profiles/day on Free</h4><p>Upgrade for unlimited browsing, advanced filters & messaging.</p></div><button class="btn btn-primary btn-sm" onclick="showSection('pricing')">Upgrade →</button></div>`:''}
     <div class="filter-bar">
       <input class="filter-input" id="f-search" placeholder="🔍 Search creators…" oninput="filterCreators()">
-      ${plan!=='free'?`<select class="filter-select" id="f-niche" onchange="filterCreators()"><option value="">All Niches</option>${['AI','Finance','Startup','Tech','Lifestyle','Business','Marketing','SaaS','Education','Health'].map(n=>`<option>${n}</option>`).join('')}</select><select class="filter-select" id="f-aud" onchange="filterCreators()"><option value="">All Sizes</option>${['1K-10K','10K-50K','50K-100K','100K-500K','500K+'].map(v=>`<option>${v}</option>`).join('')}</select>`:''}
+      <select class="filter-select" id="f-niche" onchange="filterCreators()"><option value="">All Niches</option>${['AI','Finance','Startup','Tech','Lifestyle','Business','Marketing','SaaS','Education','Health'].map(n=>`<option>${n}</option>`).join('')}</select><select class="filter-select" id="f-aud" onchange="filterCreators()"><option value="">All Sizes</option>${['1K-10K','10K-50K','50K-100K','100K-500K','500K+'].map(v=>`<option>${v}</option>`).join('')}</select>
     </div>
     <div id="sort-info" style="font-size:.78rem;color:var(--muted);margin-bottom:.875rem">Loading…</div>
     <div class="creators-grid" id="creators-grid"></div>`;
@@ -3096,15 +3794,13 @@ async function filterCreators(){
   const search=(document.getElementById('f-search')?.value||'').toLowerCase();
   const niche=document.getElementById('f-niche')?.value||'';
   const aud=document.getElementById('f-aud')?.value||'';
-  const plan=_me.plan||'free';
   const allR=Object.values(await DB.getRequests());
   const sentTo=new Set(allR.filter(r=>r.founderId===_me.uid).map(r=>r.creatorId));
   let list=Object.values(_allCreators).filter(c=>{if(c.userId===_me.uid)return false;if(!c.bio)return false;if(search&&!c.name?.toLowerCase().includes(search)&&!c.bio?.toLowerCase().includes(search))return false;if(niche&&!(c.niches||[]).includes(niche))return false;if(aud&&c.audienceSize!==aud)return false;return true;}).sort((a,b)=>(b.featured?5:0)-(a.featured?5:0));
   const total=list.length;
-  if(plan==='free')list=list.slice(0,10);
   const info=document.getElementById('sort-info');const grid=document.getElementById('creators-grid');
   if(!info||!grid)return;
-  info.textContent=`${total} creator${total!==1?'s':''} found${plan==='free'&&total>10?' (showing 10 on Free)':''}`;
+  info.textContent=`${total} creator${total!==1?'s':''} found`;
   if(!list.length){grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-search"></i><p>No creators found.</p></div>`;return;}
   grid.innerHTML=list.map(c=>{
     const alreadySent=sentTo.has(c.userId);
@@ -3121,11 +3817,6 @@ async function filterCreators(){
 }
 
 async function sendCollab(creatorId){
-  const plan=_me.plan||'free';
-  const allR=Object.values(await DB.getRequests());
-  const monthR=allR.filter(r=>r.founderId===_me.uid&&new Date(r.createdAt)>new Date(Date.now()-30*86400000)).length;
-  if(plan==='free'&&monthR>=3){toast('Free plan: 3 requests/month limit reached.','error');setTimeout(()=>showSection('pricing'),1500);return;}
-  if(plan==='starter'&&monthR>=20){toast('Starter plan: 20 requests/month limit reached.','error');setTimeout(()=>showSection('pricing'),1500);return;}
   const fo=await DB.getFounder(_me.uid);
   if(!fo){toast('Please set up your founder profile first.','error');await openSetup();return;}
   const cr=await DB.getCreator(creatorId);if(!cr)return;
@@ -3239,10 +3930,9 @@ async function renderProfile(el){
     <div style="margin:0 1.25rem 1.25rem;background:linear-gradient(135deg,rgba(233,255,57,.10),rgba(79,70,229,.06));border:1px solid rgba(233,255,57,.20);border-radius:16px;padding:1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem">
       <div>
         <div style="font-size:.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em">Current Plan</div>
-        <div style="font-size:1.1rem;font-weight:800;color:${pc};margin:.15rem 0">${plan.toUpperCase()}</div>
-        <div style="font-size:.75rem;color:var(--muted)">${plan==='free'?'Upgrade for more features':'Full access unlocked'}</div>
+        <div style="font-size:1.1rem;font-weight:800;color:${pc};margin:.15rem 0">FREE</div>
+        <div style="font-size:.75rem;color:var(--muted)">Full access — everything unlocked</div>
       </div>
-      <button onclick="showSection('pricing')" style="background:var(--accent);border:none;color:#111111;border-radius:99px;padding:.5rem 1.1rem;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap">${plan==='free'?'Upgrade →':'Manage'}</button>
     </div>
 
     <!-- SIGN OUT -->
@@ -3663,8 +4353,34 @@ function toggleCollabChip(el){
   else{el.setAttribute('data-active','0');el.style.borderColor='var(--border)';el.style.background='transparent';el.style.color='var(--muted)';}
 }
 
-function openLaunchModal(){window._campImgFile=null;window._brandLogoFile=null;document.getElementById('launch-modal').style.display='flex';}
-function closeLaunchModal(){document.getElementById('launch-modal').style.display='none';}
+function openLaunchModal(){
+  window._campImgFile=null;window._brandLogoFile=null;
+  const chipsEl=document.getElementById('lc-collab-chips');
+  if(chipsEl && !chipsEl.dataset.filled){
+    chipsEl.innerHTML=COLLAB_TYPES.map(ct=>`<div class="collab-type-chip" data-id="${ct.id}" onclick="toggleCollabChip(this)" style="background:transparent">${ct.label}</div>`).join('');
+    chipsEl.dataset.filled='1';
+  }
+  const nicheEl=document.getElementById('lc-niche');
+  if(nicheEl && nicheEl.options.length<=1){
+    ['AI','Finance','Startup','Tech','Lifestyle','Business','Marketing','SaaS','Education','Health'].forEach(n=>{const o=document.createElement('option');o.textContent=n;nicheEl.appendChild(o);});
+  }
+  const audEl=document.getElementById('lc-aud');
+  if(audEl && audEl.options.length<=1){
+    ['1K-10K','10K-50K','50K-100K','100K-500K','500K+'].forEach(v=>{const o=document.createElement('option');o.textContent=v;audEl.appendChild(o);});
+  }
+  document.getElementById('launch-modal').style.display='flex';
+}
+function closeLaunchModal(){
+  document.getElementById('launch-modal').style.display='none';
+  ['lc-title','lc-desc','lc-product-name','lc-product-cat','lc-goal','lc-demo','lc-website','lc-instagram','lc-budget','lc-deadline'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const nicheEl=document.getElementById('lc-niche');if(nicheEl)nicheEl.selectedIndex=0;
+  const audEl=document.getElementById('lc-aud');if(audEl)audEl.selectedIndex=0;
+  document.querySelectorAll('.collab-type-chip[data-active="1"]').forEach(el=>{el.setAttribute('data-active','0');el.style.borderColor='var(--border)';el.style.background='transparent';el.style.color='var(--muted)';});
+  window._campImgFile=null;window._brandLogoFile=null;
+  const imgPreviewWrap=document.getElementById('camp-img-preview-wrap');if(imgPreviewWrap)imgPreviewWrap.style.display='none';
+  const logoPreview=document.getElementById('brand-logo-preview');if(logoPreview)logoPreview.innerHTML='LOGO';
+  const uploadArea=document.getElementById('camp-img-upload-area');if(uploadArea)uploadArea.style.display='';
+}
 function closeApplicantsModal(){document.getElementById('applicants-modal').style.display='none';}
 
 async function launchCampaign(){
@@ -3728,7 +4444,7 @@ async function viewApplications(campaignId,title){
   let apps={};try{apps=await DB.getCampaignApplications(campaignId);}catch(e){}
   const appArr=Object.values(apps);
   if(appArr.length===0){body.innerHTML='<div class="empty-state"><i class="fas fa-users"></i><p>No applications yet.</p></div>';return;}
-  body.innerHTML=appArr.map(a=>`<div class="panel" style="margin-bottom:.75rem"><div class="panel-body"><div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap"><div class="avatar-lg" style="border-radius:.875rem">${a.creatorPhoto?`<img src="${a.creatorPhoto}" style="width:100%;height:100%;object-fit:cover">`:(a.creatorName||'C').charAt(0)}</div><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:.95rem">${a.creatorName}</div><div style="font-size:.75rem;color:var(--muted);margin:.2rem 0 .5rem">${a.audienceSize||''} ${a.niches?'· '+a.niches.join(', '):''}</div><div style="font-size:.82rem;line-height:1.6;color:var(--muted);margin-bottom:.5rem">${a.pitch}</div></div><div style="display:flex;flex-direction:column;gap:.5rem;flex-shrink:0">${a.status==='pending'?`<button class="btn btn-primary btn-sm" onclick="respondApp('${a.id}','accepted','${a.creatorId||''}')"><i class="fas fa-check"></i> Accept</button><button class="btn btn-danger btn-sm" onclick="respondApp('${a.id}','rejected','${a.creatorId||''}')"><i class="fas fa-times"></i> Reject</button>`:`<span style="font-size:.72rem;font-weight:700;padding:.3em .8em;border-radius:99px;${a.status==='accepted'?'background:rgba(0,212,170,.15);color:var(--accent3)':'background:rgba(255,107,107,.15);color:var(--accent2)'}">${a.status.toUpperCase()}</span>${a.status==='accepted'&&a.creatorId?`<button class="btn btn-ghost btn-sm" onclick="openChatForRequest('${_me.uid}','${a.creatorId}')"><i class="fas fa-comment-dots"></i> Chat</button>`:''}`}</div></div></div></div>`).join('');
+  body.innerHTML=appArr.map(a=>`<div class="panel" style="margin-bottom:.75rem"><div class="panel-body"><div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap"><div class="avatar-lg" style="border-radius:.875rem">${a.creatorPhoto?`<img src="${a.creatorPhoto}" style="width:100%;height:100%;object-fit:cover">`:(a.creatorName||'C').charAt(0)}</div><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:.95rem">${a.creatorName}</div><div style="font-size:.75rem;color:var(--muted);margin:.2rem 0 .5rem">${a.audienceSize||''} ${a.niches?'· '+a.niches.join(', '):''}</div><div style="font-size:.82rem;line-height:1.6;color:var(--muted);margin-bottom:.5rem">${a.pitch}</div></div><div style="display:flex;flex-direction:column;gap:.5rem;flex-shrink:0">${a.status==='pending'?`<button class="btn btn-primary btn-sm" onclick="respondApp('${a.id}','accepted','${a.creatorId||''}')"><i class="fas fa-check"></i> Accept</button><button class="btn btn-danger btn-sm" onclick="respondApp('${a.id}','rejected','${a.creatorId||''}')"><i class="fas fa-times"></i> Reject</button>${a.creatorId?`<button class="btn btn-ghost btn-sm" onclick="openChatForRequest('${_me.uid}','${a.creatorId}')"><i class="fas fa-comment-dots"></i> Message</button>`:''}`:`<span style="font-size:.72rem;font-weight:700;padding:.3em .8em;border-radius:99px;${a.status==='accepted'?'background:rgba(0,212,170,.15);color:var(--accent3)':'background:rgba(255,107,107,.15);color:var(--accent2)'}">${a.status.toUpperCase()}</span>${a.creatorId?`<button class="btn btn-ghost btn-sm" onclick="openChatForRequest('${_me.uid}','${a.creatorId}')"><i class="fas fa-comment-dots"></i> Chat</button>`:''}`}</div></div></div></div>`).join('');
 }
 
 async function respondApp(appId,status,creatorId){
@@ -3747,6 +4463,59 @@ async function respondApp(appId,status,creatorId){
   if(status==='accepted'&&creatorId){toast('Accepted! Opening chat… 🎉','success');try{const result=await DB.getOrCreateConversation(_me.uid,creatorId,'');setTimeout(()=>goToMessages(result.id||result),800);}catch(e){toast('Accepted!','success');}return;}
   toast(status==='accepted'?'Accepted! 🎉':'Rejected','info');
   viewApplications(appId,'');
+}
+
+async function openCampaignDetails(campaignId){
+  const overlay=document.getElementById('apply-modal');
+  const body=document.getElementById('apply-modal-body');
+  if(!overlay||!body)return;
+  overlay.style.display='flex';
+  body.innerHTML='<div style="text-align:center;padding:2rem"><i class="fas fa-spinner fa-spin"></i></div>';
+
+  let campaigns={}; try{campaigns=await DB.getCampaigns();}catch(e){}
+  const c=campaigns[campaignId];
+  if(!c){body.innerHTML='<div class="empty-state"><i class="fas fa-triangle-exclamation"></i><p>Campaign not found.</p></div>';return;}
+
+  let applied=false;
+  try{const myApps=await DB.getMyApplications(_me.uid);applied=Object.values(myApps).some(a=>a.campaignId===campaignId);}catch(e){}
+
+  const brandName=c.startupName||c.founderName||'Brand';
+  const handle='@'+brandName.toLowerCase().replace(/[^a-z0-9]+/g,'');
+  const avatar=c.brandLogo?`<img src="${c.brandLogo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:brandName.charAt(0).toUpperCase();
+  const bannerImg=c.productImage?`<img src="${c.productImage}" style="width:100%;height:160px;object-fit:cover;border-radius:16px;display:block" onerror="this.parentElement.style.display='none'">`:'';
+
+  const types=(c.collabTypes||[]).map(t=>COLLAB_TYPES.find(x=>x.id===t)||{label:t,icon:'fas fa-handshake'});
+  const typesLine=types.map(t=>t.label).join(' + ')||'Collaboration';
+
+  let deadlineTxt='';
+  if(c.deadline){
+    const diffMs=new Date(c.deadline)-new Date();
+    const days=Math.ceil(diffMs/86400000);
+    deadlineTxt=days>1?`Apply by ${c.deadline} (${days} days left)`:days===1?`Apply by ${c.deadline} (1 day left)`:days===0?`Apply by ${c.deadline} (last day)`:`Deadline passed (${c.deadline})`;
+  }
+
+  body.innerHTML=`
+    <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:1rem">
+      <div style="width:2.6rem;height:2.6rem;border-radius:50%;overflow:hidden;background:linear-gradient(135deg,var(--accent),#F0FF6E);display:flex;align-items:center;justify-content:center;color:#111111;font-weight:800;flex-shrink:0">${avatar}</div>
+      <div style="min-width:0">
+        <div style="font-weight:800;font-size:.95rem">${escHtml(brandName)}</div>
+        <div style="font-size:.75rem;color:var(--muted)">${escHtml(handle)}</div>
+      </div>
+    </div>
+    ${bannerImg?`<div style="margin-bottom:1rem">${bannerImg}</div>`:''}
+    <div style="font-weight:800;font-size:1.05rem;margin-bottom:.4rem">${escHtml(c.title||'Campaign')}</div>
+    <div style="font-size:.85rem;color:var(--muted);line-height:1.6;margin-bottom:1.1rem">${escHtml(c.description||'No description provided.')}</div>
+    <div style="display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.3rem;font-size:.83rem;font-weight:600">
+      <div><i class="fas fa-layer-group" style="color:var(--muted);width:1.2rem;text-align:center;margin-right:.5rem"></i>${escHtml(typesLine)}</div>
+      ${c.budget?`<div><i class="fas fa-rupee-sign" style="color:var(--muted);width:1.2rem;text-align:center;margin-right:.5rem"></i>${escHtml(String(c.budget))}</div>`:''}
+      ${deadlineTxt?`<div><i class="fas fa-calendar-alt" style="color:var(--muted);width:1.2rem;text-align:center;margin-right:.5rem"></i>${escHtml(deadlineTxt)}</div>`:''}
+      ${c.niche?`<div><i class="fas fa-tag" style="color:var(--muted);width:1.2rem;text-align:center;margin-right:.5rem"></i>${escHtml(c.niche)}</div>`:''}
+      ${c.audienceRequired?`<div><i class="fas fa-users" style="color:var(--muted);width:1.2rem;text-align:center;margin-right:.5rem"></i>Min. audience: ${escHtml(c.audienceRequired)}</div>`:''}
+    </div>
+    ${applied
+      ?`<button class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem;opacity:.6" disabled><i class="fas fa-check"></i> Already Applied</button>`
+      :`<button class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem" onclick="openApplyModal('${campaignId}')"><i class="fas fa-paper-plane"></i> Apply Now</button>`}
+  `;
 }
 
 function openApplyModal(campaignId){
@@ -3777,6 +4546,8 @@ async function submitApplication(campaignId){
         body:`${cr?.name||_me.name} applied to your campaign${pitch?': "'+(pitch.length>80?pitch.slice(0,77)+'…':pitch)+'"':'.'}`,
         icon:'fa-file-signature',
         campaignId,
+        campaignTitle:camp.title||'Campaign',
+        creatorId:_me.uid,
         fromUid:_me.uid,
         fromName:cr?.name||_me.name||'Creator'
       });
@@ -3811,7 +4582,6 @@ async function renderMessagesSection(el){
             <input type="text" id="conv-search-input" placeholder="Search conversations…" oninput="filterConversations()">
           </div>
         </div>
-        <div class="msg-story-row" id="msg-story-row"></div>
         <div class="conv-items" id="conv-items">
           <div style="display:flex;align-items:center;justify-content:center;padding:3rem 1rem;color:var(--muted)"><i class="fas fa-spinner fa-spin" style="font-size:1.2rem"></i></div>
         </div>
@@ -3831,29 +4601,6 @@ async function renderMessagesSection(el){
   `;
   updateNotifBadge();
   subscribeConversations();
-}
-
-function renderStoryRow(){
-  const container=document.getElementById('msg-story-row');
-  if(!container)return;
-  const recent=_conversations.slice(0,10);
-  const addItem=`<div class="msg-story-item" onclick="showSection('creators')">
-    <div class="msg-story-add"><i class="fas fa-plus"></i></div>
-    <div class="msg-story-name">New</div>
-  </div>`;
-  const items=recent.map(c=>{
-    const name=c.otherUser?.name||'User';
-    const photo=c.otherUser?.profilePhoto||'';
-    const ava=photo
-      ?`<img src="${photo}" onerror="this.style.display='none'">`
-      :initials(name);
-    const bg=photo?'':`background:linear-gradient(135deg,hsl(${hashColor(c.otherId)},70%,55%),hsl(${hashColor(c.otherId)+60},70%,50%))`;
-    return `<div class="msg-story-item" onclick="openConversation('${c.id}')">
-      <div class="msg-story-ava" style="${bg}">${ava}${c.unread>0?'<div class="msg-story-dot"></div>':''}</div>
-      <div class="msg-story-name">${escHtml(name.split(' ')[0])}</div>
-    </div>`;
-  }).join('');
-  container.innerHTML=addItem+items;
 }
 
 function subscribeConversations(){
@@ -3880,7 +4627,6 @@ function subscribeConversations(){
     });
     _conversations = enriched;
     filterConversations();
-    renderStoryRow();
     updateMsgBadgeFromConvs(enriched);
     if(_pendingOpenConv){
       const conv = _conversations.find(c=>c.id===_pendingOpenConv);
@@ -3913,8 +4659,7 @@ function renderConvList(){
     const isActive = c.id===_activeConvId;
     const last = c.lastMessage || 'No messages yet';
     const ts = c.updatedAt;
-    const hasUnread = c.unread>0;
-    return `<div class="conv-item${isActive?' active':''}${hasUnread?' unread':''}" id="conv-item-${c.id}" onclick="openConversation('${c.id}')">
+    return `<div class="conv-item${isActive?' active':''}" id="conv-item-${c.id}" onclick="openConversation('${c.id}')">
       <div class="conv-ava" style="${!c.otherUser?.profilePhoto?`background:linear-gradient(135deg,hsl(${hashColor(c.otherId)},70%,55%),hsl(${hashColor(c.otherId)+60},70%,50%))`:''}">
         ${c.otherUser?.profilePhoto?`<img src="${c.otherUser.profilePhoto}" onerror="this.style.display='none'">`:initials(c.otherUser?.name||'U')}
         <div class="conv-ava-online"></div>
@@ -3926,7 +4671,7 @@ function renderConvList(){
         </div>
         <div class="conv-row" style="margin-top:.15rem">
           <div class="conv-preview">${escHtml(last)}</div>
-          ${hasUnread?`<div class="conv-unread">${c.unread>99?'99+':c.unread}</div>`:''}
+          ${c.unread>0?`<div class="conv-unread">${c.unread>99?'99+':c.unread}</div>`:''}
         </div>
       </div>
     </div>`;
@@ -4472,7 +5217,11 @@ window.openNotif=async function(id){
   if(!n.read){try{await updateDoc(doc(db,'notifications',id),{read:true});}catch(e){}}
   if(n.type==='message'){showSection('messages');if(n.conversationId){_pendingOpenConv=n.conversationId;}}
   else if(n.type==='request'||n.type==='request_accepted'||n.type==='request_declined'){showSection('requests');}
-  else if(n.type==='campaign'||n.type==='application'||n.type==='application_response'){showSection('campaigns');}
+  else if(n.type==='application'||n.type==='application_response'){
+    await showSection('campaigns');
+    if(n.type==='application'&&n.campaignId){ setTimeout(()=>viewApplications(n.campaignId,n.campaignTitle||'Campaign'),300); }
+  }
+  else if(n.type==='campaign'){showSection('campaigns');}
   else{showSection('home');}
 };
 
@@ -4487,7 +5236,7 @@ window.markAllNotifsRead=async function(){
   }catch(e){toast('Could not mark all as read','error');}
 };
 
-Object.assign(window,{showSection,reqSwitchTab,selectRole,confirmRole,openSetup,openEditProfileModal,closeEditProfileModal,saveEditProfile,epHandleDp,epRemoveDp,updReq,sendCollab,filterCreators,selectPlan,openPlanOverlay,closePlanOverlay,doSignOut,goToLanding,goToAdmin,openSidebar,closeSidebar,choosePlanAndContinue,goToMessages,goToNotifications,openChatForRequest,openLaunchModal,closeLaunchModal,closeApplicantsModal,launchCampaign,toggleCampaignStatus,viewApplications,respondApp,openApplyModal,closeApplyModal,submitApplication,toggleCollabChip,toggleCampDetails,handleCampImg,removeCampImg,handleBrandLogo,showFormErr,filterConversations,openConversation,messagesBackToList,triggerFileInput,handleFileSelect,cancelUpload,sendMessage,handleMsgKey,autoResizeInput,openLightbox,closeLightbox,renderNotificationsSection,openReelViewer,closeReelViewer,togglePhReelPause,openReelProfile,closeReelProfile,messageReelCreator});
+Object.assign(window,{showSection,reqSwitchTab,selectRole,confirmRole,openSetup,openEditProfileModal,closeEditProfileModal,saveEditProfile,epHandleDp,epRemoveDp,updReq,sendCollab,filterCreators,selectPlan,openPlanOverlay,closePlanOverlay,doSignOut,goToLanding,goToAdmin,openSidebar,closeSidebar,choosePlanAndContinue,goToMessages,goToNotifications,openChatForRequest,openLaunchModal,closeLaunchModal,closeApplicantsModal,launchCampaign,toggleCampaignStatus,viewApplications,respondApp,openApplyModal,openCampaignDetails,closeApplyModal,submitApplication,toggleCollabChip,toggleCampDetails,handleCampImg,removeCampImg,handleBrandLogo,showFormErr,filterConversations,openConversation,messagesBackToList,triggerFileInput,handleFileSelect,cancelUpload,sendMessage,handleMsgKey,autoResizeInput,openLightbox,closeLightbox,renderNotificationsSection,openReelViewer,closeReelViewer,togglePhReelPause,openReelProfile,closeReelProfile,messageReelCreator,openMediaKitModal,mediaKitAction,openInsightsModal,openEarningsModal,openPayoutForm,payoutMethodTab,savePayoutDetails,requestPayout,closeHubModal,openSubmitPortfolioModal,submitPortfolioRequest,openPortfolioVideo,closePortfolioVideo});
 
 // Android hardware back button: close open modal/sidebar, else double-press to exit
 if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) {
