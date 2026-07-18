@@ -1232,12 +1232,13 @@ body.ph-mobile-active #ph-app-nav{ display:flex; }
 .cat-circle{width:2.7rem;height:2.7rem;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:.95rem;box-shadow:0 2px 8px rgba(35,31,28,0.06);}
 .cat-tile span{font-size:.6rem;font-weight:700;color:var(--muted);text-align:center;}
 
-/* Featured Campaign hero card — shows the poster image with an overlaid Apply button */
+/* Featured Campaign hero card — text sits at TOP of the info panel, Apply button is
+   pinned to the BOTTOM-left corner of the card, fully clear of the photo column, so
+   it can never overlap the poster image no matter what the admin uploads */
 .ph-featured-scroll{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;border-radius:22px;}
 .ph-featured-scroll::-webkit-scrollbar{display:none;}
-.ph-featured-card{background-color:#D3E2FD;border-radius:22px;position:relative;overflow:hidden;cursor:pointer;display:flex;align-items:stretch;min-height:11.5rem;flex:0 0 100%;scroll-snap-align:start;}
-/* Text + button live in this panel only — a photo can NEVER overlap them, no matter what the admin uploads */
-.ph-featured-info{flex:1 1 56%;min-width:0;padding:1rem 0 1rem 1.15rem;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:2;}
+.ph-featured-card{background-color:#D3E2FD;border-radius:22px;position:relative;overflow:hidden;cursor:pointer;display:flex;align-items:stretch;min-height:12.5rem;flex:0 0 100%;scroll-snap-align:start;}
+.ph-featured-info{flex:1 1 56%;min-width:0;padding:1.1rem 0 3.4rem 1.15rem;display:flex;flex-direction:column;justify-content:flex-start;position:relative;z-index:2;}
 .ph-featured-photo{flex:1 1 44%;background-size:cover;background-position:top center;background-repeat:no-repeat;position:relative;}
 .ph-featured-photo::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#D3E2FD 0%,rgba(211,226,253,0) 40%);}
 .ph-featured-photo.ph-featured-noimg{background:linear-gradient(135deg,#B9CDF9,#D3E2FD);}
@@ -1246,10 +1247,12 @@ body.ph-mobile-active #ph-app-nav{ display:flex; }
 .ph-featured-name{font-size:.92rem;font-weight:800;color:#111111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .ph-featured-sub{font-size:.68rem;color:#4B5563;margin-top:.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .ph-featured-price{font-size:1.25rem;font-weight:800;color:#111111;margin-top:.5rem;}
-.ph-featured-btn{margin-top:.7rem;align-self:flex-start;background:var(--accent);color:#111111;border:none;border-radius:999px;padding:.5rem 1.05rem;font-size:.72rem;font-weight:800;font-family:'General Sans','Plus Jakarta Sans',sans-serif;display:inline-flex;align-items:center;gap:.4rem;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.18);}
+/* Pinned bottom-left, well inside the info column's 56% width — never reaches the photo */
+.ph-featured-btn{position:absolute;left:1.15rem;bottom:1rem;z-index:3;background:var(--accent);color:#111111;border:none;border-radius:999px;padding:.55rem 1.1rem;font-size:.72rem;font-weight:800;font-family:'General Sans','Plus Jakarta Sans',sans-serif;display:inline-flex;align-items:center;gap:.4rem;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.18);}
 .ph-featured-dots{display:flex;justify-content:center;gap:.3rem;margin-top:.7rem;}
 .ph-featured-dots span{width:.4rem;height:.4rem;border-radius:50%;background:#D8D8D0;}
 .ph-featured-dots span.active{background:var(--accent);width:1rem;border-radius:999px;}
+
 
 /* Popular Brands row — mockup-exact white rounded-square tiles */
 .ph-brand-tile{flex:0 0 3.4rem;height:3.4rem;background:#FFFFFF;border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(35,31,28,0.06);font-weight:800;font-size:1rem;color:#111111;cursor:pointer;}
