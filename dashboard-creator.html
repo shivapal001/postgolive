@@ -519,7 +519,7 @@ body.ph-mobile-active .content{
 body.ph-mobile-active .content.ph-mob-root{
   position:fixed;
   top:56px;
-  bottom:62px;
+  bottom:92px;
   left:0; right:0;
   overflow-y:auto;
   -webkit-overflow-scrolling:touch;
@@ -1135,7 +1135,7 @@ button:active{
   color:var(--ph-text);
   position:fixed;
   top:56px;         /* header height */
-  bottom:62px;      /* navbar height */
+  bottom:92px;      /* floating pill navbar height + gap */
   left:0; right:0;
   overflow-y:auto;
   -webkit-overflow-scrolling:touch;
@@ -1162,17 +1162,17 @@ body.ph-mobile-active #ph-app-header{ display:flex; }
 /* Body-level fixed navbar — always visible, never scrolls — mockup-exact: full-width docked white bar */
 #ph-app-nav{
   position:fixed;
-  bottom:0; left:0; right:0;
+  bottom:1.1rem; left:1.1rem; right:1.1rem;
   height:auto;
   background:#FFFFFF;
   z-index:400;
   display:none;                        /* shown only when ph-mobile-active */
   align-items:center;
   justify-content:space-around;
-  border-top:1px solid var(--border);
-  border-radius:0;
-  box-shadow:0 -4px 16px rgba(0,0,0,.05);
-  padding:.5rem .25rem calc(.5rem + env(safe-area-inset-bottom));
+  border:none;
+  border-radius:999px;
+  box-shadow:0 10px 30px rgba(0,0,0,.14);
+  padding:.55rem .6rem;
 }
 body.ph-mobile-active #ph-app-nav{ display:flex; }
 
@@ -1181,10 +1181,10 @@ body.ph-mobile-active #ph-app-nav{ display:flex; }
 /* ph-fixed-header inside content — hidden, header is #ph-app-header */
 .ph-fixed-header{ display:none !important; }
 
-/* Nav items — mockup-exact: icon in a circle above an always-visible label */
+/* Nav items — floating pill style: icon-only circles, no text labels */
 .ph-nav-item{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:.22rem;
+  gap:0;
   width:auto;flex:1 1 0;
   color:#A6A6A0;
   cursor:pointer;background:none;border:none;
@@ -1195,14 +1195,13 @@ body.ph-mobile-active #ph-app-nav{ display:flex; }
 }
 .ph-nav-icon{
   display:flex;align-items:center;justify-content:center;
-  width:2.1rem;height:2.1rem;border-radius:50%;
+  width:2.5rem;height:2.5rem;border-radius:50%;
   transition:background .15s,box-shadow .15s;
 }
 .ph-nav-item i{font-size:1.05rem;color:inherit;}
-.ph-nav-label{display:block;font-size:.62rem;font-weight:600;color:inherit;line-height:1;}
+.ph-nav-label{display:none;} /* icon-only, no labels, to match the floating pill nav */
 .ph-nav-item.active{color:#111111;}
 .ph-nav-item.active .ph-nav-icon{background:var(--ph-accent);box-shadow:0 4px 12px rgba(233,255,57,.5);}
-.ph-nav-item.active .ph-nav-label{font-weight:800;}
 .ph-nav-item:active{opacity:.6;}
 
 /* ══════════════════════════════════════════════════════
