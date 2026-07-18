@@ -186,6 +186,7 @@ tr:last-child td{border-bottom:none;}
     <div class="nav-item" id="nav-founders" onclick="showPage('founders')"><i class="fas fa-rocket"></i> Founders <span class="nav-count" id="cnt-founders">0</span></div>
     <div class="nav-item" id="nav-creators" onclick="showPage('creators')"><i class="fas fa-paint-brush"></i> Creators <span class="nav-count" id="cnt-creators">0</span></div>
     <div class="nav-section">Content</div>
+    <div class="nav-item" id="nav-campaigns" onclick="showPage('campaigns')"><i class="fas fa-flag-checkered"></i> Campaigns <span class="nav-count" id="cnt-campaigns">0</span></div>
     <div class="nav-item" id="nav-requests" onclick="showPage('requests')"><i class="fas fa-inbox"></i> Requests <span class="nav-count" id="cnt-requests">0</span></div>
     <div class="nav-item" id="nav-portfolio" onclick="showPage('portfolio')"><i class="fas fa-film"></i> Portfolio Requests <span class="nav-count" id="cnt-portfolio">0</span></div>
     <div class="nav-item" id="nav-spotlight" onclick="showPage('spotlight')"><i class="fas fa-video"></i> Creator Spotlight <span class="nav-count" id="cnt-spotlight">0</span></div>
@@ -248,6 +249,14 @@ tr:last-child td{border-bottom:none;}
     <div id="edit-spotlight-form"></div>
   </div>
 </div>
+<div class="modal-overlay" id="edit-campaign-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('edit-campaign-modal')"><i class="fas fa-times"></i></button>
+    <div class="modal-title" id="edit-campaign-title">Add Campaign</div>
+    <div class="form-err" id="edit-campaign-err"></div>
+    <div id="edit-campaign-form"></div>
+  </div>
+</div>
 <div class="modal-overlay" id="portfolio-modal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('portfolio-modal')"><i class="fas fa-times"></i></button>
@@ -288,7 +297,7 @@ const auth = getAuth(fbApp);
 const db = getFirestore(fbApp);
 const ADMIN_EMAILS = ['admin@posthire.in','shiva@posthire.in'];
 
-let _admin=null, _data={users:{},creators:{},founders:{},requests:{},spotlights:{},portfolioReqs:{}}, _logs=[];
+let _admin=null, _data={users:{},creators:{},founders:{},requests:{},spotlights:{},portfolioReqs:{},campaigns:{}}, _logs=[];
 
 onAuthStateChanged(auth, async fbUser=>{
   if(!fbUser){showAuthScreen();return;}
@@ -319,14 +328,16 @@ async function refreshAll(){
   document.getElementById('refresh-spin').style.display='';
   try{
     const toObj=snap=>{const r={};snap.forEach(d=>{r[d.id]=d.data();});return r;};
-    const [usersSnap,creatorsSnap,foundersSnap,requestsSnap,spotSnap,portfolioReqSnap]=await Promise.all([
+    const [usersSnap,creatorsSnap,foundersSnap,requestsSnap,spotSnap,portfolioReqSnap,campaignsSnap]=await Promise.all([
       getDocs(collection(db,'users')),getDocs(collection(db,'creators')),
       getDocs(collection(db,'founders')),getDocs(collection(db,'requests')),
-      getDocs(collection(db,'spotlight_creators')),getDocs(collection(db,'portfolioRequests'))
+      getDocs(collection(db,'spotlight_creators')),getDocs(collection(db,'portfolioRequests')),
+      getDocs(collection(db,'campaigns'))
     ]);
     _data.users=toObj(usersSnap);_data.creators=toObj(creatorsSnap);
     _data.founders=toObj(foundersSnap);_data.requests=toObj(requestsSnap);
     _data.spotlights=toObj(spotSnap);_data.portfolioReqs=toObj(portfolioReqSnap);
+    _data.campaigns=toObj(campaignsSnap);
     updateCounts();
     document.getElementById('refresh-time').textContent='Updated '+new Date().toLocaleTimeString();
   }catch(e){toast('Failed to load: '+e.message,'error');}
@@ -340,16 +351,17 @@ function updateCounts(){
   document.getElementById('cnt-requests').textContent=Object.keys(_data.requests).length;
   document.getElementById('cnt-spotlight').textContent=Object.keys(_data.spotlights).length;
   document.getElementById('cnt-portfolio').textContent=Object.values(_data.portfolioReqs).filter(p=>p.status==='pending').length;
+  document.getElementById('cnt-campaigns').textContent=Object.keys(_data.campaigns||{}).length;
 }
 
-const pageTitles={overview:'Dashboard',analytics:'Analytics',users:'All Users',founders:'Founders',creators:'Creators',requests:'Collaboration Requests',portfolio:'Portfolio Requests',spotlight:'Creator Spotlight',plans:'Plans & Revenue',featured:'Featured Control',broadcast:'Broadcast',settings:'Settings'};
+const pageTitles={overview:'Dashboard',analytics:'Analytics',users:'All Users',founders:'Founders',creators:'Creators',campaigns:'Campaigns',requests:'Collaboration Requests',portfolio:'Portfolio Requests',spotlight:'Creator Spotlight',plans:'Plans & Revenue',featured:'Featured Control',broadcast:'Broadcast',settings:'Settings'};
 function showPage(page){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   const nav=document.getElementById('nav-'+page);if(nav)nav.classList.add('active');
   document.getElementById('topbar-title').innerHTML=`${pageTitles[page]||page} <span class="badge">ADMIN</span>`;
   const content=document.getElementById('main-content');
   content.innerHTML='<div class="empty"><i class="fas fa-spinner fa-spin"></i></div>';
-  const pages={overview:renderOverview,analytics:renderAnalytics,users:renderUsers,founders:renderFounders,creators:renderCreators,requests:renderRequests,portfolio:renderPortfolioReqs,spotlight:renderSpotlight,plans:renderPlans,featured:renderFeatured,broadcast:renderBroadcast,settings:renderSettings};
+  const pages={overview:renderOverview,analytics:renderAnalytics,users:renderUsers,founders:renderFounders,creators:renderCreators,campaigns:renderCampaignsAdmin,requests:renderRequests,portfolio:renderPortfolioReqs,spotlight:renderSpotlight,plans:renderPlans,featured:renderFeatured,broadcast:renderBroadcast,settings:renderSettings};
   if(pages[page])pages[page](content);
 }
 
@@ -754,6 +766,187 @@ async function activateAllSpotlights(){
   await batch.commit();toast('All spotlight active','success');renderSpotlight(document.getElementById('main-content'));
 }
 
+// ═══ CAMPAIGNS ═══
+function renderCampaignsAdmin(el){
+  const entries=Object.entries(_data.campaigns||{}).sort((a,b)=>new Date(b[1].createdAt||0)-new Date(a[1].createdAt||0));
+  const featuredCount=entries.filter(([,c])=>c.featured).length;
+  const openCount=entries.filter(([,c])=>c.status!=='closed').length;
+  el.innerHTML=`
+  <div class="panel">
+    <div class="panel-head">
+      <div class="panel-title"><i class="fas fa-flag-checkered" style="color:var(--accent)"></i> Campaigns <span style="color:var(--muted);font-weight:400">(${entries.length} total · ${openCount} open · ${featuredCount} featured)</span></div>
+      <div class="panel-actions"><button class="btn btn-primary" onclick="openCampaignModal()"><i class="fas fa-plus"></i> Add Campaign</button></div>
+    </div>
+    <div class="panel-body">
+      ${entries.length===0
+        ?`<div class="empty"><i class="fas fa-flag-checkered"></i><p>No campaigns yet.<br>Add one — set a poster image and mark it Featured to show it on the creator home screen.</p></div>`
+        :`<div class="spot-grid">${entries.map(([id,c])=>{
+            const poster=c.productImage||c.brandLogo||'';
+            return `
+              <div class="spot-card ${c.status==='closed'?'inactive':''}">
+                <div class="spot-vid-wrap">
+                  ${poster
+                    ?`<img src="${poster}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">`
+                    :`<div style="width:100%;height:100%;background:linear-gradient(135deg,#1e1b4b,#312e81);display:flex;align-items:center;justify-content:center"><i class="fas fa-image" style="color:rgba(255,255,255,.2);font-size:2.5rem"></i></div>`}
+                  ${c.featured?`<div class="spot-order-badge" style="background:var(--gold);color:#111"><i class="fas fa-star"></i> Featured</div>`:''}
+                  <div class="spot-status-badge"><span class="badge ${c.status==='closed'?'badge-declined':'badge-active'}">${c.status==='closed'?'Closed':'Open'}</span></div>
+                </div>
+                <div class="spot-info">
+                  <div class="spot-name">${c.startupName||'Brand'}</div>
+                  <div class="spot-niche">${c.title||c.collabType||'Campaign'}</div>
+                  <div class="spot-url">${c.budget?'₹'+c.budget:'Barter'} ${c.deadline?' · till '+new Date(c.deadline).toLocaleDateString('en-IN',{day:'numeric',month:'short'}):''}</div>
+                </div>
+                <div class="spot-actions">
+                  <button class="btn btn-ghost btn-xs" style="flex:1;justify-content:center" onclick="openCampaignModal('${id}')"><i class="fas fa-edit"></i> Edit</button>
+                  <button class="btn btn-ghost btn-xs" title="${c.featured?'Unfeature':'Feature'}" onclick="toggleCampaignFeatured('${id}',${!!c.featured})"><i class="fas fa-star" style="color:${c.featured?'var(--gold)':'inherit'}"></i></button>
+                  <button class="btn btn-ghost btn-xs" title="${c.status==='closed'?'Reopen':'Close'}" onclick="toggleCampaignStatusAdmin('${id}','${c.status||'open'}')"><i class="fas fa-${c.status==='closed'?'lock-open':'lock'}"></i></button>
+                  <button class="btn btn-danger btn-xs" onclick="deleteCampaignAdmin('${id}','${(c.startupName||'').replace(/'/g,'')}')"><i class="fas fa-trash"></i></button>
+                </div>
+              </div>`;
+          }).join('')}</div>`}
+    </div>
+  </div>`;
+}
+
+function openCampaignModal(id){
+  const c=id?(_data.campaigns[id]||{}):{};
+  const isEdit=!!id;
+  document.getElementById('edit-campaign-title').textContent=isEdit?'Edit Campaign':'Add Campaign';
+  document.getElementById('edit-campaign-err').className='form-err';
+  document.getElementById('edit-campaign-form').innerHTML=`
+    <div class="form-row">
+      <div class="form-group">
+        <label>Brand / Startup Name <span style="color:var(--red)">*</span></label>
+        <input id="cp-startup" value="${c.startupName||''}" placeholder="e.g. Glow Cosmetics">
+      </div>
+      <div class="form-group">
+        <label>Campaign Title <span style="color:var(--red)">*</span></label>
+        <input id="cp-title" value="${c.title||''}" placeholder="e.g. Summer Skincare Launch">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Poster / Cover Image URL <span style="color:var(--red)">*</span></label>
+      <input id="cp-poster" value="${c.productImage||''}" placeholder="https://... shown as the campaign's Featured poster" oninput="previewCampaignPoster(this.value)">
+      <div class="form-hint">This image is used as the Featured Campaign poster on the creator home screen.</div>
+    </div>
+    <div id="cp-poster-preview" style="margin-top:.5rem;display:${c.productImage?'block':'none'}">
+      <img id="cp-preview-img" src="${c.productImage||''}" style="width:100%;max-height:160px;object-fit:cover;border-radius:.5rem;background:#000">
+    </div>
+    <div class="form-group" style="margin-top:.875rem">
+      <label>Brand Logo URL (optional)</label>
+      <input id="cp-logo" value="${c.brandLogo||''}" placeholder="https://... small round brand logo">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Budget (₹, optional — leave blank for Barter)</label>
+        <input id="cp-budget" value="${c.budget||''}" placeholder="e.g. 15000">
+      </div>
+      <div class="form-group">
+        <label>Deadline (optional)</label>
+        <input id="cp-deadline" type="date" value="${c.deadline?c.deadline.substring(0,10):''}">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Collab Type</label>
+      <select id="cp-ctype">${['Sponsored Posts','Product Review','Brand Ambassador','Content Creation','Long-term Partnership'].map(v=>`<option${c.collabType===v?' selected':''}>${v}</option>`).join('')}</select>
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <textarea id="cp-desc" rows="3" placeholder="What creators need to do, deliverables, requirements...">${c.description||''}</textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="checkbox-row">
+          <input type="checkbox" id="cp-featured" ${c.featured?'checked':''}> <i class="fas fa-star" style="color:var(--gold)"></i> Featured (shows on creator home screen)
+        </label>
+      </div>
+      <div class="form-group">
+        <label class="checkbox-row">
+          <input type="checkbox" id="cp-status" ${c.status==='closed'?'':'checked'}> Open for applications
+        </label>
+      </div>
+    </div>
+    <div style="display:flex;gap:.5rem;margin-top:1.25rem">
+      <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="saveCampaignAdmin('${id||''}')">
+        <i class="fas fa-${isEdit?'save':'plus'}"></i> ${isEdit?'Save Changes':'Add Campaign'}
+      </button>
+      <button class="btn btn-ghost" onclick="closeModal('edit-campaign-modal')">Cancel</button>
+    </div>`;
+  openModal('edit-campaign-modal');
+}
+
+function previewCampaignPoster(url){
+  const wrap=document.getElementById('cp-poster-preview');
+  const img=document.getElementById('cp-preview-img');
+  if(url&&url.startsWith('http')){img.src=url;wrap.style.display='block';}
+  else{wrap.style.display='none';}
+}
+
+async function saveCampaignAdmin(id){
+  const startupName=(document.getElementById('cp-startup')?.value||'').trim();
+  const title=(document.getElementById('cp-title')?.value||'').trim();
+  const poster=(document.getElementById('cp-poster')?.value||'').trim();
+  const errEl=document.getElementById('edit-campaign-err');
+  if(!startupName||!title){errEl.textContent='Brand name and campaign title are required.';errEl.className='form-err show';return;}
+  const deadlineVal=document.getElementById('cp-deadline')?.value||'';
+  const payload={
+    startupName,
+    title,
+    productImage:poster,
+    brandLogo:(document.getElementById('cp-logo')?.value||'').trim(),
+    budget:(document.getElementById('cp-budget')?.value||'').trim(),
+    deadline:deadlineVal?new Date(deadlineVal).toISOString():'',
+    collabType:document.getElementById('cp-ctype')?.value||'',
+    collabTypes:document.getElementById('cp-ctype')?.value?[document.getElementById('cp-ctype').value]:[],
+    description:(document.getElementById('cp-desc')?.value||'').trim(),
+    featured:document.getElementById('cp-featured')?.checked===true,
+    status:document.getElementById('cp-status')?.checked===false?'closed':'open',
+    updatedAt:new Date().toISOString()
+  };
+  if(!id){payload.founderName='PostHire';payload.viewsCount=0;payload.applicantsCount=0;payload.createdAt=new Date().toISOString();}
+  try{
+    if(id){
+      await updateDoc(doc(db,'campaigns',id),payload);
+      _data.campaigns[id]={..._data.campaigns[id],...payload};
+      toast(title+' updated','success');addLog('user','Campaign updated: '+title);
+    } else {
+      const ref=await addDoc(collection(db,'campaigns'),payload);
+      await updateDoc(ref,{id:ref.id});
+      _data.campaigns[ref.id]={...payload,id:ref.id};
+      toast(title+' added!','success');addLog('user','Campaign added: '+title);
+    }
+    closeModal('edit-campaign-modal');
+    updateCounts();
+    renderCampaignsAdmin(document.getElementById('main-content'));
+  }catch(e){errEl.textContent='Error: '+e.message;errEl.className='form-err show';}
+}
+
+async function toggleCampaignFeatured(id,currentlyFeatured){
+  const newVal=!currentlyFeatured;
+  await updateDoc(doc(db,'campaigns',id),{featured:newVal});
+  if(_data.campaigns[id])_data.campaigns[id].featured=newVal;
+  toast('Campaign '+(newVal?'featured':'unfeatured'),'success');
+  renderCampaignsAdmin(document.getElementById('main-content'));
+}
+
+async function toggleCampaignStatusAdmin(id,currentStatus){
+  const newStatus=currentStatus==='closed'?'open':'closed';
+  await updateDoc(doc(db,'campaigns',id),{status:newStatus});
+  if(_data.campaigns[id])_data.campaigns[id].status=newStatus;
+  toast('Campaign '+(newStatus==='closed'?'closed':'reopened'),'success');
+  renderCampaignsAdmin(document.getElementById('main-content'));
+}
+
+function deleteCampaignAdmin(id,name){
+  showConfirm('Delete campaign "'+name+'"?','This cannot be undone. It will disappear from the app immediately.',async()=>{
+    await deleteDoc(doc(db,'campaigns',id));
+    delete _data.campaigns[id];
+    updateCounts();toast(name+' deleted','success');
+    addLog('user','Campaign deleted: '+name);
+    renderCampaignsAdmin(document.getElementById('main-content'));
+  },'trash','btn-danger');
+}
+
 function renderPlans(el){
   const users=Object.values(_data.users);
   const free=users.filter(u=>!u.plan||u.plan==='free');
@@ -892,7 +1085,7 @@ function toast(msg,type='info'){
 }
 function addLog(type,msg){_logs.push({type,msg,ts:Date.now()});}
 
-Object.assign(window,{adminLogin,adminLogout,showPage,refreshAll,renderSpotlight,openSpotlightModal,previewSpotlightVideo,saveSpotlight,toggleSpotlightActive,updateSpotlightOrder,deleteSpotlight,hideAllSpotlights,activateAllSpotlights,editUser,saveEditUser,changePlan,adminChangePlanDirect,deleteUser,editCreator,saveEditCreator,deleteCreator,toggleCreatorField,updateReqStatus,deleteRequest,filterUsersTable,sendBroadcast,updateBroadcastCount,dangerDeleteAll,exportData,openModal,closeModal,renderPortfolioReqs,markPortfolioHosted,previewPortfolioVideo,savePortfolioHosted,rejectPortfolioReq,deletePortfolioReq});
+Object.assign(window,{adminLogin,adminLogout,showPage,refreshAll,renderSpotlight,openSpotlightModal,previewSpotlightVideo,saveSpotlight,toggleSpotlightActive,updateSpotlightOrder,deleteSpotlight,hideAllSpotlights,activateAllSpotlights,editUser,saveEditUser,changePlan,adminChangePlanDirect,deleteUser,editCreator,saveEditCreator,deleteCreator,toggleCreatorField,updateReqStatus,deleteRequest,filterUsersTable,sendBroadcast,updateBroadcastCount,dangerDeleteAll,exportData,openModal,closeModal,renderPortfolioReqs,markPortfolioHosted,previewPortfolioVideo,savePortfolioHosted,rejectPortfolioReq,deletePortfolioReq,renderCampaignsAdmin,openCampaignModal,previewCampaignPoster,saveCampaignAdmin,toggleCampaignFeatured,toggleCampaignStatusAdmin,deleteCampaignAdmin});
 
 </script>
 </body>
