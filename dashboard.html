@@ -527,6 +527,11 @@ body.ph-mobile-active .content.ph-mob-root{
   z-index:200;
   background:var(--ph-bg);
 }
+/* Messages screen needs to be edge-to-edge (chat UI), not padded like other screens */
+body.ph-mobile-active .content.ph-mob-root.msgs-mode{
+  padding:0 !important;
+  overflow-y:hidden;
+}
 
 /* ══════════════════════════════════════════════════════
    NATIVE APP FEEL — transitions, tap feedback, no browser chrome
