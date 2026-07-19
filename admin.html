@@ -391,12 +391,12 @@ function renderOverview(el){
 function renderUsers(el){renderUserTable(el,Object.entries(_data.users),'All Users');}
 function renderFounders(el){renderUserTable(el,Object.entries(_data.users).filter(([,u])=>u.userType==='founder'),'Founders');}
 function renderUserTable(el,entries,title){
-  el.innerHTML=`<div class="panel"><div class="panel-head"><div class="panel-title"><i class="fas fa-users"></i> ${title} (${entries.length})</div><div class="panel-actions"><input class="filter-input" id="user-search" placeholder="Search…" oninput="filterUsersTable()" style="min-width:200px"><select class="filter-select" id="user-plan-filter" onchange="filterUsersTable()"><option value="">All Plans</option><option>free</option><option>starter</option><option>pro</option></select><select class="filter-select" id="user-type-filter" onchange="filterUsersTable()"><option value="">All Types</option><option>founder</option><option>creator</option></select></div></div><div class="table-wrap"><table><thead><tr><th>User</th><th>Type</th><th>Plan</th><th>Joined</th><th>Actions</th></tr></thead><tbody id="users-tbody">${buildUsersRows(entries)}</tbody></table></div></div>`;
+  el.innerHTML=`<div class="panel"><div class="panel-head"><div class="panel-title"><i class="fas fa-users"></i> ${title} (${entries.length})</div><div class="panel-actions"><input class="filter-input" id="user-search" placeholder="Search…" oninput="filterUsersTable()" style="min-width:200px"><select class="filter-select" id="user-plan-filter" onchange="filterUsersTable()"><option value="">All Plans</option><option>free</option><option>starter</option><option>pro</option></select><select class="filter-select" id="user-type-filter" onchange="filterUsersTable()"><option value="">All Types</option><option>founder</option><option>creator</option></select></div></div><div class="table-wrap"><table><thead><tr><th>User</th><th>Type</th><th>Plan</th><th>Verified</th><th>Joined</th><th>Actions</th></tr></thead><tbody id="users-tbody">${buildUsersRows(entries)}</tbody></table></div></div>`;
   window._userEntries=entries;
 }
 function buildUsersRows(entries){
-  if(!entries.length)return`<tr><td colspan="5"><div class="empty" style="padding:1.5rem"><p>No users found</p></div></td></tr>`;
-  return entries.map(([uid,u])=>`<tr><td><div class="user-cell"><div class="ava-sm">${(u.name||'U').charAt(0)}</div><div><div style="font-weight:600;font-size:.82rem">${u.name||'—'}</div><div style="font-size:.7rem;color:var(--muted)">${u.email||''}</div></div></div></td><td><span class="badge badge-${u.userType||'founder'}">${u.userType||'—'}</span></td><td><span class="badge badge-${u.plan||'free'}">${(u.plan||'free').toUpperCase()}</span></td><td style="font-size:.75rem;color:var(--muted)">${u.createdAt?new Date(u.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'—'}</td><td><div style="display:flex;gap:.3rem"><button class="btn btn-ghost btn-xs" onclick="editUser('${uid}')"><i class="fas fa-edit"></i></button><button class="btn btn-warning btn-xs" onclick="changePlan('${uid}','${u.plan||'free'}')"><i class="fas fa-crown"></i></button><button class="btn btn-danger btn-xs" onclick="deleteUser('${uid}','${u.name||u.email}')"><i class="fas fa-trash"></i></button></div></td></tr>`).join('');
+  if(!entries.length)return`<tr><td colspan="6"><div class="empty" style="padding:1.5rem"><p>No users found</p></div></td></tr>`;
+  return entries.map(([uid,u])=>`<tr><td><div class="user-cell"><div class="ava-sm">${(u.name||'U').charAt(0)}</div><div><div style="font-weight:600;font-size:.82rem">${u.name||'—'}${vBadge(u.verified)}</div><div style="font-size:.7rem;color:var(--muted)">${u.email||''}</div></div></div></td><td><span class="badge badge-${u.userType||'founder'}">${u.userType||'—'}</span></td><td><span class="badge badge-${u.plan||'free'}">${(u.plan||'free').toUpperCase()}</span></td><td><label class="toggle"><input type="checkbox" ${u.verified?'checked':''} onchange="toggleUserVerified('${uid}','${u.userType||'founder'}',this.checked)"><span class="toggle-slider"></span></label></td><td style="font-size:.75rem;color:var(--muted)">${u.createdAt?new Date(u.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'—'}</td><td><div style="display:flex;gap:.3rem"><button class="btn btn-ghost btn-xs" onclick="editUser('${uid}')"><i class="fas fa-edit"></i></button><button class="btn btn-warning btn-xs" onclick="changePlan('${uid}','${u.plan||'free'}')"><i class="fas fa-crown"></i></button><button class="btn btn-danger btn-xs" onclick="deleteUser('${uid}','${u.name||u.email}')"><i class="fas fa-trash"></i></button></div></td></tr>`).join('');
 }
 function filterUsersTable(){
   const s=(document.getElementById('user-search')?.value||'').toLowerCase();
@@ -413,12 +413,12 @@ function filterUsersTable(){
 
 function renderCreators(el){
   const entries=Object.entries(_data.creators);
-  el.innerHTML=`<div class="panel"><div class="panel-head"><div class="panel-title"><i class="fas fa-paint-brush"></i> Creator Profiles (${entries.length})</div></div><div class="table-wrap"><table><thead><tr><th>Creator</th><th>Niches</th><th>Audience</th><th>ER</th><th>Featured</th><th>Top Search</th><th>Actions</th></tr></thead><tbody>${buildCreatorsRows(entries)}</tbody></table></div></div>`;
+  el.innerHTML=`<div class="panel"><div class="panel-head"><div class="panel-title"><i class="fas fa-paint-brush"></i> Creator Profiles (${entries.length})</div></div><div class="table-wrap"><table><thead><tr><th>Creator</th><th>Niches</th><th>Audience</th><th>ER</th><th>Verified</th><th>Featured</th><th>Top Search</th><th>Actions</th></tr></thead><tbody>${buildCreatorsRows(entries)}</tbody></table></div></div>`;
   window._creatorEntries=entries;
 }
 function buildCreatorsRows(entries){
-  if(!entries.length)return`<tr><td colspan="7"><div class="empty" style="padding:1.5rem"><p>No creators yet</p></div></td></tr>`;
-  return entries.map(([uid,c])=>`<tr><td><div class="user-cell"><div class="ava-sm">${(c.name||'C').charAt(0)}</div><div><div style="font-weight:600;font-size:.82rem">${c.name||'—'}</div><div style="font-size:.7rem;color:var(--muted)">${c.instagram||''}</div></div></div></td><td style="max-width:140px;font-size:.75rem">${(c.niches||[]).slice(0,3).join(', ')}</td><td style="font-size:.8rem">${c.audienceSize||'—'}</td><td style="font-size:.8rem;color:var(--accent3)">${c.engagementRate||'—'}</td><td><label class="toggle"><input type="checkbox" ${c.featured?'checked':''} onchange="toggleCreatorField('${uid}','featured',this.checked)"><span class="toggle-slider"></span></label></td><td><label class="toggle"><input type="checkbox" ${c.topSearch?'checked':''} onchange="toggleCreatorField('${uid}','topSearch',this.checked)"><span class="toggle-slider"></span></label></td><td><div style="display:flex;gap:.3rem"><button class="btn btn-ghost btn-xs" onclick="editCreator('${uid}')"><i class="fas fa-edit"></i></button><button class="btn btn-danger btn-xs" onclick="deleteCreator('${uid}','${c.name||uid}')"><i class="fas fa-trash"></i></button></div></td></tr>`).join('');
+  if(!entries.length)return`<tr><td colspan="8"><div class="empty" style="padding:1.5rem"><p>No creators yet</p></div></td></tr>`;
+  return entries.map(([uid,c])=>`<tr><td><div class="user-cell"><div class="ava-sm">${(c.name||'C').charAt(0)}</div><div><div style="font-weight:600;font-size:.82rem">${c.name||'—'}${vBadge(c.verified)}</div><div style="font-size:.7rem;color:var(--muted)">${c.instagram||''}</div></div></div></td><td style="max-width:140px;font-size:.75rem">${(c.niches||[]).slice(0,3).join(', ')}</td><td style="font-size:.8rem">${c.audienceSize||'—'}</td><td style="font-size:.8rem;color:var(--accent3)">${c.engagementRate||'—'}</td><td><label class="toggle"><input type="checkbox" ${c.verified?'checked':''} onchange="toggleUserVerified('${uid}','creator',this.checked)"><span class="toggle-slider"></span></label></td><td><label class="toggle"><input type="checkbox" ${c.featured?'checked':''} onchange="toggleCreatorField('${uid}','featured',this.checked)"><span class="toggle-slider"></span></label></td><td><label class="toggle"><input type="checkbox" ${c.topSearch?'checked':''} onchange="toggleCreatorField('${uid}','topSearch',this.checked)"><span class="toggle-slider"></span></label></td><td><div style="display:flex;gap:.3rem"><button class="btn btn-ghost btn-xs" onclick="editCreator('${uid}')"><i class="fas fa-edit"></i></button><button class="btn btn-danger btn-xs" onclick="deleteCreator('${uid}','${c.name||uid}')"><i class="fas fa-trash"></i></button></div></td></tr>`).join('');
 }
 
 function renderRequests(el){
@@ -1040,6 +1040,20 @@ function deleteUser(uid,name){
   },'trash','btn-danger');
 }
 
+async function toggleUserVerified(uid,userType,val){
+  const col = userType==='creator' ? 'creators' : 'founders';
+  try{
+    await Promise.all([
+      setDoc(doc(db,'users',uid),{verified:val},{merge:true}),
+      setDoc(doc(db,col,uid),{verified:val},{merge:true})
+    ]);
+    if(_data.users[uid])_data.users[uid].verified=val;
+    if(_data[col]&&_data[col][uid])_data[col][uid].verified=val;
+    toast(val?'User verified ✓':'Verification removed','success');
+  }catch(e){toast('Failed: '+e.message,'error');}
+}
+function vBadge(v){ return v?' <i class="fas fa-circle-check" title="Verified" style="color:var(--blue);font-size:.85em;vertical-align:middle"></i>':''; }
+
 async function toggleCreatorField(uid,field,val){
   await updateDoc(doc(db,'creators',uid),{[field]:val});
   if(_data.creators[uid])_data.creators[uid][field]=val;
@@ -1085,7 +1099,7 @@ function toast(msg,type='info'){
 }
 function addLog(type,msg){_logs.push({type,msg,ts:Date.now()});}
 
-Object.assign(window,{adminLogin,adminLogout,showPage,refreshAll,renderSpotlight,openSpotlightModal,previewSpotlightVideo,saveSpotlight,toggleSpotlightActive,updateSpotlightOrder,deleteSpotlight,hideAllSpotlights,activateAllSpotlights,editUser,saveEditUser,changePlan,adminChangePlanDirect,deleteUser,editCreator,saveEditCreator,deleteCreator,toggleCreatorField,updateReqStatus,deleteRequest,filterUsersTable,sendBroadcast,updateBroadcastCount,dangerDeleteAll,exportData,openModal,closeModal,renderPortfolioReqs,markPortfolioHosted,previewPortfolioVideo,savePortfolioHosted,rejectPortfolioReq,deletePortfolioReq,renderCampaignsAdmin,openCampaignModal,previewCampaignPoster,saveCampaignAdmin,toggleCampaignFeatured,toggleCampaignStatusAdmin,deleteCampaignAdmin});
+Object.assign(window,{adminLogin,adminLogout,showPage,refreshAll,renderSpotlight,openSpotlightModal,previewSpotlightVideo,saveSpotlight,toggleSpotlightActive,updateSpotlightOrder,deleteSpotlight,hideAllSpotlights,activateAllSpotlights,editUser,saveEditUser,changePlan,adminChangePlanDirect,deleteUser,editCreator,saveEditCreator,deleteCreator,toggleCreatorField,toggleUserVerified,updateReqStatus,deleteRequest,filterUsersTable,sendBroadcast,updateBroadcastCount,dangerDeleteAll,exportData,openModal,closeModal,renderPortfolioReqs,markPortfolioHosted,previewPortfolioVideo,savePortfolioHosted,rejectPortfolioReq,deletePortfolioReq,renderCampaignsAdmin,openCampaignModal,previewCampaignPoster,saveCampaignAdmin,toggleCampaignFeatured,toggleCampaignStatusAdmin,deleteCampaignAdmin});
 
 </script>
 </body>
