@@ -588,11 +588,11 @@ button:active{
    MESSAGES (embedded section — merged from messages.html)
    ══════════════════════════════════════════════════════════════════ */
 .main.messages-active{height:100vh;overflow:hidden;}
-.content.msgs-mode{padding:1.5rem 2rem;display:flex;flex-direction:column;min-height:0;overflow:hidden;}
-.msgs-wrap{display:flex;flex:1;min-height:0;overflow:hidden;background:var(--surface);border-radius:1.5rem;border:1px solid var(--border);box-shadow:var(--shadow);}
+.content.msgs-mode{padding:0;display:flex;flex-direction:column;min-height:0;overflow:hidden;}
+.msgs-wrap{display:flex;flex:1;min-height:0;overflow:hidden;background:var(--surface);border-radius:0;border:none;box-shadow:none;}
 
 /* ── Conversation list ── */
-.conv-list{width:340px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--surface);overflow:hidden;}
+.conv-list{width:100%;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--surface);overflow:hidden;}
 .conv-list-head{padding:1.125rem 1.25rem;border-bottom:1px solid var(--border);flex-shrink:0;}
 .conv-list-title{font-size:1.05rem;font-weight:800;letter-spacing:-.01em;margin-bottom:.75rem;color:var(--text);}
 .conv-search{position:relative;}
