@@ -2149,7 +2149,7 @@ async function renderMobileHomeNew(el){
       return `<div class="ph-rec-card">
         <div class="ph-rec-ava">${img}</div>
         <div class="ph-rec-body">
-          <div class="ph-rec-name">${escHtml(c.name||'Creator')} <i class="fas fa-circle-check" style="color:#2F80FF;font-size:.7rem"></i></div>
+          <div class="ph-rec-name">${escHtml(c.name||'Creator')}${verifiedBadge(c.verified)}</div>
           <div class="ph-rec-role">${escHtml((c.niches||['Creator'])[0])}</div>
         </div>
         ${btn}
@@ -2653,7 +2653,7 @@ async function renderMobileDiscover(el){
       <div class="ph-creator-top">
         <div class="ph-creator-ava">${ava}</div>
         <div style="flex:1;min-width:0">
-          <div class="ph-creator-name">${escHtml(c.name||'Creator')} <i class="fas fa-circle-check" style="color:var(--ph-blue);font-size:.7rem"></i></div>
+          <div class="ph-creator-name">${escHtml(c.name||'Creator')}${verifiedBadge(c.verified)}</div>
           <div class="ph-creator-meta">${escHtml(c.audienceSize||c.followers||'')}${c.engagementRate?` · ${c.engagementRate}% ER`:''}</div>
         </div>
         ${c.featured?`<span class="ph-creator-badge">TOP</span>`:''}
@@ -2960,7 +2960,7 @@ async function renderMobileProfile(el){
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg> Edit Profile
       </button>
     </div>
-    <div class="ph-profile-name">${escHtml(name)} <span class="ph-profile-badge">${plan.toUpperCase()}</span></div>
+    <div class="ph-profile-name">${escHtml(name)}${verifiedBadge(_me.verified,'.8em')} <span class="ph-profile-badge">${plan.toUpperCase()}</span></div>
     <div class="ph-profile-role">${role}${_me.startupName?' · '+escHtml(_me.startupName):''}${_me.niche?' · '+escHtml(_me.niche):''}</div>
     ${bio?`<div class="ph-profile-bio">${escHtml(bio)}</div>`:''}
     <div class="ph-profile-stats">
@@ -3040,7 +3040,7 @@ async function renderRequests(el){
   const creators=await DB.getCreators();
   const badge=s=>`<span class="status-badge ${s||'pending'}">${{pending:'⏳ Pending',accepted:'✓ Accepted',declined:'✗ Declined'}[s]||'⏳ Pending'}</span>`;
   const recvHTML=recv.length?recv.slice().reverse().map(([id,r])=>{const acts=r.status==='pending'?`<button class="accept-btn" onclick="updReq('${id}','accepted')">Accept</button><button class="decline-btn" onclick="updReq('${id}','declined')">Decline</button>`:r.status==='accepted'?`<button class="accept-btn" onclick="openChatForRequest('${r.founderId}','${r.creatorId||_me.uid}')"><i class="fas fa-comment-dots"></i> Chat</button>`:'';return`<div class="req-item"><div class="req-ava"><i class="fas fa-rocket"></i></div><div class="req-body"><div class="req-name">${escHtml(r.founderName||'Founder')} · ${escHtml(r.startupName||'')}</div><div class="req-detail">${escHtml(r.collabType||'')} ${r.budget?'· '+escHtml(r.budget):''}</div><div class="req-actions">${badge(r.status)}${acts}</div></div></div>`;}).join(''):`<div class="ph-empty-inline">No requests received yet.</div>`;
-  const sentHTML=sent.length?sent.slice().reverse().map(([id,r])=>{const cr=creators[r.creatorId];const wa=r.status==='accepted'?`<button class="accept-btn" onclick="openChatForRequest('${r.founderId||_me.uid}','${r.creatorId}')"><i class="fas fa-comment-dots"></i> Chat</button>`:'';return`<div class="req-item"><div class="req-ava"><i class="fas fa-video"></i></div><div class="req-body"><div class="req-name">${escHtml(cr?.name||'Creator')}</div><div class="req-detail">${escHtml(r.collabType||'')} ${r.budget?'· '+escHtml(r.budget):''}</div><div class="req-actions">${badge(r.status)}${wa}</div></div></div>`;}).join(''):`<div class="ph-empty-inline">No requests sent yet. <a onclick="showSection('creators')" style="color:var(--ph-accent);font-weight:700">Browse creators →</a></div>`;
+  const sentHTML=sent.length?sent.slice().reverse().map(([id,r])=>{const cr=creators[r.creatorId];const wa=r.status==='accepted'?`<button class="accept-btn" onclick="openChatForRequest('${r.founderId||_me.uid}','${r.creatorId}')"><i class="fas fa-comment-dots"></i> Chat</button>`:'';return`<div class="req-item"><div class="req-ava"><i class="fas fa-video"></i></div><div class="req-body"><div class="req-name">${escHtml(cr?.name||'Creator')}${verifiedBadge(cr?.verified,'.7em')}</div><div class="req-detail">${escHtml(r.collabType||'')} ${r.budget?'· '+escHtml(r.budget):''}</div><div class="req-actions">${badge(r.status)}${wa}</div></div></div>`;}).join(''):`<div class="ph-empty-inline">No requests sent yet. <a onclick="showSection('creators')" style="color:var(--ph-accent);font-weight:700">Browse creators →</a></div>`;
 
   el.innerHTML=`
     <div class="ph-tabs">
@@ -3938,7 +3938,7 @@ function renderConvList(){
       </div>
       <div class="conv-body">
         <div class="conv-row">
-          <div class="conv-name">${escHtml(c.otherUser?.name||'User')}</div>
+          <div class="conv-name">${escHtml(c.otherUser?.name||'User')}${verifiedBadge(c.otherUser?.verified,'.7em')}</div>
           <div class="conv-time">${fmtTime(ts)}</div>
         </div>
         <div class="conv-row" style="margin-top:.15rem">
@@ -3964,6 +3964,10 @@ function hashColor(str=''){
 }
 function escHtml(s){ return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function initials(name){ return (name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
+function verifiedBadge(isVerified,size){
+  if(!isVerified)return'';
+  return ` <i class="fas fa-circle-check" title="Verified by PostHire" style="color:#2F80FF;font-size:${size||'.75em'};vertical-align:middle"></i>`;
+}
 function fmtTime(ts){
   if(!ts) return '';
   const d = ts?.toDate ? ts.toDate() : new Date(ts);
@@ -4037,7 +4041,7 @@ function openConversation(convId){
         ${conv.otherUser?.profilePhoto?`<img src="${conv.otherUser.profilePhoto}" onerror="this.style.display='none'">`:initials(conv.otherUser?.name||'U')}
       </div>
       <div class="chat-header-info">
-        <div class="chat-header-name">${escHtml(conv.otherUser?.name||'User')}</div>
+        <div class="chat-header-name">${escHtml(conv.otherUser?.name||'User')}${verifiedBadge(conv.otherUser?.verified,'.75em')}</div>
         <div class="chat-header-meta" id="chat-status-text">${statusMeta}</div>
       </div>
     </div>
