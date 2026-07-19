@@ -4609,7 +4609,7 @@ function subscribeConversations(){
   _convListener = onSnapshot(q, async (snap)=>{
     const rawConvs = [];
     snap.forEach(d=>rawConvs.push({id:d.id, ...d.data()}));
-    const enriched = await Promise.all(rawConvs.map(async c=>{
+    let enriched = await Promise.all(rawConvs.map(async c=>{
       const otherId = (c.participants||[]).find(p=>p!==_me.uid) || c.founderId || c.creatorId;
       let otherUser = c._otherUserCache;
       if(!otherUser){
@@ -4620,6 +4620,19 @@ function subscribeConversations(){
       }
       return { ...c, otherId, otherUser, unread:(c.unreadCounts||{})[_me.uid]||0 };
     }));
+    // Defensive dedupe: only one conversation row per contact, even if
+    // duplicate conversation docs exist in Firestore for the same pair.
+    const byContact = new Map();
+    for(const c of enriched){
+      const prev = byContact.get(c.otherId);
+      if(!prev){ byContact.set(c.otherId, c); continue; }
+      const cIsNewer = (c.updatedAt?.toMillis?.()||0) >= (prev.updatedAt?.toMillis?.()||0);
+      const keep = cIsNewer ? c : prev;
+      const drop = cIsNewer ? prev : c;
+      keep.unread = (keep.unread||0) + (drop.unread||0);
+      byContact.set(c.otherId, keep);
+    }
+    enriched = Array.from(byContact.values());
     enriched.sort((a,b)=>{
       const ta = a.updatedAt?.toMillis?.() || 0;
       const tb = b.updatedAt?.toMillis?.() || 0;
