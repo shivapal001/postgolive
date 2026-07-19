@@ -1377,7 +1377,25 @@ const DB = {
   async getCreators(){const snap=await getDocs(collection(db,'creators'));const r={};snap.forEach(d=>{r[d.id]=d.data();});return r;},
   async getFounder(uid){const s=await getDoc(doc(db,'founders',uid));return s.exists()?s.data():null;},
   async setFounder(uid,d){await setDoc(doc(db,'founders',uid),d);},
-  async getRequests(){const snap=await getDocs(collection(db,'requests'));const r={};snap.forEach(d=>{r[d.id]=d.data();});return r;},
+  async getRequests(){
+    // firestore rules only allow reading requests where the current
+    // user is founderId or creatorId (or admin). A bare
+    // collection(db,'requests') query has no such constraint, so
+    // Firestore rejects it with permission-denied — which silently
+    // broke any screen awaiting this (e.g. Profile stuck forever on
+    // its skeleton loader). Fetch only the two slices the user is
+    // actually allowed to see, then merge.
+    const uid=_me?.uid;
+    if(!uid) return {};
+    const r={};
+    const [asFounder,asCreator]=await Promise.all([
+      getDocs(query(collection(db,'requests'),where('founderId','==',uid))),
+      getDocs(query(collection(db,'requests'),where('creatorId','==',uid)))
+    ]);
+    asFounder.forEach(d=>{r[d.id]=d.data();});
+    asCreator.forEach(d=>{r[d.id]=d.data();});
+    return r;
+  },
   async saveRequest(d){const ref=await addDoc(collection(db,'requests'),d);await updateDoc(ref,{id:ref.id});return ref.id;},
   async updateRequest(id,p){await updateDoc(doc(db,'requests',id),p);},
   async seedDemoCreators(){const s=await getDoc(doc(db,'_meta','seeded'));if(s.exists())return;const creators=[{userId:'d1',name:'Arjun Mehra',profilePhoto:'',bio:'Tech & SaaS creator helping founders grow.',niches:['Tech','SaaS','Startup'],instagram:'@arjunmehra',youtube:'@arjunmehra',linkedin:'linkedin.com/in/arjun',audienceSize:'50K-100K',engagementRate:'6.2%',pricing:'From ₹8,000',whatsapp:'919876543210',featured:true,createdAt:'2024-01-01'},{userId:'d2',name:'Priya Kapoor',profilePhoto:'',bio:'Finance & investment content for millennials.',niches:['Finance','Business'],instagram:'@priyafinance',audienceSize:'100K-500K',engagementRate:'4.8%',pricing:'From ₹15,000',whatsapp:'919876543211',featured:false,createdAt:'2024-01-02'},{userId:'d3',name:'Rahul Singh',profilePhoto:'',bio:'AI & ML content creator. Breaking down complex tech.',niches:['AI','Tech','Education'],instagram:'@rahulai',audienceSize:'10K-50K',engagementRate:'8.5%',pricing:'From ₹5,000',whatsapp:'919876543212',featured:false,createdAt:'2024-01-03'}];for(const c of creators)await setDoc(doc(db,'creators',c.userId),c);await setDoc(doc(db,'_meta','seeded'),{at:new Date().toISOString()});},
