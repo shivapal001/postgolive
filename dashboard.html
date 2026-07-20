@@ -295,8 +295,16 @@ input,select,textarea,button{font-family:'General Sans','Plus Jakarta Sans',sans
 .mobile-menu-btn:hover{color:var(--text);border-color:var(--accent);}
 
 /* ══ TOAST ══ */
-.toast-container{position:fixed;bottom:2rem;right:2rem;z-index:999;display:flex;flex-direction:column;gap:.5rem;}
-.toast{background:#ffffff;border:1px solid var(--border);border-radius:1.25rem;padding:.9rem 1.5rem;font-size:.85rem;font-weight:600;display:flex;align-items:center;gap:.6rem;min-width:240px;box-shadow:0 12px 30px rgba(35,31,28,0.12);animation:slideIn .3s cubic-bezier(0.25, 0.8, 0.25, 1);}
+.toast-container{position:fixed;bottom:2rem;right:2rem;z-index:999;display:flex;flex-direction:column;gap:.5rem;max-width:340px;pointer-events:none;}
+.toast{background:#ffffff;border:1px solid var(--border);border-radius:1.1rem;padding:.75rem .8rem .75rem 1rem;font-size:.8rem;font-weight:600;display:flex;align-items:flex-start;gap:.5rem;min-width:0;box-shadow:0 12px 30px rgba(35,31,28,0.14);animation:slideIn .3s cubic-bezier(0.25, 0.8, 0.25, 1);line-height:1.35;pointer-events:auto;}
+.toast i.toast-ic{margin-top:.15rem;flex-shrink:0;}
+.toast .toast-msg{flex:1;min-width:0;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.toast .toast-close{flex-shrink:0;background:none;border:none;cursor:pointer;color:inherit;opacity:.5;padding:.1rem;font-size:.75rem;margin-top:.1rem;}
+.toast .toast-close:hover{opacity:1;}
+@media(max-width:768px){
+  .toast-container{bottom:calc(env(safe-area-inset-bottom,0px) + 5rem);top:auto;left:.75rem;right:.75rem;max-width:none;}
+  .toast{width:100%;box-sizing:border-box;padding:.65rem .7rem .65rem .9rem;font-size:.76rem;border-radius:.9rem;}
+}
 .toast.success{border-color:rgba(16,185,129,0.4);color:#34d399;box-shadow:0 0 15px rgba(16,185,129,0.1);}
 .toast.error{border-color:rgba(244,63,94,0.4);color:#FF66B3;box-shadow:0 0 15px rgba(244,63,94,0.1);}
 .toast.info{border-color:rgba(233,255,57,0.35);color:var(--accent);box-shadow:0 0 15px rgba(233,255,57,0.10);}
@@ -466,7 +474,41 @@ input,select,textarea,button{font-family:'General Sans','Plus Jakarta Sans',sans
 /* ══ COLLAB TYPE CHIPS (launch modal) ══ */
 .collab-type-chip{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1.25rem;border-radius:99px;border:1.5px solid var(--border);cursor:pointer;font-size:.82rem;font-weight:700;color:var(--muted);transition:all var(--trans);font-family:'General Sans','Plus Jakarta Sans',sans-serif;}
 .collab-type-chip:hover{border-color:rgba(20,20,45,0.21);color:var(--text);}
-.collab-type-chip.active{background:rgba(233,255,57,0.12);border-color:var(--accent);color:var(--accent);}
+.collab-type-chip.active{background:linear-gradient(135deg,rgba(233,255,57,0.16),rgba(233,255,57,0.06));border-color:var(--accent);color:#7c8400;box-shadow:0 3px 10px -3px rgba(233,255,57,0.4);}
+
+/* ══ CREATE CAMPAIGN — CARD-BASED FORM ══ */
+.cc-modal{padding:0 !important;background:linear-gradient(180deg,#FBFAF6 0%,#F7F5EA 100%);}
+.cc-modal-header{padding:2rem 2rem 1rem;position:relative;background:radial-gradient(120% 100% at 0% 0%,rgba(233,255,57,0.14) 0%,rgba(233,255,57,0) 60%);border-bottom:1px solid rgba(20,20,45,0.06);}
+.cc-modal-eyebrow{font-size:.66rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:#7c8400;background:linear-gradient(135deg,rgba(233,255,57,0.35),rgba(233,255,57,0.15));display:inline-flex;padding:.32rem .8rem;border-radius:99px;margin-bottom:.85rem;box-shadow:0 2px 8px -2px rgba(233,255,57,0.3);}
+.cc-modal-title{font-size:1.65rem;font-weight:800;letter-spacing:-.03em;color:var(--text);font-family:'General Sans','Plus Jakarta Sans',sans-serif;}
+.cc-modal-sub{font-size:.84rem;color:var(--muted);margin-top:.4rem;line-height:1.55;max-width:34rem;}
+.cc-modal-body{padding:1.5rem 2rem 1.5rem;}
+.cc-card{background:linear-gradient(180deg,#ffffff 0%,#fdfcf8 100%);border:1px solid rgba(20,20,45,0.07);border-radius:24px;padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 1px 2px rgba(20,20,45,0.04),0 10px 26px -18px rgba(20,20,45,0.18);transition:box-shadow .25s ease,border-color .25s ease;}
+.cc-card:focus-within{border-color:rgba(233,255,57,0.5);box-shadow:0 1px 2px rgba(20,20,45,0.04),0 14px 30px -16px rgba(233,255,57,0.28);}
+.cc-card:last-child{margin-bottom:0;}
+.cc-card-title{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--muted2);margin-bottom:1.25rem;padding-bottom:.9rem;border-bottom:1px dashed rgba(20,20,45,0.09);display:flex;align-items:center;gap:.6rem;}
+.cc-card-title .cc-card-icon{width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,rgba(233,255,57,0.32),rgba(233,255,57,0.12));color:#6d7500;display:flex;align-items:center;justify-content:center;font-size:.74rem;flex-shrink:0;box-shadow:0 2px 6px -2px rgba(233,255,57,0.4);}
+.cc-card .form-group{margin-bottom:1rem;}
+.cc-card .form-group:last-child{margin-bottom:0;}
+.cc-card .form-row{margin-bottom:0;gap:1rem;}
+.cc-card .form-row .form-group{margin-bottom:0;}
+.cc-card .form-group label{font-size:.68rem;color:var(--muted2);letter-spacing:.06em;}
+.cc-card .form-group input,.cc-card .form-group select,.cc-card .form-group textarea{background:linear-gradient(180deg,#FAF9F4 0%,#F5F4EE 100%);border:1.5px solid rgba(20,20,45,0.09);border-radius:14px;padding:.68rem 1rem;font-weight:500;box-shadow:inset 0 1px 2px rgba(20,20,45,0.03);}
+.cc-card .form-group textarea{border-radius:16px;min-height:76px;}
+.cc-card .form-group input:focus,.cc-card .form-group select:focus,.cc-card .form-group textarea:focus{background:#ffffff;border-color:var(--accent);box-shadow:inset 0 1px 2px rgba(20,20,45,0.03),0 0 0 3px rgba(233,255,57,0.18);}
+.cc-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;}
+@media(max-width:420px){.cc-type-grid{grid-template-columns:1fr;}}
+.cc-type-chip{display:flex;align-items:center;gap:.7rem;padding:.75rem .9rem;border-radius:16px;border:1.5px solid rgba(20,20,45,0.08);background:linear-gradient(180deg,#FAF9F4 0%,#F5F4EE 100%);cursor:pointer;transition:all var(--trans);box-shadow:0 1px 2px rgba(20,20,45,0.02);}
+.cc-type-chip:hover{border-color:rgba(20,20,45,0.2);transform:translateY(-1px);box-shadow:0 6px 14px -8px rgba(20,20,45,0.2);}
+.cc-type-chip .cc-type-ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;box-shadow:0 2px 6px -2px rgba(20,20,45,0.15);}
+.cc-type-chip span{font-size:.81rem;font-weight:700;color:var(--muted);}
+.cc-type-chip.active{border-color:var(--accent);background:linear-gradient(135deg,rgba(233,255,57,0.16),rgba(233,255,57,0.05));box-shadow:0 6px 16px -6px rgba(233,255,57,0.45),inset 0 0 0 1px rgba(233,255,57,0.3);}
+.cc-type-chip.active span{color:var(--text);}
+.cc-type-chip.active .cc-type-ic{box-shadow:0 2px 8px -1px rgba(233,255,57,0.5);}
+.cc-modal-footer{position:sticky;bottom:0;background:rgba(251,250,246,0.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid rgba(20,20,45,0.07);padding:1.25rem 2rem calc(1.25rem + env(safe-area-inset-bottom,0px));box-shadow:0 -8px 24px rgba(20,20,50,0.06);}
+.cc-publish-btn{width:100%;justify-content:center;padding:.95rem;border-radius:99px;font-size:.92rem;}
+.cc-upload-area{border:1.5px dashed rgba(20,20,45,0.18);border-radius:16px;padding:1.35rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s,transform .2s;background:linear-gradient(180deg,#FAF9F4 0%,#F5F4EE 100%);}
+.cc-upload-area:hover{border-color:rgba(233,255,57,0.6);background:rgba(233,255,57,0.06);transform:translateY(-1px);}
 
 /* ══ RESPONSIVE ══ */
 @media(max-width:1100px){
@@ -2857,68 +2899,92 @@ async function renderMobileCampaigns(el){
 
     <!-- Launch Modal -->
     <div class="overlay" id="launch-modal" style="display:none">
-      <div class="modal-box wide">
+      <div class="modal-box wide cc-modal">
         <button class="modal-close" onclick="closeLaunchModal()"><i class="fas fa-times"></i></button>
-        <div class="modal-title">🚀 Launch a Campaign</div>
-        <div class="form-err" id="launch-err"></div>
-
-        <!-- Campaign Cover Image Upload -->
-        <div class="form-group">
-          <label>Campaign Cover Image <span style="font-size:.7rem;color:var(--muted)">(uploads to Cloudinary)</span></label>
-          <div id="camp-img-preview-wrap" style="margin-bottom:.5rem;display:none">
-            <img alt="" id="camp-img-preview" style="width:100%;height:140px;object-fit:cover;border-radius:1rem;border:1px solid var(--border)">
-            <button onclick="removeCampImg()" style="font-size:.72rem;color:#ff6b6b;background:none;border:none;cursor:pointer;margin-top:.3rem">Remove image</button>
-          </div>
-          <div id="camp-img-upload-area" style="border:2px dashed var(--border);border-radius:1rem;padding:1.5rem;text-align:center;cursor:pointer;transition:border-color .2s;" onclick="document.getElementById('camp-img-file').click()" onmouseover="this.style.borderColor='rgba(233,255,57,0.5)'" onmouseout="this.style.borderColor='var(--border)'">
-            <i class="fas fa-cloud-upload-alt" style="font-size:1.5rem;color:var(--muted);display:block;margin-bottom:.5rem"></i>
-            <div style="font-size:.8rem;color:var(--muted)">Click to upload cover image</div>
-            <div style="font-size:.7rem;color:var(--muted2);margin-top:.2rem">JPG, PNG · Max 5MB</div>
-            <input type="file" id="camp-img-file" accept="image/*" style="display:none" onchange="handleCampImg(event)">
-          </div>
+        <div class="cc-modal-header">
+          <div class="cc-modal-eyebrow">New Campaign</div>
+          <div class="cc-modal-title">Create Campaign</div>
+          <div class="cc-modal-sub">Fill in the details below and creators can start applying right away.</div>
         </div>
+        <div class="cc-modal-body">
+          <div class="form-err" id="launch-err"></div>
 
-        <!-- Brand Logo Upload -->
-        <div class="form-group">
-          <label>Brand Logo <span style="font-size:.7rem;color:var(--muted)">(white background recommended)</span></label>
-          <div style="display:flex;align-items:center;gap:1rem">
-            <div id="brand-logo-preview" style="width:52px;height:52px;border-radius:10px;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#555;flex-shrink:0;overflow:hidden;cursor:pointer;" onclick="document.getElementById('brand-logo-file').click()">LOGO</div>
-            <div style="flex:1">
-              <button class="btn btn-ghost btn-sm" onclick="document.getElementById('brand-logo-file').click()"><i class="fas fa-upload"></i> Upload Logo</button>
-              <input type="file" id="brand-logo-file" accept="image/*" style="display:none" onchange="handleBrandLogo(event)">
-              <div style="font-size:.7rem;color:var(--muted2);margin-top:.3rem">Square image · Max 2MB</div>
+          <div class="cc-card">
+            <div class="cc-card-title"><span class="cc-card-icon"><i class="fas fa-image"></i></span>Media</div>
+            <div class="form-group">
+              <label>Campaign Cover Image <span style="font-size:.7rem;color:var(--muted);text-transform:none;font-weight:500;letter-spacing:0">(uploads to Cloudinary)</span></label>
+              <div id="camp-img-preview-wrap" style="margin-bottom:.5rem;display:none">
+                <img alt="" id="camp-img-preview" style="width:100%;height:140px;object-fit:cover;border-radius:1rem;border:1px solid var(--border)">
+                <button onclick="removeCampImg()" style="font-size:.72rem;color:#ff6b6b;background:none;border:none;cursor:pointer;margin-top:.3rem">Remove image</button>
+              </div>
+              <div id="camp-img-upload-area" class="cc-upload-area" onclick="document.getElementById('camp-img-file').click()">
+                <i class="fas fa-cloud-upload-alt" style="font-size:1.4rem;color:var(--muted);display:block;margin-bottom:.5rem"></i>
+                <div style="font-size:.8rem;color:var(--muted)">Click to upload cover image</div>
+                <div style="font-size:.7rem;color:var(--muted2);margin-top:.2rem">JPG, PNG · Max 5MB</div>
+                <input type="file" id="camp-img-file" accept="image/*" style="display:none" onchange="handleCampImg(event)">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Brand Logo <span style="font-size:.7rem;color:var(--muted);text-transform:none;font-weight:500;letter-spacing:0">(white background recommended)</span></label>
+              <div style="display:flex;align-items:center;gap:1rem">
+                <div id="brand-logo-preview" style="width:52px;height:52px;border-radius:12px;background:#fff;border:1.5px solid rgba(20,20,45,0.08);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#555;flex-shrink:0;overflow:hidden;cursor:pointer;" onclick="document.getElementById('brand-logo-file').click()">LOGO</div>
+                <div style="flex:1">
+                  <button class="btn btn-ghost btn-sm" onclick="document.getElementById('brand-logo-file').click()"><i class="fas fa-upload"></i> Upload Logo</button>
+                  <input type="file" id="brand-logo-file" accept="image/*" style="display:none" onchange="handleBrandLogo(event)">
+                  <div style="font-size:.7rem;color:var(--muted2);margin-top:.3rem">Square image · Max 2MB</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cc-card">
+            <div class="cc-card-title"><span class="cc-card-icon"><i class="fas fa-bullhorn"></i></span>Campaign Basics</div>
+            <div class="form-group"><label>Campaign Title *</label><input id="lc-title" placeholder="e.g. Diwali Product Launch"></div>
+            <div class="form-group"><label>Description *</label><textarea id="lc-desc" placeholder="What should creators do? What is the campaign about?"></textarea></div>
+          </div>
+
+          <div class="cc-card">
+            <div class="cc-card-title"><span class="cc-card-icon"><i class="fas fa-box-open"></i></span>Product Details</div>
+            <div class="form-row" style="margin-bottom:.9rem">
+              <div class="form-group"><label>Product Name</label><input id="lc-product-name" placeholder="e.g. HydraGlow Serum"></div>
+              <div class="form-group"><label>Product Category</label><input id="lc-product-cat" placeholder="e.g. Skincare"></div>
+            </div>
+            <div class="form-row" style="margin-bottom:.9rem">
+              <div class="form-group"><label>Campaign Goal</label><input id="lc-goal" placeholder="e.g. 50 UGC videos in 30 days"></div>
+              <div class="form-group"><label>Demo Video URL</label><input id="lc-demo" placeholder="https://youtube.com/…"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Website</label><input id="lc-website" placeholder="https://yourbrand.com"></div>
+              <div class="form-group"><label>Instagram Handle</label><input id="lc-instagram" placeholder="@yourbrand"></div>
+            </div>
+          </div>
+
+          <div class="cc-card">
+            <div class="cc-card-title"><span class="cc-card-icon"><i class="fas fa-layer-group"></i></span>Collab Type(s) *</div>
+            <div class="cc-type-grid">
+              ${COLLAB_TYPES.map(ct=>`<div class="cc-type-chip collab-type-chip" data-id="${ct.id}" onclick="toggleCollabChip(this)"><span class="cc-type-ic" style="background:${ct.color}22;color:${ct.color}"><i class="${ct.icon}"></i></span><span>${ct.label}</span></div>`).join('')}
+            </div>
+          </div>
+
+          <div class="cc-card">
+            <div class="cc-card-title"><span class="cc-card-icon"><i class="fas fa-bullseye"></i></span>Targeting</div>
+            <div class="form-row">
+              <div class="form-group"><label>Niche *</label><select id="lc-niche"><option value="">Select…</option>${['AI','Finance','Startup','Tech','Lifestyle','Business','Marketing','SaaS','Education','Health'].map(n=>`<option>${n}</option>`).join('')}</select></div>
+              <div class="form-group"><label>Min. Audience</label><select id="lc-aud"><option value="">Any</option>${['1K-10K','10K-50K','50K-100K','100K-500K','500K+'].map(v=>`<option>${v}</option>`).join('')}</select></div>
+            </div>
+          </div>
+
+          <div class="cc-card">
+            <div class="cc-card-title"><span class="cc-card-icon"><i class="fas fa-wallet"></i></span>Budget &amp; Deadline</div>
+            <div class="form-row">
+              <div class="form-group"><label>Budget / Compensation</label><input id="lc-budget" placeholder="e.g. ₹5,000 or Barter"></div>
+              <div class="form-group"><label>Application Deadline</label><input id="lc-deadline" type="date"></div>
             </div>
           </div>
         </div>
-
-        <div class="form-group"><label>Campaign Title *</label><input id="lc-title" placeholder="e.g. Diwali Product Launch"></div>
-        <div class="form-group"><label>Description *</label><textarea id="lc-desc" placeholder="What should creators do? What is the campaign about?"></textarea></div>
-        <div class="form-row">
-          <div class="form-group"><label>Product Name</label><input id="lc-product-name" placeholder="e.g. HydraGlow Serum"></div>
-          <div class="form-group"><label>Product Category</label><input id="lc-product-cat" placeholder="e.g. Skincare"></div>
+        <div class="cc-modal-footer">
+          <button class="btn btn-primary cc-publish-btn" id="launch-btn" onclick="launchCampaign()"><i class="fas fa-bullhorn"></i> Publish Campaign</button>
         </div>
-        <div class="form-row">
-          <div class="form-group"><label>Campaign Goal</label><input id="lc-goal" placeholder="e.g. 50 UGC videos in 30 days"></div>
-          <div class="form-group"><label>Demo Video URL</label><input id="lc-demo" placeholder="https://youtube.com/…"></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Website</label><input id="lc-website" placeholder="https://yourbrand.com"></div>
-          <div class="form-group"><label>Instagram Handle</label><input id="lc-instagram" placeholder="@yourbrand"></div>
-        </div>
-        <div class="form-group">
-          <label>Collab Type(s) *</label>
-          <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem">
-            ${COLLAB_TYPES.map(ct=>`<div class="collab-type-chip" data-id="${ct.id}" onclick="toggleCollabChip(this)" style="background:transparent">${ct.label}</div>`).join('')}
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Niche *</label><select id="lc-niche"><option value="">Select…</option>${['AI','Finance','Startup','Tech','Lifestyle','Business','Marketing','SaaS','Education','Health'].map(n=>`<option>${n}</option>`).join('')}</select></div>
-          <div class="form-group"><label>Min. Audience</label><select id="lc-aud"><option value="">Any</option>${['1K-10K','10K-50K','50K-100K','100K-500K','500K+'].map(v=>`<option>${v}</option>`).join('')}</select></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Budget / Compensation</label><input id="lc-budget" placeholder="e.g. ₹5,000 or Barter"></div>
-          <div class="form-group"><label>Application Deadline</label><input id="lc-deadline" type="date"></div>
-        </div>
-        <button class="btn btn-primary" style="width:100%;justify-content:center;padding:.75rem" id="launch-btn" onclick="launchCampaign()"><i class="fas fa-bullhorn"></i> Launch Campaign</button>
       </div>
     </div>
 
@@ -3811,7 +3877,14 @@ async function submitApplication(campaignId){
 
 // ── HELPERS ───────────────────────────────────────────
 function showFormErr(el,msg){if(el){el.textContent=msg;el.className='form-err show';}}
-function toast(msg,type='info'){const c=document.getElementById('toast-container');const t=document.createElement('div');t.className=`toast ${type}`;const icon={success:'check-circle',error:'exclamation-circle',info:'info-circle'}[type]||'info-circle';t.innerHTML=`<i class="fas fa-${icon}"></i> ${msg}`;c.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(1rem)';setTimeout(()=>t.remove(),300);},3500);}
+function toast(msg,type='info'){const c=document.getElementById('toast-container');
+  // keep at most 2 toasts on screen at once so errors can't stack up and cover the UI
+  while(c.children.length>=2){c.firstElementChild.remove();}
+  const t=document.createElement('div');t.className=`toast ${type}`;const icon={success:'check-circle',error:'exclamation-circle',info:'info-circle'}[type]||'info-circle';
+  t.innerHTML=`<i class="fas fa-${icon} toast-ic"></i><span class="toast-msg">${msg}</span><button class="toast-close" aria-label="Dismiss" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>`;
+  c.appendChild(t);
+  const dismissAfter = type==='error' ? 4500 : 3000;
+  setTimeout(()=>{if(!t.isConnected)return;t.style.opacity='0';t.style.transform='translateX(1rem)';setTimeout(()=>t.remove(),300);},dismissAfter);}
 function goToLanding(){window.location.href='index.html';}
 function goToAdmin(){window.location.href='admin.html';}
 async function doSignOut(){
