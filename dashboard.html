@@ -244,6 +244,7 @@ input,select,textarea,button{font-family:'General Sans','Plus Jakarta Sans',sans
 .upgrade-banner{background:linear-gradient(135deg,rgba(233,255,57,0.10),rgba(244,63,94,0.06));border:1px solid rgba(233,255,57,0.20);border-radius:1.5rem;padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1.25rem;margin-bottom:1.5rem;flex-wrap:wrap;backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);box-shadow:var(--shadow);}
 .upgrade-banner h4{font-size:.95rem;font-weight:700;margin-bottom:.25rem;color:var(--text);font-family:'General Sans','Plus Jakarta Sans',sans-serif;}
 .upgrade-banner p{font-size:.8rem;color:var(--muted);font-weight:500;}
+.upgrade-banner,.mh2-upgrade,.ph-upgrade-banner,.ph-plan-btn{display:none!important;}
 
 /* ══ EMPTY STATE ══ */
 .empty-state{text-align:center;padding:4rem 1.5rem;color:var(--muted2);font-weight:500;}
@@ -1154,6 +1155,47 @@ body.ph-mobile-active #ph-app-nav{ display:flex; }
 
 <body>
 
+<!-- ══ GLOBAL ERROR BOUNDARY — prevents blank-screen crashes ══ -->
+<div id="ph-error-boundary" style="display:none;position:fixed;inset:0;z-index:999999;background:#0b0b0f;color:#f5f5f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;align-items:center;justify-content:center;text-align:center;padding:2rem;">
+  <div style="max-width:26rem;">
+    <div style="font-size:2.5rem;margin-bottom:1rem;">⚠️</div>
+    <div style="font-size:1.15rem;font-weight:700;margin-bottom:.5rem;">Something went wrong</div>
+    <div style="font-size:.9rem;color:#9a9aa5;margin-bottom:1.5rem;line-height:1.5;">
+      The app hit an unexpected error and couldn't continue safely. Your data is unaffected — please reload to try again.
+    </div>
+    <button onclick="window.location.reload()" style="background:linear-gradient(135deg,#E9FF39,#F0FF6E);color:#111;border:none;border-radius:.75rem;padding:.7rem 1.5rem;font-weight:700;font-size:.9rem;cursor:pointer;">
+      Reload App
+    </button>
+  </div>
+</div>
+<script>
+// GLOBAL ERROR BOUNDARY: catches uncaught exceptions anywhere in the app (including before the
+// module script finishes loading) so the user always sees a recoverable message instead of a
+// blank white screen. Unhandled promise rejections are logged + surfaced as a small toast instead
+// of a full takeover, since those are usually recoverable background failures (a failed read for
+// one section, etc.) rather than app-breaking crashes.
+(function(){
+  var shown = false;
+  function showBoundary(err){
+    try{ console.error('[PostHire fatal error]', err); }catch(e){}
+    if(shown) return; shown = true;
+    var el = document.getElementById('ph-error-boundary');
+    if(el) el.style.display = 'flex';
+  }
+  function softNotify(err){
+    try{ console.error('[PostHire unhandled rejection]', err); }catch(e){}
+    try{
+      if(typeof window.toast === 'function'){
+        window.toast('Something didn\'t load correctly. You can keep using the app.','error');
+        return;
+      }
+    }catch(e){}
+  }
+  window.addEventListener('error', function(e){ showBoundary(e.error || e.message); });
+  window.addEventListener('unhandledrejection', function(e){ softNotify(e.reason); });
+})();
+</script>
+
 <!-- ══ MOBILE APP CHROME — persistent, never re-rendered ══ -->
 <div id="ph-app-header">
   <div class="ph-logo" id="ph-header-logo" style="display:flex;align-items:center;gap:.45rem;font-size:1.05rem;font-weight:800;letter-spacing:-.02em;color:var(--ph-text)">
@@ -1328,10 +1370,9 @@ body.ph-mobile-active #ph-app-nav{ display:flex; }
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signOut as fbSignOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, addDoc, query, where, orderBy, limit, serverTimestamp, increment, writeBatch, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, addDoc, query, where, orderBy, limit, serverTimestamp, increment, writeBatch, onSnapshot, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 // ── CONFIG ──────────────────────────────────────────
-const RAZORPAY_KEY = 'rzp_live_SgDE9SyUA22OlF';
 const CLOUDINARY_CLOUD_NAME = 'dwetuqy0d';
 const CLOUDINARY_UPLOAD_PRESET_PROFILE = 'posthire_photos';
 const CLOUDINARY_UPLOAD_PRESET_CAMPAIGN = 'posthire_campaigns'; // For campaign images
@@ -1351,9 +1392,7 @@ const db = getFirestore(fbApp);
 
 // ── PLANS ───────────────────────────────────────────
 const PLANS = [
-  {id:'free',name:'FREE',price:'₹0',color:'var(--free)',period:'/month',desc:'For new users testing the platform',features:[{text:'Create profile',ok:true},{text:'Browse 10 profiles/day',ok:true},{text:'3 collab requests/month',ok:true},{text:'Basic filters',ok:true},{text:'Advanced filters',ok:false},{text:'Direct messaging',ok:false},{text:'Featured placement',ok:false},{text:'Analytics',ok:false}]},
-  {id:'starter',name:'STARTER',price:'₹299',color:'var(--starter)',period:'/month',desc:'For early-stage founders & creators',popular:true,features:[{text:'Unlimited browsing',ok:true},{text:'20 requests/month',ok:true},{text:'Advanced filters',ok:true},{text:'Direct messaging',ok:true},{text:'Priority listing',ok:true},{text:'Basic analytics',ok:true},{text:'Featured badge',ok:false},{text:'AI match suggestions',ok:false}]},
-  {id:'pro',name:'PRO',price:'₹599',color:'var(--pro)',period:'/month',desc:'For serious founders & active creators',features:[{text:'Unlimited requests',ok:true},{text:'Unlimited messaging',ok:true},{text:'AI match suggestions',ok:true},{text:'Featured badge',ok:true},{text:'Top placement',ok:true},{text:'Full analytics',ok:true},{text:'Creator audience insights',ok:true},{text:'Priority support',ok:true}]}
+  {id:'free',name:'FREE',price:'₹0',color:'var(--free)',period:'/month',desc:'For everyone on PostHire',features:[{text:'Create profile',ok:true},{text:'Browse profiles',ok:true},{text:'Collab requests',ok:true},{text:'Filters',ok:true},{text:'Direct messaging',ok:true}]}
 ];
 
 const COLLAB_TYPES = [
@@ -1377,33 +1416,38 @@ const DB = {
   async getCreators(){const snap=await getDocs(collection(db,'creators'));const r={};snap.forEach(d=>{r[d.id]=d.data();});return r;},
   async getFounder(uid){const s=await getDoc(doc(db,'founders',uid));return s.exists()?s.data():null;},
   async setFounder(uid,d){await setDoc(doc(db,'founders',uid),d);},
-  async getRequests(){
-    // firestore rules only allow reading requests where the current
-    // user is founderId or creatorId (or admin). A bare
-    // collection(db,'requests') query has no such constraint, so
-    // Firestore rejects it with permission-denied — which silently
-    // broke any screen awaiting this (e.g. Profile stuck forever on
-    // its skeleton loader). Fetch only the two slices the user is
-    // actually allowed to see, then merge.
-    const uid=_me?.uid;
-    if(!uid) return {};
-    const r={};
-    const [asFounder,asCreator]=await Promise.all([
-      getDocs(query(collection(db,'requests'),where('founderId','==',uid))),
-      getDocs(query(collection(db,'requests'),where('creatorId','==',uid)))
-    ]);
-    asFounder.forEach(d=>{r[d.id]=d.data();});
-    asCreator.forEach(d=>{r[d.id]=d.data();});
-    return r;
+  async getRequests(){const snap=await getDocs(collection(db,'requests'));const r={};snap.forEach(d=>{r[d.id]=d.data();});return r;},
+  async saveRequest(d){
+    // SECURITY: deterministic ID (founderId_creatorId) + transaction prevents duplicate requests from double-clicks,
+    // refreshes, or multiple tabs, while still allowing a fresh request after an earlier one was declined.
+    const reqId=`${d.founderId}_${d.creatorId}`;
+    const ref=doc(db,'requests',reqId);
+    await runTransaction(db,async(tx)=>{
+      const snap=await tx.get(ref);
+      if(snap.exists() && ['pending','accepted'].includes(snap.data().status)){
+        const err=new Error('DUPLICATE_REQUEST');err.code='duplicate';throw err;
+      }
+      tx.set(ref,{...d,id:reqId});
+    });
+    return reqId;
   },
-  async saveRequest(d){const ref=await addDoc(collection(db,'requests'),d);await updateDoc(ref,{id:ref.id});return ref.id;},
   async updateRequest(id,p){await updateDoc(doc(db,'requests',id),p);},
-  async seedDemoCreators(){const s=await getDoc(doc(db,'_meta','seeded'));if(s.exists())return;const creators=[{userId:'d1',name:'Arjun Mehra',profilePhoto:'',bio:'Tech & SaaS creator helping founders grow.',niches:['Tech','SaaS','Startup'],instagram:'@arjunmehra',youtube:'@arjunmehra',linkedin:'linkedin.com/in/arjun',audienceSize:'50K-100K',engagementRate:'6.2%',pricing:'From ₹8,000',whatsapp:'919876543210',featured:true,createdAt:'2024-01-01'},{userId:'d2',name:'Priya Kapoor',profilePhoto:'',bio:'Finance & investment content for millennials.',niches:['Finance','Business'],instagram:'@priyafinance',audienceSize:'100K-500K',engagementRate:'4.8%',pricing:'From ₹15,000',whatsapp:'919876543211',featured:false,createdAt:'2024-01-02'},{userId:'d3',name:'Rahul Singh',profilePhoto:'',bio:'AI & ML content creator. Breaking down complex tech.',niches:['AI','Tech','Education'],instagram:'@rahulai',audienceSize:'10K-50K',engagementRate:'8.5%',pricing:'From ₹5,000',whatsapp:'919876543212',featured:false,createdAt:'2024-01-03'}];for(const c of creators)await setDoc(doc(db,'creators',c.userId),c);await setDoc(doc(db,'_meta','seeded'),{at:new Date().toISOString()});},
   async getCampaigns(){const snap=await getDocs(query(collection(db,'campaigns'),orderBy('createdAt','desc')));const r={};snap.forEach(d=>{r[d.id]=d.data();});return r;},
   async saveCampaign(d){const ref=await addDoc(collection(db,'campaigns'),d);await updateDoc(ref,{id:ref.id});return ref.id;},
   async updateCampaign(id,p){await updateDoc(doc(db,'campaigns',id),p);},
   async getCampaignApplications(cid){const snap=await getDocs(query(collection(db,'campaignApplications'),where('campaignId','==',cid)));const r={};snap.forEach(d=>{r[d.id]=d.data();});return r;},
-  async saveApplication(d){const ref=await addDoc(collection(db,'campaignApplications'),d);await updateDoc(ref,{id:ref.id});return ref.id;},
+  async saveApplication(d){
+    // SECURITY: deterministic ID (campaignId_creatorId) + transaction prevents duplicate applications from double-clicks,
+    // refreshes, or multiple tabs.
+    const appId=`${d.campaignId}_${d.creatorId}`;
+    const ref=doc(db,'campaignApplications',appId);
+    await runTransaction(db,async(tx)=>{
+      const snap=await tx.get(ref);
+      if(snap.exists()){const err=new Error('DUPLICATE_APPLICATION');err.code='duplicate';throw err;}
+      tx.set(ref,{...d,id:appId});
+    });
+    return appId;
+  },
   async updateApplication(id,p){await updateDoc(doc(db,'campaignApplications',id),p);},
   async getMyApplications(creatorId){const snap=await getDocs(query(collection(db,'campaignApplications'),where('creatorId','==',creatorId)));const r={};snap.forEach(d=>{r[d.id]=d.data();});return r;},
   async getOrCreateConversation(fId,cId,msg=''){try{const q1=query(collection(db,'conversations'),where('founderId','==',fId),where('creatorId','==',cId));const q2=query(collection(db,'conversations'),where('founderId','==',cId),where('creatorId','==',fId));const[s1,s2]=await Promise.all([getDocs(q1),getDocs(q2)]);if(!s1.empty)return{id:s1.docs[0].id,isNew:false};if(!s2.empty)return{id:s2.docs[0].id,isNew:false};}catch(e){}const ref=await addDoc(collection(db,'conversations'),{founderId:fId,creatorId:cId,participants:[fId,cId],status:'pending',createdAt:serverTimestamp(),updatedAt:serverTimestamp(),lastMessage:msg||'',inviteMessage:msg||'',unreadCounts:{[fId]:0,[cId]:0}});if(msg){await addDoc(collection(db,'messages'),{conversationId:ref.id,senderId:fId,text:msg,createdAt:serverTimestamp(),seen:false,isInvitation:true});await updateDoc(doc(db,'conversations',ref.id),{[`unreadCounts.${cId}`]:increment(1)});}return{id:ref.id,isNew:true};},
@@ -1412,11 +1456,43 @@ const DB = {
 };
 
 // ── NOTIFICATIONS HELPER (shared pattern — full system in notifications.html) ──
+// In-memory de-dupe guard: stops the same notification firing twice within one session
+// (e.g. a double network retry or a re-render re-triggering the same event).
+const _notifDedupCache=new Map();
+const _NOTIF_DEDUP_WINDOW_MS=4000;
+
 async function createNotification(toUid, data){
   try{
     if(!toUid || toUid===_me?.uid) return; // never notify yourself
+    // 1) Session-level de-dupe: identical toUid+type+(requestId/campaignId/conversationId) within a few seconds is dropped.
+    const dedupKey=[toUid,data.type,data.requestId||data.campaignId||data.conversationId||''].join('|');
+    const now=Date.now();
+    const last=_notifDedupCache.get(dedupKey);
+    if(last && (now-last)<_NOTIF_DEDUP_WINDOW_MS) return;
+    _notifDedupCache.set(dedupKey,now);
+    // 2) Anti-spam throttle: cap how many notifications one sender can push to the same
+    // recipient in a short rolling window, so a malicious/buggy client can't flood a user's inbox.
+    try{
+      const oneMinuteAgo=new Date(Date.now()-60000);
+      const recentQ=query(
+        collection(db,'notifications'),
+        where('toUid','==',toUid),
+        where('fromUid','==',_me?.uid||data.fromUid||''),
+        orderBy('createdAt','desc'),
+        limit(10)
+      );
+      const recentSnap=await getDocs(recentQ);
+      let countInWindow=0;
+      recentSnap.forEach(d=>{
+        const ts=d.data().createdAt;
+        const t=ts?.toDate ? ts.toDate() : (ts?new Date(ts):null);
+        if(t && t>oneMinuteAgo) countInWindow++;
+      });
+      if(countInWindow>=8){ console.warn('Notification rate limit hit for', toUid); return; }
+    }catch(e){ /* if the throttle check itself fails, fall through and still send once */ }
     await addDoc(collection(db,'notifications'),{
       toUid,
+      fromUid:_me?.uid||data.fromUid||'',
       read:false,
       createdAt:serverTimestamp(),
       ...data
@@ -1479,7 +1555,7 @@ let _activeNotifTab = 'all';
 
 // ── INIT ─────────────────────────────────────────────
 setLogos();
-DB.seedDemoCreators();
+// Demo-data seeding removed for production (dead code cleanup).
 let _authTimer = null, _authResolved = false;
 onAuthStateChanged(auth, async (fbUser) => {
   if(_authTimer){clearTimeout(_authTimer);_authTimer=null;}
@@ -1568,11 +1644,7 @@ function showPlanSelectScreen(){
   document.getElementById('plan-select-screen').style.display='block';
 }
 async function choosePlanAndContinue(planId){
-  if(planId==='free'){_me={..._me,plan:'free',planSelected:true};await DB.setUser(_me.uid,_me);document.getElementById('plan-select-screen').style.display='none';window.location.href='ai-onboarding.html';return;}
-  const p=PLANS.find(x=>x.id===planId);
-  const amounts={starter:29900,pro:59900};
-  const options={key:RAZORPAY_KEY,amount:amounts[planId],currency:'INR',name:'Posthire',description:`${p.name} Plan`,prefill:{name:_me.name||'',email:_me.email||''},notes:{userId:_me.uid,plan:planId},theme:{color:planId==='pro'?'#ef4444':'#3b82f6'},handler:async function(response){_me={..._me,plan:planId,planSelected:true,razorpay_payment_id:response.razorpay_payment_id,planActivatedAt:new Date().toISOString()};await DB.setUser(_me.uid,_me);document.getElementById('plan-select-screen').style.display='none';toast(`🎉 ${p.name} activated!`,'success');setTimeout(()=>{window.location.href='ai-onboarding.html';},800);},modal:{ondismiss:()=>toast('Payment cancelled','info')}};
-  try{const rzp=new Razorpay(options);rzp.on('payment.failed',r=>toast('Payment failed: '+(r.error.description||'Try again'),'error'));rzp.open();}catch(e){toast('Could not open payment','error');}
+  _me={..._me,plan:'free',planSelected:true};await DB.setUser(_me.uid,_me);document.getElementById('plan-select-screen').style.display='none';window.location.href='ai-onboarding.html';
 }
 
 // ── PROFILE SETUP ─────────────────────────────────────
@@ -1593,7 +1665,7 @@ async function openEditProfileModal(){
     document.getElementById('edit-profile-body').innerHTML=`
       <div class="ep-dp-section">
         <div class="ep-dp-ring" id="ep-dp-ring" onclick="document.getElementById('ep-dp-file').click()">
-          ${ex?.profilePhoto?`<img id="ep-dp-preview" src="${ex.profilePhoto}">`:''}
+          ${ex?.profilePhoto?`<img alt="Profile photo" id="ep-dp-preview" src="${sanitizeUrl(ex.profilePhoto,{allowLocalPreview:true})}">`:''}
           <div class="ep-dp-placeholder" id="ep-dp-placeholder" style="${ex?.profilePhoto?'display:none':''}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:22px;height:22px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
             Upload Photo
@@ -1623,7 +1695,7 @@ async function openEditProfileModal(){
     document.getElementById('edit-profile-body').innerHTML=`
       <div class="ep-dp-section">
         <div class="ep-dp-ring" id="ep-dp-ring" onclick="document.getElementById('ep-dp-file').click()">
-          ${_me.profilePhoto?`<img id="ep-dp-preview" src="${_me.profilePhoto}">`:''}
+          ${_me.profilePhoto?`<img alt="Profile photo" id="ep-dp-preview" src="${sanitizeUrl(_me.profilePhoto,{allowLocalPreview:true})}">`:''}
           <div class="ep-dp-placeholder" id="ep-dp-placeholder" style="${_me.profilePhoto?'display:none':''}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:22px;height:22px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
             Upload Logo
@@ -1670,6 +1742,9 @@ async function saveEditProfile(){
     if(window._epDpFile){saveBtn.textContent='Uploading…';saveBtn.disabled=true;try{photoURL=await uploadToCloudinary(window._epDpFile,CLOUDINARY_UPLOAD_PRESET_PROFILE,_me.uid,'profile');}catch(e){toast('Photo upload failed: '+e.message,'error');saveBtn.textContent='Save Changes';saveBtn.disabled=false;return;}}
     else if(window._epPendingPhoto===''){photoURL='';}
     const wa=g('ep-wa');
+    // VALIDATION: WhatsApp number, if provided, must look like a real phone number
+    // (digits, spaces, +, -, parentheses; 7-15 digits) — prevents garbage contact data.
+    if(wa && !/^[+]?[\d\s().-]{7,20}$/.test(wa)){toast('Please enter a valid WhatsApp number','error');return;}
     if(wa)await DB.updateUser(_me.uid,{whatsapp:wa});
     const ex=await DB.getCreator(_me.uid)||{};
     await DB.setCreator(_me.uid,{userId:_me.uid,name,bio,niches,profilePhoto:photoURL,instagram:g('ep-insta'),youtube:g('ep-yt'),linkedin:g('ep-li'),audienceSize:aud,engagementRate:g('ep-eng'),pricing:g('ep-price'),whatsapp:wa||_me.whatsapp||'',featured:ex.featured||false,topSearch:ex.topSearch||false,createdAt:ex.createdAt||new Date().toISOString()});
@@ -1684,6 +1759,9 @@ async function saveEditProfile(){
     if(window._epDpFile){saveBtn.textContent='Uploading…';saveBtn.disabled=true;try{photoURL=await uploadToCloudinary(window._epDpFile,CLOUDINARY_UPLOAD_PRESET_PROFILE,_me.uid,'profile');}catch(e){toast('Photo upload failed: '+e.message,'error');saveBtn.textContent='Save Changes';saveBtn.disabled=false;return;}}
     else if(window._epPendingPhoto===''){photoURL='';}
     const wa=g('ep-wa');
+    // VALIDATION: WhatsApp number, if provided, must look like a real phone number
+    // (digits, spaces, +, -, parentheses; 7-15 digits) — prevents garbage contact data.
+    if(wa && !/^[+]?[\d\s().-]{7,20}$/.test(wa)){toast('Please enter a valid WhatsApp number','error');return;}
     if(wa)await DB.updateUser(_me.uid,{whatsapp:wa});
     await DB.setFounder(_me.uid,{userId:_me.uid,name,email:_me.email,whatsapp:wa||_me.whatsapp||'',profilePhoto:photoURL,startupName:sname,description:desc,industry:ind,website:g('ep-web'),budget:bud,collabType:ct,lookingFor:g('ep-looking'),updatedAt:new Date().toISOString()});
     _me={..._me,name,profileComplete:true,profilePhoto:photoURL,whatsapp:wa||_me.whatsapp||''};
@@ -1743,74 +1821,6 @@ async function showSection(sec){
 // ── HOME ──────────────────────────────────────────────
 async function renderHome(el){
   return renderMobileHome(el); // app is mobile-only
-  const isC=_me.userType==='creator';
-  const plan=_me.plan||'free';
-  const allR=Object.entries(await DB.getRequests());
-  const sent=allR.filter(([,r])=>r.founderId===_me.uid);
-  const recv=allR.filter(([,r])=>r.creatorId===_me.uid);
-  const acc=sent.filter(([,r])=>r.status==='accepted').length;
-  const cr=await DB.getCreator(_me.uid);
-  const fo=await DB.getFounder(_me.uid);
-  const h=new Date().getHours();
-  const greet=h<12?'Morning':h<17?'Afternoon':'Evening';
-  const chartData=[3,7,4,9,6,12,8];
-  const maxV=Math.max(...chartData,1);
-  el.innerHTML=`
-    <div style="margin-bottom:1.5rem">
-      <div style="display:flex;align-items:center;gap:.875rem">
-        <div class="avatar-wrap" style="width:3rem;height:3rem;">
-          <div class="avatar-ring" style="inset:-2px"></div>
-          <div class="avatar" style="width:3rem;height:3rem;font-size:1.1rem;position:relative;z-index:1">${(_me.name||'U').charAt(0).toUpperCase()}</div>
-          <div class="avatar-status"></div>
-        </div>
-        <div>
-          <div style="font-family:'General Sans','Plus Jakarta Sans',sans-serif;font-weight:800;font-size:1.5rem;letter-spacing:-.02em">Good ${greet}, ${_me.name?.split(' ')[0]} 👋</div>
-          <div style="font-size:.82rem;color:var(--muted);margin-top:.2rem">${isC?'Creator':'Founder'} Dashboard · <span class="plan-badge ${plan}">${plan.toUpperCase()}</span></div>
-        </div>
-        ${plan==='free'?`<button class="btn btn-primary btn-sm" style="margin-left:auto" onclick="showSection('pricing')"><i class="fas fa-crown"></i> Upgrade</button>`:''}
-      </div>
-    </div>
-    <div class="stats-grid">
-      <div class="stat-card"><div class="stat-accent" style="background:var(--accent)"></div><div class="stat-icon" style="background:rgba(108,99,255,.15);color:var(--accent)"><i class="fas fa-paper-plane"></i></div><div class="stat-val">${sent.length}</div><div class="stat-label">Requests Sent</div></div>
-      <div class="stat-card"><div class="stat-accent" style="background:var(--accent3)"></div><div class="stat-icon" style="background:rgba(0,212,170,.15);color:var(--accent3)"><i class="fas fa-inbox"></i></div><div class="stat-val">${recv.length}</div><div class="stat-label">Requests Received</div></div>
-      <div class="stat-card"><div class="stat-accent" style="background:var(--gold)"></div><div class="stat-icon" style="background:rgba(245,166,35,.15);color:var(--gold)"><i class="fas fa-check-circle"></i></div><div class="stat-val">${acc}</div><div class="stat-label">Accepted</div></div>
-      <div class="stat-card"><div class="stat-accent" style="background:var(--accent2)"></div><div class="stat-icon" style="background:rgba(255,107,107,.15);color:var(--accent2)"><i class="fas fa-${isC?'eye':'users'}"></i></div><div class="stat-val">${isC?recv.length:sent.length}</div><div class="stat-label">${isC?'Total Inquiries':'Creators Contacted'}</div></div>
-    </div>
-    <div class="dash-grid">
-      <div style="display:flex;flex-direction:column;gap:1.25rem">
-        <div class="panel">
-          <div class="panel-head"><div class="panel-title"><i class="fas fa-user-circle"></i> My Profile</div><button class="btn btn-ghost btn-sm" onclick="openSetup()"><i class="fas fa-edit"></i> Edit</button></div>
-          <div class="panel-body">
-            ${isC&&cr?`<div style="display:flex;gap:1rem;align-items:flex-start;margin-bottom:1rem"><div class="creator-ava" style="width:3.5rem;height:3.5rem;font-size:1.25rem;border-radius:.875rem">${cr.profilePhoto?`<img src="${cr.profilePhoto}" style="width:100%;height:100%;object-fit:cover">`:(cr.name||'C').charAt(0)}</div><div style="flex:1"><div style="font-weight:700;font-size:1.05rem">${cr.name}</div><div style="font-size:.78rem;color:var(--muted);margin:.25rem 0 .5rem">${cr.audienceSize||'—'} · ${cr.engagementRate||'—'} ER</div><div class="niche-tags">${(cr.niches||[]).map(n=>`<span class="niche-tag">${n}</span>`).join('')}</div></div></div><div style="font-size:.8rem;color:var(--muted);line-height:1.6">${cr.bio||''}</div>`:fo?`<div><div style="font-weight:700;font-size:1.1rem;margin-bottom:.25rem">${fo.startupName}</div><div style="font-size:.8rem;color:var(--muted);margin-bottom:.75rem">${fo.industry} · ${fo.budget}</div><div style="font-size:.82rem;line-height:1.6;color:var(--muted)">${fo.description}</div></div>`:`<p style="font-size:.875rem;color:var(--muted)">Profile not set up. <a onclick="openSetup()" style="color:var(--accent);cursor:pointer">Set up now →</a></p>`}
-          </div>
-        </div>
-        <div class="panel">
-          <div class="panel-head"><div class="panel-title"><i class="fas fa-inbox"></i> Recent Requests</div><button class="btn btn-ghost btn-sm" onclick="showSection('requests')">View all</button></div>
-          <div class="panel-body">${await buildRecentRequests(isC,sent,recv)}</div>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:1.25rem">
-        <div class="panel">
-          <div class="panel-head"><div class="panel-title"><i class="fas fa-chart-bar"></i> Activity This Week</div></div>
-          <div class="panel-body">
-            <div class="chart-wrap">${chartData.map((v,i)=>`<div class="chart-bar" style="height:${(v/maxV*100)}%;background:linear-gradient(180deg,var(--accent),rgba(108,99,255,.3))"></div>`).join('')}</div>
-            <div class="chart-labels">${['M','T','W','T','F','S','S'].map(d=>`<span>${d}</span>`).join('')}</div>
-          </div>
-        </div>
-        <div class="panel">
-          <div class="panel-head"><div class="panel-title"><i class="fas fa-crown"></i> Your Plan</div></div>
-          <div class="panel-body">${buildPlanSummary(plan)}</div>
-        </div>
-        <div class="panel">
-          <div class="panel-head"><div class="panel-title"><i class="fas fa-bolt"></i> Quick Actions</div></div>
-          <div class="panel-body" style="display:flex;flex-direction:column;gap:.5rem">
-            ${!isC?`<button class="btn btn-primary btn-sm" style="justify-content:center" onclick="showSection('creators')"><i class="fas fa-search"></i> Find Creators</button>`:''}
-            <button class="btn btn-ghost btn-sm" style="justify-content:center" onclick="openSetup()"><i class="fas fa-edit"></i> Edit Profile</button>
-            <button class="btn btn-ghost btn-sm" style="justify-content:center" onclick="showSection('campaigns')"><i class="fas fa-bullhorn"></i> Campaigns</button>
-          </div>
-        </div>
-      </div>
-    </div>`;
 }
 
 function buildPlanSummary(plan){
@@ -1907,7 +1917,7 @@ async function renderMobileHome(el){
       const hue=hashColor(c.id||c.title||'x');
       return `<div class="mh2-opp-card">
         <div class="mh2-opp-icon" style="background:${c.brandLogo?'transparent':`hsl(${hue},60%,40%)`}">
-          ${c.brandLogo?`<img src="${c.brandLogo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:`<span>${initial}</span>`}
+          ${c.brandLogo?`<img alt="Brand logo" src="${sanitizeUrl(c.brandLogo,{allowLocalPreview:true})}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:`<span>${initial}</span>`}
         </div>
         <h4 class="mh2-opp-name">${escHtml(c.startupName||c.founderName||'Brand')}</h4>
         <p class="mh2-opp-sub">${escHtml(c.title||'Campaign')}</p>
@@ -1924,7 +1934,7 @@ async function renderMobileHome(el){
       const initial=(c.name||'C').charAt(0).toUpperCase();
       return `<div class="mh2-opp-card">
         <div class="mh2-opp-icon" style="background:${c.profilePhoto?'transparent':`hsl(${hue},60%,40%)`}">
-          ${c.profilePhoto?`<img src="${c.profilePhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:`<span>${initial}</span>`}
+          ${c.profilePhoto?`<img alt="Profile photo" src="${sanitizeUrl(c.profilePhoto,{allowLocalPreview:true})}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:`<span>${initial}</span>`}
         </div>
         <h4 class="mh2-opp-name">${escHtml(c.name||'Creator')}</h4>
         <p class="mh2-opp-sub">${(c.niches||[]).slice(0,2).join(' · ')||'Creator'}</p>
@@ -1965,7 +1975,7 @@ async function renderMobileHome(el){
     bentoHTML=bentoCamps.map(c=>{
       const hue=hashColor(c.id||c.title||'b');
       const img=c.productImage
-        ? `<img src="${c.productImage}" style="width:100%;height:100%;object-fit:cover">`
+        ? `<img alt="Product image" src="${sanitizeUrl(c.productImage,{allowLocalPreview:true})}" style="width:100%;height:100%;object-fit:cover">`
         : `<div style="width:100%;height:100%;background:linear-gradient(150deg,hsl(${hue},65%,42%),hsl(${hue+50},65%,30%))"></div>`;
       return `<div class="mh2-card mh2-bento" onclick="showSection('campaigns')">
         <div class="mh2-bento-img">${img}</div>
@@ -1979,7 +1989,7 @@ async function renderMobileHome(el){
     bentoHTML=bentoCreators.map(([id,c])=>{
       const hue=hashColor(id);
       const img=c.profilePhoto
-        ? `<img src="${c.profilePhoto}" style="width:100%;height:100%;object-fit:cover">`
+        ? `<img alt="Profile photo" src="${sanitizeUrl(c.profilePhoto,{allowLocalPreview:true})}" style="width:100%;height:100%;object-fit:cover">`
         : `<div style="width:100%;height:100%;background:linear-gradient(150deg,hsl(${hue},65%,42%),hsl(${hue+50},65%,30%))"></div>`;
       return `<div class="mh2-card mh2-bento" onclick="showSection('creators')">
         <div class="mh2-bento-img">${img}</div>
@@ -1999,7 +2009,7 @@ async function renderMobileHome(el){
           <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
           <span class="mh2-notif-dot" id="mob-notif-badge" style="display:none"></span>
         </button>
-        <div class="mh2-avatar" onclick="showSection('profile')">${_me.profilePhoto?`<img src="${_me.profilePhoto}">`:firstName.charAt(0).toUpperCase()}</div>
+        <div class="mh2-avatar" onclick="showSection('profile')">${_me.profilePhoto?`<img alt="Profile photo" src="${sanitizeUrl(_me.profilePhoto,{allowLocalPreview:true})}">`:firstName.charAt(0).toUpperCase()}</div>
       </div>
     </header>
 
@@ -2056,12 +2066,12 @@ async function renderMobileHomeNew(el){
   // Header + nav + spinner show instantly — data loads underneath, no blank screen
   phSetMobileNav('home');
   phSetHeader('PostHire', `
-    <button class="ph-icon-btn" onclick="showSection('notifications')" style="position:relative">
+    <button class="ph-icon-btn" onclick="showSection('notifications')" style="position:relative" aria-label="Notifications">
       <i class="fas fa-bell" style="font-size:1.1rem;color:var(--ph-text)"></i>
       <span class="ph-badge" id="mob-notif-badge" style="display:none">0</span>
     </button>
     <div class="ph-avatar-sm" onclick="showSection('profile')" style="cursor:pointer">
-      ${_me.profilePhoto?`<img src="${_me.profilePhoto}" style="width:100%;height:100%;object-fit:cover">`:`${firstName.charAt(0).toUpperCase()}`}
+      ${_me.profilePhoto?`<img alt="Profile photo" src="${sanitizeUrl(_me.profilePhoto,{allowLocalPreview:true})}" style="width:100%;height:100%;object-fit:cover">`:`${firstName.charAt(0).toUpperCase()}`}
     </div>
   `);
   el.innerHTML=phSkeleton();
@@ -2110,7 +2120,7 @@ async function renderMobileHomeNew(el){
     }));
     spotHTML=window._phSpotlightCreators.map((c,i)=>{
       const img=c.photo
-        ?`<img src="${c.photo}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`
+        ?`<img alt="Profile photo" src="${sanitizeUrl(c.photo,{allowLocalPreview:true})}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`
         :`<div style="position:absolute;inset:0;background:linear-gradient(160deg,hsl(${c.hue},65%,38%),hsl(${c.hue+45},65%,22%))"></div>`;
       return `<div class="ph-spot-card" onclick="openReelViewer(${i})">
         ${img}
@@ -2160,7 +2170,7 @@ async function renderMobileHomeNew(el){
     const list=Object.entries(creatorsObj).filter(([id])=>id!==_me.uid).slice(0,3);
     recHTML=list.map(([id,c])=>{
       const hue=hashColor(id);
-      const img=c.profilePhoto?`<img src="${c.profilePhoto}">`:`<div style="width:100%;height:100%;background:linear-gradient(135deg,hsl(${hue},65%,50%),hsl(${hue+40},65%,35%));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.9rem">${(c.name||'C').charAt(0)}</div>`;
+      const img=c.profilePhoto?`<img alt="Profile photo" src="${sanitizeUrl(c.profilePhoto,{allowLocalPreview:true})}">`:`<div style="width:100%;height:100%;background:linear-gradient(135deg,hsl(${hue},65%,50%),hsl(${hue+40},65%,35%));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.9rem">${(c.name||'C').charAt(0)}</div>`;
       const btn=sentToIds.has(id)
         ?`<button class="ph-rec-btn" disabled style="opacity:.55;cursor:default"><i class="fas fa-check"></i> Sent</button>`
         :`<button class="ph-rec-btn" onclick="sendCollab('${id}')">Connect</button>`;
@@ -2179,7 +2189,7 @@ async function renderMobileHomeNew(el){
       const hue=hashColor(c.id||c.title||'x');
       return `<div class="ph-rec-card">
         <div class="ph-rec-ava" style="background:hsl(${hue},60%,90%)">
-          <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.1rem">${c.brandLogo?`<img src="${c.brandLogo}" style="width:100%;height:100%;object-fit:cover">`:'🎯'}</div>
+          <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.1rem">${c.brandLogo?`<img alt="Brand logo" src="${sanitizeUrl(c.brandLogo,{allowLocalPreview:true})}" style="width:100%;height:100%;object-fit:cover">`:'🎯'}</div>
         </div>
         <div class="ph-rec-body">
           <div class="ph-rec-name">${escHtml(c.startupName||c.founderName||'Brand')}</div>
@@ -2291,7 +2301,7 @@ async function renderCreatorHomeMobile(el,ctx){
   let campHTML=openCamps.map(([id,c])=>{
     const hue=hashColor(id);
     const logo=c.brandLogo
-      ?`<img src="${c.brandLogo}">`
+      ?`<img alt="Brand logo" src="${sanitizeUrl(c.brandLogo,{allowLocalPreview:true})}">`
       :`<div style="width:100%;height:100%;background:linear-gradient(135deg,hsl(${hue},60%,45%),hsl(${hue+35},60%,30%));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800">${(c.startupName||'B').charAt(0)}</div>`;
     return `<div class="ph-camp-reco-card">
       <i class="fa-regular fa-bookmark ph-camp-reco-bookmark"></i>
@@ -2338,7 +2348,6 @@ async function renderCreatorHomeMobile(el,ctx){
   // ── Creator insights ──
   const profileViews=_me.profileViews||0;
   const invitesCount=recv.length;
-  const earnings=_me.totalEarnings||0;
 
   // ── Recent activity from requests ──
   const activityItems=recv.concat(requestsObj?Object.entries(requestsObj).filter(([,r])=>r.founderId===_me.uid):[])
@@ -2400,11 +2409,6 @@ async function renderCreatorHomeMobile(el,ctx){
           <div class="ph-insight-icon" style="background:#D8CFFB"><i class="fas fa-envelope-open-text" style="color:#7C5CFC"></i></div>
           <div class="ph-insight-val">${invitesCount}</div>
           <div class="ph-insight-label">Invitations</div>
-        </div>
-        <div class="ph-insight-card">
-          <div class="ph-insight-icon" style="background:#BEE8CE"><i class="fas fa-indian-rupee-sign" style="color:#34C759"></i></div>
-          <div class="ph-insight-val">₹${earnings}</div>
-          <div class="ph-insight-label">Earnings</div>
         </div>
       </div>
 
@@ -2486,9 +2490,9 @@ function reelSlideHTML(c,i){
   const media=hasVideo
     ?`<div class="ph-reel-media-wrap"><video src="${c.reelVideo}" autoplay loop muted playsinline></video></div>`
     :(c.photo
-      ?`<div class="ph-reel-media-wrap ph-reel-kenburns"><img src="${c.photo}"></div>`
+      ?`<div class="ph-reel-media-wrap ph-reel-kenburns"><img alt="Profile photo" src="${sanitizeUrl(c.photo,{allowLocalPreview:true})}"></div>`
       :`<div class="ph-reel-media-wrap" style="background:linear-gradient(160deg,hsl(${c.hue},65%,32%),hsl(${c.hue+45},65%,16%))"></div>`);
-  const ava=c.photo?`<img src="${c.photo}">`:initials(c.name);
+  const ava=c.photo?`<img alt="Profile photo" src="${sanitizeUrl(c.photo,{allowLocalPreview:true})}">`:initials(c.name);
   return `<div class="ph-reel-slide" data-idx="${i}">
     ${media}
     <div class="ph-reel-scrim-top"></div>
@@ -2575,7 +2579,7 @@ function openReelProfile(i){
   const c=(window._phSpotlightCreators||[])[i];
   if(!c)return;
   const panel=document.getElementById('ph-reel-profile');
-  const ava=c.photo?`<img src="${c.photo}">`:initials(c.name);
+  const ava=c.photo?`<img alt="Profile photo" src="${sanitizeUrl(c.photo,{allowLocalPreview:true})}">`:initials(c.name);
   panel.innerHTML=`
     <div class="ph-reel-profile-head">
       <button class="ph-reel-profile-back" onclick="closeReelProfile()"><i class="fas fa-arrow-left"></i></button>
@@ -2659,7 +2663,7 @@ async function renderMobileDiscover(el){
   const creatorCards=list.slice(0,20).map(([id,c])=>{
     const hue=hashColor(id);
     const ava=c.profilePhoto
-      ?`<img src="${c.profilePhoto}">`
+      ?`<img alt="Profile photo" src="${sanitizeUrl(c.profilePhoto,{allowLocalPreview:true})}">`
       :`<div style="width:100%;height:100%;background:linear-gradient(135deg,hsl(${hue},65%,50%),hsl(${hue+40},65%,35%));display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;color:#fff">${(c.name||'C').charAt(0)}</div>`;
     const tags=(c.niches||[]).slice(0,2).map(n=>`<span class="ph-creator-tag">${escHtml(n)}</span>`).join('');
     const action=isC
@@ -2739,7 +2743,7 @@ async function renderMobileCampaigns(el){
     const status=c.status||'draft';
     const statusClass=status==='open'?'active':status==='closed'?'closed':'draft';
     const icon=c.brandLogo
-      ?`<img src="${c.brandLogo}" style="width:100%;height:100%;object-fit:cover;border-radius:12px">`
+      ?`<img alt="Brand logo" src="${sanitizeUrl(c.brandLogo,{allowLocalPreview:true})}" style="width:100%;height:100%;object-fit:cover;border-radius:12px">`
       :`<div style="width:100%;height:100%;background:linear-gradient(135deg,hsl(${hue},65%,50%),hsl(${hue+40},65%,35%));border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;font-weight:800">${(c.startupName||c.title||'C').charAt(0)}</div>`;
     const applied=appIds.has(id);
     const actionBtn=isC
@@ -2800,7 +2804,7 @@ async function renderMobileCampaigns(el){
         <div class="form-group">
           <label>Campaign Cover Image <span style="font-size:.7rem;color:var(--muted)">(uploads to Cloudinary)</span></label>
           <div id="camp-img-preview-wrap" style="margin-bottom:.5rem;display:none">
-            <img id="camp-img-preview" style="width:100%;height:140px;object-fit:cover;border-radius:1rem;border:1px solid var(--border)">
+            <img alt="" id="camp-img-preview" style="width:100%;height:140px;object-fit:cover;border-radius:1rem;border:1px solid var(--border)">
             <button onclick="removeCampImg()" style="font-size:.72rem;color:#ff6b6b;background:none;border:none;cursor:pointer;margin-top:.3rem">Remove image</button>
           </div>
           <div id="camp-img-upload-area" style="border:2px dashed var(--border);border-radius:1rem;padding:1.5rem;text-align:center;cursor:pointer;transition:border-color .2s;" onclick="document.getElementById('camp-img-file').click()" onmouseover="this.style.borderColor='rgba(233,255,57,0.5)'" onmouseout="this.style.borderColor='var(--border)'">
@@ -2884,7 +2888,7 @@ async function renderMobileMessages(el){
     const name=cv.otherName||otherId.slice(0,6)||'User';
     const hue=hashColor(otherId);
     const ava=cv.otherPhoto
-      ?`<img src="${cv.otherPhoto}" style="width:100%;height:100%;object-fit:cover">`
+      ?`<img alt="Profile photo" src="${sanitizeUrl(cv.otherPhoto,{allowLocalPreview:true})}" style="width:100%;height:100%;object-fit:cover">`
       :`<div style="width:100%;height:100%;background:linear-gradient(135deg,hsl(${hue},65%,50%),hsl(${hue+40},65%,35%));display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;color:#fff">${name.charAt(0).toUpperCase()}</div>`;
     const unread=cv.unreadCount?.[_me.uid]||0;
     const time=cv.lastAt?new Date(cv.lastAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
@@ -2954,7 +2958,7 @@ async function renderMobileProfile(el){
   const bio=_me.bio||_me.description||'';
   const role=isC?'Creator':'Founder';
   const ava=_me.profilePhoto
-    ?`<img src="${_me.profilePhoto}" style="width:100%;height:100%;object-fit:cover">`
+    ?`<img alt="Profile photo" src="${sanitizeUrl(_me.profilePhoto,{allowLocalPreview:true})}" style="width:100%;height:100%;object-fit:cover">`
     :`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--ph-accent),var(--ph-accent2))">${name.charAt(0).toUpperCase()}</div>`;
 
   // Recent collaborations
@@ -3078,8 +3082,16 @@ function reqSwitchTab(tab){
 }
 
 async function updReq(id,status){
+  // SECURITY: only the request's recipient (creatorId) can accept/decline — the founder who sent it cannot flip its own status.
+  let r=null;
+  try{
+    const reqSnap=await getDoc(doc(db,'requests',id));
+    if(!reqSnap.exists()){toast('Request not found.','error');return;}
+    r=reqSnap.data();
+    if(!r.creatorId || r.creatorId!==_me.uid){toast('Only the invited creator can respond to this request.','error');return;}
+    if(r.status && r.status!=='pending'){toast('This request has already been responded to.','info');return;}
+  }catch(e){toast('Could not verify request. Please try again.','error');return;}
   await DB.updateRequest(id,{status,updatedAt:new Date().toISOString()});
-  const allR=await DB.getRequests();const r=allR[id];
   // 🔔 NOTIFICATION TRIGGER — request accepted/declined
   if(r){
     createNotification(r.founderId,{
@@ -3101,17 +3113,6 @@ async function updReq(id,status){
 // ── CREATORS ──────────────────────────────────────────
 async function renderCreators(el){
   return renderMobileDiscover(el); // app is mobile-only
-  if(_me.userType==='creator'){el.innerHTML=`<div class="empty-state"><i class="fas fa-lock"></i><p>Creator discovery is for founders only.</p></div>`;return;}
-  const plan=_me.plan||'free';
-  el.innerHTML=`
-    ${plan==='free'?`<div class="upgrade-banner"><div><h4>🔒 Limited to 10 profiles/day on Free</h4><p>Upgrade for unlimited browsing, advanced filters & messaging.</p></div><button class="btn btn-primary btn-sm" onclick="showSection('pricing')">Upgrade →</button></div>`:''}
-    <div class="filter-bar">
-      <input class="filter-input" id="f-search" placeholder="🔍 Search creators…" oninput="filterCreators()">
-      ${plan!=='free'?`<select class="filter-select" id="f-niche" onchange="filterCreators()"><option value="">All Niches</option>${['AI','Finance','Startup','Tech','Lifestyle','Business','Marketing','SaaS','Education','Health'].map(n=>`<option>${n}</option>`).join('')}</select><select class="filter-select" id="f-aud" onchange="filterCreators()"><option value="">All Sizes</option>${['1K-10K','10K-50K','50K-100K','100K-500K','500K+'].map(v=>`<option>${v}</option>`).join('')}</select>`:''}
-    </div>
-    <div id="sort-info" style="font-size:.78rem;color:var(--muted);margin-bottom:.875rem">Loading…</div>
-    <div class="creators-grid" id="creators-grid"></div>`;
-  await filterCreators();
 }
 
 async function filterCreators(){
@@ -3134,146 +3135,59 @@ async function filterCreators(){
     const btn=alreadySent?`<button class="collab-btn sent"><i class="fas fa-check"></i> Request Sent</button>`:`<button class="collab-btn active" onclick="sendCollab('${c.userId}')"><i class="fas fa-handshake"></i> Collaborate</button>`;
     return`<div class="creator-card${c.featured?' featured-card':''}">
       ${c.featured?`<div class="featured-badge">⭐ FEATURED</div>`:''}
-      <div class="creator-head"><div class="creator-ava">${c.profilePhoto?`<img src="${c.profilePhoto}">`:(c.name||'C').charAt(0)}</div><div><div class="creator-name">${c.name}</div><div class="creator-meta">${c.audienceSize||'—'} · ${c.engagementRate||'—'} ER</div></div></div>
+      <div class="creator-head"><div class="creator-ava">${c.profilePhoto?`<img alt="Profile photo" src="${sanitizeUrl(c.profilePhoto,{allowLocalPreview:true})}">`:(c.name||'C').charAt(0)}</div><div><div class="creator-name">${c.name}</div><div class="creator-meta">${c.audienceSize||'—'} · ${c.engagementRate||'—'} ER</div></div></div>
       <div class="niche-tags">${(c.niches||[]).slice(0,4).map(n=>`<span class="niche-tag">${n}</span>`).join('')}</div>
       <div class="creator-bio">${c.bio||''}</div>
-      <div style="display:flex;justify-content:space-between;align-items:center"><div class="creator-socials">${c.instagram?`<a class="social-btn" href="https://instagram.com/${c.instagram.replace('@','')}" target="_blank"><i class="fab fa-instagram"></i></a>`:''}</div>${c.pricing?`<span style="font-size:.72rem;color:var(--accent3)"><i class="fas fa-tag"></i> ${c.pricing}</span>`:''}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center"><div class="creator-socials">${c.instagram?`<a class="social-btn" href="https://instagram.com/${escHtml(c.instagram.replace('@','').trim())}" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>`:''}</div>${c.pricing?`<span style="font-size:.72rem;color:var(--accent3)"><i class="fas fa-tag"></i> ${c.pricing}</span>`:''}</div>
       ${btn}
     </div>`;
   }).join('');
 }
 
+const _sendingCollabTo=new Set();
 async function sendCollab(creatorId){
-  const plan=_me.plan||'free';
-  const allR=Object.values(await DB.getRequests());
-  const monthR=allR.filter(r=>r.founderId===_me.uid&&new Date(r.createdAt)>new Date(Date.now()-30*86400000)).length;
-  if(plan==='free'&&monthR>=3){toast('Free plan: 3 requests/month limit reached.','error');setTimeout(()=>showSection('pricing'),1500);return;}
-  if(plan==='starter'&&monthR>=20){toast('Starter plan: 20 requests/month limit reached.','error');setTimeout(()=>showSection('pricing'),1500);return;}
-  const fo=await DB.getFounder(_me.uid);
-  if(!fo){toast('Please set up your founder profile first.','error');await openSetup();return;}
-  const cr=await DB.getCreator(creatorId);if(!cr)return;
-  const newReqId=await DB.saveRequest({founderId:_me.uid,founderName:_me.name,startupName:fo.startupName,creatorId,creatorName:cr.name,collabType:fo.collabType,budget:fo.budget,status:'pending',createdAt:new Date().toISOString()});
-  const inviteMsg=`Hi ${cr.name}! I'm ${_me.name} from ${fo.startupName||'my startup'}. I'd love to collaborate!`;
-  try{await DB.getOrCreateConversation(_me.uid,creatorId,inviteMsg);}catch(e){}
-  // 🔔 NOTIFICATION TRIGGER — new collab request received
-  createNotification(creatorId,{
-    type:'request',
-    title:`New collab request from ${_me.name||'a founder'}`,
-    body:`${fo.startupName||_me.name} wants to collaborate with you${fo.collabType?' on '+fo.collabType:''}${fo.budget?' · '+fo.budget:''}.`,
-    icon:'fa-handshake',
-    requestId:newReqId,
-    fromUid:_me.uid,
-    fromName:_me.name||'Founder'
-  });
-  toast(`Request sent to ${cr.name}! 🚀`,'success');
-  _allCreators={};
-  const activeTab=document.querySelector('.ph-nav-item.active')?.id?.replace('phn-','');
-  if(activeTab==='home'||activeTab==='creators')await showSection(activeTab);
+  // Guard against double-clicks / duplicate submissions while a request is in flight.
+  if(_sendingCollabTo.has(creatorId))return;
+  _sendingCollabTo.add(creatorId);
+  try{
+    const plan=_me.plan||'free';
+    const allR=Object.values(await DB.getRequests());
+    const monthR=allR.filter(r=>r.founderId===_me.uid&&new Date(r.createdAt)>new Date(Date.now()-30*86400000)).length;
+    if(plan==='free'&&monthR>=3){toast('Free plan: 3 requests/month limit reached.','error');setTimeout(()=>showSection('pricing'),1500);return;}
+    const fo=await DB.getFounder(_me.uid);
+    if(!fo){toast('Please set up your founder profile first.','error');await openSetup();return;}
+    const cr=await DB.getCreator(creatorId);if(!cr)return;
+    let newReqId;
+    try{
+      newReqId=await DB.saveRequest({founderId:_me.uid,founderName:_me.name,startupName:fo.startupName,creatorId,creatorName:cr.name,collabType:fo.collabType,budget:fo.budget,status:'pending',createdAt:new Date().toISOString()});
+    }catch(e){
+      if(e.code==='duplicate'){toast(`You already have a pending request with ${cr.name}.`,'info');return;}
+      toast('Could not send request. Please try again.','error');return;
+    }
+    const inviteMsg=`Hi ${cr.name}! I'm ${_me.name} from ${fo.startupName||'my startup'}. I'd love to collaborate!`;
+    try{await DB.getOrCreateConversation(_me.uid,creatorId,inviteMsg);}catch(e){}
+    // 🔔 NOTIFICATION TRIGGER — new collab request received
+    createNotification(creatorId,{
+      type:'request',
+      title:`New collab request from ${_me.name||'a founder'}`,
+      body:`${fo.startupName||_me.name} wants to collaborate with you${fo.collabType?' on '+fo.collabType:''}${fo.budget?' · '+fo.budget:''}.`,
+      icon:'fa-handshake',
+      requestId:newReqId,
+      fromUid:_me.uid,
+      fromName:_me.name||'Founder'
+    });
+    toast(`Request sent to ${cr.name}! 🚀`,'success');
+    _allCreators={};
+    const activeTab=document.querySelector('.ph-nav-item.active')?.id?.replace('phn-','');
+    if(activeTab==='home'||activeTab==='creators')await showSection(activeTab);
+  }finally{
+    _sendingCollabTo.delete(creatorId);
+  }
 }
 
 // ── PROFILE ───────────────────────────────────────────
 async function renderProfile(el){
   return renderMobileProfile(el); // app is mobile-only
-  const isC=_me.userType==='creator';
-  const cr=isC?await DB.getCreator(_me.uid):null;
-  const fo=!isC?await DB.getFounder(_me.uid):null;
-  const plan=_me.plan||'free';
-  const allR=Object.entries(await DB.getRequests());
-  const sentR=allR.filter(([,r])=>r.founderId===_me.uid);
-  const recvR=allR.filter(([,r])=>r.creatorId===_me.uid);
-  const doneCollabs=allR.filter(([,r])=>(r.founderId===_me.uid||r.creatorId===_me.uid)&&r.status==='accepted').length;
-  const pendingR=allR.filter(([,r])=>(r.founderId===_me.uid||r.creatorId===_me.uid)&&r.status==='pending').length;
-
-  const name=isC?(cr?.name||_me.name||'—'):(fo?.startupName||_me.name||'—');
-  const bio=isC?(cr?.bio||''):(fo?.description||'');
-  const photo=isC?cr?.profilePhoto:fo?.profilePhoto;
-  const avatarInner=photo?`<img src="${photo}" style="width:100%;height:100%;object-fit:cover;">`:`<span style="font-size:2.25rem;font-weight:700">${name.charAt(0).toUpperCase()}</span>`;
-  const subline=isC?`Creator · ${cr?.audienceSize||'—'} followers · ${cr?.engagementRate||'—'} ER`:`${fo?.industry||'Founder'} · ${fo?.budget||'—'} budget`;
-  const planColors={free:'#818cf8',starter:'#3b82f6',pro:'#ec4899',elite:'#f59e0b'};
-  const pc=planColors[plan]||'#818cf8';
-
-  const nicheHtml=isC?(cr?.niches||[]).map(n=>`<span style="background:rgba(233,255,57,.10);color:var(--accent);padding:3px 10px;border-radius:99px;font-size:.72rem;font-weight:600">${n}</span>`).join(''):'';
-
-  const statCard=(icon,label,val,color='var(--accent)')=>`
-    <div style="background:#f6f6fa;border:1px solid var(--border);border-radius:14px;padding:1rem;text-align:center;flex:1;min-width:70px;">
-      <i class="fas fa-${icon}" style="color:${color};font-size:1.1rem;margin-bottom:.4rem;display:block"></i>
-      <div style="font-size:1.4rem;font-weight:800;color:var(--text);line-height:1">${val}</div>
-      <div style="font-size:.68rem;color:var(--muted);margin-top:3px;font-weight:500">${label}</div>
-    </div>`;
-
-  const recentCollabs=allR.filter(([,r])=>(r.founderId===_me.uid||r.creatorId===_me.uid)&&r.status==='accepted').slice(-3).reverse();
-  const collabHtml=recentCollabs.length?recentCollabs.map(([,r])=>`
-    <div style="display:flex;align-items:center;gap:.75rem;padding:.75rem 0;border-bottom:1px solid var(--border)">
-      <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:#111111;flex-shrink:0">
-        ${(isC?(r.founderName||'B'):(r.creatorName||'C')).charAt(0).toUpperCase()}
-      </div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:.82rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${isC?(r.founderName||'Brand'):(r.creatorName||'Creator')}</div>
-        <div style="font-size:.72rem;color:var(--muted)">${r.campaignTitle||'Collaboration'}</div>
-      </div>
-      <span style="background:rgba(16,185,129,.12);color:#0d9668;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:99px">DONE</span>
-    </div>`).join(''):`<div style="text-align:center;padding:1.5rem 0;color:var(--muted);font-size:.82rem"><i class="fas fa-handshake" style="font-size:1.5rem;display:block;margin-bottom:.5rem;opacity:.4"></i>No collabs yet</div>`;
-
-  el.innerHTML=`
-  <div style="max-width:600px;margin:0 auto;padding-bottom:1rem">
-
-    <!-- COVER + AVATAR -->
-    <div style="position:relative;margin-bottom:3.5rem">
-      <div style="height:110px;background:linear-gradient(135deg,#E9FF39,#F0FF6E,#E9FF39);border-radius:16px;position:relative;overflow:hidden">
-        <div style="position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2220%22 cy=%2220%22 r=%2240%22 fill=%22rgba(255,255,255,.08)%22/><circle cx=%2280%22 cy=%2280%22 r=%2230%22 fill=%22rgba(255,255,255,.08)%22/></svg>');"></div>
-      </div>
-      <div style="position:absolute;bottom:-42px;left:1.25rem;width:84px;height:84px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));border:3px solid #ffffff;display:flex;align-items:center;justify-content:center;overflow:hidden;color:#111111">
-        ${avatarInner}
-      </div>
-      <button onclick="openSetup()" style="position:absolute;bottom:-38px;right:1rem;background:rgba(233,255,57,.10);border:1px solid rgba(233,255,57,.28);color:var(--accent);border-radius:99px;padding:.4rem 1rem;font-size:.78rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:.4rem"><i class="fas fa-pen"></i> Edit Profile</button>
-    </div>
-
-    <!-- NAME / INFO -->
-    <div style="padding:0 1.25rem 1.25rem">
-      <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.2rem">
-        <h2 style="font-size:1.3rem;font-weight:800;color:var(--text);font-family:'General Sans','Plus Jakarta Sans',sans-serif;margin:0">${name}</h2>
-        <span style="background:rgba(${plan==='pro'?'236,72,153':plan==='starter'?'59,130,246':'99,102,241'}, .14);color:${pc};font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:99px;text-transform:uppercase">${plan}</span>
-      </div>
-      <div style="font-size:.82rem;color:var(--muted);margin-bottom:.6rem">${subline}</div>
-      ${nicheHtml?`<div style="display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.75rem">${nicheHtml}</div>`:''}
-      ${bio?`<p style="font-size:.83rem;color:var(--muted);line-height:1.65;margin:0 0 .75rem">${bio}</p>`:''}
-      <div style="font-size:.78rem;color:var(--muted)"><i class="fas fa-envelope" style="margin-right:.35rem"></i>${_me.email}</div>
-      ${_me.whatsapp?`<div style="font-size:.78rem;color:var(--muted);margin-top:.25rem"><i class="fab fa-whatsapp" style="margin-right:.35rem;color:#25d366"></i>${_me.whatsapp}</div>`:''}
-      ${fo?.website?`<div style="font-size:.78rem;margin-top:.25rem"><a href="${fo.website}" target="_blank" style="color:var(--accent)">${fo.website}</a></div>`:''}
-    </div>
-
-    <!-- STATS ROW -->
-    <div style="padding:0 1.25rem;margin-bottom:1.25rem">
-      <div style="display:flex;gap:.75rem;overflow-x:auto;padding-bottom:.25rem">
-        ${statCard('handshake','Collabs',doneCollabs,'#0d9668')}
-        ${statCard('paper-plane','Sent',sentR.length,'var(--accent)')}
-        ${statCard('inbox','Received',recvR.length,'#f59e0b')}
-        ${statCard('clock','Pending',pendingR,'#f43f5e')}
-      </div>
-    </div>
-
-    <!-- RECENT COLLABS -->
-    <div style="margin:0 1.25rem 1.25rem;background:#fff;border:1px solid var(--border);border-radius:16px;padding:1rem;box-shadow:var(--shadow)">
-      <div style="font-size:.82rem;font-weight:700;color:var(--text);margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem"><i class="fas fa-history" style="color:var(--accent)"></i> Recent Collaborations</div>
-      ${collabHtml}
-    </div>
-
-    <!-- PLAN CARD -->
-    <div style="margin:0 1.25rem 1.25rem;background:linear-gradient(135deg,rgba(233,255,57,.10),rgba(79,70,229,.06));border:1px solid rgba(233,255,57,.20);border-radius:16px;padding:1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem">
-      <div>
-        <div style="font-size:.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em">Current Plan</div>
-        <div style="font-size:1.1rem;font-weight:800;color:${pc};margin:.15rem 0">${plan.toUpperCase()}</div>
-        <div style="font-size:.75rem;color:var(--muted)">${plan==='free'?'Upgrade for more features':'Full access unlocked'}</div>
-      </div>
-      <button onclick="showSection('pricing')" style="background:var(--accent);border:none;color:#111111;border-radius:99px;padding:.5rem 1.1rem;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap">${plan==='free'?'Upgrade →':'Manage'}</button>
-    </div>
-
-    <!-- SIGN OUT -->
-    <div style="margin:0 1.25rem">
-      <button onclick="doSignOut()" style="width:100%;background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.22);color:#e11d48;border-radius:12px;padding:.75rem;font-size:.85rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
-    </div>
-
-  </div>`;
 }
 
 // ── PRICING ───────────────────────────────────────────
@@ -3319,13 +3233,7 @@ function renderPricing(el){
 }
 
 async function selectPlan(planId){
-  const cur=_me.plan||'free';
-  if(planId===cur){toast('Already on this plan','info');return;}
-  if(planId==='free'){if(!confirm('Downgrade to Free?'))return;_me={..._me,plan:'free'};await DB.setUser(_me.uid,_me);updateSidebarUI();toast('Downgraded to FREE','info');renderPricing(document.getElementById('main-content'));return;}
-  const p=PLANS.find(x=>x.id===planId);
-  const amounts={starter:29900,pro:59900};
-  const options={key:RAZORPAY_KEY,amount:amounts[planId],currency:'INR',name:'Posthire',description:`${p.name} Plan`,prefill:{name:_me.name||'',email:_me.email||''},notes:{userId:_me.uid,plan:planId},theme:{color:planId==='pro'?'#ef4444':'#3b82f6'},handler:async function(response){_me={..._me,plan:planId,razorpay_payment_id:response.razorpay_payment_id,planActivatedAt:new Date().toISOString()};await DB.setUser(_me.uid,_me);updateSidebarUI();toast(`🎉 Upgraded to ${p.name}!`,'success');renderPricing(document.getElementById('main-content'));},modal:{ondismiss:()=>toast('Payment cancelled','info')}};
-  try{const rzp=new Razorpay(options);rzp.on('payment.failed',r=>toast('Payment failed','error'));rzp.open();}catch(e){toast('Could not open payment','error');}
+  toast('You are on the Free plan','info');
 }
 function openPlanOverlay(){}
 function closePlanOverlay(){document.getElementById('plan-overlay').classList.remove('open');}
@@ -3367,12 +3275,12 @@ function buildCampCard(c, applied, myApps){
   const ms = _matchScore(c.id);
   // Brand logo: white circle with text or image
   const logoContent = c.brandLogo
-    ? `<img src="${c.brandLogo}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=cn-brand-logo-txt>${(c.startupName||'B').replace(/'/g,"\\'")}\\n${(c.niche||'Brand')}</span>'">`
+    ? `<img alt="Brand logo" src="${sanitizeUrl(c.brandLogo,{allowLocalPreview:true})}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=cn-brand-logo-txt>${(c.startupName||'B').replace(/'/g,"\\'")}\\n${(c.niche||'Brand')}</span>'">`
     : `<span class="cn-brand-logo-txt">${c.startupName||'Brand'}<br><span style="font-size:8px;font-weight:500;color:#555">${c.niche||'Brand'}</span></span>`;
 
   // Cover image
   const coverHTML = c.productImage
-    ? `<img class="cn-cover" src="${c.productImage}" alt="${c.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+    ? `<img class="cn-cover" src="${sanitizeUrl(c.productImage,{allowLocalPreview:true})}" alt="${c.title}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
     : '';
   const placeholderHTML = `<div class="cn-cover-placeholder" style="${c.productImage?'display:none':''}">
     <svg width="280" height="120" viewBox="0 0 280 120"><rect width="280" height="120" fill="#eeeef5"/><circle cx="220" cy="25" r="65" fill="rgba(233,255,57,0.10)"/><circle cx="40" cy="95" r="45" fill="rgba(16,185,129,0.08)"/><text x="140" y="52" text-anchor="middle" font-family="'General Sans','Plus Jakarta Sans',sans-serif" font-weight="800" font-size="20" fill="rgba(20,20,45,0.18)">${c.title}</text><text x="140" y="74" text-anchor="middle" font-family="'General Sans','Plus Jakarta Sans',sans-serif" font-weight="500" font-size="12" fill="rgba(20,20,45,0.1)">${c.startupName||''}</text></svg>
@@ -3396,7 +3304,7 @@ function buildCampCard(c, applied, myApps){
     <div class="cn-detail-row"><div class="cn-detail-icon" style="background:rgba(108,99,255,0.12)"><i class="fas fa-bullseye" style="color:var(--accent);font-size:12px"></i></div><div><div class="cn-detail-label">Campaign Goal</div><div class="cn-detail-val">${c.campaignGoal||'Brand awareness & reach'}</div></div></div>
     <div class="cn-detail-row"><div class="cn-detail-icon" style="background:rgba(225,48,108,0.1)"><i class="fas fa-film" style="color:#FF66B3;font-size:12px"></i></div><div><div class="cn-detail-label">Deliverables</div><div class="cn-detail-val">${(c.collabTypes||[]).map(t=>COLLAB_TYPES.find(x=>x.id===t)?.label||t).join(' + ')||'To be discussed'}</div></div></div>
     ${c.deadline?`<div class="cn-detail-row"><div class="cn-detail-icon" style="background:rgba(0,212,170,0.1)"><i class="fas fa-clock" style="color:#2eeabc;font-size:12px"></i></div><div><div class="cn-detail-label">Deadline</div><div class="cn-detail-val">Apply by ${c.deadline}</div></div></div>`:''}
-    ${c.website?`<div class="cn-detail-row"><div class="cn-detail-icon" style="background:rgba(59,130,246,0.1)"><i class="fas fa-globe" style="color:#60a5fa;font-size:12px"></i></div><div><div class="cn-detail-label">Brand Website</div><div class="cn-detail-val"><a href="${c.website}" target="_blank" style="color:#60a5fa;text-decoration:none">${c.website}</a></div></div></div>`:''}
+    ${c.website&&sanitizeUrl(c.website)?`<div class="cn-detail-row"><div class="cn-detail-icon" style="background:rgba(59,130,246,0.1)"><i class="fas fa-globe" style="color:#60a5fa;font-size:12px"></i></div><div><div class="cn-detail-label">Brand Website</div><div class="cn-detail-val"><a href="${sanitizeUrl(c.website)}" target="_blank" style="color:#60a5fa;text-decoration:none" rel="noopener noreferrer">${escHtml(c.website)}</a></div></div></div>`:''}
     ${c.audienceRequired?`<div class="cn-detail-row"><div class="cn-detail-icon" style="background:rgba(245,166,35,0.1)"><i class="fas fa-users" style="color:#f5a623;font-size:12px"></i></div><div><div class="cn-detail-label">Audience Required</div><div class="cn-detail-val">${c.audienceRequired}+ followers</div></div></div>`:''}
   `;
 
@@ -3477,7 +3385,7 @@ async function renderCampaigns(el){
     const openCamps=campArr.filter(c=>c.status==='open');
 
     // Increment views fire-and-forget
-    openCamps.forEach(c=>{if(c.id)DB.updateCampaign(c.id,{viewsCount:(c.viewsCount||0)+1}).catch(()=>{});});
+    openCamps.forEach(c=>{if(c.id)DB.updateCampaign(c.id,{viewsCount:increment(1)}).catch(()=>{});});
 
     el.innerHTML=`
       <div style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
@@ -3512,8 +3420,13 @@ async function renderCampaigns(el){
   } else {
     // FOUNDER VIEW
     const myCamps=campArr.filter(c=>c.founderId===_me.uid);
+    // PERFORMANCE: fetch each campaign's applications in parallel instead of one-at-a-time
+    // (was a sequential N+1 query — linear latency growth with campaign count).
     let allAppsMap={};
-    for(const c of myCamps){if(!c.id)continue;try{const apps=await DB.getCampaignApplications(c.id);allAppsMap[c.id]=Object.values(apps);}catch(e){allAppsMap[c.id]=[];}}
+    await Promise.all(myCamps.filter(c=>c.id).map(async c=>{
+      try{ allAppsMap[c.id] = Object.values(await DB.getCampaignApplications(c.id)); }
+      catch(e){ allAppsMap[c.id] = []; }
+    }));
     const totalViews=myCamps.reduce((s,c)=>s+(c.viewsCount||0),0);
     const totalApplicants=Object.values(allAppsMap).flat().length;
     const totalAccepted=Object.values(allAppsMap).flat().filter(a=>a.status==='accepted').length;
@@ -3536,8 +3449,8 @@ async function renderCampaigns(el){
         myCamps.map(c=>{
           const apps=allAppsMap[c.id]||[];
           const pending=apps.filter(a=>a.status==='pending');
-          const logoContent=c.brandLogo?`<img src="${c.brandLogo}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">`:`<span class="cn-brand-logo-txt">${c.startupName||'B'}<br><span style="font-size:8px;color:#555">${c.niche||''}</span></span>`;
-          const coverHTML=c.productImage?`<img class="cn-cover" src="${c.productImage}" onerror="this.style.display='none'">`:'';
+          const logoContent=c.brandLogo?`<img alt="Brand logo" src="${sanitizeUrl(c.brandLogo,{allowLocalPreview:true})}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">`:`<span class="cn-brand-logo-txt">${c.startupName||'B'}<br><span style="font-size:8px;color:#555">${c.niche||''}</span></span>`;
+          const coverHTML=c.productImage?`<img alt="Product image" class="cn-cover" src="${sanitizeUrl(c.productImage,{allowLocalPreview:true})}" onerror="this.style.display='none'">`:'';
           return`<div class="camp-card-founder">
             <div class="cn-img-wrap" style="position:relative;">
               ${coverHTML}<div class="cn-cover-placeholder" style="${c.productImage?'display:none;':''}height:140px;background:linear-gradient(135deg,#eeeef5,#e6e6f0)"><svg width="100%" height="140" viewBox="0 0 300 140"><text x="150" y="65" text-anchor="middle" font-family="'General Sans','Plus Jakarta Sans',sans-serif" font-weight="800" font-size="18" fill="rgba(20,20,45,0.15)">${c.title}</text></svg></div>
@@ -3585,7 +3498,7 @@ async function renderCampaigns(el){
           <div class="form-group">
             <label>Campaign Cover Image <span style="font-size:.7rem;color:var(--muted)">(uploads to Cloudinary)</span></label>
             <div id="camp-img-preview-wrap" style="margin-bottom:.5rem;display:none">
-              <img id="camp-img-preview" style="width:100%;height:140px;object-fit:cover;border-radius:1rem;border:1px solid var(--border)">
+              <img alt="" id="camp-img-preview" style="width:100%;height:140px;object-fit:cover;border-radius:1rem;border:1px solid var(--border)">
               <button onclick="removeCampImg()" style="font-size:.72rem;color:#ff6b6b;background:none;border:none;cursor:pointer;margin-top:.3rem">Remove image</button>
             </div>
             <div id="camp-img-upload-area" style="border:2px dashed var(--border);border-radius:1rem;padding:1.5rem;text-align:center;cursor:pointer;transition:border-color .2s;" onclick="document.getElementById('camp-img-file').click()" onmouseover="this.style.borderColor='rgba(233,255,57,0.5)'" onmouseout="this.style.borderColor='var(--border)'">
@@ -3674,7 +3587,7 @@ function handleBrandLogo(e){
   if(file.size>2*1024*1024){toast('Logo must be under 2MB','error');return;}
   window._brandLogoFile=file;
   const reader=new FileReader();
-  reader.onload=ev=>{const prev=document.getElementById('brand-logo-preview');prev.innerHTML=`<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:10px">`;};
+  reader.onload=ev=>{const prev=document.getElementById('brand-logo-preview');prev.innerHTML=`<img alt="" src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:10px">`;};
   reader.readAsDataURL(file);
 }
 
@@ -3751,10 +3664,23 @@ async function viewApplications(campaignId,title){
   let apps={};try{apps=await DB.getCampaignApplications(campaignId);}catch(e){}
   const appArr=Object.values(apps);
   if(appArr.length===0){body.innerHTML='<div class="empty-state"><i class="fas fa-users"></i><p>No applications yet.</p></div>';return;}
-  body.innerHTML=appArr.map(a=>`<div class="panel" style="margin-bottom:.75rem"><div class="panel-body"><div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap"><div class="avatar-lg" style="border-radius:.875rem">${a.creatorPhoto?`<img src="${a.creatorPhoto}" style="width:100%;height:100%;object-fit:cover">`:(a.creatorName||'C').charAt(0)}</div><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:.95rem">${a.creatorName}</div><div style="font-size:.75rem;color:var(--muted);margin:.2rem 0 .5rem">${a.audienceSize||''} ${a.niches?'· '+a.niches.join(', '):''}</div><div style="font-size:.82rem;line-height:1.6;color:var(--muted);margin-bottom:.5rem">${a.pitch}</div></div><div style="display:flex;flex-direction:column;gap:.5rem;flex-shrink:0">${a.status==='pending'?`<button class="btn btn-primary btn-sm" onclick="respondApp('${a.id}','accepted','${a.creatorId||''}')"><i class="fas fa-check"></i> Accept</button><button class="btn btn-danger btn-sm" onclick="respondApp('${a.id}','rejected','${a.creatorId||''}')"><i class="fas fa-times"></i> Reject</button>`:`<span style="font-size:.72rem;font-weight:700;padding:.3em .8em;border-radius:99px;${a.status==='accepted'?'background:rgba(0,212,170,.15);color:var(--accent3)':'background:rgba(255,107,107,.15);color:var(--accent2)'}">${a.status.toUpperCase()}</span>${a.status==='accepted'&&a.creatorId?`<button class="btn btn-ghost btn-sm" onclick="openChatForRequest('${_me.uid}','${a.creatorId}')"><i class="fas fa-comment-dots"></i> Chat</button>`:''}`}</div></div></div></div>`).join('');
+  body.innerHTML=appArr.map(a=>`<div class="panel" style="margin-bottom:.75rem"><div class="panel-body"><div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap"><div class="avatar-lg" style="border-radius:.875rem">${a.creatorPhoto?`<img alt="" src="${a.creatorPhoto}" style="width:100%;height:100%;object-fit:cover">`:(a.creatorName||'C').charAt(0)}</div><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:.95rem">${a.creatorName}</div><div style="font-size:.75rem;color:var(--muted);margin:.2rem 0 .5rem">${a.audienceSize||''} ${a.niches?'· '+a.niches.join(', '):''}</div><div style="font-size:.82rem;line-height:1.6;color:var(--muted);margin-bottom:.5rem">${a.pitch}</div></div><div style="display:flex;flex-direction:column;gap:.5rem;flex-shrink:0">${a.status==='pending'?`<button class="btn btn-primary btn-sm" onclick="respondApp('${a.id}','accepted','${a.creatorId||''}')"><i class="fas fa-check"></i> Accept</button><button class="btn btn-danger btn-sm" onclick="respondApp('${a.id}','rejected','${a.creatorId||''}')"><i class="fas fa-times"></i> Reject</button>`:`<span style="font-size:.72rem;font-weight:700;padding:.3em .8em;border-radius:99px;${a.status==='accepted'?'background:rgba(0,212,170,.15);color:var(--accent3)':'background:rgba(255,107,107,.15);color:var(--accent2)'}">${a.status.toUpperCase()}</span>${a.status==='accepted'&&a.creatorId?`<button class="btn btn-ghost btn-sm" onclick="openChatForRequest('${_me.uid}','${a.creatorId}')"><i class="fas fa-comment-dots"></i> Chat</button>`:''}`}</div></div></div></div>`).join('');
 }
 
 async function respondApp(appId,status,creatorId){
+  // SECURITY: only the campaign's founder may accept/reject, and a creator can never accept their own application.
+  try{
+    const appSnap=await getDoc(doc(db,'campaignApplications',appId));
+    if(!appSnap.exists()){toast('Application not found.','error');return;}
+    const appData=appSnap.data();
+    if(appData.creatorId && appData.creatorId===_me.uid){toast('You cannot act on your own application.','error');return;}
+    let campFounderId=null;
+    if(appData.campaignId){
+      try{const campSnap=await getDoc(doc(db,'campaigns',appData.campaignId));campFounderId=campSnap.exists()?campSnap.data().founderId:null;}catch(e){}
+    }
+    if(!campFounderId || campFounderId!==_me.uid){toast('Only the campaign founder can respond to applications.','error');return;}
+    if(appData.status && appData.status!=='pending'){toast('This application has already been responded to.','info');viewApplications(appId,'');return;}
+  }catch(e){toast('Could not verify application. Please try again.','error');return;}
   await DB.updateApplication(appId,{status});
   // 🔔 NOTIFICATION TRIGGER — application accepted/rejected
   if(creatorId){
@@ -3781,17 +3707,27 @@ function openApplyModal(campaignId){
 }
 function closeApplyModal(){const o=document.getElementById('apply-modal');if(o)o.style.display='none';}
 
+let _submittingApplication=false;
 async function submitApplication(campaignId){
+  // Guard against double-clicks submitting the same application twice.
+  if(_submittingApplication)return;
   const pitch=document.getElementById('apply-pitch')?.value.trim();
   const rate=document.getElementById('apply-rate')?.value.trim();
   const errEl=document.getElementById('apply-err');
   if(!pitch){showFormErr(errEl,'Please write your pitch');return;}
   errEl.className='form-err';
+  _submittingApplication=true;
   const cr=await DB.getCreator(_me.uid);
   try{
     const campSnap=await getDoc(doc(db,'campaigns',campaignId));
     const camp=campSnap.exists()?campSnap.data():{};
-    await DB.saveApplication({campaignId,campaignTitle:camp.title||'',creatorId:_me.uid,creatorName:cr?.name||_me.name,creatorPhoto:cr?.profilePhoto||'',audienceSize:cr?.audienceSize||'',niches:cr?.niches||[],instagram:cr?.instagram||'',youtube:cr?.youtube||'',creatorWhatsapp:cr?.whatsapp||_me.whatsapp||'',pitch,rate,status:'pending',appliedAt:new Date().toISOString()});
+    if(camp.founderId && camp.founderId===_me.uid){showFormErr(errEl,'You cannot apply to your own campaign.');return;}
+    try{
+      await DB.saveApplication({campaignId,campaignTitle:camp.title||'',creatorId:_me.uid,creatorName:cr?.name||_me.name,creatorPhoto:cr?.profilePhoto||'',audienceSize:cr?.audienceSize||'',niches:cr?.niches||[],instagram:cr?.instagram||'',youtube:cr?.youtube||'',creatorWhatsapp:cr?.whatsapp||_me.whatsapp||'',pitch,rate,status:'pending',appliedAt:new Date().toISOString()});
+    }catch(e){
+      if(e.code==='duplicate'){closeApplyModal();toast('You have already applied to this campaign.','info');return;}
+      throw e;
+    }
     // 🔔 NOTIFICATION TRIGGER — new application received
     if(camp.founderId){
       createNotification(camp.founderId,{
@@ -3804,8 +3740,11 @@ async function submitApplication(campaignId){
         fromName:cr?.name||_me.name||'Creator'
       });
     }
+    // Atomic, tamper-proof applicant counter (mirrors the viewsCount fix — no client-computed values).
+    DB.updateCampaign(campaignId,{applicantsCount:increment(1)}).catch(()=>{});
     closeApplyModal();toast('Application submitted! 🎉','success');await showSection('campaigns');
   }catch(e){showFormErr(errEl,'Failed: '+e.message);}
+  finally{_submittingApplication=false;}
 }
 
 // ── HELPERS ───────────────────────────────────────────
@@ -3813,7 +3752,14 @@ function showFormErr(el,msg){if(el){el.textContent=msg;el.className='form-err sh
 function toast(msg,type='info'){const c=document.getElementById('toast-container');const t=document.createElement('div');t.className=`toast ${type}`;const icon={success:'check-circle',error:'exclamation-circle',info:'info-circle'}[type]||'info-circle';t.innerHTML=`<i class="fas fa-${icon}"></i> ${msg}`;c.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(1rem)';setTimeout(()=>t.remove(),300);},3500);}
 function goToLanding(){window.location.href='index.html';}
 function goToAdmin(){window.location.href='admin.html';}
-async function doSignOut(){await fbSignOut(auth);_me=null;window.location.href='index.html';}
+async function doSignOut(){
+  // Tear down all real-time listeners BEFORE signing out, so they don't fire a
+  // permission-denied error against an unauthenticated session (console error / race).
+  if(_convListener){_convListener();_convListener=null;}
+  if(_msgListener){_msgListener();_msgListener=null;}
+  if(_notifUnsub){_notifUnsub();_notifUnsub=null;}
+  await fbSignOut(auth);_me=null;window.location.href='index.html';
+}
 function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('sidebar-overlay').classList.add('show');}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebar-overlay').classList.remove('show');}
 
@@ -3848,7 +3794,7 @@ async function renderMessagesSection(el){
     </div>
     <div class="lightbox" id="lightbox" onclick="closeLightbox()">
       <button class="lightbox-close" onclick="closeLightbox()"><i class="fas fa-times"></i></button>
-      <img id="lightbox-img" onclick="event.stopPropagation()">
+      <img alt="" id="lightbox-img" onclick="event.stopPropagation()">
     </div>
   `;
   updateNotifBadge();
@@ -3867,7 +3813,7 @@ function renderStoryRow(){
     const name=c.otherUser?.name||'User';
     const photo=c.otherUser?.profilePhoto||'';
     const ava=photo
-      ?`<img src="${photo}" onerror="this.style.display='none'">`
+      ?`<img alt="" src="${photo}" onerror="this.style.display='none'">`
       :initials(name);
     const bg=photo?'':`background:linear-gradient(135deg,hsl(${hashColor(c.otherId)},70%,55%),hsl(${hashColor(c.otherId)+60},70%,50%))`;
     return `<div class="msg-story-item" onclick="openConversation('${c.id}')">
@@ -3951,7 +3897,7 @@ function renderConvList(){
     const hasUnread = c.unread>0;
     return `<div class="conv-item${isActive?' active':''}${hasUnread?' unread':''}" id="conv-item-${c.id}" onclick="openConversation('${c.id}')">
       <div class="conv-ava" style="${!c.otherUser?.profilePhoto?`background:linear-gradient(135deg,hsl(${hashColor(c.otherId)},70%,55%),hsl(${hashColor(c.otherId)+60},70%,50%))`:''}">
-        ${c.otherUser?.profilePhoto?`<img src="${c.otherUser.profilePhoto}" onerror="this.style.display='none'">`:initials(c.otherUser?.name||'U')}
+        ${c.otherUser?.profilePhoto?`<img alt="Profile photo" src="${sanitizeUrl(c.otherUser.profilePhoto,{allowLocalPreview:true})}" onerror="this.style.display='none'">`:initials(c.otherUser?.name||'U')}
         <div class="conv-ava-online"></div>
       </div>
       <div class="conv-body">
@@ -3980,7 +3926,19 @@ function hashColor(str=''){
   let h=0; for(let i=0;i<str.length;i++){h=((h<<5)-h)+str.charCodeAt(i);h|=0;}
   return Math.abs(h)%360;
 }
-function escHtml(s){ return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escHtml(s){ return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+// SECURITY: only allow http(s) URLs (and blob:/data:image for local previews) to be used as href/src.
+// Blocks javascript:, vbscript:, and other script-executing pseudo-protocols in any user-supplied URL field
+// (profile photos, brand logos, portfolio/social links, uploaded file links, etc.).
+function sanitizeUrl(u, opts){
+  opts = opts||{};
+  if(u==null) return '';
+  const s = String(u).trim();
+  if(!s) return '';
+  if(opts.allowLocalPreview && /^(blob:|data:image\/)/i.test(s)) return s;
+  if(/^https?:\/\//i.test(s)) return s;
+  return '';
+}
 function initials(name){ return (name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
 function verifiedBadge(isVerified,size){
   if(!isVerified)return'';
@@ -4056,7 +4014,7 @@ function openConversation(convId){
     <div class="chat-header" id="chat-header">
       <button class="chat-back-btn" onclick="messagesBackToList()"><i class="fas fa-chevron-left"></i></button>
       <div class="chat-header-ava" style="${!conv.otherUser?.profilePhoto?`background:linear-gradient(135deg,hsl(${hashColor(conv.otherId)},70%,55%),hsl(${hashColor(conv.otherId)+60},70%,50%))`:''}">
-        ${conv.otherUser?.profilePhoto?`<img src="${conv.otherUser.profilePhoto}" onerror="this.style.display='none'">`:initials(conv.otherUser?.name||'U')}
+        ${conv.otherUser?.profilePhoto?`<img alt="Profile photo" src="${sanitizeUrl(conv.otherUser.profilePhoto,{allowLocalPreview:true})}" onerror="this.style.display='none'">`:initials(conv.otherUser?.name||'U')}
       </div>
       <div class="chat-header-info">
         <div class="chat-header-name">${escHtml(conv.otherUser?.name||'User')}${verifiedBadge(conv.otherUser?.verified,'.75em')}</div>
@@ -4149,20 +4107,20 @@ function renderMessages(){
     html += `<div class="msg-row ${isSent?'sent':'recv'}">
       ${showAva
         ? `<div class="msg-ava-sm" style="${!otherPhoto?`background:linear-gradient(135deg,hsl(${hashColor(conv?.otherId)},70%,55%),hsl(${hashColor(conv?.otherId)+60},70%,50%))`:''}">
-            ${otherPhoto?`<img src="${otherPhoto}" onerror="this.style.display='none'">`:initials(otherName)}
+            ${otherPhoto?`<img alt="Profile photo" src="${sanitizeUrl(otherPhoto,{allowLocalPreview:true})}" onerror="this.style.display='none'">`:initials(otherName)}
            </div>`
         : (isSent?'':' <div class="msg-ava-placeholder"></div>')}
       <div>
         <div class="msg-bubble${msg.type==='image'?' msg-image-bubble':msg.type==='file'?' msg-file-bubble':''}" id="msg-${msg.id}">
           ${msg.type==='image'
-            ? `<img class="chat-img" src="${msg.fileUrl}" alt="${escHtml(msg.fileName||'image')}" onclick="openLightbox('${msg.fileUrl}')">`
+            ? `<img class="chat-img" src="${sanitizeUrl(msg.fileUrl,{allowLocalPreview:true})}" alt="${escHtml(msg.fileName||'image')}" onclick="openLightbox('${sanitizeUrl(msg.fileUrl,{allowLocalPreview:true})}')">`
             : msg.type==='file'
             ? `<div class="msg-file-icon"><i class="fas fa-${fileIcon(msg.fileName||'')}"></i></div>
                <div class="msg-file-info">
                  <div class="msg-file-name">${escHtml(msg.fileName||'File')}</div>
                  <div class="msg-file-size">${msg.fileSize?fmtFileSize(msg.fileSize):''}</div>
                </div>
-               <a class="msg-file-dl" href="${msg.fileUrl}" target="_blank" download="${escHtml(msg.fileName||'file')}" title="Download"><i class="fas fa-download"></i></a>`
+               <a class="msg-file-dl" href="${sanitizeUrl(msg.fileUrl,{allowLocalPreview:true})}" target="_blank" download="${escHtml(msg.fileName||'file')}" title="Download" rel="noopener noreferrer"><i class="fas fa-download"></i></a>`
             : escHtml(msg.text)}
         </div>
         ${isLast?`<div class="msg-meta">
@@ -4182,11 +4140,31 @@ function scrollToBottom(){
   if(elx) elx.scrollTop = elx.scrollHeight;
 }
 
+// ── MESSAGE RATE LIMITING ──────────────────────────────
+// Minimum gap between sends (blocks accidental double-taps / scripted spam-clicking)
+// and a rolling-window cap (blocks chat flooding) while normal typing stays unaffected.
+let _lastMsgSentAt = 0;
+const _MSG_MIN_GAP_MS = 400;
+const _msgSendTimestamps = [];
+const _MSG_WINDOW_MS = 10000;
+const _MSG_WINDOW_MAX = 12;
+
 async function sendMessage(){
   const inp = document.getElementById('msg-input');
   const text = (inp?.value||'').trim();
   if((!text && !_pendingFile) || !_activeConvId) return;
   if(_pendingFile){ await uploadAndSendFile(); return; }
+
+  const now = Date.now();
+  if(now - _lastMsgSentAt < _MSG_MIN_GAP_MS) return; // swallow accidental double-fires silently
+  while(_msgSendTimestamps.length && now - _msgSendTimestamps[0] > _MSG_WINDOW_MS) _msgSendTimestamps.shift();
+  if(_msgSendTimestamps.length >= _MSG_WINDOW_MAX){
+    toast("You're sending messages too fast — please slow down a little.",'error');
+    return;
+  }
+  _lastMsgSentAt = now;
+  _msgSendTimestamps.push(now);
+
   inp.value=''; inp.style.height='auto';
   document.getElementById('send-btn').disabled = true;
 
@@ -4222,9 +4200,12 @@ async function sendMessage(){
   }catch(e){
     console.error('Send error:',e);
     toast('Failed to send message','error');
-    document.getElementById('send-btn').disabled=false;
+  }finally{
+    const stillHasText = (document.getElementById('msg-input')?.value||'').trim().length>0;
+    document.getElementById('send-btn').disabled = !stillHasText && !_pendingFile;
   }
 }
+
 
 function triggerFileInput(){ document.getElementById('file-input')?.click(); }
 
@@ -4243,7 +4224,7 @@ function handleFileSelect(e){
   let thumb = `<div class="upload-preview-thumb"><i class="fas fa-${fileIcon(file.name)}"></i></div>`;
   if(isImg){
     const url = URL.createObjectURL(file);
-    thumb = `<div class="upload-preview-thumb"><img src="${url}" onload="URL.revokeObjectURL(this.src)"></div>`;
+    thumb = `<div class="upload-preview-thumb"><img alt="" src="${url}" onload="URL.revokeObjectURL(this.src)"></div>`;
   }
   previewArea.innerHTML = `
     <div class="upload-preview" id="upload-preview-row">
@@ -4448,7 +4429,7 @@ function _nIsSameDay(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()
 function _nDateLabel(d){ const now=new Date(); const yest=new Date(now); yest.setDate(now.getDate()-1); if(_nIsSameDay(d,now))return'Today'; if(_nIsSameDay(d,yest))return'Yesterday'; return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear(); }
 function _nTimeAgo(d){ const diff=Math.max(0,(Date.now()-d.getTime())/1000); if(diff<60)return'Just now'; if(diff<3600)return Math.floor(diff/60)+'m ago'; if(diff<86400)return Math.floor(diff/3600)+'h ago'; if(diff<604800)return Math.floor(diff/86400)+'d ago'; return _nDateLabel(d); }
 function _nMatchesTab(n,tab){ if(tab==='all')return true; if(tab==='activity')return NOTIF_ACTIVITY_TYPES.has(n.type); if(tab==='alert')return NOTIF_ALERT_TYPES.has(n.type); return true; }
-function _nThumbHtml(n){ const grad=NOTIF_TYPE_GRAD[n.type]||'linear-gradient(135deg,var(--accent),#B98EFF)'; if(n.thumb)return`<div class="notif-thumb" style="background:${grad}"><img src="${_nEsc(n.thumb)}" onerror="this.style.display='none'"></div>`; return`<div class="notif-thumb" style="background:${grad}"><i class="fas ${_nEsc(n.icon||'fa-bell')}"></i></div>`; }
+function _nThumbHtml(n){ const grad=NOTIF_TYPE_GRAD[n.type]||'linear-gradient(135deg,var(--accent),#B98EFF)'; if(n.thumb)return`<div class="notif-thumb" style="background:${grad}"><img alt="" src="${_nEsc(n.thumb)}" onerror="this.style.display='none'"></div>`; return`<div class="notif-thumb" style="background:${grad}"><i class="fas ${_nEsc(n.icon||'fa-bell')}"></i></div>`; }
 function _nRenderItem(n){ const d=_nTsToDate(n.createdAt); const today=_nIsSameDay(d,new Date()); const timeHtml=today?`<div class="notif-time">${_nTimeAgo(d)}</div>`:''; return`<div class="notif-item ${n.read?'read':'unread'}" onclick="openNotif('${n.id}')">${_nThumbHtml(n)}<div class="notif-body"><div class="notif-row-top"><div class="notif-title-text">${_nEsc(n.title||'Notification')}</div>${timeHtml}</div>${n.body?`<div class="notif-desc">${_nEsc(n.body)}</div>`:''}</div>${!n.read?'<div class="notif-unread-dot"></div>':''}</div>`; }
 
 function _nRender(listEl, tab){
@@ -4461,7 +4442,7 @@ function _nRender(listEl, tab){
 
 function renderNotificationsSection(el){
   document.body.classList.add('ph-mobile-active');
-  phSetHeader('Notifications', `<button class="ph-icon-btn" onclick="markAllNotifsRead()" title="Mark all read"><i class="fas fa-check-double" style="font-size:.85rem"></i></button>`);
+  phSetHeader('Notifications', `<button class="ph-icon-btn" onclick="markAllNotifsRead()" title="Mark all read" aria-label="Mark all read"><i class="fas fa-check-double" style="font-size:.85rem"></i></button>`);
   phSetMobileNav('home'); // reached via the bell icon — keep Home lit as the parent context
 
   el.innerHTML=`
@@ -4526,7 +4507,7 @@ window.markAllNotifsRead=async function(){
   }catch(e){toast('Could not mark all as read','error');}
 };
 
-Object.assign(window,{showSection,reqSwitchTab,selectRole,confirmRole,openSetup,openEditProfileModal,closeEditProfileModal,saveEditProfile,epHandleDp,epRemoveDp,updReq,sendCollab,filterCreators,selectPlan,openPlanOverlay,closePlanOverlay,doSignOut,goToLanding,goToAdmin,openSidebar,closeSidebar,choosePlanAndContinue,goToMessages,goToNotifications,openChatForRequest,openLaunchModal,closeLaunchModal,closeApplicantsModal,launchCampaign,toggleCampaignStatus,viewApplications,respondApp,openApplyModal,closeApplyModal,submitApplication,toggleCollabChip,toggleCampDetails,handleCampImg,removeCampImg,handleBrandLogo,showFormErr,filterConversations,openConversation,messagesBackToList,triggerFileInput,handleFileSelect,cancelUpload,sendMessage,handleMsgKey,autoResizeInput,openLightbox,closeLightbox,renderNotificationsSection,openReelViewer,closeReelViewer,togglePhReelPause,openReelProfile,closeReelProfile,messageReelCreator});
+Object.assign(window,{toast,showSection,reqSwitchTab,selectRole,confirmRole,openSetup,openEditProfileModal,closeEditProfileModal,saveEditProfile,epHandleDp,epRemoveDp,updReq,sendCollab,filterCreators,selectPlan,openPlanOverlay,closePlanOverlay,doSignOut,goToLanding,goToAdmin,openSidebar,closeSidebar,choosePlanAndContinue,goToMessages,goToNotifications,openChatForRequest,openLaunchModal,closeLaunchModal,closeApplicantsModal,launchCampaign,toggleCampaignStatus,viewApplications,respondApp,openApplyModal,closeApplyModal,submitApplication,toggleCollabChip,toggleCampDetails,handleCampImg,removeCampImg,handleBrandLogo,showFormErr,filterConversations,openConversation,messagesBackToList,triggerFileInput,handleFileSelect,cancelUpload,sendMessage,handleMsgKey,autoResizeInput,openLightbox,closeLightbox,renderNotificationsSection,openReelViewer,closeReelViewer,togglePhReelPause,openReelProfile,closeReelProfile,messageReelCreator});
 
 // Android hardware back button: close open modal/sidebar, else double-press to exit
 if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) {
@@ -4553,6 +4534,5 @@ if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.is
   });
 }
 </script>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </body>
 </html>
