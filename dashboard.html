@@ -1130,6 +1130,14 @@ body.ph-mobile-active #ph-app-header{ display:flex; }
 }
 body.ph-mobile-active #ph-app-nav{ display:flex; }
 
+/* Fix: any .overlay modal is rendered inside .ph-mob-root, which is itself
+   position:fixed + z-index:200 — this creates its own stacking context, so the
+   modal's z-index:500 only wins *inside* that context and can never rise above
+   the body-level #ph-app-nav (z-index:400). Simplest reliable fix: hide the
+   fixed nav/header outright while any modal is open (tracked via JS below). */
+body.ph-modal-open #ph-app-nav,
+body.ph-modal-open #ph-app-header{ display:none !important; }
+
 /* ph-navbar inside content — hidden, nav is handled by #ph-app-nav */
 .ph-navbar{ display:none !important; }
 /* ph-fixed-header inside content — hidden, header is #ph-app-header */
@@ -1517,17 +1525,71 @@ function goToNotifications(){
 // ── CLOUDINARY UPLOAD ───────────────────────────────
 async function uploadToCloudinary(file, preset, uid, folder){
   if(file.size > 5*1024*1024) throw new Error('Image must be under 5MB');
+  if(!CLOUDINARY_CLOUD_NAME) throw new Error('Cloudinary cloud name not configured');
+  if(!preset) throw new Error('Cloudinary upload preset not configured');
   const fd = new FormData();
   fd.append('file', file);
   fd.append('upload_preset', preset);
-  fd.append('public_id', folder+'_'+uid+'_'+Date.now());
+  // NOTE: do NOT send public_id — the "posthire_photos"/"posthire_campaigns" presets
+  // have "Disallow public id: true", so Cloudinary rejects unsigned uploads that try
+  // to set it. Cloudinary auto-generates a unique filename instead (preset has
+  // "Unique filename: true"), which is what we want anyway.
   fd.append('folder', 'posthire/'+folder);
-  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,{method:'POST',body:fd});
-  if(!res.ok) throw new Error('Upload failed');
-  const data = await res.json();
-  if(data.error) throw new Error(data.error.message);
+  let res, data;
+  try{
+    res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,{method:'POST',body:fd});
+  }catch(netErr){
+    // fetch itself threw — network/CORS/offline issue, not a Cloudinary API error
+    throw new Error('Network error while uploading — check your internet connection');
+  }
+  try{
+    data = await res.json();
+  }catch(parseErr){
+    throw new Error(`Upload failed (HTTP ${res.status}) — Cloudinary did not return a valid response`);
+  }
+  if(data && data.error){
+    // This is the REAL reason Cloudinary rejected the upload — e.g. wrong preset name,
+    // preset not set to "Unsigned" in Cloudinary console, or preset doesn't allow folder/public_id override.
+    console.error('[Cloudinary upload error]', data.error);
+    throw new Error(data.error.message || 'Upload rejected by Cloudinary');
+  }
+  if(!res.ok || !data.secure_url){
+    throw new Error(`Upload failed (HTTP ${res.status}) — no file URL returned`);
+  }
   return data.secure_url;
 }
+
+// ── MODAL / FIXED-NAV OVERLAP FIX ───────────────────
+// Watches all .overlay elements (launch-modal, apply-modal, applicants-modal, etc.)
+// and toggles body.ph-modal-open whenever one becomes visible, so the fixed
+// bottom nav (#ph-app-nav) stays hidden while a modal is open instead of
+// floating on top of it. Works even for modals added later via innerHTML
+// re-renders, since it re-scans on every content mutation.
+(function(){
+  function isVisible(el){
+    return el && el.style.display !== 'none' && el.style.display !== '';
+  }
+  function syncModalNavState(){
+    const anyOpen = Array.from(document.querySelectorAll('.overlay')).some(isVisible);
+    document.body.classList.toggle('ph-modal-open', anyOpen);
+  }
+  let scheduled=false;
+  function scheduleSync(){
+    if(scheduled) return;
+    scheduled=true;
+    requestAnimationFrame(()=>{scheduled=false;syncModalNavState();});
+  }
+  const observer = new MutationObserver(scheduleSync);
+  function init(){
+    observer.observe(document.body, {attributes:true, attributeFilter:['style'], subtree:true, childList:true});
+    syncModalNavState();
+  }
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  }else{
+    init();
+  }
+})();
 
 // ── STATE ────────────────────────────────────────────
 let _me = null;
