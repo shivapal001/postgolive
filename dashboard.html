@@ -709,6 +709,29 @@ button:active{
   .main.messages-active{height:calc(100vh - 58px);}
 }
 
+/* ── FIX: Messages page must be true full-bleed, not a floating card ──
+   .content always also gets .ph-mob-root added by showSection(), and that
+   rule's !important padding (.75rem 1.25rem 1rem) beats the plain
+   .content.msgs-mode padding:0 rule above because it has higher
+   specificity. That leftover padding is what made the message list look
+   like a white card floating on the cream background. This rule targets
+   the exact combined class list so it always wins, regardless of screen
+   width, and strips the padding + rounded card styling for good. */
+body.ph-mobile-active .content.ph-mob-root.msgs-mode{
+  padding:0 !important;
+  display:flex;
+  flex-direction:column;
+}
+body.ph-mobile-active .msgs-wrap{
+  border-radius:0 !important;
+  border:none !important;
+  box-shadow:none !important;
+  background:var(--ph-bg,var(--bg)) !important;
+}
+body.ph-mobile-active .conv-list{
+  background:var(--surface);
+}
+
 /* ══════════════════════════════════════════════════════════════════
    NOTIFICATIONS (embedded section — merged from notifications.html)
    ══════════════════════════════════════════════════════════════════ */
