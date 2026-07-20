@@ -158,6 +158,47 @@ tr:last-child td{border-bottom:none;}
 </head>
 <body>
 
+<!-- ══ GLOBAL ERROR BOUNDARY — prevents blank-screen crashes ══ -->
+<div id="ph-error-boundary" style="display:none;position:fixed;inset:0;z-index:999999;background:#0b0b0f;color:#f5f5f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;align-items:center;justify-content:center;text-align:center;padding:2rem;">
+  <div style="max-width:26rem;">
+    <div style="font-size:2.5rem;margin-bottom:1rem;">⚠️</div>
+    <div style="font-size:1.15rem;font-weight:700;margin-bottom:.5rem;">Something went wrong</div>
+    <div style="font-size:.9rem;color:#9a9aa5;margin-bottom:1.5rem;line-height:1.5;">
+      The admin panel hit an unexpected error and couldn't continue safely. Please reload to try again.
+    </div>
+    <button onclick="window.location.reload()" style="background:linear-gradient(135deg,#E9FF39,#F0FF6E);color:#111;border:none;border-radius:.75rem;padding:.7rem 1.5rem;font-weight:700;font-size:.9rem;cursor:pointer;">
+      Reload App
+    </button>
+  </div>
+</div>
+<script>
+// GLOBAL ERROR BOUNDARY: catches uncaught exceptions anywhere in the app (including before the
+// module script finishes loading) so the admin always sees a recoverable message instead of a
+// blank white screen. Unhandled promise rejections are logged + surfaced as a small toast instead
+// of a full takeover, since those are usually recoverable background failures rather than
+// app-breaking crashes.
+(function(){
+  var shown = false;
+  function showBoundary(err){
+    try{ console.error('[PostHire Admin fatal error]', err); }catch(e){}
+    if(shown) return; shown = true;
+    var el = document.getElementById('ph-error-boundary');
+    if(el) el.style.display = 'flex';
+  }
+  function softNotify(err){
+    try{ console.error('[PostHire Admin unhandled rejection]', err); }catch(e){}
+    try{
+      if(typeof window.toast === 'function'){
+        window.toast('Something didn\'t load correctly.','error');
+        return;
+      }
+    }catch(e){}
+  }
+  window.addEventListener('error', function(e){ showBoundary(e.error || e.message); });
+  window.addEventListener('unhandledrejection', function(e){ softNotify(e.reason); });
+})();
+</script>
+
 <div class="auth-screen" id="auth-screen">
   <div class="auth-box">
     <div class="auth-logo">Posthire</div>
@@ -461,7 +502,7 @@ function buildPortfolioRows(entries){
     }else{
       actions=`<button class="btn btn-danger btn-xs" onclick="deletePortfolioReq('${id}')"><i class="fas fa-trash"></i></button>`;
     }
-    return `<tr><td style="font-weight:600;font-size:.82rem">${r.creatorName||'—'}</td><td style="font-size:.78rem;max-width:220px;overflow:hidden;text-overflow:ellipsis"><a href="${r.url}" target="_blank" rel="noopener" style="color:var(--blue)">${r.url||'—'}</a>${r.caption?`<div style="font-size:.7rem;color:var(--muted)">${r.caption}</div>`:''}</td><td style="font-size:.75rem;color:var(--muted)">${created?created.toLocaleDateString('en-IN',{day:'numeric',month:'short'}):'—'}<br>${slaHtml}</td><td>${statusBadge}</td><td><div style="display:flex;gap:.3rem;flex-wrap:wrap">${actions}</div></td></tr>`;
+    return `<tr><td style="font-weight:600;font-size:.82rem">${r.creatorName||'—'}</td><td style="font-size:.78rem;max-width:220px;overflow:hidden;text-overflow:ellipsis"><a href="${sanitizeUrl(r.url)}" target="_blank" rel="noopener noreferrer" style="color:var(--blue)">${escHtml(r.url||'—')}</a>${r.caption?`<div style="font-size:.7rem;color:var(--muted)">${r.caption}</div>`:''}</td><td style="font-size:.75rem;color:var(--muted)">${created?created.toLocaleDateString('en-IN',{day:'numeric',month:'short'}):'—'}<br>${slaHtml}</td><td>${statusBadge}</td><td><div style="display:flex;gap:.3rem;flex-wrap:wrap">${actions}</div></td></tr>`;
   }).join('');
 }
 function markPortfolioHosted(id){
@@ -469,7 +510,7 @@ function markPortfolioHosted(id){
   document.getElementById('portfolio-modal-title').textContent='Add to Portfolio';
   document.getElementById('portfolio-modal-err').className='form-err';
   document.getElementById('portfolio-modal-form').innerHTML=`
-    <div style="font-size:.78rem;color:var(--muted);margin-bottom:1rem">Submitted by <strong style="color:var(--text)">${r.creatorName||'creator'}</strong> — original link: <a href="${r.url}" target="_blank" style="color:var(--blue)">${r.url}</a>${r.caption?`<div style="margin-top:.2rem">"${r.caption}"</div>`:''}</div>
+    <div style="font-size:.78rem;color:var(--muted);margin-bottom:1rem">Submitted by <strong style="color:var(--text)">${r.creatorName||'creator'}</strong> — original link: <a href="${sanitizeUrl(r.url)}" target="_blank" style="color:var(--blue)" rel="noopener noreferrer">${escHtml(r.url)}</a>${r.caption?`<div style="margin-top:.2rem">"${r.caption}"</div>`:''}</div>
 
     <div class="form-group">
       <label>Hosted Video URL <span style="color:var(--red)">*</span></label>
@@ -544,7 +585,7 @@ async function renderSpotlight(el){
               <div class="spot-card ${s.active===false?'inactive':''}">
                 <div class="spot-vid-wrap">
                   ${s.videoUrl
-                    ?`<video src="${s.videoUrl}" muted playsinline loop preload="metadata" poster="${s.thumbnailUrl||''}"
+                    ?`<video src="${sanitizeUrl(s.videoUrl)}" muted playsinline loop preload="metadata" poster="${sanitizeUrl(s.thumbnailUrl)}"
                         style="width:100%;height:100%;object-fit:cover"
                         onmouseenter="this.play()" onmouseleave="this.pause();this.currentTime=0"></video>`
                     :`<div style="width:100%;height:100%;background:linear-gradient(135deg,#1e1b4b,#312e81);display:flex;align-items:center;justify-content:center"><i class="fas fa-video" style="color:rgba(255,255,255,.2);font-size:2.5rem"></i></div>`}
@@ -643,7 +684,7 @@ function openSpotlightModal(id){
     </div>
     <div id="sp-video-preview" style="margin-top:.5rem;display:${s.videoUrl?'block':'none'}">
       <div style="font-size:.72rem;color:var(--muted);margin-bottom:.35rem">Video Preview (hover to play):</div>
-      <video id="sp-preview-vid" src="${s.videoUrl||''}" muted playsinline controls style="width:100%;max-height:180px;border-radius:.5rem;background:#000;object-fit:contain"></video>
+      <video id="sp-preview-vid" src="${sanitizeUrl(s.videoUrl)}" muted playsinline controls style="width:100%;max-height:180px;border-radius:.5rem;background:#000;object-fit:contain"></video>
     </div>
     <div class="form-group" style="margin-top:.875rem">
       <label>Thumbnail/Cover Image URL (optional)</label>
@@ -786,7 +827,7 @@ function renderCampaignsAdmin(el){
               <div class="spot-card ${c.status==='closed'?'inactive':''}">
                 <div class="spot-vid-wrap">
                   ${poster
-                    ?`<img src="${poster}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">`
+                    ?`<img alt="" src="${poster}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">`
                     :`<div style="width:100%;height:100%;background:linear-gradient(135deg,#1e1b4b,#312e81);display:flex;align-items:center;justify-content:center"><i class="fas fa-image" style="color:rgba(255,255,255,.2);font-size:2.5rem"></i></div>`}
                   ${c.featured?`<div class="spot-order-badge" style="background:var(--gold);color:#111"><i class="fas fa-star"></i> Featured</div>`:''}
                   <div class="spot-status-badge"><span class="badge ${c.status==='closed'?'badge-declined':'badge-active'}">${c.status==='closed'?'Closed':'Open'}</span></div>
@@ -830,7 +871,7 @@ function openCampaignModal(id){
       <div class="form-hint">This image is used as the Featured Campaign poster on the creator home screen.</div>
     </div>
     <div id="cp-poster-preview" style="margin-top:.5rem;display:${c.productImage?'block':'none'}">
-      <img id="cp-preview-img" src="${c.productImage||''}" style="width:100%;max-height:160px;object-fit:cover;border-radius:.5rem;background:#000">
+      <img alt="Product image" id="cp-preview-img" src="${c.productImage||''}" style="width:100%;max-height:160px;object-fit:cover;border-radius:.5rem;background:#000">
     </div>
     <div class="form-group" style="margin-top:.875rem">
       <label>Brand Logo URL (optional)</label>
@@ -1053,6 +1094,16 @@ async function toggleUserVerified(uid,userType,val){
   }catch(e){toast('Failed: '+e.message,'error');}
 }
 function vBadge(v){ return v?' <i class="fas fa-circle-check" title="Verified" style="color:var(--blue);font-size:.85em;vertical-align:middle"></i>':''; }
+function escHtml(s){ return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+// SECURITY: only allow http(s) URLs to be used as href/src for any user-submitted link (portfolio
+// submissions, spotlight reel/video URLs, etc.) — blocks javascript:/data: pseudo-protocol injection.
+function sanitizeUrl(u){
+  if(u==null) return '';
+  const s = String(u).trim();
+  if(!s) return '';
+  if(/^https?:\/\//i.test(s)) return s;
+  return '';
+}
 
 async function toggleCreatorField(uid,field,val){
   await updateDoc(doc(db,'creators',uid),{[field]:val});
@@ -1099,7 +1150,7 @@ function toast(msg,type='info'){
 }
 function addLog(type,msg){_logs.push({type,msg,ts:Date.now()});}
 
-Object.assign(window,{adminLogin,adminLogout,showPage,refreshAll,renderSpotlight,openSpotlightModal,previewSpotlightVideo,saveSpotlight,toggleSpotlightActive,updateSpotlightOrder,deleteSpotlight,hideAllSpotlights,activateAllSpotlights,editUser,saveEditUser,changePlan,adminChangePlanDirect,deleteUser,editCreator,saveEditCreator,deleteCreator,toggleCreatorField,toggleUserVerified,updateReqStatus,deleteRequest,filterUsersTable,sendBroadcast,updateBroadcastCount,dangerDeleteAll,exportData,openModal,closeModal,renderPortfolioReqs,markPortfolioHosted,previewPortfolioVideo,savePortfolioHosted,rejectPortfolioReq,deletePortfolioReq,renderCampaignsAdmin,openCampaignModal,previewCampaignPoster,saveCampaignAdmin,toggleCampaignFeatured,toggleCampaignStatusAdmin,deleteCampaignAdmin});
+Object.assign(window,{toast,adminLogin,adminLogout,showPage,refreshAll,renderSpotlight,openSpotlightModal,previewSpotlightVideo,saveSpotlight,toggleSpotlightActive,updateSpotlightOrder,deleteSpotlight,hideAllSpotlights,activateAllSpotlights,editUser,saveEditUser,changePlan,adminChangePlanDirect,deleteUser,editCreator,saveEditCreator,deleteCreator,toggleCreatorField,toggleUserVerified,updateReqStatus,deleteRequest,filterUsersTable,sendBroadcast,updateBroadcastCount,dangerDeleteAll,exportData,openModal,closeModal,renderPortfolioReqs,markPortfolioHosted,previewPortfolioVideo,savePortfolioHosted,rejectPortfolioReq,deletePortfolioReq,renderCampaignsAdmin,openCampaignModal,previewCampaignPoster,saveCampaignAdmin,toggleCampaignFeatured,toggleCampaignStatusAdmin,deleteCampaignAdmin});
 
 </script>
 </body>
