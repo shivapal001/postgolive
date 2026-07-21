@@ -2283,7 +2283,7 @@ async function renderMobileHomeNew(el){
       const img=c.profilePhoto?`<img alt="Profile photo" src="${sanitizeUrl(c.profilePhoto,{allowLocalPreview:true})}">`:`<div style="width:100%;height:100%;background:linear-gradient(135deg,hsl(${hue},65%,50%),hsl(${hue+40},65%,35%));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.9rem">${(c.name||'C').charAt(0)}</div>`;
       const btn=sentToIds.has(id)
         ?`<button class="ph-rec-btn" disabled style="opacity:.55;cursor:default"><i class="fas fa-check"></i> Sent</button>`
-        :`<button class="ph-rec-btn" onclick="sendCollab('${id}')">Connect</button>`;
+        :`<button class="ph-rec-btn" onclick="sendCollab('${id}', this)">Connect</button>`;
       return `<div class="ph-rec-card">
         <div class="ph-rec-ava">${img}</div>
         <div class="ph-rec-body">
@@ -2799,7 +2799,7 @@ async function renderMobileDiscover(el){
       ? `<button class="ph-creator-btn" onclick="showSection('campaigns')">Browse Campaigns</button>`
       : sentToIds.has(id)
         ? `<button class="ph-creator-btn" disabled style="opacity:.55;cursor:default"><i class="fas fa-check"></i> Request Sent</button>`
-        : `<button class="ph-creator-btn" onclick="sendCollab('${id}')">Connect</button>`;
+        : `<button class="ph-creator-btn" onclick="sendCollab('${id}', this)">Connect</button>`;
     return `<div class="ph-creator-card">
       <div class="ph-creator-top">
         <div class="ph-creator-ava">${ava}</div>
@@ -3310,7 +3310,7 @@ async function filterCreators(){
   if(!list.length){grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-search"></i><p>No creators found.</p></div>`;return;}
   grid.innerHTML=list.map(c=>{
     const alreadySent=sentTo.has(c.userId);
-    const btn=alreadySent?`<button class="collab-btn sent"><i class="fas fa-check"></i> Request Sent</button>`:`<button class="collab-btn active" onclick="sendCollab('${c.userId}')"><i class="fas fa-handshake"></i> Collaborate</button>`;
+    const btn=alreadySent?`<button class="collab-btn sent"><i class="fas fa-check"></i> Request Sent</button>`:`<button class="collab-btn active" onclick="sendCollab('${c.userId}', this)"><i class="fas fa-handshake"></i> Collaborate</button>`;
     return`<div class="creator-card${c.featured?' featured-card':''}">
       ${c.featured?`<div class="featured-badge">⭐ FEATURED</div>`:''}
       <div class="creator-head"><div class="creator-ava">${c.profilePhoto?`<img alt="Profile photo" src="${sanitizeUrl(c.profilePhoto,{allowLocalPreview:true})}">`:(c.name||'C').charAt(0)}</div><div><div class="creator-name">${c.name}</div><div class="creator-meta">${c.audienceSize||'—'} · ${c.engagementRate||'—'} ER</div></div></div>
@@ -3323,28 +3323,49 @@ async function filterCreators(){
 }
 
 const _sendingCollabTo=new Set();
-async function sendCollab(creatorId){
+async function sendCollab(creatorId, btnEl){
   // Guard against double-clicks / duplicate submissions while a request is in flight.
   if(_sendingCollabTo.has(creatorId))return;
   _sendingCollabTo.add(creatorId);
+
+  // ── Optimistic UI: flip the button to "Request Sent" the instant it's clicked,
+  //    instead of waiting on the network round-trip + full section reload. ──
+  let originalBtnHTML=null;
+  if(btnEl){
+    originalBtnHTML=btnEl.outerHTML;
+    btnEl.disabled=true;
+    btnEl.style.opacity='.55';
+    btnEl.style.cursor='default';
+    btnEl.innerHTML='<i class="fas fa-check"></i> Request Sent';
+  }
+
   try{
     const plan=_me.plan||'free';
     const allR=Object.values(await DB.getRequests());
     const monthR=allR.filter(r=>r.founderId===_me.uid&&new Date(r.createdAt)>new Date(Date.now()-30*86400000)).length;
-    if(plan==='free'&&monthR>=3){toast('Free plan: 3 requests/month limit reached.','error');setTimeout(()=>showSection('pricing'),1500);return;}
+    if(plan==='free'&&monthR>=3){
+      if(btnEl&&originalBtnHTML)btnEl.outerHTML=originalBtnHTML;
+      toast('Free plan: 3 requests/month limit reached.','error');setTimeout(()=>showSection('pricing'),1500);return;
+    }
     const fo=await DB.getFounder(_me.uid);
-    if(!fo){toast('Please set up your founder profile first.','error');await openSetup();return;}
+    if(!fo){
+      if(btnEl&&originalBtnHTML)btnEl.outerHTML=originalBtnHTML;
+      toast('Please set up your founder profile first.','error');await openSetup();return;
+    }
     const cr=await DB.getCreator(creatorId);if(!cr)return;
     let newReqId;
     try{
       newReqId=await DB.saveRequest({founderId:_me.uid,founderName:_me.name,startupName:fo.startupName,creatorId,creatorName:cr.name,collabType:fo.collabType,budget:fo.budget,status:'pending',createdAt:new Date().toISOString()});
     }catch(e){
+      if(btnEl&&originalBtnHTML)btnEl.outerHTML=originalBtnHTML;
       if(e.code==='duplicate'){toast(`You already have a pending request with ${cr.name}.`,'info');return;}
       toast('Could not send request. Please try again.','error');return;
     }
+    toast(`Request sent to ${cr.name}! 🚀`,'success');
+    _allCreators={};
+    // Background work (conversation + notification) — doesn't block the button state above.
     const inviteMsg=`Hi ${cr.name}! I'm ${_me.name} from ${fo.startupName||'my startup'}. I'd love to collaborate!`;
-    try{await DB.getOrCreateConversation(_me.uid,creatorId,inviteMsg);}catch(e){}
-    // 🔔 NOTIFICATION TRIGGER — new collab request received
+    DB.getOrCreateConversation(_me.uid,creatorId,inviteMsg).catch(()=>{});
     createNotification(creatorId,{
       type:'request',
       title:`New collab request from ${_me.name||'a founder'}`,
@@ -3354,10 +3375,6 @@ async function sendCollab(creatorId){
       fromUid:_me.uid,
       fromName:_me.name||'Founder'
     });
-    toast(`Request sent to ${cr.name}! 🚀`,'success');
-    _allCreators={};
-    const activeTab=document.querySelector('.ph-nav-item.active')?.id?.replace('phn-','');
-    if(activeTab==='home'||activeTab==='creators')await showSection(activeTab);
   }finally{
     _sendingCollabTo.delete(creatorId);
   }
