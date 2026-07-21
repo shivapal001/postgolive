@@ -560,7 +560,7 @@ body.ph-mobile-active .content{
 /* Content becomes the scroll zone on mobile */
 body.ph-mobile-active .content.ph-mob-root{
   position:fixed;
-  top:56px;
+  top:0;
   bottom:62px;
   left:0; right:0;
   overflow-y:auto;
@@ -827,7 +827,13 @@ button:active{
 .ph-logo{display:flex;align-items:center;gap:.5rem;font-size:1.25rem;font-weight:800;color:var(--ph-text);letter-spacing:-.025em;}
 .ph-logo-dot{width:8px;height:8px;border-radius:50%;background:var(--ph-accent);flex-shrink:0;}
 .ph-header-icons{display:flex;gap:.6rem;}
-.ph-icon-btn{width:2.4rem;height:2.4rem;border-radius:50%;background:var(--ph-card);display:flex;align-items:center;justify-content:center;color:var(--ph-text);font-size:.95rem;position:relative;box-shadow:0 2px 6px rgba(0,0,0,.05);border:none;cursor:pointer;}
+.ph-icon-btn{width:2.4rem;height:2.4rem;border-radius:50%;background:var(--ph-card);display:flex;align-items:center;justify-content:center;color:var(--ph-text);font-size:.95rem;position:relative;box-shadow:0 2px 6px rgba(0,0,0,.05);border:none;cursor:pointer;flex-shrink:0;}
+.ph-icon-btn.sm{width:2rem;height:2rem;font-size:.8rem;}
+/* In-content page title row — replaces the old fixed top app bar */
+.ph-page-head{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin:.1rem 0 1rem;}
+.ph-page-head-title{font-size:1.15rem;font-weight:800;letter-spacing:-.02em;color:var(--ph-text);display:flex;align-items:center;gap:.6rem;}
+.ph-page-head-actions{display:flex;align-items:center;gap:.55rem;flex-shrink:0;}
+.ph-back-btn{width:2.2rem;height:2.2rem;border-radius:50%;background:var(--ph-card);display:flex;align-items:center;justify-content:center;color:var(--ph-text);border:none;cursor:pointer;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,.05);}
 .ph-badge{position:absolute;top:-3px;right:-3px;background:var(--ph-accent);color:#111111;font-size:.6rem;font-weight:800;width:1.15rem;height:1.15rem;border-radius:50%;display:flex;align-items:center;justify-content:center;}
 .ph-avatar-sm{width:2.4rem;height:2.4rem;border-radius:50%;overflow:hidden;background:linear-gradient(135deg,var(--ph-accent),var(--ph-accent2));color:#fff;font-weight:800;font-size:.9rem;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
 .ph-avatar-sm img{width:100%;height:100%;object-fit:cover;}
@@ -1127,13 +1133,13 @@ button:active{
   background:var(--ph-bg);
   color:var(--ph-text);
   position:fixed;
-  top:56px;         /* header height */
+  top:0;            /* no fixed brand header anymore — page titles live in-content */
   bottom:62px;      /* navbar height */
   left:0; right:0;
   overflow-y:auto;
   -webkit-overflow-scrolling:touch;
   overscroll-behavior:contain;
-  padding:.75rem 1.25rem 1rem;
+  padding:calc(env(safe-area-inset-top) + 1.1rem) 1.25rem 1rem;
   z-index:200;
 }
 .ph-mob-root::-webkit-scrollbar{display:none;}
@@ -1150,7 +1156,7 @@ button:active{
   padding:0 1.25rem;
   border-bottom:1px solid rgba(0,0,0,.04);
 }
-body.ph-mobile-active #ph-app-header{ display:flex; }
+body.ph-mobile-active #ph-app-header{ display:none; }
 
 /* Body-level fixed navbar — always visible, never scrolls */
 #ph-app-nav{
@@ -2314,6 +2320,17 @@ async function renderMobileHomeNew(el){
   // ── Hero banner: theme carousel (no external image, no white edge) ──
 
   el.innerHTML=`
+      <div class="ph-page-head" style="margin-bottom:.6rem;justify-content:flex-end">
+        <div class="ph-page-head-actions">
+          <button class="ph-icon-btn" onclick="showSection('notifications')" style="position:relative" aria-label="Notifications">
+            <i class="fas fa-bell" style="font-size:1rem"></i>
+            <span class="ph-badge" id="mob-notif-badge" style="display:none">0</span>
+          </button>
+          <div class="ph-avatar-sm" onclick="showSection('profile')" style="cursor:pointer">
+            ${_me.profilePhoto?`<img alt="Profile photo" src="${sanitizeUrl(_me.profilePhoto,{allowLocalPreview:true})}" style="width:100%;height:100%;object-fit:cover">`:`${firstName.charAt(0).toUpperCase()}`}
+          </div>
+        </div>
+      </div>
       <div class="ph-greet">
         <div class="ph-greet-sub">Good ${greetWord}, ${escHtml(firstName)} 👋</div>
         <div class="ph-greet-title">${trendLine}</div>
@@ -2472,6 +2489,14 @@ async function renderCreatorHomeMobile(el,ctx){
   if(!activityHTML)activityHTML=`<div class="ph-empty-inline">No recent activity yet.</div>`;
 
   el.innerHTML=`
+      <div class="ph-page-head" style="margin-bottom:.6rem;justify-content:flex-end">
+        <div class="ph-page-head-actions">
+          <button class="ph-icon-btn" onclick="showSection('notifications')" style="position:relative" aria-label="Notifications">
+            <i class="fas fa-bell" style="font-size:1rem"></i>
+            <span class="ph-badge" id="mob-notif-badge" style="display:none">0</span>
+          </button>
+        </div>
+      </div>
       <div class="ph-greet">
         <div class="ph-greet-sub">Good ${greetWord}, ${escHtml(firstName)} 👋</div>
         <div class="ph-greet-title">Find Your Next <span>Brand Deal</span>!</div>
@@ -2795,6 +2820,15 @@ async function renderMobileDiscover(el){
   }).join('');
 
   const discBody=`
+    <div class="ph-page-head">
+      <div class="ph-page-head-title">Discover</div>
+      <div class="ph-page-head-actions">
+        <button class="ph-icon-btn" onclick="showSection('notifications')" style="position:relative" aria-label="Notifications">
+          <i class="fas fa-bell" style="font-size:1rem"></i>
+          <span class="ph-badge" id="mob-notif-badge" style="display:none">0</span>
+        </button>
+      </div>
+    </div>
     <div class="ph-search-bar">
       <i class="fas fa-search" style="color:var(--ph-muted)"></i>
       <input placeholder="Search creators, niches…" id="mob-disc-search" oninput="mobDiscFilter(this.value)" style="border:none;outline:none;background:transparent;font-size:.85rem;flex:1;font-family:'Inter',sans-serif;color:var(--ph-text)">
@@ -2872,6 +2906,10 @@ async function renderMobileCampaigns(el){
 
   const campBody=`
     <div class="ph-camp-hero">
+      <button class="ph-icon-btn sm" onclick="showSection('notifications')" style="position:absolute;top:.9rem;right:.9rem;background:#fff" aria-label="Notifications">
+        <i class="fas fa-bell" style="font-size:.85rem"></i>
+        <span class="ph-badge" id="mob-notif-badge" style="display:none">0</span>
+      </button>
       <div style="flex:1">
         <div class="ph-camp-hero-title">${isC?'Open Campaigns':'Your Campaigns'}</div>
         <div class="ph-camp-desc ph-desc">${isC?'Apply to brands looking for creators like you.':'Manage and track all your active campaigns.'}</div>
@@ -3193,6 +3231,18 @@ async function renderRequests(el){
   const sentHTML=sent.length?sent.slice().reverse().map(([id,r])=>{const cr=creators[r.creatorId];const wa=r.status==='accepted'?`<button class="accept-btn" onclick="openChatForRequest('${r.founderId||_me.uid}','${r.creatorId}')"><i class="fas fa-comment-dots"></i> Chat</button>`:'';return`<div class="req-item"><div class="req-ava"><i class="fas fa-video"></i></div><div class="req-body"><div class="req-name">${escHtml(cr?.name||'Creator')}${verifiedBadge(cr?.verified,'.7em')}</div><div class="req-detail">${escHtml(r.collabType||'')} ${r.budget?'· '+escHtml(r.budget):''}</div><div class="req-actions">${badge(r.status)}${wa}</div></div></div>`;}).join(''):`<div class="ph-empty-inline">No requests sent yet. <a onclick="showSection('creators')" style="color:var(--ph-accent);font-weight:700">Browse creators →</a></div>`;
 
   el.innerHTML=`
+    <div class="ph-page-head">
+      <div class="ph-page-head-title">
+        <button class="ph-back-btn" onclick="showSection('home')" aria-label="Back"><i class="fas fa-chevron-left" style="font-size:.8rem"></i></button>
+        Requests
+      </div>
+      <div class="ph-page-head-actions">
+        <button class="ph-icon-btn" onclick="showSection('notifications')" style="position:relative" aria-label="Notifications">
+          <i class="fas fa-bell" style="font-size:1rem"></i>
+          <span class="ph-badge" id="mob-notif-badge" style="display:none">0</span>
+        </button>
+      </div>
+    </div>
     <div class="ph-tabs">
       <button class="ph-tab active" id="req-tab-recv" onclick="reqSwitchTab('recv')">Received ${recv.length?`(${recv.length})`:''}</button>
       <button class="ph-tab" id="req-tab-sent" onclick="reqSwitchTab('sent')">Sent ${sent.length?`(${sent.length})`:''}</button>
@@ -3350,6 +3400,11 @@ function renderPricing(el){
     '</div>';
   }).join('');
   el.innerHTML =
+    '<div class="ph-page-head">'+
+      '<button class="ph-back-btn" onclick="showSection(\'profile\')" aria-label="Back"><i class="fas fa-chevron-left" style="font-size:.8rem"></i></button>'+
+      '<div class="ph-page-head-title">Plans &amp; Pricing</div>'+
+      '<div style="width:2.2rem"></div>'+
+    '</div>'+
     '<div style="text-align:center;margin-bottom:2rem">'+
       '<div style="font-family:\'Plus Jakarta Sans\',sans-serif;font-size:1.75rem;font-weight:800;margin-bottom:.5rem">Choose Your Plan</div>'+
       '<div style="color:var(--muted);font-size:.9rem">Upgrade anytime. Cancel anytime.</div>'+
@@ -3908,6 +3963,15 @@ async function renderMessagesSection(el){
   el.innerHTML = `
     <div class="msgs-wrap" id="msgs-wrap">
       <div class="conv-list">
+        <div class="ph-page-head" style="padding:1.125rem 1.25rem 0">
+          <div class="ph-page-head-title">Messages</div>
+          <div class="ph-page-head-actions">
+            <button class="ph-icon-btn" onclick="showSection('notifications')" style="position:relative" aria-label="Notifications">
+              <i class="fas fa-bell" style="font-size:1rem"></i>
+              <span class="ph-badge" id="mob-notif-badge" style="display:none">0</span>
+            </button>
+          </div>
+        </div>
         <div class="conv-list-head">
           <div class="conv-search">
             <i class="fas fa-search conv-search-icon"></i>
@@ -4581,6 +4645,15 @@ function renderNotificationsSection(el){
   phSetMobileNav('home'); // reached via the bell icon — keep Home lit as the parent context
 
   el.innerHTML=`
+    <div class="ph-page-head">
+      <div class="ph-page-head-title">
+        <button class="ph-back-btn" onclick="showSection('home')" aria-label="Back"><i class="fas fa-chevron-left" style="font-size:.8rem"></i></button>
+        Notifications
+      </div>
+      <div class="ph-page-head-actions">
+        <button class="ph-icon-btn" onclick="markAllNotifsRead()" title="Mark all read" aria-label="Mark all read"><i class="fas fa-check-double" style="font-size:.85rem"></i></button>
+      </div>
+    </div>
     <div class="ph-tabs">
       <button class="ph-tab ${_activeNotifTab==='all'?'active':''}" onclick="setNotifTab('all')">All</button>
       <button class="ph-tab ${_activeNotifTab==='activity'?'active':''}" onclick="setNotifTab('activity')">Activity</button>
